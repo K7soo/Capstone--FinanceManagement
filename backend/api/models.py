@@ -31,7 +31,3 @@ class Reservation(models.Model):
     reserved_by = models.CharField(max_length=100)
 
     reservation_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reservations")
-
-    ## Summary Function
-    # def total_price(self):
-    #     return sum(item.price for item in self.food_items.all())
