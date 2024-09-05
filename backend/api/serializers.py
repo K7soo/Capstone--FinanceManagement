@@ -1,6 +1,56 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Table, FoodItem, Reservation
+from .models import TRTemplate, TRTemplateDetails, TransactionDetails, Transactions, TransactionType, ChartOfAccs, AccountType, Discounts, PaymentGateway, Payments
+
+class TRTemplateDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TRTemplateDetails
+        fields = '__all__'
+
+class TransactionDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransactionDetails
+        fields = '__all__'
+
+class TransactionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transactions
+        fields = '__all__'
+
+class TRTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TRTemplate
+        fields = '__all__'
+
+class TransactionTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransactionType
+        fields = '__all__'
+
+class ChartOfAccsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChartOfAccs
+        fields = '__all__'
+
+class AccountTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountType
+        fields = '__all__'
+
+class DiscountsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Discounts
+        fields = '__all__'
+
+class PaymentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payments
+        fields = '__all__'
+
+class PaymentGatewaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentGateway
+        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,55 +66,3 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
-class TableSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Table
-        fields = [
-            "table_Name",
-            "is_reserved",
-            "created_at",
-            "author"
-        ]
-        extra_kwargs = {"table_author": {"read_only": True}}
-
-class FoodItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FoodItem
-        fields = [
-            "food_Name",
-            "price",
-            "created_at",
-            "author"
-        ]
-        extra_kwargs = {"foodItem_author": {"read_only": True}}
-
-class ReservationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FoodItem
-        fields = [
-            "food_Name",
-            "price",
-            "created_at",
-            "reservation_author"
-        ]
-        extra_kwargs = {"reservation_author": {"read_only": True}}
-
-
-## Test Serializers
-
-# class TableSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Table
-#         fields = '__all__'
-
-# class FoodItemSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = FoodItem
-#         fields = '__all__'
-
-# class ReservationSerializer(serializers.ModelSerializer):
-#     total_price = serializers.ReadOnlyField()
-
-#     class Meta:
-#         model = Reservation
-#         fields = '__all__'
