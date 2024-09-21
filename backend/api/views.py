@@ -53,3 +53,23 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+def dashboard_view(request):
+    return render(request, )
+
+def dashboard_view(request):
+    return render(request, 'dashboard.html')
+
+def bookkeeping_view(request):
+    return render(request, 'bookkeeping.html')
+
+def menubar_view(request):
+    return render(request, 'menubar.html')
+
+def payment_view(request):
+    return render(request, 'payment.html')
+
+def reports_view(request):
+    return render(request, 'reports.html')
+
+def sidebar_view(request):
+    return render(request, 'sidebar.html')
