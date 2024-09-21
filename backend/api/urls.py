@@ -2,12 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('', views.sidebar_view, name='home'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('bookkeeping/', views.bookkeeping_view, name='bookkeeping'),
     path('menubar/', views.menubar_view, name='menubar'),
     path('payment/', views.payment_view, name='payment'),
     path('reports/', views.reports_view, name='reports'),
-    path('', views.sidebar_view, name='home'),
 
     # TRTemplateDetails URLs
     path("trtemplate-details/", views.TRTemplateDetailsViewSet.as_view(
