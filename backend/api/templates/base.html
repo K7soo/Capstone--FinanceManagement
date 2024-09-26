@@ -1,0 +1,33 @@
+{% load static %}  <!-- This is necessary to load static files -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <title>{% block title %}Finance Management{% endblock %}</title>
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+<body>
+    <!-- Include the reusable sidebar -->
+    <div class="sidebar-wrapper">
+        {% include 'sidebar.html' %}
+    </div>
+    
+    <!-- Main content block -->
+    <div class="main-content">
+        {% block content %}
+        <!-- Default content goes here -->
+        {% endblock %}
+    </div>
+
+    <script src="{% static 'js/sidebar.js' %}"></script>  <!-- Link to your sidebar JavaScript if necessary -->
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

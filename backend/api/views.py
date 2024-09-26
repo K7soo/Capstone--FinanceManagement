@@ -16,6 +16,19 @@ def dashboard_view(request):
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
 
+# Dropdown Button Components
+def chart_of_accounts_view(request):
+    return render(request, 'chartofacc.html')
+
+def journal_templates_view(request):
+    return render(request, 'journaltemp.html')
+
+def journal_entries_view(request):
+    return render(request, 'journalentries.html')
+
+def trial_balance_view(request):
+    return render(request, 'trialbalance.html')
+# end of dropdown 
 def menubar_view(request):
     return render(request, 'menubar.html')
 

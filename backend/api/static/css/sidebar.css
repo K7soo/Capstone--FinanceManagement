@@ -1,6 +1,10 @@
 /* Sidebar wrapper styles */
 .sidebar-wrapper {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: width 0.3s; /* Smooth transition for sidebar width */
 }
 
 /* Sidebar styles */
@@ -22,6 +26,19 @@
     width: 60px; /* Collapsed width */
 }
 
+/* Main content styles */
+.main-content {
+    margin-left: 250px; /* Default margin to make space for the sidebar */
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    position: relative; /* Ensure main content appears correctly */
+    z-index: 0; /* Ensure main content stays below sidebar */
+}
+
+/* Adjust main content margin when the sidebar is collapsed */
+.sidebar.collapsed + .main-content {
+    margin-left: 60px;
+}
 .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -54,7 +71,7 @@
     text-decoration: none;
     font-size: 18px;
     color: #333;
-    display: block;
+    display: flex;
     align-items: center; /* Align items for icon and text */
     justify-content: flex-start; /* Adjust alignment to the left */
     width: 100%;
@@ -63,6 +80,8 @@
     background: none;
     outline: none;
     cursor: pointer;
+    transition: background-color 0.3s, border-radius 0.3s, margin 0.3s; /* Smooth transition */
+    overflow: hidden; /* Prevent background overflow */
     box-sizing: border-box; /* Ensure padding and border are included in total width */
 }
 
@@ -81,8 +100,10 @@
 }
 
 .sidebar i {
-    margin-right: 10px;
-    
+    display: flex; /* Use flex to center the icon */
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    width: 30px; /* Ensure the icon takes the full width of its container */
 }
 
 /* Adjust icon and text alignment for collapsed sidebar */
@@ -94,11 +115,15 @@
 
 .sidebar.collapsed a i, .sidebar.collapsed .dropdown-btn i {
     margin-right: 0;
+
+    
 }
+
 
 .sidebar.collapsed a span, .sidebar.collapsed .dropdown-btn span {
     display: none; /* Hide text */
     align-items: center;
+
 }
 /* Hide the arrow icon when the sidebar is collapsed */
 .sidebar.collapsed .dropdown-btn .fa-caret-down {
@@ -111,11 +136,14 @@
     display: none;
     background-color: #f9f9f9;
     padding-left: 30px;
+    
+
 }
 
 .dropdown-container a {
     font-size: 16px;
     color: #666;
+    
 }
 
 /* Sidebar footer styles */

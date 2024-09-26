@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Chart of Accounts
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/chartofacc.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Chart of Accounts</h1>
+<button class="add-account-btn">ADD ACCOUNT</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>Account Code</th>
+            <th>Account Description</th>
+            <th>Nature Flag</th>
+            <th>Account Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Example Data; this will be dynamically filled -->
+        <tr>
+            <td>111XXX</td>
+            <td>Cash</td>
+            <td>Debit</td>
+            <td>Asset</td>
+            <td><button class="view-btn">View</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Add Account Modal -->
+<div id="addAccountModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Add New Account</h2>
+        <form id="addAccountForm">
+            <label for="accountCode">Account Code:</label>
+            <input type="text" id="accountCode" name="accountCode" required><br><br>
+
+            <label for="accountDesc">Account Description:</label>
+            <input type="text" id="accountDesc" name="accountDesc" required><br><br>
+
+            <label for="natureFlag">Nature Flag (D/C):</label>
+            <select id="natureFlag" name="natureFlag" required>
+                <option value="Debit">Debit</option>
+                <option value="Credit">Credit</option>
+            </select><br><br>
+
+            <label for="accountType">Account Type:</label>
+            <select id="accountType" name="accountType" required>
+                <option value="Asset">Asset</option>
+                <option value="Expense">Expense</option>
+            </select><br><br>
+
+            <button type="submit" class="submit-btn">Add Account</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+    <script src="{% static 'js/chartofacc.js' %}"></script>
+{% endblock %}

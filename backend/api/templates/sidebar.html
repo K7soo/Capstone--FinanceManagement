@@ -1,52 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../static/css/sidebar.css">
-    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
-    <title>Sidebar</title>
-</head>
-</head>
-<body>
-    <!-- Sidebar wrapper to handle the collapsible effect -->
-    <div class="sidebar-wrapper">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>FINANCE MANAGEMENT</h2>
-                <button class="menu-btn" onclick="toggleSidebar()">
-                    <i class="fa fa-bars"></i>
-                </button>
-            </div>
-            <a class="active" href="#home">
-                <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
-            </a>
-            <button class="dropdown-btn">
-                <i class="fa fa-fw fa-book"></i> <span>Bookkeeping</span> 
-                <i class="fa fa-caret-down "></i> 
+<div class="sidebar-wrapper">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>FINANCE MANAGEMENT</h2>
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <i class="fa fa-bars"></i>
             </button>
-            <div class="dropdown-container">
-                <a href="#"><span>Chart of Accounts</span></a>
-                <a href="#"><span>Journal Templates</span></a>
-                <a href="#"><span>Journal Entries</span></a>
-                <a href="#"><span>Trial Balance</span></a>
-            </div>
-            <a href="#reports">
-                <i class="fa fa-fw fa-file"></i> <span>Reports</span>
-            </a>
-            <a href="#payment">
-                <i class="fa fa-fw fa-money"></i> <span>Payment</span>
-            </a>
-            <!-- Sidebar footer for logo and version -->
-            <div class="sidebar-footer">
-                <img src="path/to/logo.png" alt="Logo">
-                <p>v1.0.0</p>
-            </div>
+        </div>
+        <a class="active" href="#home">
+            <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
+        </a>
+        <button class="dropdown-btn">
+            <i class="fa fa-fw fa-book"></i> <span>Bookkeeping</span> 
+            <i class="fa fa-caret-down "></i> 
+        </button>
+        <div class="dropdown-container">
+            <a href="{% url 'chartofacc' %}"><i class="fa fa-fw fa-book"></i><span>Chart of Accounts</span></a>
+            <a href="{% url 'journaltemp' %}"><i class="fa fa-fw fa-book"></i><span>Journal Templates</span></a>
+            <a href="{% url 'journalentries' %}"><i class="fa fa-fw fa-book"></i><span>Journal Entries</span></a>
+            <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-book"></i><span>Trial Balance</span></a>
+        </div>
+        <a href="#reports">
+            <i class="fa fa-fw fa-file"></i> <span>Reports</span>
+        </a>
+        <a href="#payment">
+            <i class="fa fa-fw fa-money"></i> <span>Payment</span>
+        </a>
+        <!-- Sidebar footer for logo and version -->
+        <div class="sidebar-footer">
+            <img src="" alt="Logo">
+            <p>v1.0.0</p>
         </div>
     </div>
-
-
-    <script src="../static/js/sidebar.js"></script>
-</body>
-</html>
+</div>
