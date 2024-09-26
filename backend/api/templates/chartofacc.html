@@ -12,7 +12,27 @@
 
 {% block content %}
 <h1>Chart of Accounts</h1>
-<button class="add-account-btn">ADD ACCOUNT</button>
+<div class="button-container">
+    <button class="add-account-btn">ADD ACCOUNT</button>
+    
+    <div class="dropdown">
+        <button class="dropdown-btncoa">ASSET <i class="fa fa-caret-down"></i></button>
+        <div class="dropdown-content" id="assetDropdown">
+            <a href="#">Asset 1</a>
+            <a href="#">Asset 2</a>
+            <a href="#">Asset 3</a>
+        </div>
+    </div>
+    
+    <div class="dropdown">
+        <button class="dropdown-btncoa">DEBIT <i class="fa fa-caret-down"></i></button>
+        <div class="dropdown-content" id="debitDropdown">
+            <a href="#">Debit 1</a>
+            <a href="#">Debit 2</a>
+            <a href="#">Debit 3</a>
+        </div>
+    </div>
+</div>
 
 <table>
     <thead>
