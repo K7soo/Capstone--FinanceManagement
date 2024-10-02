@@ -127,7 +127,7 @@ tr:nth-child(even) {
 }
 
 .close {
-    color: #000000;
+    color: #3b3b3b;
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -151,7 +151,7 @@ tr:nth-child(even) {
 
 .btn-save {
     background-color: #61396f;
-    color: #ffffff;
+    color: #fff;
     padding: 10px 20px;
     border: none;
     cursor: pointer;
@@ -183,9 +183,4 @@ tr:nth-child(even) {
     border: none;
     cursor: pointer;
     border-radius: 5px;
-}
-
-.submit-btn {
-    color: #d1a35a;
-    
 }
