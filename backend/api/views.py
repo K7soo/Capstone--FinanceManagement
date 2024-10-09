@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics
-
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets
-from .models import TRTemplateDetails, TransactionDetails, Transactions, TRTemplate, TransactionType, ChartOfAccs, AccountType, Discounts, Payments, PaymentGateway
-from .serializers import UserSerializer, TRTemplateDetailsSerializer, TransactionDetailsSerializer, TransactionsSerializer, TRTemplateSerializer, TransactionTypeSerializer, ChartOfAccsSerializer, AccountTypeSerializer, DiscountsSerializer, PaymentsSerializer, PaymentGatewaySerializer
+from .models import *
+from .serializers import *
 
+# Main Page Rendering
 def sidebar_view(request):
     return render(request, 'sidebar.html')
 
@@ -28,7 +28,8 @@ def journal_entries_view(request):
 
 def trial_balance_view(request):
     return render(request, 'trialbalance.html')
-# end of dropdown 
+# End of dropdown 
+
 def menubar_view(request):
     return render(request, 'menubar.html')
 
