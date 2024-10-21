@@ -5,6 +5,8 @@ urlpatterns = [
     path('', views.dashboard_view, name='home'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('bookkeeping/', views.bookkeeping_view, name='bookkeeping'),
+    path('trinbox/', views.transaction_inbox_view, name='trinbox'),
+
     # dropdown buttons
     path('chartofacc/', views.chart_of_accounts_view, name='chartofacc'),
     path('journaltemp/', views.journal_templates_view, name='journaltemp'),

@@ -7,15 +7,21 @@ from rest_framework import viewsets
 from .models import TRTemplateDetails, TransactionDetails, Transactions, TRTemplate, TransactionType, ChartOfAccs, AccountType, Discounts, Payments, PaymentGateway
 from .serializers import UserSerializer, TRTemplateDetailsSerializer, TransactionDetailsSerializer, TransactionsSerializer, TRTemplateSerializer, TransactionTypeSerializer, ChartOfAccsSerializer, AccountTypeSerializer, DiscountsSerializer, PaymentsSerializer, PaymentGatewaySerializer
 
-
+# dashboard sidebar button
 def dashboard_view(request):
     return render(request, 'dashboard.html')
 
+# sidebar view 
 def sidebar_view(request):
     return render(request, 'sidebar.html')
 
+#bookkeeping sidebar button
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
+
+#transaction inbox sidebar button
+def transaction_inbox_view(request):
+    return render(request, 'trinbox.html')
 
 # Dropdown Button Components
 def chart_of_accounts_view(request):
