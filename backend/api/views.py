@@ -7,11 +7,12 @@ from rest_framework import viewsets
 from .models import TRTemplateDetails, TransactionDetails, Transactions, TRTemplate, TransactionType, ChartOfAccs, AccountType, Discounts, Payments, PaymentGateway
 from .serializers import UserSerializer, TRTemplateDetailsSerializer, TransactionDetailsSerializer, TransactionsSerializer, TRTemplateSerializer, TransactionTypeSerializer, ChartOfAccsSerializer, AccountTypeSerializer, DiscountsSerializer, PaymentsSerializer, PaymentGatewaySerializer
 
-def sidebar_view(request):
-    return render(request, 'sidebar.html')
 
 def dashboard_view(request):
     return render(request, 'dashboard.html')
+
+def sidebar_view(request):
+    return render(request, 'sidebar.html')
 
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
