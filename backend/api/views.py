@@ -19,6 +19,7 @@ def bookkeeping_view(request):
 
 # Dropdown Button Components
 def chart_of_accounts_view(request):
+    # READ METHOD
     if request.method == 'GET':
         my_data = ChartOfAccs.objects.all().values()
         context = {
@@ -26,6 +27,15 @@ def chart_of_accounts_view(request):
         }
         return render(context, 'chartofacc.html', request)
     
+    if request.method == 'PUT':
+        # return render(request, 'chartofacc.html')
+        pass
+
+    if request.method == 'PATCH':
+        # return render(request, 'chartofacc.html')
+        pass
+
+    # CREATE METHOD
     if request.method == 'POST':
         # Parse the incoming JSON data
         data = json.loads(request.body)
@@ -39,18 +49,16 @@ def chart_of_accounts_view(request):
         # Save the data to the database
         try:
             chartofaccs = ChartOfAccs.objects.create(
-                account_code=account_code,
-                account_desc=account_desc,
-                nature_flag=nature_flag,
-                account_type=account_type
+                account_code = account_code,
+                account_desc = account_desc,
+                nature_flag = nature_flag,
+                account_type = account_type
             )
             return JsonResponse({'status': 'success', 'data': {'id': chartofaccs.id}})
         
         except Exception as e:
             return JsonResponse({'status': 'error', 'errors': str(e)}, status=400)
-    
     return JsonResponse({'status': 'invalid_request'}, status=400)
-    # return render(request, 'chartofacc.html')
 
 
 def journal_templates_view(request):

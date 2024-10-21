@@ -15,6 +15,10 @@ urlpatterns = [
     path('payment/', views.payment_view, name='payment'),
     path('reports/', views.reports_view, name='reports'),
 
+    # path('transactioninbox/', views.transactioninbox_view, name='transactioninbox'),
+    # path('login/', views.login_view, name='login'),
+    # path('', views.portal_view, name='home'),
+
     '''
     # # TRTemplateDetails URLs
     # path("trtemplate-details/", views.TRTemplateDetailsViewSet.as_view(
