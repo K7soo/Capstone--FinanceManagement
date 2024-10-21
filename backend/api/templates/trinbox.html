@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+<!-- Always do a load static  -->
+{% load static %}
+
+{% block title %}
+Journal Templates
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/nameofcssfile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h1>Journal Template </h1>
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script src="{% static 'js/nameofjsfile.js' %}"></script>
+{% endblock %}
