@@ -5,7 +5,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import *
 from .serializers import *
-import json
+from .views_charts import *
 
 # Main Page Rendering
 def sidebar_view(request):
@@ -25,39 +25,35 @@ def chart_of_accounts_view(request):
         context = {
             'my_data': my_data
         }
-        return render(context, 'chartofacc.html', request)
-    
+        return render(request, 'chartofacc.html', context)
+
+    # FULL UPDATE METHOD
     if request.method == 'PUT':
-        # return render(request, 'chartofacc.html')
-        pass
-
-    if request.method == 'PATCH':
-        # return render(request, 'chartofacc.html')
-        pass
-
-    # CREATE METHOD
-    if request.method == 'POST':
-        # Parse the incoming JSON data
-        data = json.loads(request.body)
-
-        # Extract the data
-        account_code = data.get('accountCode')
-        account_desc = data.get('accountDesc')
-        nature_flag = data.get('natureFlag')
-        account_type = data.get('accountType')
-
-        # Save the data to the database
-        try:
-            chartofaccs = ChartOfAccs.objects.create(
-                account_code = account_code,
-                account_desc = account_desc,
-                nature_flag = nature_flag,
-                account_type = account_type
-            )
-            return JsonResponse({'status': 'success', 'data': {'id': chartofaccs.id}})
+        updated_account, error_response = update_chart_of_accounts(request)
+        if error_response:
+            return error_response  
         
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'errors': str(e)}, status=400)
+        context = {'account': updated_account}
+        return render(request, 'update_success.html', context)
+
+    # PARTIAL UPDATE METHOD
+    if request.method == 'PATCH':
+        updated_account, error_response = patch_chart_of_accounts(request)
+        if error_response:
+            return error_response
+
+        context = {'account': updated_account}
+        return render(request, 'update_success.html', context)
+
+    # CREATE METHOD (POST)
+    if request.method == 'POST':
+        new_account, error_response = create_chart_of_accounts(request)
+        if error_response:
+            return error_response
+
+        context = {'account': new_account}
+        return render(request, 'create_success.html', context)
+
     return JsonResponse({'status': 'invalid_request'}, status=400)
 
 
