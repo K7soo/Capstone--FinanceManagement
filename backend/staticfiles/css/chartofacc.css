@@ -1,0 +1,191 @@
+body {
+    background-color: #f8f8ff; /* Light background */
+    font-family: 'Poppins', sans-serif;
+}
+/* Modal styles */
+h1 {
+    color: #61396f; /* Violet color */
+    text-align: center; /* Center the title */
+    margin-top: 20px;
+}
+
+/* add button design */
+.add-account-btn {
+    background-color: #008425; /* Gold color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+
+/* add button design */ 
+.add-account-btn:hover {
+    background-color: #61396f; /* Change to violet on hover */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btncoa {
+    background-color: #61396f; /* Violet color */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-btn:hover {
+    background-color: #4b2d52; /* Darker violet */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f8f8ff; /* Light background */
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-content a {
+    color: #3b3b3b; /* Dark grey color */
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background-color: #d1a35a; /* Gold on hover */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block; /* Show dropdown on hover */
+}
+
+/* chart of accounts table */
+table {
+    width: 90%; /* Set width to ensure it fits nicely */
+    margin: 20px auto; /* Center the table */
+    border-collapse: collapse; /* Collapse borders */
+}
+
+
+th, td {
+    padding: 12px; /* Add padding for better spacing */
+    text-align: left; /* Align text to the left */
+    border-bottom: 1px solid #ddd; /* Light grey border */
+}
+
+th {
+    background-color: #bcbcbc; /* Violet for header */
+    color: rgb(0, 0, 0); /* White text for header */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey for even rows */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 60%; 
+    margin: 0 auto 20px; /* Center the container and add margin */
+}
+
+
+/* End of table components */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #f8f8ff;
+    margin: 10% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+    border-radius: 5px;
+}
+
+.close {
+    color: #000000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #61396f;
+    cursor: pointer;
+}
+
+.btn-add {
+    background-color: #2D9C35;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-save {
+    background-color: #61396f;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.account-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.account-table th, .account-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.account-table th {
+    background-color: #61396f;
+    color: #fff;
+}
+
+.btn-view {
+    background-color: #d1a35a;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.submit-btn {
+    color: #d1a35a;
+    
+}
