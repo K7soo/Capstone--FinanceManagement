@@ -74,12 +74,20 @@ h1 {
 }
 
 /* chart of accounts table */
-table {
-    width: 90%; /* Set width to ensure it fits nicely */
-    margin: 20px auto; /* Center the table */
-    border-collapse: collapse; /* Collapse borders */
+
+.table-container {
+    display: flex;
+    justify-content: center; /* Center the table */
+    overflow-x: auto; /* Enable horizontal scrolling when needed */
+    width: 100%; /* Ensure it takes the full width of the screen */
+    padding: 20px; /* Add padding for aesthetics */
 }
 
+table {
+    width: auto; /* Adjust width automatically based on content */
+    border-collapse: collapse; 
+    margin: auto; /* Center the table inside the container */
+}
 
 th, td {
     padding: 12px; /* Add padding for better spacing */
