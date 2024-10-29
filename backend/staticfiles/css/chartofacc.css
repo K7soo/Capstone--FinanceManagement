@@ -74,6 +74,7 @@ h1 {
 }
 
 /* chart of accounts table */
+
 .table-container {
     display: flex;
     justify-content: center; /* Center the table */
@@ -88,13 +89,10 @@ table {
     margin: auto; /* Center the table inside the container */
 }
 
-
-
 th, td {
     padding: 12px; /* Add padding for better spacing */
     text-align: left; /* Align text to the left */
     border-bottom: 1px solid #ddd; /* Light grey border */
-    white-space: nowrap; /* Prevent text from wrapping */
 }
 
 th {

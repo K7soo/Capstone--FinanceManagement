@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class TRTemplateDetails(models.Model):
     TRTemplate = models.ForeignKey('TRTemplate', on_delete=models.CASCADE)
     DC_Flag = models.BooleanField()
