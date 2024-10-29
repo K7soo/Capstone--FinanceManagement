@@ -150,8 +150,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [ 
-    BASE_DIR / 'backend/api/static',  # adjust path as needed
-]
+    os.path.join(BASE_DIR, 'api', 'static'),]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 

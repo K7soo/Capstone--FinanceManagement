@@ -32,16 +32,7 @@ h1 {
     display: inline-block;
 }
 
-.dropdown-btn {
-    background-color: #61396f; /* Violet color */
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+
 
 .dropdown-btn:hover {
     background-color: #4b2d52; /* Darker violet */
