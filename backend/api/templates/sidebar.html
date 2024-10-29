@@ -9,9 +9,11 @@
         <a class="active" href="{% url 'dashboard' %}">
             <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
         </a>
+        
         <a class="active" href="{% url 'trinbox' %}">
             <i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span>
         </a>
+
         <button class="dropdown-btn">
             <i class="fa fa-fw fa-book"></i> <span>Bookkeeping</span> 
             <i class="fa fa-caret-down "></i> 
@@ -22,10 +24,12 @@
             <a href="{% url 'journalentries' %}"><i class="fa fa-fw fa-book"></i><span>Journal Entries</span></a>
             <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-book"></i><span>Trial Balance</span></a>
         </div>
-        <a href="#reports">
+
+        <a class="active" href="{% url 'reports' %}">
             <i class="fa fa-fw fa-file"></i> <span>Reports</span>
         </a>
-        <a href="#payment">
+
+        <a class="active" href="{% url 'payment' %}">
             <i class="fa fa-fw fa-money"></i> <span>Payment</span>
         </a>
         <!-- Sidebar footer for logo and version -->
