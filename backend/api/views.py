@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework import viewsets
 from .models import *
 from .serializers import *
+from .views_charts import *
 
 # Main Page Rendering
 def sidebar_view(request):
@@ -18,7 +19,43 @@ def bookkeeping_view(request):
 
 # Dropdown Button Components
 def chart_of_accounts_view(request):
-    return render(request, 'chartofacc.html')
+    # READ METHOD
+    if request.method == 'GET':
+        my_data = ChartOfAccs.objects.all().values()
+        context = {
+            'my_data': my_data
+        }
+        return render(request, 'chartofacc.html', context)
+
+    # FULL UPDATE METHOD
+    if request.method == 'PUT':
+        updated_account, error_response = update_chart_of_accounts(request)
+        if error_response:
+            return error_response  
+        
+        context = {'account': updated_account}
+        return render(request, 'update_success.html', context)
+
+    # PARTIAL UPDATE METHOD
+    if request.method == 'PATCH':
+        updated_account, error_response = patch_chart_of_accounts(request)
+        if error_response:
+            return error_response
+
+        context = {'account': updated_account}
+        return render(request, 'update_success.html', context)
+
+    # CREATE METHOD (POST)
+    if request.method == 'POST':
+        new_account, error_response = create_chart_of_accounts(request)
+        if error_response:
+            return error_response
+
+        context = {'account': new_account}
+        return render(request, 'create_success.html', context)
+
+    return JsonResponse({'status': 'invalid_request'}, status=400)
+
 
 def journal_templates_view(request):
     return render(request, 'journaltemp.html')
@@ -38,46 +75,6 @@ def payment_view(request):
 
 def reports_view(request):
     return render(request, 'reports.html')
-
-class TRTemplateDetailsViewSet(viewsets.ModelViewSet):
-    queryset = TRTemplateDetails.objects.all()
-    serializer_class = TRTemplateDetailsSerializer
-
-class TransactionDetailsViewSet(viewsets.ModelViewSet):
-    queryset = TransactionDetails.objects.all()
-    serializer_class = TransactionDetailsSerializer
-
-class TransactionsViewSet(viewsets.ModelViewSet):
-    queryset = Transactions.objects.all()
-    serializer_class = TransactionsSerializer
-
-class TRTemplateViewSet(viewsets.ModelViewSet):
-    queryset = TRTemplate.objects.all()
-    serializer_class = TRTemplateSerializer
-
-class TransactionTypeViewSet(viewsets.ModelViewSet):
-    queryset = TransactionType.objects.all()
-    serializer_class = TransactionTypeSerializer
-
-class ChartOfAccsViewSet(viewsets.ModelViewSet):
-    queryset = ChartOfAccs.objects.all()
-    serializer_class = ChartOfAccsSerializer
-
-class AccountTypeViewSet(viewsets.ModelViewSet):
-    queryset = AccountType.objects.all()
-    serializer_class = AccountTypeSerializer
-
-class DiscountsViewSet(viewsets.ModelViewSet):
-    queryset = Discounts.objects.all()
-    serializer_class = DiscountsSerializer
-
-class PaymentsViewSet(viewsets.ModelViewSet):
-    queryset = Payments.objects.all()
-    serializer_class = PaymentsSerializer
-
-class PaymentGatewayViewSet(viewsets.ModelViewSet):
-    queryset = PaymentGateway.objects.all()
-    serializer_class = PaymentGatewaySerializer
 
 # User-Auth View
 class CreateUserView(generics.CreateAPIView):
