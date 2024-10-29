@@ -6,15 +6,21 @@ from rest_framework import viewsets
 from .models import *
 from .serializers import *
 
-# Main Page Rendering
-def sidebar_view(request):
-    return render(request, 'sidebar.html')
-
+# dashboard view
 def dashboard_view(request):
     return render(request, 'dashboard.html')
 
+# sidebar view 
+def sidebar_view(request):
+    return render(request, 'sidebar.html')
+
+#bookkeeping sidebar button
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
+
+#transaction inbox sidebar button
+def transaction_inbox_view(request):
+    return render(request, 'trinbox.html')
 
 # Dropdown Button Components
 def chart_of_accounts_view(request):

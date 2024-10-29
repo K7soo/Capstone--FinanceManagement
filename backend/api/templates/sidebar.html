@@ -6,8 +6,11 @@
                 <i class="fa fa-bars"></i>
             </button>
         </div>
-        <a class="active" href="#home">
+        <a class="active" href="{% url 'dashboard' %}">
             <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
+        </a>
+        <a class="active" href="{% url 'trinbox' %}">
+            <i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span>
         </a>
         <button class="dropdown-btn">
             <i class="fa fa-fw fa-book"></i> <span>Bookkeeping</span> 

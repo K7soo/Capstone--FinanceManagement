@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+
 {% block title %}
-Chart of Accounts
+Menu Bar
 {% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/menubar.css' %}">
+{% endblock %}
+<div class="menu-bar">
+    <h1>Hello</h1>
+</div>
 
 {% block content %}

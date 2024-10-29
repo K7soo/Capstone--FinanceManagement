@@ -1,0 +1,12 @@
+/* styles.css */
+
+/* Ensure the main content has proper styling */
+.main-content {
+    margin-left: 250px; /* Default margin for expanded sidebar */
+    padding: 20px;
+    transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+.sidebar.collapsed + .main-content {
+    margin-left: 60px; /* Adjust margin for collapsed sidebar */
+}
