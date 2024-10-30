@@ -46,8 +46,8 @@ class ChartOfAccs(models.Model):
     Created_At = models.DateField(auto_now_add=True)
 
 class AccountType(models.Model):
-    AccountName = models.CharField(max_length=100)
-    AccountType = models.CharField(max_length=50)
+    AccountName = models.CharField(max_length=50)
+    AccountTypeDesc = models.TextField(blank=True, default="No Description")
     Created_At = models.DateField(auto_now_add=True)
 
 class Discounts(models.Model):

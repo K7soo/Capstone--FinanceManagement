@@ -27,6 +27,9 @@ def transaction_inbox_view(request):
     return render(request, 'trinbox.html')
 
 # Dropdown Button Components
+def crud_accounts_view(request):
+    return render(request, 'crudacc.html')
+
 def chart_of_accounts_view(request):
     return render(request, 'chartofacc.html')
 
@@ -39,8 +42,6 @@ def journal_entries_view(request):
 def trial_balance_view(request):
     return render(request, 'trialbalance.html')
 # End of dropdown 
-
-
 
 def payment_view(request):
     return render(request, 'payment.html')
