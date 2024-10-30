@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -6,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import *
 from .serializers import *
 from .views_charts import *
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+
+# from django.http import HttpResponse
 
 # dashboard view
 def dashboard_view(request):
@@ -92,11 +93,11 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 # Temporary Function to create account type
-class AddAccountTypeView(generics.CreateAPIView):
-    def get(self, request):
-        # Check if 'Liability' already exists to avoid duplicates
-        if not AccountType.objects.filter(name="Liability").exists():
-            AccountType.objects.create(name="Liability")
-            return HttpResponse("Successfully added AccountType: Liability")
-        return HttpResponse("AccountType 'Liability' already exists")
+# class AddAccountTypeView(generics.CreateAPIView):
+#     def get(self, request):
+#         # Check if 'Liability' already exists to avoid duplicates
+#         if not AccountType.objects.filter(name="Liability").exists():
+#             AccountType.objects.create(name="Liability")
+#             return HttpResponse("Successfully added AccountType: Liability")
+#         return HttpResponse("AccountType 'Liability' already exists")
 

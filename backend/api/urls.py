@@ -20,7 +20,7 @@ urlpatterns = [
     path('reports/', views.reports_view, name='reports'),
 
     # temp url
-    path('add-account-type/', AddAccountTypeView.as_view(), name='add_account_type'),
+    # path('addaccounttype/', AddAccountTypeView.as_view(), name='addaccounttype'),
     
     # path('transactioninbox/', views.transactioninbox_view, name='transactioninbox'),
     # path('login/', views.login_view, name='login'),
