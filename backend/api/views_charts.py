@@ -7,10 +7,10 @@ def get_chart_of_accounts_data(request, require_all_fields = False):
     try:
         data = json.loads(request.body)
         account_data = {
-            'account_code': data.get('accountCode'),
-            'account_desc': data.get('accountDesc'),
-            'nature_flag': data.get('natureFlag'),
-            'account_type': data.get('accountType'),
+            'account_code': data.get('AccountCode'),
+            'account_desc': data.get('AccountDesc'),
+            'nature_flag': data.get('NatureFlag'),
+            'account_type': data.get('AccountType'),
         }
 
         if require_all_fields and not all(account_data.values()):

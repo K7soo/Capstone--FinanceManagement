@@ -29,17 +29,17 @@ addAccountForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent the form from refreshing the page
 
     // Get the values from the form inputs
-    const accountCode = document.getElementById('accountCode').value;
-    const accountDesc = document.getElementById('accountDesc').value;
-    const natureFlag = document.getElementById('natureFlag').value;
-    const accountType = document.getElementById('accountType').value;
+    const AccountCode = document.getElementById('AccountCode').value;
+    const AccountDesc = document.getElementById('AccountDesc').value;
+    const NatureFlag = document.getElementById('NatureFlag').value;
+    const AccountType = document.getElementById('AccountType').value;
 
     // Prepare data to be sent in the POST request
     const accountData = {
-        accountCode: accountCode,
-        accountDesc: accountDesc,
-        natureFlag: natureFlag,
-        accountType: accountType
+        AccountCode: AccountCode,
+        AccountDesc: AccountDesc,
+        NatureFlag: NatureFlag,
+        AccountType: AccountType
     };
 
     // Send the POST request to the Django backend
@@ -62,14 +62,15 @@ addAccountForm.addEventListener('submit', (event) => {
             // If the backend responds with success, add the account to the table
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td>${accountCode}</td>
-                <td>${accountDesc}</td>
-                <td>${natureFlag}</td>
-                <td>${accountType}</td>
-                <td><button class="view-btn" onclick="viewAccount('${accountCode}', 
-                '${accountDesc}', 
-                '${natureFlag}', 
-                '${accountType}')">View</button></td>`;
+                <td>${AccountCode}</td>
+                <td>${AccountDesc}</td>
+                <td>${NatureFlag}</td>
+                <td>${AccountType}</td>
+                <td><button class="view-btn" onclick="viewAccount(
+                '${AccountCode}', 
+                '${AccountDesc}', 
+                '${NatureFlag}', 
+                '${AccountType}')">View</button></td>`;
             tableBody.appendChild(newRow);
 
             // Clear the form inputs
@@ -77,7 +78,7 @@ addAccountForm.addEventListener('submit', (event) => {
 
             // Close the modal
             modal.style.display = 'none';
-        } else {
+        } else { 
             // Log the error message received from the backend
             console.error('Error Response:', data);
             alert('Error adding account: ' + (data.message || 'Unknown error'));
@@ -92,5 +93,8 @@ addAccountForm.addEventListener('submit', (event) => {
 
 // Function to handle the "View" button click
 function viewAccount(code, desc, natureFlag, accountType) {
-    alert(`Account Code: ${code}\nDescription: ${desc}\nNature Flag: ${natureFlag}\nAccount Type: ${accountType}`);
+    alert(`Account Code: ${code}\n
+        Description: ${desc}\n
+        Nature Flag: ${natureFlag}\n
+        Account Type: ${accountType}`);
 }
