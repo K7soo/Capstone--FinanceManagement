@@ -50,19 +50,26 @@ addAccountForm.addEventListener('submit', (event) => {
         },
         body: JSON.stringify(accountData)
     })
-    .then(response => response.json())
+    .then(response => {
+        // Log the entire response for debugging
+        console.log("Raw Response:", response);
+        return response.json(); // Parse JSON body from response
+    })
     .then(data => {
+        console.log("Parsed JSON Response:", data); // Log the JSON data for troubleshooting
+
         if (data.status === 'success') {
             // If the backend responds with success, add the account to the table
-
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td>${accountCode}</td>
                 <td>${accountDesc}</td>
                 <td>${natureFlag}</td>
                 <td>${accountType}</td>
-                <td><button class="view-btn" onclick="viewAccount('${accountCode}', '${accountDesc}', '${natureFlag}', '${accountType}')">View</button></td>
-            `;
+                <td><button class="view-btn" onclick="viewAccount('${accountCode}', 
+                '${accountDesc}', 
+                '${natureFlag}', 
+                '${accountType}')">View</button></td>`;
             tableBody.appendChild(newRow);
 
             // Clear the form inputs
@@ -71,12 +78,15 @@ addAccountForm.addEventListener('submit', (event) => {
             // Close the modal
             modal.style.display = 'none';
         } else {
-            alert('Error adding account: ' + data.message);
+            // Log the error message received from the backend
+            console.error('Error Response:', data);
+            alert('Error adding account: ' + (data.message || 'Unknown error'));
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while adding the account.');
+        // Log any network or parsing errors
+        console.error('Network/Parsing Error:', error);
+        alert('An error occurred while adding the account. Check the console for more details.');
     });
 });
 
