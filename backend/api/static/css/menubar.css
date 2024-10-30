@@ -1,11 +1,14 @@
-/* Sidebar css so that it don't overlap on sidebar */
-.sidebar-wrapper {
+.menubar-wrapper {
     position: fixed;
-    top: 50px; 
+    top: 0;
     left: 0;
-    width: 250px; 
-    height: calc(100% - 50px); 
-    background-color: #cccccc;
-    border-right: 1px solid #ddd;
-    z-index: 1; 
+    width: 100%;
+    height: 50px; /* Adjust this height as needed */
+    background-color: #1d0909; /* Example background color */
+    display: flex;
+    align-items: center;
+    z-index: 0; /* Lower z-index to stay behind the sidebar */
+    color: white;
 }
+
+
