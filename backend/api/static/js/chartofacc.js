@@ -34,24 +34,50 @@ addAccountForm.addEventListener('submit', (event) => {
     const natureFlag = document.getElementById('natureFlag').value;
     const accountType = document.getElementById('accountType').value;
 
-    // Create a new row and cells for the table
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-        <td>${accountCode}</td>
-        <td>${accountDesc}</td>
-        <td>${natureFlag}</td>
-        <td>${accountType}</td>
-        <td><button class="view-btn" onclick="viewAccount('${accountCode}', '${accountDesc}', '${natureFlag}', '${accountType}')">View</button></td>
-    `;
+    // Prepare data to be sent in the POST request
+    const accountData = {
+        accountCode: accountCode,
+        accountDesc: accountDesc,
+        natureFlag: natureFlag,
+        accountType: accountType
+    };
 
-    // Append the new row to the table body
-    tableBody.appendChild(newRow);
+    // Send the POST request to the Django backend
+    fetch('/chartofaccs/', {  // Adjust the URL based on your Django setup
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(accountData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // If the backend responds with success, add the account to the table
 
-    // Clear the form inputs
-    addAccountForm.reset();
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${accountCode}</td>
+                <td>${accountDesc}</td>
+                <td>${natureFlag}</td>
+                <td>${accountType}</td>
+                <td><button class="view-btn" onclick="viewAccount('${accountCode}', '${accountDesc}', '${natureFlag}', '${accountType}')">View</button></td>
+            `;
+            tableBody.appendChild(newRow);
 
-    // Close the modal
-    modal.style.display = 'none';
+            // Clear the form inputs
+            addAccountForm.reset();
+
+            // Close the modal
+            modal.style.display = 'none';
+        } else {
+            alert('Error adding account: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while adding the account.');
+    });
 });
 
 // Function to handle the "View" button click

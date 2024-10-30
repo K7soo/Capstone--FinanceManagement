@@ -85,6 +85,7 @@ def create_chart_of_accounts(request):
             nature_flag = account_data['nature_flag'],
             account_type = account_data['account_type']
         )
+        chartofaccs.save()
         return JsonResponse({'status': 'success', 'data': {'id': chartofaccs.id}})
     
     except Exception as e:
