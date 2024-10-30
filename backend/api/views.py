@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import *
 from .serializers import *
 from .views_charts import *
+from django.views.decorators.csrf import csrf_exempt
 
 # dashboard view
 def dashboard_view(request):
@@ -24,6 +25,7 @@ def transaction_inbox_view(request):
     return render(request, 'trinbox.html')
 
 # Dropdown Button Components
+@csrf_exempt
 def chart_of_accounts_view(request):
     # READ METHOD
     if request.method == 'GET':
