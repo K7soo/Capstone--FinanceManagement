@@ -1,8 +1,11 @@
-.menu-bar {
-    position:fixed;
-    top: 0px;
-    left: 0px;
-    border-radius: 1;
-    width: 100;
-    z-index: 1  ;
+/* Sidebar css so that it don't overlap on sidebar */
+.sidebar-wrapper {
+    position: fixed;
+    top: 50px; 
+    left: 0;
+    width: 250px; 
+    height: calc(100% - 50px); 
+    background-color: #cccccc;
+    border-right: 1px solid #ddd;
+    z-index: 1; 
 }
