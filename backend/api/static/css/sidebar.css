@@ -58,15 +58,16 @@
     background-color: #ffffff;
 }
 
+/* finance management text */
 .sidebar-header h2 {
-    font-size: 16px;
+    font-size: 14px;
     margin: 0;
     padding: -1px 0px 0px 0px;
 }
 /* hamburger button */
 .menu-btn{
     background-color:white;
-    margin-left: 6px;
+    margin-left: 10px;
     border: none;
     outline: none;
 }
@@ -100,6 +101,7 @@ a,
     box-sizing: border-box; /* Ensure padding and border are included in total width */
 }
 
+/* Hovering dropdownbutton */
 a:hover,
 .dropdown-btn:hover {
     background-color: #61396f; /* Violet color */
