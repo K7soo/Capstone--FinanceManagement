@@ -15,10 +15,10 @@
 
 </head>
 <body>
-        <!-- Include the reusable menubar -->
-        <div class="menubar-wrapper">
-            {% include 'menubar.html' %}
-        </div>
+    <!-- Include the reusable menubar -->
+    <div class="menubar-wrapper">
+        {% include 'menubar.html' %}
+    </div>
     <!-- Include the reusable sidebar -->
     <div class="sidebar-wrapper">
         {% include 'sidebar.html' %}
@@ -34,6 +34,7 @@
     </div>
 
     <script src="{% static 'js/sidebar.js' %}"></script>  <!-- Link to your sidebar JavaScript if necessary -->
+    <script src="{% static 'js/menubar.js' %}"></script>  <!-- Link to your sidebar JavaScript if necessary -->
 
     {% block extra_js %}{% endblock %}
 </body>
