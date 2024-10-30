@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Chart of Accounts
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/crudacc.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Chart of Accounts</h1>
+<div class="button-container">
+    <button class="add-account-btn">ADD ACCOUNT TYPE</button>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Account Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Example Data; this will be dynamically filled -->
+        <tr>
+            <td>Asset</td>
+            <td>Includes assets of the company, such as Cash, Receivables, etc.</td>
+            <td>
+                <button class="btn-edit">Edit</button>
+                <button class="btn-view">View</button>
+                <button class="btn-delete">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Add Account Modal -->
+<!-- <div id="addAccountModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Add New Account</h2>
+        <form id="addAccountForm">
+            <label for="accountCode">Account Code:</label>
+            <input type="text" id="accountCode" name="accountCode" required><br><br>
+
+            <label for="accountDesc">Account Description:</label>
+            <input type="text" id="accountDesc" name="accountDesc" required><br><br>
+
+            <label for="natureFlag">Nature Flag (D/C):</label>
+            <select id="natureFlag" name="natureFlag" required>
+                <option value="Debit">Debit</option>
+                <option value="Credit">Credit</option>
+            </select><br><br>
+
+            <label for="accountType">Account Type:</label>
+            <select id="accountType" name="accountType" required>
+                <option value="Asset">Asset</option>
+                <option value="Expense">Expense</option>
+            </select><br><br>
+
+            <button type="submit" class="submit-btn">Add Account</button>
+        </form>
+    </div>
+</div> -->
+{% endblock %}
+
+
+{% block extra_js %}
+    <script src="{% static 'js/crudacc.js' %}"></script>
+{% endblock %}
