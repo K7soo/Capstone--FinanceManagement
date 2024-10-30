@@ -14,7 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
-import dj_database_url
+# import dj_database_url
 
 load_dotenv()
 
@@ -25,12 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
-# 'django-insecure-v7v#(i^h&inmhh=co@_nd#knjr2$zd29s!0(22qla=+#wyp3=@'
+# SECRET_KEY = os.environ.get("SECRET_KEY")
+
+SECRET_KEY = 'django-insecure-v7v#(i^h&inmhh=co@_nd#knjr2$zd29s!0(22qla=+#wyp3=@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+# DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+DEBUG = "true"
+# ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = ["*"]
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -113,8 +116,8 @@ DATABASES = {
 }
 
 
-database_url = os.environ.get("DATABASE_URL")
-DATABASES["default"] = dj_database_url.parse(database_url)
+# database_url = os.environ.get("DATABASE_URL")
+# DATABASES["default"] = dj_database_url.parse(database_url)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
