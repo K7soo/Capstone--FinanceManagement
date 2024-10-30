@@ -17,6 +17,9 @@ urlpatterns = [
     
     path('payment/', views.payment_view, name='payment'),
     path('reports/', views.reports_view, name='reports'),
+
+    # temp url
+    path('add-account-type/', views.add_account_type),
     
     # path('transactioninbox/', views.transactioninbox_view, name='transactioninbox'),
     # path('login/', views.login_view, name='login'),

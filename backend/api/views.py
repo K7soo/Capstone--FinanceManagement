@@ -7,6 +7,7 @@ from .models import *
 from .serializers import *
 from .views_charts import *
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 # dashboard view
 def dashboard_view(request):
@@ -23,6 +24,12 @@ def bookkeeping_view(request):
 #transaction inbox sidebar button
 def transaction_inbox_view(request):
     return render(request, 'trinbox.html')
+
+def add_account_type(request):
+    if not AccountType.objects.filter(name="Liability").exists():
+        AccountType.objects.create(name="Liability")
+        return HttpResponse("Successfully added AccountType: Liability")
+    return HttpResponse("AccountType 'Liability' already exists")
 
 # Dropdown Button Components
 @csrf_exempt
