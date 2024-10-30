@@ -14,6 +14,10 @@ def dashboard_view(request):
 def sidebar_view(request):
     return render(request, 'sidebar.html')
 
+# menubar view
+def menubar_view(request):
+    return render(request, 'menubar.html')
+
 #bookkeeping sidebar button
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
@@ -36,8 +40,7 @@ def trial_balance_view(request):
     return render(request, 'trialbalance.html')
 # End of dropdown 
 
-def menubar_view(request):
-    return render(request, 'menubar.html')
+
 
 def payment_view(request):
     return render(request, 'payment.html')

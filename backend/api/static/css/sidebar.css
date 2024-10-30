@@ -90,6 +90,7 @@ a.active,
 .dropdown-btn.active {
     background-color: none; /* Remove violet background from active state */
     color: inherit; /* Inherit default color */
+    padding: 20px 20px 20px 20px;
 }
 
 a i,
