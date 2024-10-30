@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from views import AddAccountTypeView
 
 urlpatterns = [
     path('', views.dashboard_view, name='home'),
@@ -19,7 +20,7 @@ urlpatterns = [
     path('reports/', views.reports_view, name='reports'),
 
     # temp url
-    path('add-account-type/', views.add_account_type),
+    path('add-account-type/', AddAccountTypeView.as_view(), name='add_account_type'),
     
     # path('transactioninbox/', views.transactioninbox_view, name='transactioninbox'),
     # path('login/', views.login_view, name='login'),

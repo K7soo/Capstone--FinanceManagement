@@ -25,12 +25,6 @@ def bookkeeping_view(request):
 def transaction_inbox_view(request):
     return render(request, 'trinbox.html')
 
-def add_account_type(request):
-    if not AccountType.objects.filter(name="Liability").exists():
-        AccountType.objects.create(name="Liability")
-        return HttpResponse("Successfully added AccountType: Liability")
-    return HttpResponse("AccountType 'Liability' already exists")
-
 # Dropdown Button Components
 @csrf_exempt
 def chart_of_accounts_view(request):
@@ -96,4 +90,13 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+# Temporary Function to create account type
+class AddAccountTypeView(generics.CreateAPIView):
+    def get(self, request):
+        # Check if 'Liability' already exists to avoid duplicates
+        if not AccountType.objects.filter(name="Liability").exists():
+            AccountType.objects.create(name="Liability")
+            return HttpResponse("Successfully added AccountType: Liability")
+        return HttpResponse("AccountType 'Liability' already exists")
 
