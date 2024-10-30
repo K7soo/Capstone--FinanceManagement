@@ -7,10 +7,10 @@ def get_chart_of_accounts_data(request, require_all_fields = False):
     try:
         data = json.loads(request.body)
         account_data = {
-            'account_code': data.get('AccountCode'),
-            'account_desc': data.get('AccountDesc'),
-            'nature_flag': data.get('NatureFlag'),
-            'account_type': data.get('AccountType'),
+            'AccountCode': data.get('AccountCode'),
+            'AccountDesc': data.get('AccountDesc'),
+            'NatureFlag': data.get('NatureFlag'),
+            'AccountType': data.get('AccountType'),
         }
 
         if require_all_fields and not all(account_data.values()):
@@ -33,10 +33,10 @@ def update_chart_of_accounts(request):
 
     try:
         chartofaccs = ChartOfAccs.objects.get(id=account_id)
-        chartofaccs.account_code = account_data['account_code']
-        chartofaccs.account_desc = account_data['account_desc']
-        chartofaccs.nature_flag = account_data['nature_flag']
-        chartofaccs.account_type = account_data['account_type']
+        chartofaccs.AccountCode = account_data['AccountCode']
+        chartofaccs.AccountDesc = account_data['AccountDesc']
+        chartofaccs.NatureFlag = account_data['NatureFlag']
+        chartofaccs.AccountType = account_data['AccountType']
         chartofaccs.save()
         return JsonResponse({'status': 'success', 'data': {'id': chartofaccs.id}})
 
@@ -57,14 +57,14 @@ def patch_chart_of_accounts(request):
         chartofaccs = ChartOfAccs.objects.get(id=account_id)
 
         # Only update fields that are present
-        if account_data['account_code']:
-            chartofaccs.account_code = account_data['account_code']
-        if account_data['account_desc']:
-            chartofaccs.account_desc = account_data['account_desc']
-        if account_data['nature_flag']:
-            chartofaccs.nature_flag = account_data['nature_flag']
-        if account_data['account_type']:
-            chartofaccs.account_type = account_data['account_type']
+        if account_data['AccountCode']:
+            chartofaccs.account_code = account_data['AccountCode']
+        if account_data['AccountDesc']:
+            chartofaccs.account_desc = account_data['AccountDesc']
+        if account_data['NatureFlag']:
+            chartofaccs.nature_flag = account_data['NatureFlag']
+        if account_data['AccountType']:
+            chartofaccs.account_type = account_data['AccountType']
 
         chartofaccs.save()
         return JsonResponse({'status': 'success', 'data': {'id': chartofaccs.id}})
@@ -80,10 +80,10 @@ def create_chart_of_accounts(request):
 
     try:
         chartofaccs = ChartOfAccs.objects.create(
-            account_code = account_data['account_code'],
-            account_desc = account_data['account_desc'],
-            nature_flag = account_data['nature_flag'],
-            account_type = account_data['account_type']
+            AccountCode = account_data['AccountCode'],
+            AccountDesc = account_data['AccountDesc'],
+            NatureFlag = account_data['NatureFlag'],
+            AccountType = account_data['AccountType']
         )
         return chartofaccs, None, JsonResponse({'status': 'success', 'data': {'id': chartofaccs.id}})
     
