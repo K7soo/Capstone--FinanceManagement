@@ -1,14 +1,48 @@
 .menubar-wrapper {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 50px; /* Adjust this height as needed */
-    background-color: #554c4c; /* Example background color */
+    left: 250px; /* Default to align with the sidebar width */
+    width: calc(100% - 250px); /* Adjust width based on sidebar */
+    height: 50px;
+    background-color: #554c4c;
     display: flex;
     align-items: center;
-    z-index: 0; /* Lower z-index to stay behind the sidebar */
+    z-index: 2; /* Ensure it appears above other content */
+    color: white;
+    transition: left 0.3s, width 0.3s;
+}
+
+/* Profile icon and dropdown menu */
+.menubar-list {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    gap: 20px;
+}
+
+.profile-icon {
+    position: relative;
+    cursor: pointer;
     color: white;
 }
 
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    width: 150px;
+    text-align: left;
+    z-index: 3;
+}
 
+/* Show dropdown when active */
+.profile-icon.active .profile-dropdown {
+    display: block;
+}

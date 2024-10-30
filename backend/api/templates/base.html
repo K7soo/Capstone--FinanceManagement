@@ -11,7 +11,10 @@
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <title>{% block title %}Finance Management{% endblock %}</title>
 
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    {% endblock %}
 
 </head>
 <body>
@@ -36,6 +39,8 @@
     <script src="{% static 'js/sidebar.js' %}"></script>  <!-- Link to your sidebar JavaScript if necessary -->
     <script src="{% static 'js/menubar.js' %}"></script>  <!-- Link to your sidebar JavaScript if necessary -->
 
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}
+    <script src="{% static 'js/base.js' %}"></script>
+    {% endblock %}
 </body>
 </html>

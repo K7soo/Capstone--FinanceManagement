@@ -1,0 +1,49 @@
+/* Sidebar Styling */
+.sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    transition: width 0.3s;
+}
+
+.sidebar-wrapper.collapsed {
+    width: 60px;
+}
+
+/* Menubar Styling */
+.menubar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 250px;
+    width: calc(100% - 250px);
+    height: 50px;
+    background-color: #554c4c;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
+    transition: left 0.3s, width 0.3s;
+    z-index: 1;
+}
+
+/* Adjust menubar when sidebar is collapsed */
+.sidebar-wrapper.collapsed + .menubar-wrapper {
+    left: 60px;
+    width: calc(100% - 60px);
+}
+
+/* Main Content Styling */
+.main-content {
+    margin-top: 50px;
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s;
+}
+
+/* Adjust main content when sidebar is collapsed */
+.sidebar-wrapper.collapsed + .main-content {
+    margin-left: 60px;
+}
