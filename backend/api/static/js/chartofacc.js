@@ -43,7 +43,7 @@ addAccountForm.addEventListener('submit', (event) => {
     };
 
     // Send the POST request to the Django backend
-    fetch('/chartofaccs/', {  // Adjust the URL based on your Django setup
+    fetch('/chartofacc/', {  // Adjust the URL based on your Django setup
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
