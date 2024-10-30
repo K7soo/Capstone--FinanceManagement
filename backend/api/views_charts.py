@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from .models import ChartOfAccs
+from .views import new_account
 import json
 
 # Helper function to extract and validate data
@@ -85,7 +86,7 @@ def create_chart_of_accounts(request):
             nature_flag = account_data['nature_flag'],
             account_type = account_data['account_type']
         )
-        chartofaccs.save()
+        new_account.save()
         return JsonResponse({'status': 'success', 'data': {'id': chartofaccs.id}})
     
     except Exception as e:
