@@ -108,9 +108,8 @@ tr:nth-child(even) {
 
 .button-container {
     display: flex;
-    justify-content: space-between;
     width: 60%; 
-    margin: 0 auto 20px; /* Center the container and add margin */
+    margin: 0px 0px 15px 0px; /* Center the container and add margin */
 }
 
 
@@ -212,6 +211,38 @@ tr:nth-child(even) {
     border-radius: 5px;
 }
 .submit-btn {
-    color: #d1a35a;
+    background-color: #8724ac;
+    color:#ffffff;
+    padding: 5px 10px;
+    border: none;
     
+}
+.submit-btn:hover {
+    background-color: #61396f;
+}
+
+.textbox {
+    border: #ececec;
+    padding: 10px;
+}
+.textbox-desc {
+    border: #ececec;
+    height:100%;
+    padding: 10px 10px 50px 10px;
+    text-align: left;
+    vertical-align: top;
+    overflow: scroll;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px 50px;
+    margin-bottom: 20px;
+    align-items: left;
+}
+.table-acc {
+    width: 100%;
 }
