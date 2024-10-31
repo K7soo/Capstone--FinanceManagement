@@ -12,24 +12,24 @@
 
 {% block content %}
 <h1>Chart of Accounts</h1>
+
 <div class="table-frame">
     <div class="button-container">
         <button class="add-account-btn">ADD ACCOUNT</button>
         <div class="dropdown">
             <button class="dropdown-btncoa">ASSET <i class="fa fa-caret-down"></i></button>
             <div class="dropdown-content" id="assetDropdown">
-                <a href="#">Asset 1</a>
-                <a href="#">Asset 2</a>
-                <a href="#">Asset 3</a>
+                <a href="#">Assets</a>
+                <a href="#">Liabilities</a>
+                <a href="#">Equity</a>
             </div>
         </div>
         
         <div class="dropdown">
-            <button class="dropdown-btncoa">DEBIT <i class="fa fa-caret-down"></i></button>
+            <button class="dropdown-btncoa">NATURE FLAG <i class="fa fa-caret-down"></i></button>
             <div class="dropdown-content" id="debitDropdown">
-                <a href="#">Debit 1</a>
-                <a href="#">Debit 2</a>
-                <a href="#">Debit 3</a>
+                <a href="#">Debit</a>
+                <a href="#">Credit</a>
             </div>
         </div>
     </div>
@@ -62,25 +62,26 @@
         <span class="close-btn">&times;</span>
         <h2>Add New Account</h2>
         <form id="addAccountForm">
-            <label for="accountCode">Account Code:</label>
-            <input type="text" id="accountCode" name="accountCode" required><br><br>
+            <div class="form-grid">
+                <label for="accountCode">Account Code:</label>
+                <input type="text" class="textbox" name="accountCode" required>
+                <label for="accountDesc">Account Description:</label>
+                <input type="text" class="textbox-desc" name="accountDesc" required>
 
-            <label for="accountDesc">Account Description:</label>
-            <input type="text" id="accountDesc" name="accountDesc" required><br><br>
+                <label for="natureFlag">Nature Flag (D/C):</label>
+                <select id="natureFlag" name="natureFlag" required>
+                    <option value="Debit">Debit</option>
+                    <option value="Credit">Credit</option>
+                </select>
 
-            <label for="natureFlag">Nature Flag (D/C):</label>
-            <select id="natureFlag" name="natureFlag" required>
-                <option value="Debit">Debit</option>
-                <option value="Credit">Credit</option>
-            </select><br><br>
+                <label for="accountType">Account Type:</label>
+                <select id="accountType" name="accountType" required>
+                    <option value="Asset">Asset</option>
+                    <option value="Expense">Expense</option>
+                </select><br><br>
 
-            <label for="accountType">Account Type:</label>
-            <select id="accountType" name="accountType" required>
-                <option value="Asset">Asset</option>
-                <option value="Expense">Expense</option>
-            </select><br><br>
-
-            <button type="submit" class="submit-btn">Add Account</button>
+                <button type="submit" class="submit-btn">Add Account</button>
+            </div>
         </form>
     </div>
 </div>

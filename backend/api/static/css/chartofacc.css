@@ -19,6 +19,8 @@ h1 {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
+    margin: 0px;
+    
 }
 
 
@@ -108,9 +110,9 @@ tr:nth-child(even) {
 
 .button-container {
     display: flex;
-    justify-content: space-between;
+    justify-content:baseline;
     width: 60%; 
-    margin: 0 auto 20px; /* Center the container and add margin */
+    margin: 0px 0px 12px 0px; 
 }
 
 
@@ -187,30 +189,76 @@ tr:nth-child(even) {
 }
 
 .btn-view {
-    background-color: #d1a35a;
+    background-color: #ff9900;
     color: white;
     padding: 5px 10px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    height: 40px;
+    width: 90px;
 }
 
 .submit-btn {
-    color: #d1a35a;
-    
+    background-color: #8724ac;
+    color:#ffffff;
+    padding: 10px 15px 30px 15px;
+    margin: 20px 0px 0px 0px; 
+    border: none;
+    width: 8rem;
+    border-radius: 5px;
+    height: 30px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+
 }
+.submit-btn:hover {
+    background-color: #61396f;
+}
+    
 .table-acc {
     width: 100%;
     border-collapse: collpase;
+    font-size: 14px;
+    padding: 0px 0px 0px 0px;
+
 }
 
 .table-frame{
     width:100%;
     overflow-x:auto;
     overflow-y: auto;
-    background-color: #938484;
-    padding:20px;
+    background-color: #fff;
+    padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
+    height:500px;
+}
+.textbox {
+    font-family:'Poppins', sans-serif;
+    border: #ececec;
+    padding: 10px;
+}
+.textbox-desc {
+    font-family:'Poppins', sans-serif;
+    border: #ececec;
+    height:100%;
+    width: 100%;
+    max-width: 1000%;
+    padding: 10px 10px 50px 10px;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: break-word;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px 50px;
+    margin: 10px 0px 10px 0px;     /* yung haba ng modal form*/
+    align-items: left;
+    height: auto;
 }

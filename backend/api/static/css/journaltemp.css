@@ -177,7 +177,7 @@ tr:nth-child(even) {
 }
 
 .btn-view {
-    background-color: #d1a35a;
+    background-color: #000000;
     color: white;
     padding: 5px 10px;
     border: none;
@@ -188,4 +188,24 @@ tr:nth-child(even) {
 .submit-btn {
     color: #d1a35a;
     
+}
+
+.table-acc {
+    width: 100%;
+    border-collapse: collpase;
+    font-size: 14px;
+    padding: 0px 0px 0px 0px;
+
+}
+
+.table-frame{
+    width:100%;
+    overflow-x:auto;
+    overflow-y: auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    height:500px;
 }
