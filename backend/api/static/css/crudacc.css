@@ -24,7 +24,7 @@ h1 {
 
 /* add button design */ 
 .add-account-btn:hover {
-    background-color: #61396f; /* Change to violet on hover */
+    background-color: #21d153; /* Change to violet on hover */
 }
 
 .dropdown {
@@ -184,6 +184,19 @@ tr:nth-child(even) {
     background-color: #61396f;
     color: #fff;
 }
+.btn-edit {
+    background-color: #0053ec;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 40px;
+    width: 90px;
+}
+.btn-edit:hover{
+    background-color: #2f78ff;
+}
 
 /* view button */
 .btn-view {
@@ -193,15 +206,13 @@ tr:nth-child(even) {
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    height: 40px;
+    width: 90px;
 }
-.btn-edit {
-    background-color: #0053ec;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
+.btn-view:hover{
+    background-color: #ffad32;
 }
+
 .btn-delete {
     background-color: #f30000;
     color: white;
@@ -209,29 +220,40 @@ tr:nth-child(even) {
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    height: 40px;
+    width: 90px;
 }
+.btn-delete:hover{
+    background-color: #ff3d3d;
+}
+
 .submit-btn {
     background-color: #8724ac;
     color:#ffffff;
     padding: 5px 10px;
     border: none;
-    
+    width: 6rem;
+    border-radius: 5px;
 }
 .submit-btn:hover {
     background-color: #61396f;
 }
 
 .textbox {
+    font-family:'Poppins', sans-serif;
     border: #ececec;
     padding: 10px;
 }
 .textbox-desc {
+    font-family:'Poppins', sans-serif;
     border: #ececec;
     height:100%;
+    width: 100%;
+    max-width: 1000%;
     padding: 10px 10px 50px 10px;
     text-align: left;
     vertical-align: top;
-    overflow: scroll;
+    overflow-wrap: break-word;
     resize: vertical;
     box-sizing: border-box;
 }
@@ -245,4 +267,17 @@ tr:nth-child(even) {
 }
 .table-acc {
     width: 100%;
+    border-collapse: collpase;
+
+}
+
+.table-frame{
+    width:100%;
+    overflow-x:auto;
+    overflow-y: auto;
+    background-color: #fff;
+    padding:20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }

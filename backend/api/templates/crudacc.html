@@ -12,10 +12,13 @@
 
 {% block content %}
 <h1>List of Accounts</h1>
-<div class="button-container">
-    <button class="add-account-btn">ADD ACCOUNT TYPE</button>
-</div>
 
+
+<div class="table-frame">
+
+    <div class="button-container">
+        <button class="add-account-btn">ADD ACCOUNT TYPE</button>
+    </div>
 <table class="table-acc">
     <thead>
         <tr>
@@ -30,14 +33,14 @@
             <td>Asset</td>
             <td>Includes assets of the company, such as Cash, Receivables, etc.</td>
             <td>
-                <button class="btn-edit">Edit</button>
-                <button class="btn-view">View</button>
-                <button class="btn-delete">Delete</button>
+                <button class="btn-edit">EDIT</button>
+                <button class="btn-view">VIEW</button>
+                <button class="btn-delete">DELETE</button>
             </td>
         </tr>
     </tbody>
 </table>
-
+</div>
 <!-- Add Account Modal -->
 <div id="addAccountModal" class="modal">
     <div class="modal-content">
