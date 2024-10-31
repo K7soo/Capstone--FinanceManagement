@@ -199,3 +199,18 @@ tr:nth-child(even) {
     color: #d1a35a;
     
 }
+.table-acc {
+    width: 100%;
+    border-collapse: collpase;
+}
+
+.table-frame{
+    width:100%;
+    overflow-x:auto;
+    overflow-y: auto;
+    background-color: #938484;
+    padding:20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}

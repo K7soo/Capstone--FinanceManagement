@@ -12,50 +12,50 @@
 
 {% block content %}
 <h1>Chart of Accounts</h1>
-<div class="button-container">
-    <button class="add-account-btn">ADD ACCOUNT</button>
-    
-    <div class="dropdown">
-        <button class="dropdown-btncoa">ASSET <i class="fa fa-caret-down"></i></button>
-        <div class="dropdown-content" id="assetDropdown">
-            <a href="#">Asset 1</a>
-            <a href="#">Asset 2</a>
-            <a href="#">Asset 3</a>
+<div class="table-frame">
+    <div class="button-container">
+        <button class="add-account-btn">ADD ACCOUNT</button>
+        <div class="dropdown">
+            <button class="dropdown-btncoa">ASSET <i class="fa fa-caret-down"></i></button>
+            <div class="dropdown-content" id="assetDropdown">
+                <a href="#">Asset 1</a>
+                <a href="#">Asset 2</a>
+                <a href="#">Asset 3</a>
+            </div>
+        </div>
+        
+        <div class="dropdown">
+            <button class="dropdown-btncoa">DEBIT <i class="fa fa-caret-down"></i></button>
+            <div class="dropdown-content" id="debitDropdown">
+                <a href="#">Debit 1</a>
+                <a href="#">Debit 2</a>
+                <a href="#">Debit 3</a>
+            </div>
         </div>
     </div>
-    
-    <div class="dropdown">
-        <button class="dropdown-btncoa">DEBIT <i class="fa fa-caret-down"></i></button>
-        <div class="dropdown-content" id="debitDropdown">
-            <a href="#">Debit 1</a>
-            <a href="#">Debit 2</a>
-            <a href="#">Debit 3</a>
-        </div>
-    </div>
+
+    <table class="table-acc">
+        <thead>
+            <tr>
+                <th>Account Code</th>
+                <th>Account Description</th>
+                <th>Nature Flag</th>
+                <th>Account Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example Data; this will be dynamically filled -->
+            <tr>
+                <td>111XXX</td>
+                <td>Cash</td>
+                <td>Debit</td>
+                <td>Asset</td>
+                <td><button class="btn-view">View</button></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
-
-<table>
-    <thead>
-        <tr>
-            <th>Account Code</th>
-            <th>Account Description</th>
-            <th>Nature Flag</th>
-            <th>Account Type</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Example Data; this will be dynamically filled -->
-        <tr>
-            <td>111XXX</td>
-            <td>Cash</td>
-            <td>Debit</td>
-            <td>Asset</td>
-            <td><button class="btn-view">View</button></td>
-        </tr>
-    </tbody>
-</table>
-
 <!-- Add Account Modal -->
 <div id="addAccountModal" class="modal">
     <div class="modal-content">
