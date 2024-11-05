@@ -32,6 +32,7 @@ class ChartOfAccsSerializer(serializers.ModelSerializer):
         model = ChartOfAccs
         fields = '__all__'
 
+# Account Serializer
 class AccountTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountType
