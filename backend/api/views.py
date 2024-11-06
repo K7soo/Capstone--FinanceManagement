@@ -28,7 +28,6 @@ def transaction_inbox_view(request):
 
 
 # Dropdown Button Components
-
 # CRUD Accounts
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
@@ -44,6 +43,7 @@ def crud_accounts_view(request):
             serializer.save()
             return render(request, 'crudacc.html', serializer.data) 
 
+# CRUD Chart of Accounts
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def chart_of_accounts_view(request):
@@ -52,10 +52,12 @@ def chart_of_accounts_view(request):
         serializer = ChartOfAccsSerializer(ChartOfAccounts, many=True)
         return render(request, 'chartofacc.html', {'ChartOfAccounts': serializer.data})
     
+    if request.method == "POST":
+        serializer = ChartOfAccsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return render(request, 'chartofacc.html', serializer.data)
 
-
-
-    return render(request, 'chartofacc.html')
 
 def journal_templates_view(request):
     return render(request, 'journaltemp.html')

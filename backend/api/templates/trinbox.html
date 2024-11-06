@@ -20,13 +20,10 @@ Transaction Inbox
             <div class="filter-left">
                 <!-- Transaction Type Filter -->
                 <label for="transaction-type" class="filter-label"
-                    >Transaction Type:</label
-                >
+                    >Transaction Type:
+                </label>
                 <select
-                    id="transaction-type"
-                    name="transaction-type"
-                    class="filter-select"
-                >
+                    id="transaction-type" name="transaction-type" class="filter-select">
                     <option value="all">All</option>
                     <option value="type1">Type 1</option>
                     <option value="type2">Type 2</option>
@@ -67,11 +64,10 @@ Transaction Inbox
                 <th>REF NUMBER</th>
                 <th>DATE</th>
                 <th>PARTICULARS</th>
-                <th>AMOUNT</th>
-                <th>FUND</th>
+                <th>PREPARED BY</th>
                 <th>REMARKS</th>
                 <th>TEMPLATE CODE</th>
-                <th>JEV</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -80,11 +76,16 @@ Transaction Inbox
                 <td>12345</td>
                 <td>10-01-2024</td>
                 <td>Example Particulars</td>
-                <td>$1000</td>
-                <td>General Fund</td>
+                <td>Maui Lopez</td>
                 <td>No remarks</td>
                 <td>EX123</td>
-                <td><button class="jev-btn">JEV</button></td>
+                <td>
+                    <div class="btn-list">
+                        <button class="btn-edit">Edit JEV</button>
+                        <button class="btn-view">View</button>
+                        <button class="btn-external">Notes/Remarks</button>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>

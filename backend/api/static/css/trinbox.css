@@ -112,6 +112,46 @@ tr:nth-child(even) {
     background-color: #b5944a;
 }
 
+/* Button List Format */
+.btn-list {
+    flex-direction: column;
+    display: flex;
+    gap: 5px;
+}
+
+.btn-view {
+    background-color: #ff9900;
+    color: white;
+    padding: 10px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 120px;
+}
+
+.btn-edit {
+    background-color: #ff9900;
+    color: white;
+    padding: 10px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 120px;
+}
+
+.btn-external {
+    background-color: #ff9900;
+    color: white;
+    padding: 10px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 120px;
+}
+
 /* Modal styles */
 .modal {
     display: none;
