@@ -168,6 +168,15 @@ function editAccount(accountName, accountTypeDesc, button) {
         modal.style.display = 'none';
 
         // Restore the default form submission behavior
-        addAccountForm.onsubmit = null;  // Reset to default submission behavior
+        addAccountForm.onsubmit = addNewAccount;
     };
 }
+
+// Set default form submission back to adding a new account
+function addNewAccount(event) {
+    event.preventDefault();
+    addAccountForm.dispatchEvent(new Event('submit'));
+}
+
+// Initial setup to bind form submission for adding new accounts
+addAccountForm.onsubmit = addNewAccount;

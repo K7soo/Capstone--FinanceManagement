@@ -13,7 +13,7 @@ List of Accounts
 {% block content %}
 <h1>List of Accounts</h1>
 
-<div class="grid-container">
+<!-- <div class="grid-container"> -->
     <div class="table-frame">
         <div class="button-container">
             <button class="add-account-btn">ADD ACCOUNT TYPE</button>
@@ -37,11 +37,22 @@ List of Accounts
                         <button class="btn-delete">DELETE</button>
                     </td>
                 </tr>
+                {% for account in accounts %}
+                <tr>
+                    <td>{{ account.AccountName }}</td>
+                    <td>{{ account.AccountTypeDesc }}</td>
+                    <td>
+                        <button class="btn-edit">EDIT</button>
+                        <button class="btn-view">VIEW</button>
+                        <button class="btn-delete">DELETE</button>
+                    </td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <div class="table-frame">
+    <!-- <div class="table-frame">
         <div class="button-container">
             <button class="add-account-btn">ADD ACCOUNT TYPE</button>
         </div>
@@ -54,7 +65,7 @@ List of Accounts
                 </tr>
             </thead>
             <tbody>
-                <!-- Example Data; this will be dynamically filled -->
+                <!-Example Data; this will be dynamically filled ->
                 <tr>
                     <td>Asset</td>
                     <td>Includes assets of the company, such as Cash, Receivables, etc.</td>
@@ -66,7 +77,7 @@ List of Accounts
                 </tr>
             </tbody>
         </table>
-    </div>
+    </div> -->
     <!-- Add Account Modal -->
     <div id="addAccountModal" class="modal">
         <div class="modal-content">
@@ -74,12 +85,13 @@ List of Accounts
             <h2>Add New Account</h2>
             <form id="addAccountForm">
                 <div class="form-grid">
-
                     <label for="AccountName">Account Name:</label>
-                    <input type="text" class="textbox" name="AccountName" required>
+                    <input type="text" id="AccountName" class="textbox" name="AccountName" required>
+    
                     <label for="AccountTypeDesc">Account Description:</label>
-                    <input type="text" class="textbox-desc" name="AccountTypeDesc" required>
+                    <input type="text" id="AccountTypeDesc" class="textbox-desc" name="AccountTypeDesc" required>
 
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                 </div>
                 <button type="submit" class="submit-btn">Add Account</button>
             </form>
@@ -90,5 +102,6 @@ List of Accounts
 
 
     {% block extra_js %}
-    <script src="{% static 'js/crudacc.js' %}"></script>
+    <script src="{% static 'js/crudacc.js' %}">
+    </script>
     {% endblock %}

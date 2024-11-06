@@ -1,10 +1,13 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
 from .models import *
 from .serializers import *
+from django.views.decorators.csrf import csrf_exempt
 
 # dashboard view
 def dashboard_view(request):
@@ -31,19 +34,55 @@ def jev_approval_view(request):
 
 # Dropdown Button Components
 # CRUD Accounts
+# @csrf_exempt
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def crud_accounts_view(request):
     if request.method == 'GET':
-        Accounts = AccountType.objects.all()
-        serializer = AccountTypeSerializer(Accounts, many=True)
-        return render(request, 'crudacc.html', {'Accounts':serializer.data})
-    
-    if request.method == 'POST':
+        # Handle AJAX GET request
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            accounts = AccountType.objects.all()
+            serializer = AccountTypeSerializer(accounts, many=True)
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+
+        accounts = AccountType.objects.all()
+        serializer = AccountTypeSerializer(accounts, many=True)
+        return render(request, 'crudacc.html', {'Accounts': serializer.data})
+
+    if request.method == "POST":
+        print("Received POST request with data:", request.data)
         serializer = AccountTypeSerializer(data=request.data)
+    
         if serializer.is_valid():
+            print("Data is valid, saving to database.")
             serializer.save()
-            return render(request, 'crudacc.html', serializer.data) 
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    
+    print("Validation failed:", serializer.errors)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([AllowAny])
+def crud_accounts_change(request):
+    if request.method == 'GET':
+        # Handle AJAX GET request
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            accounts = AccountType.objects.all()
+            serializer = AccountTypeSerializer(accounts, many=True)
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+
+        accounts = AccountType.objects.all()
+        serializer = AccountTypeSerializer(accounts, many=True)
+        return render(request, 'crudacc.html', {'Accounts': serializer.data})
+
+    if request.method == 'PUT':
+        pass
+
+    if request.method == 'PATCH':
+        pass
+
+    if request.method == 'DELETE':
+        pass
 
 # CRUD Chart of Accounts
 @api_view(['GET', 'POST'])

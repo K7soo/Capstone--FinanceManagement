@@ -7,6 +7,7 @@ urlpatterns = [
 
     # System Setup Dropdown Buttons
     path('crudacc/', views.crud_accounts_view, name='crudacc'),
+
     path('chartofacc/', views.chart_of_accounts_view, name='chartofacc'),
     path('journaltemp/', views.journal_templates_view, name='journaltemp'),
 
