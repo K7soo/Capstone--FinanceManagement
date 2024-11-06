@@ -42,7 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
         tableBody.innerHTML = ""; // Clear existing rows to avoid duplicates
         accounts.forEach(account => {
             console.log("Adding row for account:", account);
+            
+            // Create new rows
             const newRow = document.createElement('tr');
+            newRow.setAttribute('data-id', account.id);
             newRow.innerHTML = `
                 <td>${account.AccountName}</td>
                 <td>${account.AccountTypeDesc}</td>
@@ -170,4 +173,26 @@ function editAccount(accountName, accountTypeDesc, button) {
         // Restore the default form submission behavior
         addAccountForm.onsubmit = null;  // Reset to default submission behavior
     };
+}
+
+// Function to handle the "Delete" button click
+function deleteAccount(button) {
+    const row = button.closest('tr');
+    const accountId = row.dataset.id; // Store the account ID in a data attribute in HTML
+
+    fetch(`/crudaccchange/${accountId}/`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': csrfToken,
+        },
+    })
+    .then(response => {
+        if (response.status === 204) {
+            console.log("Account successfully deleted.");
+            row.remove(); // Remove the row from the table
+        } else {
+            console.error('Failed to delete account:', response.statusText);
+        }
+    })
+    .catch(error => console.error('Error deleting account:', error));
 }

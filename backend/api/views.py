@@ -7,7 +7,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
-from django.views.decorators.csrf import csrf_exempt
+
+# from django.views.decorators.csrf import csrf_exempt (this is for testing)
 
 # dashboard view
 def dashboard_view(request):
@@ -33,8 +34,8 @@ def jev_approval_view(request):
     return render(request, 'jevapproval.html')
 
 # Dropdown Button Components
-# CRUD Accounts
-# @csrf_exempt
+
+# CRUD List of Accounts
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def crud_accounts_view(request):
@@ -63,26 +64,24 @@ def crud_accounts_view(request):
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 @permission_classes([AllowAny])
-def crud_accounts_change(request):
+def crud_accounts_change(request, pk=None):
+    # Handle AJAX GET request
     if request.method == 'GET':
-        # Handle AJAX GET request
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             accounts = AccountType.objects.all()
             serializer = AccountTypeSerializer(accounts, many=True)
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
-        accounts = AccountType.objects.all()
-        serializer = AccountTypeSerializer(accounts, many=True)
-        return render(request, 'crudacc.html', {'Accounts': serializer.data})
+    # Handle DELETE request to delete a specific account by ID
+    if request.method == 'DELETE' and pk:
+        try:
+            account = AccountType.objects.get(pk=pk)
+            account.delete()
+            return Response({'message': 'Account deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except AccountType.DoesNotExist:
+            return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'PUT':
-        pass
 
-    if request.method == 'PATCH':
-        pass
-
-    if request.method == 'DELETE':
-        pass
 
 # CRUD Chart of Accounts
 @api_view(['GET', 'POST'])
