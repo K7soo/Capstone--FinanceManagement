@@ -9,21 +9,36 @@
         <a class="active" href="{% url 'dashboard' %}">
             <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
         </a>
-        <a class="active" href="{% url 'trinbox' %}">
-            <i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span>
-        </a>
         <button class="dropdown-btn">
-            <i class="fa fa-fw fa-book"></i> <span>System Setup</span> 
-            <i class="fa fa-caret-down "></i> 
+            <i class="fa fa-fw fa-book"></i> <span>System Setup</span>
+            <i class="fa fa-caret-down "></i>
         </button>
         <div class="dropdown-container">
             <a href="{% url 'crudacc' %}"><i class="fa fa-fw fa-list-alt"></i><span>Accounts Setup</span></a>
             <a href="{% url 'chartofacc' %}"><i class="fa fa-fw fa-list-alt"></i><span>Chart of Accounts</span></a>
             <a href="{% url 'journaltemp' %}"><i class="fa fa-fw fa-address-book"></i><span>Journal Templates</span></a>
+            <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-balance-scale"></i><span>Trial Balance</span></a>
+        </div>
+        <button class="dropdown-btn">
+            <i class="fa fa-fw fa-book"></i> <span>Transaction</span>
+            <i class="fa fa-caret-down "></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="{% url 'trinbox' %}"><i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span></a>
+            <a href="{% url 'journalentries' %}"><i class="fa fa-fw fa-table"></i><span>Journal Entries</span></a>
+            <a href="{% url 'chartofacc' %}"><i class="fa fa-fw fa-list-alt"></i><span>Chart of Accounts</span></a>
+            <a href="{% url 'journaltemp' %}"><i class="fa fa-fw fa-address-book"></i><span>Journal Templates</span></a>
             <a href="{% url 'journalentries' %}"><i class="fa fa-fw fa-table"></i><span>Journal Entries</span></a>
             <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-balance-scale"></i><span>Trial Balance</span></a>
         </div>
-        <a class="active"href="#reports">
+
+        <a class="active" href="{% url 'trinbox' %}">
+            <i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span>
+        </a>
+        
+
+
+        <a class="active" href="#reports">
             <i class="fa fa-fw fa-file"></i> <span>Reports</span>
         </a>
         <a class="active" href="#payment">
