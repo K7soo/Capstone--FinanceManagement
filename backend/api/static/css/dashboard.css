@@ -2,6 +2,11 @@ body {
     background-color: #f8f8ff; /* Light background */
     font-family: 'Poppins', sans-serif;
 }
+h1.title {
+    color: #61396f; /* Violet color */
+    text-align: left; /* Center the title */
+    margin-top: 35px;
+}
 /* Flexbox container for charts */
 .chart-container {
     display: flex;
