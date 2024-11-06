@@ -22,13 +22,16 @@
     padding: 0;
     gap: 20px;
 }
-
+/* Account Name font size */
+ p.acc-name {
+    font-size: 14px;
+ }
 /* Icon styles */
 .menubar-list li {
     font-size: 20px; /* Adjust icon size */
     display: flex;
     align-items: center;
-    border: 1px solid rgb(0, 0, 0); /* Troubleshooting border */
+    /* border: 1px solid rgb(0, 0, 0); Troubleshooting border */
     color: #552b49;
     margin-right: 30px; /* Corrected margin syntax to add spacing between icons */
 }
