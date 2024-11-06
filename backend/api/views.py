@@ -1,8 +1,10 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.parsers import JSONParser
 from .models import *
 from .serializers import *
 
@@ -32,16 +34,35 @@ def transaction_inbox_view(request):
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def crud_accounts_view(request):
+    # Handle GET requests
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # Fetch and return JSON data for AJAX GET requests
+        account_records = AccountType.objects.all()
+        serialized_accounts = AccountTypeSerializer(account_records, many=True)
+        return JsonResponse(serialized_accounts.data, safe=False)
+
     if request.method == 'GET':
-        Accounts = AccountType.objects.all()
-        serializer = AccountTypeSerializer(Accounts, many=True)
-        return render(request, 'crudacc.html', {'Accounts':serializer.data})
-    
+        # Render HTML template for non-AJAX GET requests
+        account_records = AccountType.objects.all()
+        serialized_accounts = AccountTypeSerializer(account_records, many=True)
+        return render(request, 'crudacc.html', {'Accounts': serialized_accounts.data})
+
+    # Handle POST requests
     if request.method == 'POST':
-        serializer = AccountTypeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return render(request, 'crudacc.html', serializer.data) 
+        # Parse JSON data from the AJAX POST request
+        request_data = JSONParser().parse(request)
+        account_serializer = AccountTypeSerializer(data=request_data)
+        print("parsing data")
+
+        # Validate and save the new account if the data is valid
+        if account_serializer.is_valid():
+            account_serializer.save()
+            print("Save successful")
+            # Return the newly created account data as JSON
+            return JsonResponse(account_serializer.data, status=201)
+        
+        print("Pass here if data is not saved")
+        return JsonResponse(account_serializer.errors, status=400) 
 
 # CRUD Chart of Accounts
 @api_view(['GET', 'POST'])

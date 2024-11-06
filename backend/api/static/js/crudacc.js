@@ -1,11 +1,44 @@
-// JavaScript code to handle adding new accounts to the table
-
 // Get references to elements
 const addAccountBtn = document.querySelector('.add-account-btn');
 const modal = document.getElementById('addAccountModal');
 const closeModalBtn = document.querySelector('.close-btn');
 const addAccountForm = document.getElementById('addAccountForm');
-const tableBody = document.querySelector('table tbody');
+const tableBody = document.querySelector('.table-acc tbody');
+
+// Function to load accounts dynamically on page load
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await fetch('/crudacc/', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest' // Indicate this is an AJAX request
+            }
+        });
+
+        if (response.ok) {
+            const accounts = await response.json();
+
+            // Populate the table with existing accounts
+            accounts.forEach(account => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${account.AccountName}</td>
+                    <td>${account.AccountTypeDesc}</td>
+                    <td>
+                        <button class="btn-view" onclick="viewAccount('${account.AccountName}', '${account.AccountTypeDesc}')">View</button>
+                        <button class="btn-edit" onclick="editAccount('${account.AccountName}', '${account.AccountTypeDesc}', this)">Edit</button>
+                        <button class="btn-delete" onclick="deleteAccount(this)">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(newRow);
+            });
+        } else {
+            console.error('Failed to load accounts:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error fetching accounts:', error);
+    }
+});
 
 // Show modal when 'Add Account' button is clicked
 addAccountBtn.addEventListener('click', () => {
@@ -24,33 +57,51 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// Handle form submission
-addAccountForm.addEventListener('submit', (event) => {
+// Handle form submission for adding a new account
+addAccountForm.addEventListener('submit', async (event) => {
     event.preventDefault(); // Prevent the form from refreshing the page
 
-    const AccountName = document.getElementById('AccountName').value;
-    const AccountTypeDesc = document.getElementById('AccountTypeDesc').value;
+    // Retrieve values from form inputs
+    const accountName = document.querySelector('input[name="AccountName"]').value;
+    const accountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value || "No Description";
 
-    // Create a new row and cells for the table
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-        <td>${AccountName}</td>
-        <td>${AccountTypeDesc}</td>
-        <td>
-            <button class="btn-edit" onclick="editAccount('${AccountName}', '${AccountTypeDesc}', this)">Edit</button>
-            <button class="btn-view" onclick="viewAccount('${AccountName}', '${AccountTypeDesc}')">View</button>
-            <button class="btn-delete" onclick="deleteAccount(this)">Delete</button>
-        </td>
-    `;
+    // Prepare the data to be sent to the server
+    const newAccount = {
+        AccountName: accountName,
+        AccountTypeDesc: accountTypeDesc
+    };
 
-    // Append the new row to the table body
-    tableBody.appendChild(newRow);
+    // Send the data to the server using fetch
+    const response = await fetch('/crudacc/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newAccount),
+    });
 
-    // Clear the form inputs
-    addAccountForm.reset();
+    if (response.ok) {
+        const createdAccount = await response.json();
+        
+        // Add the new account to the table in the UI
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${createdAccount.AccountName}</td>
+            <td>${createdAccount.AccountTypeDesc}</td>
+            <td>
+                <button class="btn-view" onclick="viewAccount('${createdAccount.AccountName}', '${createdAccount.AccountTypeDesc}')">View</button>
+                <button class="btn-edit" onclick="editAccount('${createdAccount.AccountName}', '${createdAccount.AccountTypeDesc}', this)">Edit</button>
+                <button class="btn-delete" onclick="deleteAccount(this)">Delete</button>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
 
-    // Close the modal
-    modal.style.display = 'none';
+        // Clear the form inputs and close the modal
+        addAccountForm.reset();
+        modal.style.display = 'none';
+    } else {
+        console.error('Failed to add account:', response.statusText);
+    }
 });
 
 // Function to handle the "View" button click
@@ -61,39 +112,38 @@ function viewAccount(accountName, accountTypeDesc) {
 // Function to handle the "Edit" button click
 function editAccount(accountName, accountTypeDesc, button) {
     // Populate the modal with the selected account details for editing
-    document.getElementById('AccountName').value = accountName;
-    document.getElementById('AccountTypeDesc').value = accountTypeDesc;
+    document.querySelector('input[name="AccountName"]').value = accountName;
+    document.querySelector('input[name="AccountTypeDesc"]').value = accountTypeDesc;
 
     // Show the modal for editing
     modal.style.display = 'block';
 
-    // Update the form submission to handle the edit
+    // Temporarily update the form submission to handle the edit
     addAccountForm.onsubmit = function (event) {
         event.preventDefault(); // Prevent default form submission
+
+        // Retrieve updated values from the form
+        const updatedAccountName = document.querySelector('input[name="AccountName"]').value;
+        const updatedAccountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value || "No Description";
 
         // Update the row with the new values
         const row = button.closest('tr');
         row.innerHTML = `
-            <td>${document.getElementById('AccountName').value}</td>
-            <td>${document.getElementById('AccountTypeDesc').value}</td>
+            <td>${updatedAccountName}</td>
+            <td>${updatedAccountTypeDesc}</td>
             <td>
-                <button class="btn-edit" onclick="editAccount(
-                '${document.getElementById('AccountName').value}', 
-                '${document.getElementById('AccountTypeDesc').value}', 
-                this)">Edit</button>
-                <button class="btn-view" onclick="viewAccount(
-                '${document.getElementById('AccountName').value}', 
-                '${document.getElementById('AccountTypeDesc').value}'
-                )">View</button>
+                <button class="btn-view" onclick="viewAccount('${updatedAccountName}', '${updatedAccountTypeDesc}')">View</button>
+                <button class="btn-edit" onclick="editAccount('${updatedAccountName}', '${updatedAccountTypeDesc}', this)">Edit</button>
                 <button class="btn-delete" onclick="deleteAccount(this)">Delete</button>
             </td>
         `;
 
-        // Clear the form inputs
+        // Clear the form inputs and close the modal
         addAccountForm.reset();
-
-        // Close the modal
         modal.style.display = 'none';
+
+        // Restore the default form submission behavior
+        addAccountForm.onsubmit = addNewAccount;
     };
 }
 
@@ -103,3 +153,12 @@ function deleteAccount(button) {
     const row = button.closest('tr');
     row.remove();
 }
+
+// Set default form submission back to adding a new account
+function addNewAccount(event) {
+    event.preventDefault();
+    addAccountForm.dispatchEvent(new Event('submit'));
+}
+
+// Initial setup to bind form submission for adding new accounts
+addAccountForm.onsubmit = addNewAccount;
