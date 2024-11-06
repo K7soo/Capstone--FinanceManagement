@@ -2,7 +2,6 @@
 
 {% load static %}
 
-
 {% block title %}
 Dashboard
 {% endblock %}
@@ -14,4 +13,14 @@ Dashboard
 {% block content %}
 <h1>Dashboard</h1>
 <p>This is the content of the dashboard Templates page.</p>
+
+<!-- Chart Container -->
+<div id="piechart"></div>
+{% endblock %}
+
+{% block extra_js %}
+    <!-- Google Charts loader -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Link to the external dashboard JavaScript file -->
+    <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}
