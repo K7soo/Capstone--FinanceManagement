@@ -1,89 +1,98 @@
 {% extends 'base.html' %}
 
 <!-- Always load static files -->
-{% load static %} {% block title %} Transaction Inbox {% endblock %} {% block
-extra_css %}
+{% load static %} 
+{% block title %} 
+Transaction Inbox 
+{% endblock %} 
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/trinbox.css' %}" />
-{% endblock %} {% block content %}
+{% endblock %} 
+
+{% block content %}
 <h1 class="transaction-inbox-title">Transaction Inbox</h1>
+<div>
 <div class="table-frame">
-  <!-- Filter Section -->
-  <div class="filter-section">
-    <div class="filter-left">
-      <!-- Transaction Type Filter -->
-      <label for="transaction-type" class="filter-label"
-        >Transaction Type:</label
-      >
-      <select
-        id="transaction-type"
-        name="transaction-type"
-        class="filter-select"
-      >
-        <option value="all">All</option>
-        <option value="type1">Type 1</option>
-        <option value="type2">Type 2</option>
-        <!-- Add more options as needed -->
-      </select>
+    <!-- Filter Section -->
+    <!-- Filter Button -->
+    <div class="filter-button-container">
+        <div class="filter-section">
+            <div class="filter-left">
+                <!-- Transaction Type Filter -->
+                <label for="transaction-type" class="filter-label"
+                    >Transaction Type:</label
+                >
+                <select
+                    id="transaction-type"
+                    name="transaction-type"
+                    class="filter-select"
+                >
+                    <option value="all">All</option>
+                    <option value="type1">Type 1</option>
+                    <option value="type2">Type 2</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+    
+            <div class="filter-right">
+                <!-- Date Range Filter -->
+                <label for="date-from" class="filter-label">Transaction Date:</label>
+                <input type="date" id="date-from" name="date-from" class="date-input" />
+                <span class="date-span">to</span>
+                <input type="date" id="date-to" name="date-to" class="date-input" />
+            </div>
+        </div>
+
+        <!-- Records Per Page -->
+        <div class="records-per-page">
+            <label for="records-per-page" class="filter-label">Records Per Page:</label>
+            <select
+            id="records-per-page"
+            name="records-per-page"
+            class="records-select"
+            >
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            </select>
+        </div>
+
+        <button class="filter-btn">Filter</button>
     </div>
-
-    <div class="filter-right">
-      <!-- Date Range Filter -->
-      <label for="date-from" class="filter-label">Transaction Date:</label>
-      <input type="date" id="date-from" name="date-from" class="date-input" />
-      <span class="date-span">to</span>
-      <input type="date" id="date-to" name="date-to" class="date-input" />
-    </div>
-  </div>
-
-  <!-- Filter Button -->
-  <div class="filter-button-container">
-    <button class="filter-btn">Filter</button>
-  </div>
-
-  <!-- Records Per Page -->
-  <div class="records-per-page">
-    <label for="records-per-page" class="filter-label">Records Per Page:</label>
-    <select
-      id="records-per-page"
-      name="records-per-page"
-      class="records-select"
-    >
-      <option value="10">10</option>
-      <option value="25">25</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
-    </select>
-  </div>
-
-  <!-- Transaction Table -->
-  <table class="transaction-table">
-    <thead>
-      <tr>
-        <th>REF NUMBER</th>
-        <th>DATE</th>
-        <th>PARTICULARS</th>
-        <th>AMOUNT</th>
-        <th>FUND</th>
-        <th>REMARKS</th>
-        <th>TEMPLATE CODE</th>
-        <th>JEV</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Example Row - Use Django's loop to iterate through transactions -->
-      <tr>
-        <td>12345</td>
-        <td>10-01-2024</td>
-        <td>Example Particulars</td>
-        <td>$1000</td>
-        <td>General Fund</td>
-        <td>No remarks</td>
-        <td>EX123</td>
-        <td><button class="jev-btn">JEV</button></td>
-      </tr>
-    </tbody>
-  </table>
+    <!-- Transaction Table -->
+    <table class="transaction-table">
+        <thead>
+            <tr>
+                <th>REF NUMBER</th>
+                <th>DATE</th>
+                <th>PARTICULARS</th>
+                <th>AMOUNT</th>
+                <th>FUND</th>
+                <th>REMARKS</th>
+                <th>TEMPLATE CODE</th>
+                <th>JEV</th>
+            </tr>
+        </thead>
+        <tbody>
+        <!-- Example Row - Use Django's loop to iterate through transactions -->
+            <tr>
+                <td>12345</td>
+                <td>10-01-2024</td>
+                <td>Example Particulars</td>
+                <td>$1000</td>
+                <td>General Fund</td>
+                <td>No remarks</td>
+                <td>EX123</td>
+                <td><button class="jev-btn">JEV</button></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
-{% endblock %} {% block extra_js %}
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
 <script src="{% static 'js/trinbox.js' %}"></script>
 {% endblock %}

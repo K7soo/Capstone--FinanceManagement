@@ -13,6 +13,7 @@ urlpatterns = [
     path('journaltemp/', views.journal_templates_view, name='journaltemp'),
     path('journalentries/', views.journal_entries_view, name='journalentries'),
     path('trialbalance/', views.trial_balance_view, name='trialbalance'),
+    
     # end of dropdown buttons components
     path('menubar/', views.menubar_view, name='menubar'),
     path('payment/', views.payment_view, name='payment'),

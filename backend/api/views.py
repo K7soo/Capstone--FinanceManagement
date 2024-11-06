@@ -29,7 +29,7 @@ def transaction_inbox_view(request):
 
 # Dropdown Button Components
 
-# Version 1
+# CRUD Accounts
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def crud_accounts_view(request):
@@ -42,23 +42,19 @@ def crud_accounts_view(request):
         serializer = AccountTypeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return render(request, 'crudacc.html', serializer.data)
+            return render(request, 'crudacc.html', serializer.data) 
 
-# Version 2       
-# @api_view(['GET'])
-# def crud_accounts_view(request):
-#     Accounts = AccountType.objects.all()
-#     serializer = AccountTypeSerializer(Accounts, many=True)
-#     return render(request, 'crudacc.html', {'Accounts':serializer.data})
-
-# @api_view(['POST'])
-# def crud_accounts_view(request):
-#     serializer = AccountTypeSerializer(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return render(request, 'crudacc.html', serializer.data)    
-
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
 def chart_of_accounts_view(request):
+    if request.method == "GET":
+        ChartOfAccounts = ChartOfAccs.objects.all()
+        serializer = ChartOfAccsSerializer(ChartOfAccounts, many=True)
+        return render(request, 'chartofacc.html', {'ChartOfAccounts': serializer.data})
+    
+
+
+
     return render(request, 'chartofacc.html')
 
 def journal_templates_view(request):
