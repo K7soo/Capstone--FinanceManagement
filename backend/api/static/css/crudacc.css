@@ -245,6 +245,7 @@ tr:nth-child(even) {
     font-family:'Poppins', sans-serif;
     border: #ececec;
     padding: 10px;
+    overflow-x: auto;
 }
 .textbox-desc {
     font-family:'Poppins', sans-serif;

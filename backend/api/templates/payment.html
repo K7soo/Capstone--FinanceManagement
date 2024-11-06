@@ -1,10 +1,22 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}
-Payment
+Reports
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/reports.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1>Payment Page</h1>
-<p>This is the content of the Payment page.</p>
+<body>
+    <h1 class="title">Reports</h1>
+    <p>
+        Oops! This page is currently under development. 
+        We humbly apologize for any inconveniences.
+    </p>
+</body>
+
 {% endblock %}
