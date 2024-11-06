@@ -10,10 +10,10 @@ body {
 }
 
 /* Modal styles */
-h1 {
+h1.title {
     color: #61396f; /* Violet color */
-    text-align: center; /* Center the title */
-    margin-top: 20px;
+    text-align: left; /* Center the title */
+    margin-top: 35px;
 }
 
 .grid-container {
