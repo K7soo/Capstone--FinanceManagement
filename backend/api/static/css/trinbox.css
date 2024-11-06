@@ -81,7 +81,7 @@ table {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
-    height:500px;
+    height:1000px;
 }
 
 th, td {
@@ -90,8 +90,8 @@ th, td {
 }
 
 th {
-    background-color: #61396f;
-    color: #fff;
+    background-color: #bcbcbc;
+    color: #000000;
 }
 
 tr:nth-child(even) {
@@ -131,7 +131,7 @@ tr:nth-child(even) {
 }
 
 .btn-edit {
-    background-color: #2bffe3;
+    background-color: #a100c9;
     color: white;
     padding: 10px 10px 25px 10px;
     border: none;
@@ -142,7 +142,7 @@ tr:nth-child(even) {
 }
 
 .btn-external {
-    background-color: #ff9900;
+    background-color: #61396f;
     color: white;
     padding: 10px 10px 25px 10px;
     border: none;
