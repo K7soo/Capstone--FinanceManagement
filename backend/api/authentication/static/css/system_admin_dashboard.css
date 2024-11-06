@@ -1,0 +1,103 @@
+/* Sidebar styling */
+.sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    transition: width 0.3s;
+}
+
+.sidebar-wrapper.collapsed {
+    width: 60px;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Adjust main content margin when the sidebar is collapsed */
+.sidebar-wrapper.collapsed + .main-content {
+    margin-left: 60px;
+}
+
+/* Add Employee Button */
+.btn-primary {
+    margin-bottom: 20px;
+}
+
+/* Employee Table */
+.table {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    width: 100%;
+    font-size: 0.75rem; /* Smaller font size to fit screen */
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.5rem; /* Smaller padding */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.dropdown-menu {
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Modal Form Styling */
+.modal-content {
+    border-radius: 10px;
+}
+
+.modal-header {
+    background-color: #5e3181;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    height: calc(1.5em + 1rem + 2px);
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.btn-primary {
+    background-color: #5e3181;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #4a256e;
+}
+
+
+.btn-violet {
+    background-color: #4a256e;
+    color: white;
+}
+
+  
+.btn-gray {
+    background-color: gray;
+    color: white;
+}
+
