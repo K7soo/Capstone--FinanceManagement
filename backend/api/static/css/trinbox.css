@@ -133,3 +133,15 @@ tr:nth-child(even) {
     color: #61396f;
     cursor: pointer;
 }
+
+.table-frame{
+    width:100%;
+    overflow-x:auto;
+    overflow-y: auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    height:500px;
+}

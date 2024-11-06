@@ -4,12 +4,13 @@
     left: 0;
     width: 100%;
     height: 50px; /* Adjust this height as needed */
-    background-color: #cdcdcd; /* Example background color */
+    background-color: #ffffff; /* Example background color */
     display: flex;
     align-items: center;
     z-index: 1; /* Adjust z-index as needed */
     color: white;
     padding: 0 20px; /* Add padding on the sides */
+    border: 1px solid #ddd;
 }
 
 /* Align menu items to the right */
