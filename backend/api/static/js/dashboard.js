@@ -29,45 +29,56 @@ function drawPieChart() {
     chart.draw(data, options);
 }
 
-// Chart 2: Bar Chart
+// Chart 2: Bar Chart - Quarterly Financial Performance
 function drawBarChart() {
     const data = google.visualization.arrayToDataTable([
-        ['Year', 'Sales', 'Expenses'],
-        ['2019', 1000, 400],
-        ['2020', 1170, 460],
-        ['2021', 660, 1120],
-        ['2022', 1030, 540]
+        ['Quarter', 'Revenue', 'Expenses'],
+        ['Q1 2022', 1500, 700],
+        ['Q2 2022', 2000, 800],
+        ['Q3 2022', 1800, 900],
+        ['Q4 2022', 2200, 1200]
     ]);
 
     const options = {
-        title: 'Company Performance',
-        hAxis: { title: 'Year' },
-        vAxis: { title: 'Amount', minValue: 0 },
-        legend: { position: 'top' }
+        title: 'Quarterly Financial Performance',
+        hAxis: { title: 'Quarter' },
+        vAxis: { title: 'Amount ($)', minValue: 0 },
+        legend: { position: 'top' },
+        bars: 'vertical', // Ensures it's a bar chart, not column chart
+        isStacked: false // Set to true for stacked bars if needed
     };
 
     const chart = new google.visualization.BarChart(document.getElementById('chart2'));
     chart.draw(data, options);
 }
 
-// Chart 3: Line Chart
-function drawLineChart() {
+
+// Chart 3: Bar Chart - Monthly Financial Summary for Restaurant
+function drawBarChart() {
     const data = google.visualization.arrayToDataTable([
-        ['Month', 'Visitors'],
-        ['Jan', 1000],
-        ['Feb', 1170],
-        ['Mar', 660],
-        ['Apr', 1030],
-        ['May', 800],
-        ['Jun', 950]
+        ['Month', 'Revenue', 'Expenses', 'Profit'],
+        ['Jan', 12000, 8000, 4000],
+        ['Feb', 15000, 9000, 6000],
+        ['Mar', 14000, 10000, 4000],
+        ['Apr', 16000, 12000, 4000],
+        ['May', 17000, 13000, 4000],
+        ['Jun', 20000, 14000, 6000],
+        ['Jul', 22000, 15000, 7000],
+        ['Aug', 24000, 16000, 8000],
+        ['Sep', 23000, 17000, 6000],
+        ['Oct', 25000, 18000, 7000],
+        ['Nov', 27000, 19000, 8000],
+        ['Dec', 30000, 20000, 10000]
     ]);
 
     const options = {
-        title: 'Website Visitors',
-        curveType: 'function', // Makes the line smooth
-        legend: { position: 'bottom' }
+        title: 'Monthly Financial Summary for Restaurant',
+        hAxis: { title: 'Month' },
+        vAxis: { title: 'Amount ($)' },
+        legend: { position: 'top' },
+        isStacked: false // Set to true if you want a stacked bar chart
     };
 
-    const chart = new google.visualization.LineChart(document.getElementById('chart3'));
+    const chart = new google.visualization.BarChart(document.getElementById('chart3'));
     chart.draw(data, options);
 }
