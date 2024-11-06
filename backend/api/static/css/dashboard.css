@@ -2,3 +2,22 @@ body {
     background-color: #f8f8ff; /* Light background */
     font-family: 'Poppins', sans-serif;
 }
+/* Flexbox container for charts */
+.chart-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Individual chart styling */
+.chart {
+    flex: 1 1 calc(33.33% - 20px); /* Makes each chart take up one-third of the width, minus the gap */
+    min-width: 250px; /* Ensures charts don’t get too small on smaller screens */
+    height: 300px; /* Set a consistent height */
+    border: 2px solid #ccc;
+
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
