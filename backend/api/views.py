@@ -26,6 +26,8 @@ def bookkeeping_view(request):
 def transaction_inbox_view(request):
     return render(request, 'trinbox.html')
 
+def jev_approval_view(request):
+    return render(request, 'jevapproval.html')
 
 # Dropdown Button Components
 # CRUD Accounts

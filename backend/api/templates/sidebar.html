@@ -9,6 +9,8 @@
         <a class="active" href="{% url 'dashboard' %}">
             <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
         </a>
+
+        <!-- System Setup Dropdown -->
         <button class="dropdown-btn">
             <i class="fa fa-fw fa-book"></i> <span>System Setup</span>
             <i class="fa fa-caret-down "></i>
@@ -17,8 +19,10 @@
             <a href="{% url 'crudacc' %}"><i class="fa fa-fw fa-list-alt"></i><span>Accounts Setup</span></a>
             <a href="{% url 'chartofacc' %}"><i class="fa fa-fw fa-list-alt"></i><span>Chart of Accounts</span></a>
             <a href="{% url 'journaltemp' %}"><i class="fa fa-fw fa-address-book"></i><span>Journal Templates</span></a>
-            <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-balance-scale"></i><span>Trial Balance</span></a>
         </div>
+        <!-- End of System Setup Dropdown -->
+
+        <!-- Transaction Dropdown -->
         <button class="dropdown-btn">
             <i class="fa fa-fw fa-book"></i> <span>Transaction</span>
             <i class="fa fa-caret-down "></i>
@@ -26,21 +30,24 @@
         <div class="dropdown-container">
             <a href="{% url 'trinbox' %}"><i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span></a>
             <a href="{% url 'journalentries' %}"><i class="fa fa-fw fa-table"></i><span>Journal Entries</span></a>
-            <a href="{% url 'chartofacc' %}"><i class="fa fa-fw fa-list-alt"></i><span>Chart of Accounts</span></a>
-            <a href="{% url 'journaltemp' %}"><i class="fa fa-fw fa-address-book"></i><span>Journal Templates</span></a>
-            <a href="{% url 'journalentries' %}"><i class="fa fa-fw fa-table"></i><span>Journal Entries</span></a>
+            <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-balance-scale"></i><span>JEV Approval</span></a>
             <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-balance-scale"></i><span>Trial Balance</span></a>
+
         </div>
+        <!-- End of Transaction Dropdown -->
 
-        <a class="active" href="{% url 'trinbox' %}">
-            <i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span>
-        </a>
-        
-
-
-        <a class="active" href="#reports">
+        <!-- Reports Dropdown -->
+        <button class="dropdown-btn">
             <i class="fa fa-fw fa-file"></i> <span>Reports</span>
-        </a>
+            <i class="fa fa-caret-down "></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-balance-scale"></i><span>Trial Balance</span></a>
+            <a href="{% url 'jevapproval' %}"><i class="fa fa-fw fa-like"></i><span>JEV Approval</span></a>
+
+        </div>
+        <!-- End of Reports Dropdown -->
+
         <a class="active" href="#payment">
             <i class="fa fa-fw fa-money"></i> <span>Payment</span>
         </a>
