@@ -32,7 +32,7 @@ function drawPieChart() {
 // Chart 2: Bar Chart - Quarterly Financial Performance
 function drawBarChart() {
     const data = google.visualization.arrayToDataTable([
-        ['Quarter', 'Revenue', 'Expenses'],
+        ['Quarter', 'Revenue', 'Expenses'],a
         ['Q1 2022', 1500, 700],
         ['Q2 2022', 2000, 800],
         ['Q3 2022', 1800, 900],
@@ -51,6 +51,7 @@ function drawBarChart() {
     const chart = new google.visualization.BarChart(document.getElementById('chart2'));
     chart.draw(data, options);
 }
+
 
 
 // Chart 3: Bar Chart - Monthly Financial Summary for Restaurant
@@ -80,5 +81,71 @@ function drawBarChart() {
     };
 
     const chart = new google.visualization.BarChart(document.getElementById('chart3'));
+    chart.draw(data, options);
+}
+
+// Chart 4: Area Chart - Monthly Sales and Expenses
+function drawAreaChart() {
+    const data = google.visualization.arrayToDataTable([
+        ['Month', 'Sales', 'Expenses'],
+        ['Jan', 2000, 1500],
+        ['Feb', 2500, 1800],
+        ['Mar', 3000, 2000],
+        ['Apr', 3200, 2100],
+        ['May', 4000, 3000],
+        ['Jun', 4500, 3500]
+    ]);
+
+    const options = {
+        title: 'Monthly Sales and Expenses',
+        hAxis: { title: 'Month' },
+        vAxis: { title: 'Amount ($)' },
+        isStacked: true
+    };
+
+    const chart = new google.visualization.AreaChart(document.getElementById('chart4'));
+    chart.draw(data, options);
+}
+
+// Chart 5: Column Chart - Quarterly Revenue by Product
+function drawColumnChart() {
+    const data = google.visualization.arrayToDataTable([
+        ['Quarter', 'Product A', 'Product B', 'Product C'],
+        ['Q1', 5000, 3000, 2000],
+        ['Q2', 7000, 4000, 3000],
+        ['Q3', 8000, 5000, 4000],
+        ['Q4', 10000, 6000, 5000]
+    ]);
+
+    const options = {
+        title: 'Quarterly Revenue by Product',
+        hAxis: { title: 'Quarter' },
+        vAxis: { title: 'Revenue ($)' },
+        legend: { position: 'top' }
+    };
+
+    const chart = new google.visualization.ColumnChart(document.getElementById('chart5'));
+    chart.draw(data, options);
+}
+
+// Chart 6: Scatter Chart - Customer Satisfaction Score vs Sales
+function drawScatterChart() {
+    const data = google.visualization.arrayToDataTable([
+        ['Satisfaction Score', 'Sales'],
+        [3.5, 2000],
+        [4.0, 3000],
+        [4.5, 4000],
+        [4.8, 5000],
+        [5.0, 6000]
+    ]);
+
+    const options = {
+        title: 'Customer Satisfaction vs Sales',
+        hAxis: { title: 'Satisfaction Score' },
+        vAxis: { title: 'Sales ($)' },
+        legend: 'none'
+    };
+
+    const chart = new google.visualization.ScatterChart(document.getElementById('chart6'));
     chart.draw(data, options);
 }
