@@ -2,11 +2,36 @@ body {
     background-color: #f8f8ff; /* Light background */
     font-family: 'Poppins', sans-serif;
 }
+
+@media (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: 2fr; /* Stack on smaller screens */
+    }
+}
+
 /* Modal styles */
-h1 {
+h1.title {
     color: #61396f; /* Violet color */
-    text-align: center; /* Center the title */
-    margin-top: 20px;
+    text-align: left; /* Center the title */
+    margin-top: 35px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Three flexible columns */
+    gap: 20px; /* Adjust the space between items */
+}
+
+.table-frame{
+    width:100%;
+    overflow-x:auto;
+    overflow-y: auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    height:900px;
 }
 
 /* add button design */
@@ -277,14 +302,3 @@ tr:nth-child(even) {
 
 }
 
-.table-frame{
-    width:100%;
-    overflow-x:auto;
-    overflow-y: auto;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    height:500px;
-}

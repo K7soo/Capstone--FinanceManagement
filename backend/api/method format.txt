@@ -1,0 +1,31 @@
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def crud_accounts_view(request):
+    if request.method == 'GET':
+        # Handle AJAX GET request
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            accounts = AccountType.objects.all()
+            serialized_accounts = AccountTypeSerializer(accounts, many=True)
+            return JsonResponse(serialized_accounts.data, safe=False, status=status.HTTP_200_OK)
+
+        # Handle regular GET request
+        accounts = AccountType.objects.all()
+        serialized_accounts = AccountTypeSerializer(accounts, many=True)
+        return render(request, 'crudacc.html', {'Accounts': serialized_accounts.data})
+
+    if request.method == 'POST':
+        # Log incoming data
+        print("Received POST request with data:", request.data)
+        
+        serializer = AccountTypeSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            # Log validation success
+            print("Data is valid, saving to database.")
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        
+        # Log validation failure
+        print("Validation failed:", serializer.errors)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -11,15 +11,21 @@ Dashboard
 {% endblock %}
 
 {% block content %}
-<h1>Dashboard</h1>
+<h1 class="title">Dashboard</h1>
 
-<!-- Chart Container -->
+<!-- First Row of Charts -->
 <div class="chart-container">
     <div id="chart1" class="chart"></div>
     <div id="chart2" class="chart"></div>
     <div id="chart3" class="chart"></div>
 </div>
 
+<!-- Second Row of Charts with Unique IDs -->
+<div class="chart-container">
+    <div id="chart4" class="chart"></div>
+    <div id="chart5" class="chart"></div>
+    <div id="chart6" class="chart"></div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

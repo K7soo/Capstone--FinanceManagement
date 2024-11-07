@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
 from .models import *
 from .serializers import *
+
+# from django.views.decorators.csrf import csrf_exempt (this is for testing)
 
 # dashboard view
 def dashboard_view(request):
@@ -28,9 +30,12 @@ def bookkeeping_view(request):
 def transaction_inbox_view(request):
     return render(request, 'trinbox.html')
 
+def jev_approval_view(request):
+    return render(request, 'jevapproval.html')
 
 # Dropdown Button Components
-# CRUD Accounts
+
+# CRUD List of Accounts
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def crud_accounts_view(request):
@@ -42,27 +47,48 @@ def crud_accounts_view(request):
         return JsonResponse(serialized_accounts.data, safe=False)
 
     if request.method == 'GET':
-        # Render HTML template for non-AJAX GET requests
-        account_records = AccountType.objects.all()
-        serialized_accounts = AccountTypeSerializer(account_records, many=True)
-        return render(request, 'crudacc.html', {'Accounts': serialized_accounts.data})
+        # Handle AJAX GET request
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            accounts = AccountType.objects.all()
+            serializer = AccountTypeSerializer(accounts, many=True)
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
-    # Handle POST requests
-    if request.method == 'POST':
-        # Parse JSON data from the AJAX POST request
-        request_data = JSONParser().parse(request)
-        account_serializer = AccountTypeSerializer(data=request_data)
-        print("parsing data")
+        accounts = AccountType.objects.all()
+        serializer = AccountTypeSerializer(accounts, many=True)
+        return render(request, 'crudacc.html', {'Accounts': serializer.data})
 
-        # Validate and save the new account if the data is valid
-        if account_serializer.is_valid():
-            account_serializer.save()
-            print("Save successful")
-            # Return the newly created account data as JSON
-            return JsonResponse(account_serializer.data, status=201)
-        
-        print("Pass here if data is not saved")
-        return JsonResponse(account_serializer.errors, status=400) 
+    if request.method == "POST":
+        print("Received POST request with data:", request.data)
+        serializer = AccountTypeSerializer(data=request.data)
+    
+        if serializer.is_valid():
+            print("Data is valid, saving to database.")
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    
+    print("Validation failed:", serializer.errors)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([AllowAny])
+def crud_accounts_change(request, pk=None):
+    # Handle AJAX GET request
+    if request.method == 'GET':
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            accounts = AccountType.objects.all()
+            serializer = AccountTypeSerializer(accounts, many=True)
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+
+    # Handle DELETE request to delete a specific account by ID
+    if request.method == 'DELETE' and pk:
+        try:
+            account = AccountType.objects.get(pk=pk)
+            account.delete()
+            return Response({'message': 'Account deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except AccountType.DoesNotExist:
+            return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 # CRUD Chart of Accounts
 @api_view(['GET', 'POST'])
