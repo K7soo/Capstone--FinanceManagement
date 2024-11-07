@@ -127,7 +127,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 120px;
+    width: 150px;
 }
 
 .btn-edit {
@@ -138,7 +138,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 120px;
+    width: 150px;
 }
 
 .btn-external {
@@ -149,7 +149,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 120px;
+    width: 150px;
 }
 
 /* Modal styles */
