@@ -115,7 +115,9 @@ tr:nth-child(even) {
     margin: 0px 0px 12px 0px; 
 }
 
-
+.button-chart-of-acc{
+    background-color: #2D9C35;
+}
 /* End of table components */
 .modal {
     display: none; 
@@ -188,6 +190,7 @@ tr:nth-child(even) {
     color: #fff;
 }
 
+
 .btn-view {
     background-color: #ff9900;
     color: white;
@@ -199,6 +202,9 @@ tr:nth-child(even) {
     width: 90px;
 }
 
+.btn-comp{
+    display: grid;
+}
 .submit-btn {
     background-color: #8724ac;
     color:#ffffff;
