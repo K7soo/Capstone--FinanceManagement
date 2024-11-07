@@ -1,3 +1,4 @@
+console.log("admin_login.js loaded successfully");
 // Image Slider JavaScript
 let currentImageIndex = 0;
 const images = document.querySelectorAll('.image-slider img');
@@ -21,16 +22,12 @@ function toggleVisibility(field_id) {
 }
 
 function changeStatus(employeeId, status) {
-    // Add your logic for changing account status here
-    console.log("Change status of employee ${employeeId} to ${status}");
+    console.log(`Change status of employee ${employeeId} to ${status}`);
 }
 
 function sendEmail(employeeId, emailType) {
-    // Add your logic for sending emails here
-    console.log("Send ${emailType} email to employee ${employeeId}");
+    console.log(`Send ${emailType} email to employee ${employeeId}`);
 }
-
-
 
 function showPasswordSection() {
     var securityQuestions = document.getElementById('security-questions');
@@ -52,3 +49,10 @@ function togglePassword() {
         console.error('Password field not found');
     }
 }
+
+// Redirect to the dashboard upon login button click
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent form submission
+    window.location.href = "/dashboard/"; // Redirect to the dashboard
+    console.log("redirected successfully");
+});

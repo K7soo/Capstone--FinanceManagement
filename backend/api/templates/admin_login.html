@@ -1,4 +1,4 @@
-{% extends 'baseAuth.html' %}
+{% extends 'base_auth.html' %}
 {% load static %}
 
 {% block extra_css %}
@@ -26,7 +26,7 @@
                 </div>
 
                 <!-- Login form -->
-                <form method="POST" action="">
+                <form id="loginForm" method="POST" action="">
                   {% csrf_token %}
                   <p>Please login to your account</p>
                   
@@ -72,5 +72,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/admin_login.js' %}"></script>
+<script src="{% static 'js/admin_login.js' %}">
+</script>
 {% endblock %}
