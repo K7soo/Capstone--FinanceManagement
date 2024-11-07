@@ -196,3 +196,12 @@ function deleteAccount(button) {
     })
     .catch(error => console.error('Error deleting account:', error));
 }
+
+// Set default form submission back to adding a new account
+function addNewAccount(event) {
+    event.preventDefault();
+    addAccountForm.dispatchEvent(new Event('submit'));
+}
+
+// Initial setup to bind form submission for adding new accounts
+addAccountForm.onsubmit = addNewAccount;

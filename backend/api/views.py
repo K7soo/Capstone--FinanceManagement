@@ -39,6 +39,13 @@ def jev_approval_view(request):
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def crud_accounts_view(request):
+    # Handle GET requests
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # Fetch and return JSON data for AJAX GET requests
+        account_records = AccountType.objects.all()
+        serialized_accounts = AccountTypeSerializer(account_records, many=True)
+        return JsonResponse(serialized_accounts.data, safe=False)
+
     if request.method == 'GET':
         # Handle AJAX GET request
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
