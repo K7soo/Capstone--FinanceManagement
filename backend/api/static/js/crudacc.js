@@ -17,8 +17,10 @@ const csrfToken = getCsrfToken();
 const addAccountBtn = document.querySelector('.add-account-btn');
 const modal = document.getElementById('addAccountModal');
 const closeModalBtn = document.querySelector('.close-btn');
+const cancelModalBtn = document.querySelector('.modal-cancel-btn');
 const addAccountForm = document.getElementById('addAccountForm');
 const tableBody = document.querySelector('.table-acc tbody');
+
 
 console.log("JavaScript loaded successfully"); // Check if JS file is loaded
 
@@ -69,6 +71,11 @@ addAccountBtn.addEventListener('click', () => {
 
 // Hide modal when 'X' button is clicked
 closeModalBtn.addEventListener('click', () => {
+    console.log("Close modal button clicked, closing modal.");
+    modal.style.display = 'none';
+});
+
+cancelModalBtn.addEventListener('click', () => {
     console.log("Close modal button clicked, closing modal.");
     modal.style.display = 'none';
 });
