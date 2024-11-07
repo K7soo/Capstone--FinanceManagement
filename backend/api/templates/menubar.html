@@ -5,9 +5,9 @@
             
             <!-- Profile dropdown menu -->
             <div class="profile-dropdown">
-                <p >Account ID: user123</p>
+                <p>Account ID: user123</p>
                 <a href="#">Settings</a>
-                <a href="#">Logout</a>
+                <a class="logout" href="{% url 'admin_login' %}">Logout</a> <!-- Updated to call the logout function -->
             </div>
         </li>
 

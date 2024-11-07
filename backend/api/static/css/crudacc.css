@@ -266,7 +266,7 @@ tr:nth-child(even) {
     padding: 10px 10px;
     padding-bottom: 25px;
     border: none;
-    width: 120px;
+    width: 150px;
     border-radius: 5px;
     height: 30px;
 }
@@ -287,6 +287,21 @@ tr:nth-child(even) {
 .modal-cancel-btn:hover {
     background-color: #ff3d3d;
 }
+
+.modal-edit-btn {
+    background-color: #8724ac;
+    color:#ffffff;
+    padding: 10px 10px;
+    padding-bottom: 25px;
+    border: none;
+    width: 150px;
+    border-radius: 5px;
+    height: 30px;
+}
+.modal-edit-btn:hover {
+    background-color: #61396f;
+}
+
 .textbox {
     font-family:'Poppins', sans-serif;
     border: #ececec;

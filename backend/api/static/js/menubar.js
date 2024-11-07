@@ -10,3 +10,9 @@ document.addEventListener("click", function (event) {
         profileIcon.classList.remove("active");
     }
 });
+
+function logout() {
+    // Perform any necessary logout operations here (e.g., clearing session storage)
+    console.log("Logging out..."); // For debugging
+    window.location.href = "/admin_login/"; // Redirect to the login page
+}

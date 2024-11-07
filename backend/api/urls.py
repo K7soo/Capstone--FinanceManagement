@@ -9,7 +9,9 @@ urlpatterns = [
     # path('', views.dashboard_view, name='home'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
 
-    # System Setup Dropdown Buttons
+    # System Setup Dropdown Buttons #
+
+    # List of Accounts
     path('crudacc/', views.crud_accounts_view, name='crudacc'),
     path('crudaccchange/', views.crud_accounts_change, name='crud_accounts_change'),
     path('crudaccchange/<int:pk>/', views.crud_accounts_change, name='crud_accounts_change_with_id'),
