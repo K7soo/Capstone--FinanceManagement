@@ -173,6 +173,13 @@ tr:nth-child(even) {
     cursor: pointer;
 }
 
+.btn-comp{
+    display: flex;
+    justify-content:baseline;
+    width: 60%; 
+    margin: 0px 0px 12px 0px; 
+    gap:5px;
+}
 .btn-add {
     background-color: #2D9C35;
     color: #fff;
@@ -252,20 +259,33 @@ tr:nth-child(even) {
     background-color: #ff3d3d;
 }
 
-.submit-btn {
+.modal-add-btn {
     background-color: #8724ac;
     color:#ffffff;
-    padding: 5px 10px;
+    padding: 10px 10px;
+    padding-bottom: 25px;
     border: none;
-    width: 6rem;
+    width: 6.9rem;
     border-radius: 5px;
     height: 30px;
-    width: 90px;
 }
-.submit-btn:hover {
+.modal-add-btn:hover {
     background-color: #61396f;
 }
 
+.modal-cancel-btn {
+    background-color: #bebebe;
+    color:#ffffff;
+    padding-top: 10px ;
+    padding-bottom: 25px;
+    border: none;
+    width: 6.9rem;
+    border-radius: 5px;
+    height: 30px;
+}
+.modal-cancel-btn:hover {
+    background-color: #ff3d3d;
+}
 .textbox {
     font-family:'Poppins', sans-serif;
     border: #ececec;
