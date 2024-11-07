@@ -98,9 +98,8 @@ tr:nth-child(even) {
 
 .button-container {
     display: flex;
-    justify-content: space-between;
     width: 60%; 
-    margin: 0 auto 20px; /* Center the container and add margin */
+    /* margin: 0 auto 20px; Center the container and add margin */
 }
 
 
@@ -177,12 +176,14 @@ tr:nth-child(even) {
 }
 
 .btn-view {
-    background-color: #000000;
+    background-color: #ff9900;
     color: white;
     padding: 5px 10px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    height: 40px;
+    width: 90px;
 }
 
 .submit-btn {

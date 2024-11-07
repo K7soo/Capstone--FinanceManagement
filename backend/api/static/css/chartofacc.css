@@ -239,7 +239,7 @@ tr:nth-child(even) {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
-    height:500px;
+    height:700px;
 }
 .textbox {
     font-family:'Poppins', sans-serif;
