@@ -50,9 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${account.AccountName}</td>
                 <td>${account.AccountTypeDesc}</td>
                 <td>
-                    <button class="btn-view" onclick="viewAccount('${account.AccountName}', '${account.AccountTypeDesc}')">View</button>
-                    <button class="btn-edit" onclick="editAccount('${account.AccountName}', '${account.AccountTypeDesc}', this)">Edit</button>
-                    <button class="btn-delete" onclick="deleteAccount(this)">Delete</button>
+                    <button class="btn-view" onclick="viewAccount('${account.AccountName}', '${account.AccountTypeDesc}')">VIEW</button>
+                    <button class="btn-edit" onclick="editAccount('${account.AccountName}', '${account.AccountTypeDesc}', this)">EDIT</button>
+                    <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
                 </td>
             `;
             tableBody.appendChild(newRow);
@@ -118,9 +118,9 @@ addAccountForm.addEventListener('submit', (event) => {
             <td>${createdAccount.AccountName}</td>
             <td>${createdAccount.AccountTypeDesc}</td>
             <td>
-                <button class="btn-view" onclick="viewAccount('${createdAccount.AccountName}', '${createdAccount.AccountTypeDesc}')">View</button>
-                <button class="btn-edit" onclick="editAccount('${createdAccount.AccountName}', '${createdAccount.AccountTypeDesc}', this)">Edit</button>
-                <button class="btn-delete" onclick="deleteAccount(this)">Delete</button>
+                <button class="btn-view" onclick="viewAccount('${createdAccount.AccountName}', '${createdAccount.AccountTypeDesc}')">VIEW</button>
+                <button class="btn-edit" onclick="editAccount('${createdAccount.AccountName}', '${createdAccount.AccountTypeDesc}', this)">EDIT</button>
+                <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
             </td>
         `;
         tableBody.appendChild(newRow);
@@ -196,12 +196,3 @@ function deleteAccount(button) {
     })
     .catch(error => console.error('Error deleting account:', error));
 }
-
-// Set default form submission back to adding a new account
-function addNewAccount(event) {
-    event.preventDefault();
-    addAccountForm.dispatchEvent(new Event('submit'));
-}
-
-// Initial setup to bind form submission for adding new accounts
-addAccountForm.onsubmit = addNewAccount;
