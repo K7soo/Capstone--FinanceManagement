@@ -31,7 +31,7 @@ h1.title {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
-    height:900px;
+    height:flex;
 }
 
 /* add button design */
@@ -176,7 +176,7 @@ tr:nth-child(even) {
 
 .btn-comp{
     display: flex;
-    justify-content:baseline;
+    /* justify-content:baseline; */
     width: 60%; 
     margin: 0px 0px 12px 0px; 
     gap:5px;
@@ -266,7 +266,7 @@ tr:nth-child(even) {
     padding: 10px 10px;
     padding-bottom: 25px;
     border: none;
-    width: 7rem;
+    width: 120px;
     border-radius: 5px;
     height: 30px;
 }

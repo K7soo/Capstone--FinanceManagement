@@ -90,12 +90,13 @@ List of Accounts
     
                     <label for="AccountTypeDesc">Account Description:</label>
                     <input type="text" id="AccountTypeDesc" class="textbox-desc" name="AccountTypeDesc" required>
-
+                    
+                    <!-- Save CSRF Token -->
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                 </div>
                 <div class="btn-comp">
                     <button type="submit" class="modal-add-btn">ADD ACCOUNT</button>
-                    <div class="modal-cancel-btn">CANCEL</button>
+                    <button type="reset" class="modal-cancel-btn">CANCEL</button>
                 </div>
 
 
