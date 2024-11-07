@@ -23,6 +23,8 @@
     border-right: 1px solid #ddd;
     transition: width 0.3s;
     font-family: 'Poppins';
+    overflow-y: auto;
+    
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 

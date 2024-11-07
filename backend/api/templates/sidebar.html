@@ -1,57 +1,70 @@
 <div class="sidebar-wrapper" id="sidebar">
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>FINANCE MANAGEMENT</h2>
-            <button class="menu-btn" onclick="toggleSidebar()">
-                <i class="fa fa-bars"></i>
-            </button>
-        </div>
-        <a class="active" href="{% url 'dashboard' %}">
-            <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
-        </a>
-
-        <!-- System Setup Dropdown -->
-        <button class="dropdown-btn">
-            <i class="fa fa-fw fa-book"></i> <span>System Setup</span>
-            <i class="fa fa-caret-down "></i>
-        </button>
-        <div class="dropdown-container">
-            <a href="{% url 'crudacc' %}"><i class="fa fa-fw fa-list-alt"></i><span>Accounts Setup</span></a>
-            <a href="{% url 'chartofacc' %}"><i class="fa fa-fw fa-list-alt"></i><span>Chart of Accounts</span></a>
-            <a href="{% url 'journaltemp' %}"><i class="fa fa-fw fa-address-book"></i><span>Journal Templates</span></a>
-        </div>
-        <!-- End of System Setup Dropdown -->
-
-        <!-- Transaction Dropdown -->
-        <button class="dropdown-btn">
-            <i class="fa fa-fw fa-book"></i> <span>Transaction</span>
-            <i class="fa fa-caret-down "></i>
-        </button>
-        <div class="dropdown-container">
-            <a href="{% url 'trinbox' %}"><i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span></a>
-            <a href="{% url 'journalentries' %}"><i class="fa fa-fw fa-table"></i><span>Journal Entries</span></a>
-        </div>
-        <!-- End of Transaction Dropdown -->
-
-        <!-- Reports Dropdown -->
-        <button class="dropdown-btn">
-            <i class="fa fa-fw fa-file"></i> <span>Reports</span>
-            <i class="fa fa-caret-down "></i>
-        </button>
-        <div class="dropdown-container">
-            <a href="{% url 'trialbalance' %}"><i class="fa fa-fw fa-balance-scale"></i><span>Trial Balance</span></a>
-            <a href="{% url 'jevapproval' %}"><i class="fa fa-fw fa-like"></i><span>JEV Approval</span></a>
-
-        </div>
-        <!-- End of Reports Dropdown -->
-
-        <a class="active" href="#payment">
-            <i class="fa fa-fw fa-money"></i> <span>Payment</span>
-        </a>
-        <!-- Sidebar footer for logo and version -->
-        <div class="sidebar-footer">
-            <img src="" alt="Logo">
-            <p>v1.0.0</p>
-        </div>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>FINANCE MANAGEMENT</h2>
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <i class="fa fa-bars"></i>
+      </button>
     </div>
+    <a class="active" href="{% url 'dashboard' %}">
+      <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
+    </a>
+
+    <!-- System Setup Dropdown -->
+    <button class="dropdown-btn">
+      <i class="fa fa-fw fa-book"></i> <span>System Setup</span>
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container">
+      <a href="{% url 'crudacc' %}"
+        ><i class="fa fa-fw fa-list-alt"></i><span>Accounts Setup</span></a
+      >
+      <a href="{% url 'chartofacc' %}"
+        ><i class="fa fa-fw fa-list-alt"></i><span>Chart of Accounts</span></a
+      >
+      <a href="{% url 'journaltemp' %}"
+        ><i class="fa fa-fw fa-address-book"></i
+        ><span>Journal Templates</span></a
+      >
+    </div>
+    <!-- End of System Setup Dropdown -->
+
+    <!-- Transaction Dropdown -->
+    <button class="dropdown-btn">
+      <i class="fa fa-fw fa-book"></i> <span>Transaction</span>
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container">
+      <a href="{% url 'trinbox' %}"
+        ><i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span></a
+      >
+      <a href="{% url 'journalentries' %}"
+        ><i class="fa fa-fw fa-table"></i><span>Journal Entries</span></a
+      >
+    </div>
+    <!-- End of Transaction Dropdown -->
+
+    <!-- Reports Dropdown -->
+    <button class="dropdown-btn">
+      <i class="fa fa-fw fa-file"></i> <span>Reports</span>
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-container">
+      <a href="{% url 'trialbalance' %}"
+        ><i class="fa fa-fw fa-balance-scale"></i><span>Trial Balance</span></a
+      >
+      <a href="{% url 'jevapproval' %}"
+        ><i class="fa fa-fw fa-like"></i><span>JEV Approval</span></a
+      >
+    </div>
+    <!-- End of Reports Dropdown -->
+
+    <a class="active" href="#payment">
+      <i class="fa fa-fw fa-money"></i> <span>Payment</span>
+    </a>
+    <!-- Sidebar footer for logo and version -->
+    <div class="sidebar-footer">
+      <img src="/static/images/tikme-logo.png" alt="TikmeDineLogo" />
+    </div>
+  </div>
 </div>
