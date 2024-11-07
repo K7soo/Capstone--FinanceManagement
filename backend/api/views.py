@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -39,7 +40,6 @@ def jev_approval_view(request):
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def crud_accounts_view(request):
-    # Handle GET requests
     if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         # Fetch and return JSON data for AJAX GET requests
         account_records = AccountType.objects.all()
@@ -47,7 +47,6 @@ def crud_accounts_view(request):
         return JsonResponse(serialized_accounts.data, safe=False)
 
     if request.method == 'GET':
-        # Handle AJAX GET request
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             accounts = AccountType.objects.all()
             serializer = AccountTypeSerializer(accounts, many=True)
@@ -100,21 +99,44 @@ def crud_accounts_change(request, pk=None):
             return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
-
 # CRUD Chart of Accounts
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def chart_of_accounts_view(request):
-    if request.method == "GET":
-        ChartOfAccounts = ChartOfAccs.objects.all()
-        serializer = ChartOfAccsSerializer(ChartOfAccounts, many=True)
+    if request.method == 'GET':
+        chart_of_accounts = ChartOfAccs.objects.all()
+        serializer = ChartOfAccsSerializer(chart_of_accounts, many=True)
         return render(request, 'chartofacc.html', {'ChartOfAccounts': serializer.data})
-    
-    if request.method == "POST":
+
+    if request.method == 'POST':
         serializer = ChartOfAccsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return render(request, 'chartofacc.html', serializer.data)
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# View to handle GET, PUT, and PATCH requests for a specific Chart of Account entry
+@api_view(['GET', 'PUT', 'PATCH'])
+@permission_classes([AllowAny])
+def chart_of_account_detail_view(request, pk):
+    # Retrieve the specific Chart of Account instance
+    chart_of_account = get_object_or_404(ChartOfAccs, pk=pk)
+
+    if request.method == 'GET':
+        serializer = ChartOfAccsSerializer(chart_of_account)
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+
+    if request.method in ['PUT', 'PATCH']:
+        partial_update = (request.method == 'PATCH')
+        serializer = ChartOfAccsSerializer(chart_of_account, data=request.data, partial=partial_update)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 def journal_templates_view(request):
