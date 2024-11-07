@@ -122,6 +122,11 @@ def payment_view(request):
 def reports_view(request):
     return render(request, 'reports.html')
 
+# Authentication
+def admin_login_view(request):
+    return render(request, 'admin_login.html')
+
+
 # User-Auth View
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
