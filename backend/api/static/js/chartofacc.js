@@ -15,9 +15,12 @@ function getCsrfToken() {
 // Define Constant Elements
 const csrfToken = getCsrfToken();
 const addAccountBtn = document.querySelector('.add-account-btn');
-const modal = document.getElementById('addAccountModal');
+const addChartModal = document.getElementById('addChartModal');
+const editAccountModal = document.getElementById('editChartModal');
 const closeModalBtn = document.querySelector('.close-btn');
+const cancelModalBtns = document.querySelectorAll('.modal-cancel-btn');
 const addAccountForm = document.getElementById('addAccountForm');
+const editAccountForm = document.getElementById('editAccountForm');
 const tableBody = document.querySelector('.table-acc tbody');
 
 console.log("JavaScript loaded successfully"); // Check if JS file is loaded
@@ -33,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Failed to load accounts: ' + response.statusText);
+            throw new Error('Failed to load charts of accounts: ' + response.statusText);
         }
         return response.json();
     })
@@ -71,7 +74,40 @@ addAccountBtn.addEventListener('click', () => {
 // Hide modal when 'X' button is clicked
 closeModalBtn.addEventListener('click', () => {
     modal.style.display = 'none';
+    loadAccountTypes();
 });
+
+// GET ACCOUNTS FROM LIST OF ACCS
+function loadAccountTypes() {
+    fetch('/get-account-types/', {  // Replace with actual path to fetch account types
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load account types');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Clear existing options
+        accountTypeDropdown.innerHTML = '<option value="">Select Account Type</option>';
+
+        // Populate dropdown with fetched data
+        data.forEach(accountType => {
+            const option = document.createElement('option');
+            option.value = accountType.id;  // Assuming `id` is the identifier
+            option.textContent = accountType.AccountName;  // Replace `AccountName` with the correct field name
+            accountTypeDropdown.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Error loading account types:', error));
+}
+
 
 // Close the modal when clicking outside of the modal content
 window.addEventListener('click', (event) => {
@@ -84,138 +120,22 @@ window.addEventListener('click', (event) => {
 addAccountForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent the form from refreshing the page
 
-    // Get the values from the form inputs
-    const accountCode = document.getElementById('accountCode').value;
-    const accountDesc = document.getElementById('accountDesc').value;
-    const natureFlag = document.getElementById('natureFlag').checked;
-    const accountType = document.getElementById('accountType').value;
-
-    // Create a new account data object
-    const newAccount = {
-        AccountCode: accountCode,
-        AccountDesc: accountDesc,
-        NatureFlag: natureFlag,
-        AccountType: accountType
-    };
-
-    fetch('/chartofacc/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-        },
-        body: JSON.stringify(newAccount),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to add account: ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(createdAccount => {
-        console.log("Account successfully added:", createdAccount);
-
-        // Add the new account row to the table
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>${createdAccount.AccountCode}</td>
-            <td>${createdAccount.AccountDesc}</td>
-            <td>${createdAccount.NatureFlag ? 'Debit' : 'Credit'}</td>
-            <td>${createdAccount.AccountType}</td>
-            <td>
-                <button class="view-btn" onclick="viewAccount('${createdAccount.AccountCode}', '${createdAccount.AccountDesc}', '${createdAccount.NatureFlag}', '${createdAccount.AccountType}')">View</button>
-                <button class="edit-btn" onclick="editAccount('${createdAccount.id}', '${createdAccount.AccountCode}', '${createdAccount.AccountDesc}', '${createdAccount.NatureFlag}', '${createdAccount.AccountType}', this)">Edit</button>
-                <button class="delete-btn" onclick="deleteAccount('${createdAccount.id}', this)">Delete</button>
-            </td>
-        `;
-        tableBody.appendChild(newRow);
-
-        // Clear the form inputs and close the modal
-        addAccountForm.reset();
-        modal.style.display = 'none';
-    })
-    .catch(error => console.error('Error adding account:', error));
+    
 });
 
+
+
 // Function to view account details
-function viewAccount(accountCode, accountDesc, natureFlag, accountType) {
-    alert(`Account Code: ${accountCode}\nDescription: ${accountDesc}\nNature Flag: ${natureFlag ? 'Debit' : 'Credit'}\nAccount Type: ${accountType}`);
+function viewAccount(AccountCode, AccountDesc, NatureFlag, AccountType) {
+    alert(`Account Code: ${AccountCode}\nDescription: ${AccountDesc}\nNature Flag: ${NatureFlag ? 'Debit' : 'Credit'}\nAccount Type: ${AccountType}`);
 }
 
 // Function to edit an account
-function editAccount(id, accountCode, accountDesc, natureFlag, accountType, button) {
-    // Populate modal with existing data for editing
-    document.getElementById('accountCode').value = accountCode;
-    document.getElementById('accountDesc').value = accountDesc;
-    document.getElementById('natureFlag').checked = natureFlag === 'true';
-    document.getElementById('accountType').value = accountType;
-    modal.style.display = 'block';
-
-    addAccountForm.onsubmit = function(event) {
-        event.preventDefault();
-
-        // Updated account data
-        const updatedAccount = {
-            AccountCode: document.getElementById('accountCode').value,
-            AccountDesc: document.getElementById('accountDesc').value,
-            NatureFlag: document.getElementById('natureFlag').checked,
-            AccountType: document.getElementById('accountType').value
-        };
-
-        fetch(`/chartofaccchange/${id}/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken,
-            },
-            body: JSON.stringify(updatedAccount),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to update account: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(updatedData => {
-            console.log("Account successfully updated:", updatedData);
-
-            // Update the account row
-            const row = button.closest('tr');
-            row.innerHTML = `
-                <td>${updatedData.AccountCode}</td>
-                <td>${updatedData.AccountDesc}</td>
-                <td>${updatedData.NatureFlag ? 'Debit' : 'Credit'}</td>
-                <td>${updatedData.AccountType}</td>
-                <td>
-                    <button class="view-btn" onclick="viewAccount('${updatedData.AccountCode}', '${updatedData.AccountDesc}', '${updatedData.NatureFlag}', '${updatedData.AccountType}')">View</button>
-                    <button class="edit-btn" onclick="editAccount('${updatedData.id}', '${updatedData.AccountCode}', '${updatedData.AccountDesc}', '${updatedData.NatureFlag}', '${updatedData.AccountType}', this)">Edit</button>
-                    <button class="delete-btn" onclick="deleteAccount('${updatedData.id}', this)">Delete</button>
-                </td>
-            `;
-
-            addAccountForm.reset();
-            modal.style.display = 'none';
-            addAccountForm.onsubmit = null;  // Reset to default behavior
-        })
-        .catch(error => console.error('Error updating account:', error));
-    };
+function editAccount(id, AccountCode, AccountDesc, NatureFlag, AccountType, button) {
+    
 }
 
 // Function to delete an account
 function deleteAccount(id, button) {
-    fetch(`/chartofaccchange/${id}/`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRFToken': csrfToken,
-        },
-    })
-    .then(response => {
-        if (response.status === 204) {
-            console.log("Account successfully deleted.");
-            button.closest('tr').remove();  // Remove the row from the table
-        } else {
-            console.error('Failed to delete account:', response.statusText);
-        }
-    })
-    .catch(error => console.error('Error deleting account:', error));
+    
 }

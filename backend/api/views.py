@@ -11,35 +11,15 @@ from .serializers import *
 
 # from django.views.decorators.csrf import csrf_exempt (this is for testing)
 
-# dashboard view
+# Dashboard view
 def dashboard_view(request):
     return render(request, 'dashboard.html')
 
-# sidebar view 
-def sidebar_view(request):
-    return render(request, 'sidebar.html')
-
-# menubar view
-def menubar_view(request):
-    return render(request, 'menubar.html')
-
-#bookkeeping sidebar button
-def bookkeeping_view(request):
-    return render(request, 'bookkeeping.html')
-
-#transaction inbox sidebar button
-def transaction_inbox_view(request):
-    return render(request, 'trinbox.html')
-
-def jev_approval_view(request):
-    return render(request, 'jevapproval.html')
-
-# Dropdown Button Components
-
+# Dropdown Button Components #
 # CRUD List of Accounts
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
-def crud_accounts_view(request):
+def list_of_accounts_view(request):
     if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         # Fetch and return JSON data for AJAX GET requests
         account_records = AccountType.objects.all()
@@ -70,7 +50,7 @@ def crud_accounts_view(request):
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 @permission_classes([AllowAny])
-def crud_accounts_change(request, pk=None):
+def list_of_accounts_change(request, pk=None):
     # Handle AJAX GET request
     if request.method == 'GET':
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -136,14 +116,18 @@ def chart_of_account_detail_view(request, pk):
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
 def journal_templates_view(request):
     return render(request, 'journaltemp.html')
 
+# Transaction inbox sidebar button
+def transaction_inbox_view(request):
+    return render(request, 'trinbox.html')
+
 def journal_entries_view(request):
     return render(request, 'journalentries.html')
+
+def jev_approval_view(request):
+    return render(request, 'jevapproval.html')
 
 def trial_balance_view(request):
     return render(request, 'trialbalance.html')
@@ -155,12 +139,23 @@ def payment_view(request):
 def reports_view(request):
     return render(request, 'reports.html')
 
-# Authentication
+# sidebar view 
+def sidebar_view(request):
+    return render(request, 'sidebar.html')
+# menubar view
+def menubar_view(request):
+    return render(request, 'menubar.html')
+#bookkeeping sidebar button
+def bookkeeping_view(request):
+    return render(request, 'bookkeeping.html')
+
+
+# Authentication Rendering #
 def admin_login_view(request):
     return render(request, 'admin_login.html')
 
-
-# User-Auth View
+# User-Auth View # 
+# DO NOT TOUCH #
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer

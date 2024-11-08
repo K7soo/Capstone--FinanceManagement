@@ -102,7 +102,7 @@
     </table>
 </div>
 <!-- Add Account Modal -->
-<div id="addAccountModal" class="modal">
+<div id="addChartModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" style="cursor:pointer;">&times;</span>
         <h2>Add New Account</h2>
@@ -121,9 +121,10 @@
                 </select>
 
                 <label for="accountType">Account Type:</label>
+                <label for="accountType">Account Type:</label>
                 <select id="accountType" name="accountType" required>
-                    <option value="Asset">Asset</option>
-                    <option value="Expense">Expense</option>
+                    <option value="">Select Account Type</option>
+                    <!-- Options will be loaded here dynamically -->
                 </select><br><br>
 
                 <button type="submit" class="submit-btn">Add Account</button>

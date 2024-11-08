@@ -25,10 +25,10 @@ const tableBody = document.querySelector('.table-acc tbody');
 
 console.log("JavaScript loaded successfully"); // Check if JS file is loaded
 
-// Load accounts dynamically on page load
+// LOADING ACCOUNTS
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Page loaded, fetching accounts...");
-    fetch('/crudacc/?t=' + new Date().getTime(), {
+    fetch('/listofacc/?t=' + new Date().getTime(), {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
@@ -95,7 +95,7 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// Handle form submission for adding a new account
+// ADD NEW ACCOUNT
 addAccountForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent page refresh
     console.log("Form submission event triggered for adding a new account");
@@ -106,7 +106,7 @@ addAccountForm.addEventListener('submit', (event) => {
     const newAccount = { AccountName: accountName, AccountTypeDesc: accountTypeDesc };
     console.log("Data to be submitted:", newAccount);
 
-    fetch('/crudacc/', {
+    fetch('/listofacc/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ function openEditModal(id, name, description) {
     editAccountModal.style.display = 'block';
 }
 
-// Handle edit form submission for updating an account
+// UPDATE
 editAccountForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -157,7 +157,7 @@ editAccountForm.addEventListener('submit', function(event) {
 
     const updatedAccount = { AccountName: accountName, AccountTypeDesc: accountTypeDesc };
 
-    fetch(`/crudaccchange/${accountId}/`, {
+    fetch(`/listofacc-change/${accountId}/`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -184,12 +184,12 @@ editAccountForm.addEventListener('submit', function(event) {
     .catch(error => console.error('Failed to update account:', error));
 });
 
-// Function to handle the "Delete" button click
+// DELETE
 function deleteAccount(button) {
     const row = button.closest('tr');
     const accountId = row.dataset.id;
 
-    fetch(`/crudaccchange/${accountId}/`, {
+    fetch(`/listofacc-change/${accountId}/`, {
         method: 'DELETE',
         headers: {
             'X-CSRFToken': csrfToken,
