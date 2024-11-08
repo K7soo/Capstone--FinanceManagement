@@ -13,7 +13,7 @@ urlpatterns = [
 
     # System Setup Dropdown Buttons #
         # List of Accounts
-    path('listofacc/', views.list_of_accounts_view, name='crudacc'),
+    path('listofacc/', views.list_of_accounts_view, name='listofacc'),
     path('listofacc-change/', views.list_of_accounts_change, name='list_accounts_change'),
     path('listofacc-change/<int:pk>/', views.list_of_accounts_change, name='list_accounts_change_id'),
 
