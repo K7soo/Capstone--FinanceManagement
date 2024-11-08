@@ -34,7 +34,7 @@ def list_of_accounts_view(request):
 
         accounts = AccountType.objects.all()
         serializer = AccountTypeSerializer(accounts, many=True)
-        return render(request, 'crudacc.html', {'Accounts': serializer.data})
+        return render(request, 'listofacc.html', {'Accounts': serializer.data})
 
     if request.method == "POST":
         print("Received POST request with data:", request.data)
