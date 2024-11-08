@@ -7,6 +7,17 @@ body, html {
   align-items: center; /* Center vertically */
 }
 
+.portal-link {
+  color: #000000; /* Adjust color for the link */
+  font-weight: bold; /* Make text bold */
+  margin-bottom: 10px; /* Add spacing below text */
+  text-decoration: underline; /* Add underline to the link */
+}
+
+.portal-link:hover {
+color: #b44593; /* Optional: Change color on hover */
+}
+
 /* Tikme-logo */
 .tikme-logo {
   width: 100%;         
