@@ -14,13 +14,13 @@ function getCsrfToken() {
 
 // Define Constant Elements
 const csrfToken = getCsrfToken();
-const addAccountBtn = document.querySelector('.add-account-btn');
+const addChartBtn = document.querySelector('.add-chart-btn');
 const addChartModal = document.getElementById('addChartModal');
 const editAccountModal = document.getElementById('editChartModal');
 const closeModalBtn = document.querySelector('.close-btn');
 const cancelModalBtns = document.querySelectorAll('.modal-cancel-btn');
-const addAccountForm = document.getElementById('addAccountForm');
-const editAccountForm = document.getElementById('editAccountForm');
+const addChartForm = document.getElementById('addChartForm');
+const editChartForm = document.getElementById('addChartForm');
 const tableBody = document.querySelector('.table-acc tbody');
 
 console.log("JavaScript loaded successfully"); // Check if JS file is loaded
@@ -67,14 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Show modal when 'Add Account' button is clicked
-addAccountBtn.addEventListener('click', () => {
+addChartBtn.addEventListener('click', () => {
     modal.style.display = 'block';
 });
 
 // Hide modal when 'X' button is clicked
 closeModalBtn.addEventListener('click', () => {
     modal.style.display = 'none';
-    loadAccountTypes();
 });
 
 // GET ACCOUNTS FROM LIST OF ACCS
@@ -117,7 +116,7 @@ window.addEventListener('click', (event) => {
 });
 
 // Handle form submission for adding a new account
-addAccountForm.addEventListener('submit', (event) => {
+addChartForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent the form from refreshing the page
 
     

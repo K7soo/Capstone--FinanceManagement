@@ -10,7 +10,7 @@ h1.title {
 }
 
 /* add button design */
-.add-account-btn {
+.add-chart-btn {
     background-color: #008425; /* Gold color */
     color: white;
     border: none;
@@ -25,8 +25,8 @@ h1.title {
 
 
 /* add button design */ 
-.add-account-btn:hover {
-    background-color: #61396f; /* Change to violet on hover */
+.add-chart-btn:hover {
+    background-color: #00c010; /* Change to violet on hover */
 }
 
 .dropdown {

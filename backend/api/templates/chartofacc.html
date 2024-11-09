@@ -16,9 +16,9 @@
 <div class="table-frame">
     <div class="button-container">
         <div class="button-chart-of-acc">
-            <button class="add-account-btn">ADD ACCOUNT</button>
+            <button class="add-chart-btn">ADD ACCOUNT</button>
             <div class="dropdown">
-                <button class="dropdown-btncoa">ASSET <i class="fa fa-caret-down"></i></button>
+                <button class="dropdown-btncoa">ASSET<i class="fa fa-caret-down"></i></button>
                 <div class="dropdown-content" id="assetDropdown">
                     <a href="#">Assets</a>
                     <a href="#">Liabilities</a>
@@ -106,23 +106,23 @@
     <div class="modal-content">
         <span class="close-btn" style="cursor:pointer;">&times;</span>
         <h2>Add New Account</h2>
-        <form id="addAccountForm">
+        <form id="addChartForm">
             <div class="form-grid">
                 
-                <label for="accountCode">Account Code:</label>
-                <input type="text" class="textbox" name="accountCode" required>
-                <label for="accountDesc">Account Description:</label>
-                <input type="text" class="textbox-desc" name="accountDesc" required>
+                <label for="AccountCode">Account Code:</label>
+                <input type="text" class="textbox" name="AccountCode" required>
+                <label for="AccountDesc">Account Description:</label>
+                <input type="text" class="textbox-desc" name="AccountDesc" required>
 
-                <label for="natureFlag">Nature Flag (D/C):</label>
-                <select id="natureFlag" name="natureFlag" required>
+                <label for="NatureFlag">Nature Flag (D/C):</label>
+                <select id="NatureFlag" name="NatureFlag" required>
                     <option value="Debit">Debit</option>
                     <option value="Credit">Credit</option>
                 </select>
 
-                <label for="accountType">Account Type:</label>
-                <label for="accountType">Account Type:</label>
-                <select id="accountType" name="accountType" required>
+                <label for="AccountType">Account Type:</label>
+                <label for="AccountType">Account Type:</label>
+                <select id="AccountType" name="AccountType" required>
                     <option value="">Select Account Type</option>
                     <!-- Options will be loaded here dynamically -->
                 </select><br><br>

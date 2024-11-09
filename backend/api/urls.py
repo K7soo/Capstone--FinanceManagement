@@ -7,7 +7,6 @@ urlpatterns = [
     path('admin_login/', views.admin_login_view, name='admin_login'),
 
     # SIDEBAR COMPONENTS #
-
     # Dashboard #
     path('dashboard/', views.dashboard_view, name='dashboard'),
 
