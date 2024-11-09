@@ -23,8 +23,8 @@ def list_of_accounts_view(request):
     if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         # Fetch and return JSON data for AJAX GET requests
         account_records = AccountType.objects.all()
-        serialized_accounts = AccountTypeSerializer(account_records, many=True)
-        return JsonResponse(serialized_accounts.data, safe=False)
+        serializer = AccountTypeSerializer(account_records, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
     if request.method == 'GET':
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -95,7 +95,6 @@ def chart_of_accounts_view(request):
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# View to handle GET, PUT, and PATCH requests for a specific Chart of Account entry
 @api_view(['GET', 'PUT', 'PATCH'])
 @permission_classes([AllowAny])
 def chart_of_account_detail_view(request, pk):
@@ -115,9 +114,64 @@ def chart_of_account_detail_view(request, pk):
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+# CRUD Journal Templates
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
 def journal_templates_view(request):
-    return render(request, 'journaltemp.html')
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # Fetch and return JSON data for AJAX GET requests
+        journal_template = TRTemplate.objects.all()
+        serializer = TRTemplateSerializer(journal_template, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    if request.method == 'GET':
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            journal_template = TRTemplate.objects.all()
+            serializer = TRTemplateSerializer(journal_template, many=True)
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+
+        journal_template = TRTemplate.objects.all()
+        serializer = TRTemplateSerializer(journal_template, many=True)
+        return render(request, 'journaltemp.html', {'JournalTemplate': serializer.data})
+
+    if request.method == 'POST':
+        serializer = TRTemplateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([AllowAny])
+def journal_templates_change(request, pk=None):
+    # Handle AJAX GET request
+    if request.method == 'GET':
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            journal_template = TRTemplate.objects.all()
+            serializer = TRTemplateSerializer(journal_template, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+    # Handle DELETE request to delete a specific account by ID
+    if request.method == 'DELETE' and pk:
+        try:
+            journal_template = TRTemplate.objects.get(pk=pk)
+            journal_template.delete()
+            return Response({'message': 'Template deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except TRTemplate.DoesNotExist:
+            return Response({'error': 'Template not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+    if request.method == 'PUT' and pk:
+        try:
+            journal_template = TRTemplate.objects.get(pk=pk)
+            serializer = TRTemplateSerializer(journal_template, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except TRTemplate.DoesNotExist:
+            return Response({'error': 'Template not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 # Transaction inbox sidebar button
 def transaction_inbox_view(request):

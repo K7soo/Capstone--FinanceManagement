@@ -22,6 +22,9 @@ urlpatterns = [
 
         # Journal Templates
     path('journaltemp/', views.journal_templates_view, name='journaltemp'),
+    path('journaltemp-change/', views.journal_templates_change, name='journaltemp'),
+    path('journaltemp-change/<int:pk>', views.journal_templates_change, name='journaltemp'),
+
 
 
     # Transaction Dropdown Buttons #
