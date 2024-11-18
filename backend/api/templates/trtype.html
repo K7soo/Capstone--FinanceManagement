@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+<!-- Always do a load static  -->
+{% load static %}
+
+{% block title %}
+Transaction Type
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/trtype.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h1>Transaction Type Page </h1>
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script src="{% static 'js/trtype.js' %}"></script>
+{% endblock %}

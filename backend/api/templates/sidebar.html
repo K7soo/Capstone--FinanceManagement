@@ -34,12 +34,15 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-container">
-      <a href="{% url 'trinbox' %}"
-        ><i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span></a
-      >
-      <a href="{% url 'journalentries' %}"
-        ><i class="fa fa-fw fa-table"></i><span>Journal Entries</span></a
-      >
+      <a href="{% url 'trinbox' %}">
+        <i class="fa fa-fw fa-inbox"></i><span>Transaction Inbox</span>
+      </a>
+      <a href="{% url 'trtype' %}">
+        <i class="fa fa-fw fa-tablet"></i><span>Transaction Type</span>
+      </a>
+      <a href="{% url 'journalentries' %}">
+        <i class="fa fa-fw fa-table"></i><span>Journal Entries</span>
+      </a>
     </div>
     <!-- End of Transaction Dropdown -->
 
