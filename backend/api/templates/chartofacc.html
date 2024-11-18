@@ -98,6 +98,17 @@
                 <td>Asset</td>
                 <td><button class="btn-view">VIEW</button></td>
             </tr>
+            {% for account in accounts %}
+            <tr>
+                <td>{{ account.AccountCode }}</td>
+                <td>{{ account.AccountDesc }}</td>
+                <td>{{ account.NatureFlag }}</td>
+                <td>{{ account.AccountType }}</td>
+                <td>
+                    <button class="btn-view">VIEW</button>
+                </td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>

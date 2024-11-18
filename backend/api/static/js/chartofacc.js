@@ -68,12 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Show modal when 'Add Account' button is clicked
 addChartBtn.addEventListener('click', () => {
-    modal.style.display = 'block';
+    console.log("Add Account button clicked, opening add modal.");
+    addChartModal.style.display = 'block';
 });
 
 // Hide modal when 'X' button is clicked
 closeModalBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
+    addChartModal.style.display = 'none';
 });
 
 // GET ACCOUNTS FROM LIST OF ACCS
@@ -110,8 +111,8 @@ function loadAccountTypes() {
 
 // Close the modal when clicking outside of the modal content
 window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
+    if (event.target === addChartModal) {
+        addChartModal.style.display = 'none';
     }
 });
 

@@ -20,8 +20,8 @@ def dashboard_view(request):
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def list_of_accounts_view(request):
+    # Fetch and return JSON data for AJAX GET requests
     if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        # Fetch and return JSON data for AJAX GET requests
         account_records = AccountType.objects.all()
         serializer = AccountTypeSerializer(account_records, many=True)
         return JsonResponse(serializer.data, safe=False)
@@ -83,9 +83,14 @@ def list_of_accounts_change(request, pk=None):
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def chart_of_accounts_view(request):
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        chart_of_account = ChartOfAccs.objects.all()
+        serializer = ChartOfAccsSerializer(chart_of_account, many=True)
+        return JsonResponse(serializer.data, safe=False)
+        
     if request.method == 'GET':
-        chart_of_accounts = ChartOfAccs.objects.all()
-        serializer = ChartOfAccsSerializer(chart_of_accounts, many=True)
+        chart_of_account = ChartOfAccs.objects.all()
+        serializer = ChartOfAccsSerializer(chart_of_account, many=True)
         return render(request, 'chartofacc.html', {'ChartOfAccounts': serializer.data})
 
     if request.method == 'POST':
