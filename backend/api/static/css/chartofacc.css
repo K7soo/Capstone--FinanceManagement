@@ -8,6 +8,52 @@ h1.title {
     text-align: left; /* Center the title */
     margin-top: 35px;
 }
+/* File Tree CSS */
+.outer ul {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #333;
+    padding: 10px;
+    list-style: none; /* Remove bullets */
+}
+
+#ul {
+    margin: 0;
+    padding-left: 10px; /* Indent nested items */
+}
+
+.caret {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+    font-weight: bold;
+}
+
+.caret::before {
+    content: '\25B6'; /* Right-pointing arrow */
+    color: #61396f;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.caret-down::before {
+    transform: rotate(90deg); /* Rotate arrow for expanded state */
+}
+
+.nested {
+    display: none; /* Hide nested lists initially */
+    margin-left: 20px; /* Add indentation */
+}
+
+.nested li {
+    padding: 5px 0;
+}
+
+.nested.active {
+    display: block; /* Show nested lists when active */
+}
+
+/* End of File Tree CSS */
+
 
 .flex-parent-container{
     display: flex;

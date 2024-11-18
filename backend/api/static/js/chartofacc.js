@@ -139,3 +139,15 @@ function editAccount(id, AccountCode, AccountDesc, NatureFlag, AccountType, butt
 function deleteAccount(id, button) {
     
 }
+
+// Function for toggle function for word tree file
+document.addEventListener("DOMContentLoaded", function () {
+    const toggler = document.querySelectorAll(".caret");
+
+    toggler.forEach((caret) => {
+        caret.addEventListener("click", function () {
+            this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+        });
+    });
+});

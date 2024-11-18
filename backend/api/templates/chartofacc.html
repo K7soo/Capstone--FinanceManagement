@@ -1,55 +1,67 @@
-{% extends 'base.html' %}
-
-{% load static %}
-
-{% block title %}
-    Chart of Accounts
-{% endblock %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/chartofacc.css' %}">
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %} Chart of Accounts
+{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/chartofacc.css' %}" />
+{% endblock %} {% block content %}
 <h1 class="title">Chart of Accounts</h1>
 
 <div class="flex-parent-container">
     <!-- Sidebar (Optional Left Section) -->
     <div class="flex-left-container">
-        <h3>Sidebar</h3>
-        <ul>
-            <li>Option 1</li>
-            <li>Option 2</li>
-            <li>Option 3</li>
-        </ul>
+        <h3>File Tree</h3>
+        <div class="outer">
+            <ul id="ul">
+                <li>
+                    <span class="caret">Main Folder</span>
+                    <ul class="nested">
+                        <li>File 1</li>
+                        <li>File 2</li>
+                        <li>
+                            <span class="caret">Sub Folder</span>
+                            <ul class="nested">
+                                <li>Sub File 1</li>
+                                <li>Sub File 2</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span class="caret">Another Folder</span>
+                    <ul class="nested">
+                        <li>File A</li>
+                        <li>File B</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
-
+    
     <!-- Main Content Section -->
     <div class="flex-right-container">
-        <h1 class="title">Chart of Accounts</h1>
-
-        <!-- Button Container -->
-        <div class="button-container">
-            <button class="add-chart-btn">ADD ACCOUNT</button>
-            <div class="dropdown">
-                <button class="dropdown-btncoa">ASSET<i class="fa fa-caret-down"></i></button>
-                <div class="dropdown-content" id="assetDropdown">
-                    <a href="#">Assets</a>
-                    <a href="#">Liabilities</a>
-                    <a href="#">Equity</a>
-                </div>
-            </div>
-            <div class="dropdown">
-                <button class="dropdown-btncoa">NATURE FLAG <i class="fa fa-caret-down"></i></button>
-                <div class="dropdown-content" id="debitDropdown">
-                    <a href="#">Debit</a>
-                    <a href="#">Credit</a>
-                </div>
-            </div>
-        </div>
-
         <!-- Table -->
         <div class="table-frame">
+            <!-- Button Container -->
+            <div class="button-container">
+                <button class="add-chart-btn">ADD ACCOUNT</button>
+                <div class="dropdown">
+                    <button class="dropdown-btncoa">
+                        ASSET<i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content" id="assetDropdown">
+                        <a href="#">Assets</a>
+                        <a href="#">Liabilities</a>
+                        <a href="#">Equity</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btncoa">
+                        NATURE FLAG <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content" id="debitDropdown">
+                        <a href="#">Debit</a>
+                        <a href="#">Credit</a>
+                    </div>
+                </div>
+            </div>
             <table class="table-acc">
                 <thead>
                     <tr>
@@ -82,9 +94,9 @@
         <h2>Add New Account</h2>
         <form id="addChartForm" class="form-grid">
             <label for="AccountCode">Account Code:</label>
-            <input type="text" name="AccountCode" required>
+            <input type="text" name="AccountCode" required />
             <label for="AccountDesc">Account Description:</label>
-            <input type="text" name="AccountDesc" required>
+            <input type="text" name="AccountDesc" required />
             <label for="NatureFlag">Nature Flag:</label>
             <select name="NatureFlag" required>
                 <option value="Debit">Debit</option>
@@ -99,9 +111,6 @@
     </div>
 </div>
 
-{% endblock %}
-
-
-{% block extra_js %}
-    <script src="{% static 'js/chartofacc.js' %}"></script>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/chartofacc.js' %}"></script>
 {% endblock %}
