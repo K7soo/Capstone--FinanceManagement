@@ -30,13 +30,22 @@ class ChartOfAccountsView(views.APIView):
         return render(request, 'chartofacc.html', {'ChartOfAccounts': serializer.data})
 
     def post(self, request):
-        serializer = ChartOfAccsSerializer(data=request.data)
+    # Ensure that only the `id` is passed for `AccountType`
+        data = request.data.copy()
+        try:
+            account_type = AccountType.objects.get(id=data['AccountType'])  # Validate if the AccountType exists
+            data['AccountType'] = account_type.id  # Replace the object with the id
+        except AccountType.DoesNotExist:
+            return JsonResponse({'AccountType': ['Invalid AccountType ID provided.']}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = ChartOfAccsSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
+
+        print("Validation Errors:", serializer.errors)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
-        
+            
 # Chart of Accounts - Retrieve, Update (PUT), Partial Update (PATCH)
 class ChartOfAccountDetailView(views.APIView):
     permission_classes = [AllowAny]

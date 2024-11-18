@@ -137,31 +137,29 @@ addChartForm.addEventListener('submit', (event) => {
     const AccountDesc = document.querySelector('input[name="AccountDesc"]').value;
     const NatureFlag = document.querySelector('select[name="NatureFlag"]').value === "Debit";
     const AccountTypeDropdown = document.querySelector('select[name="AccountType"]');
-    const AccountTypeId = AccountTypeDropdown.value; // Get the selected value (ID)
-    const AccountTypeName = AccountTypeDropdown.options[AccountTypeDropdown.selectedIndex].text; // Get the displayed name
+    const AccountType = parseInt(AccountTypeDropdown.value); // Ensure it's an integer
 
-    // Validate that AccountTypeId is selected and valid
-    if (!parseInt(AccountTypeId)) {
+    if (!AccountType) {
         alert("Please select a valid account type.");
         return;
     }
 
-    const newAccount = {
-        AccountCode: AccountCode,
-        AccountDesc: AccountDesc,
-        NatureFlag: NatureFlag, // Convert to boolean
-        AccountType: parseInt(AccountTypeId) // Pass the ID (integer)
+    const NewAccount = {
+        AccountCode,
+        AccountDesc,
+        NatureFlag,
+        AccountType, // Send only the ID
     };
 
-    console.log("Data to be submitted:", newAccount);
+    console.log("Data to be submitted:", NewAccount);
 
     fetch('/chartofacc/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken, 
+            'X-CSRFToken': csrfToken,
         },
-        body: JSON.stringify(newAccount),
+        body: JSON.stringify(NewAccount),
     })
     .then(response => {
         if (!response.ok) {
@@ -172,21 +170,19 @@ addChartForm.addEventListener('submit', (event) => {
     .then(createdAccount => {
         console.log("Account successfully added:", createdAccount);
 
-        // Add the new account to the table
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
+        const NewRow = document.createElement('tr');
+        NewRow.innerHTML = `
             <td>${createdAccount.AccountCode}</td>
             <td>${createdAccount.AccountDesc}</td>
             <td>${createdAccount.NatureFlag ? 'Debit' : 'Credit'}</td>
-            <td>${AccountTypeName}</td> <!-- Show the name of the account type -->
+            <td>${createdAccount.AccountTypeName}</td> <!-- Render the AccountTypeName -->
             <td>
-                <button class="btn-view" onclick="viewAccount('${createdAccount.AccountCode}', '${createdAccount.AccountDesc}', '${createdAccount.NatureFlag}', '${AccountTypeName}')">VIEW</button>
-                <button class="btn-edit" onclick="editAccount('${createdAccount.id}', '${createdAccount.AccountCode}', '${createdAccount.AccountDesc}', '${createdAccount.NatureFlag}', '${AccountTypeId}')">EDIT</button>
+                <button class="btn-view" onclick="viewAccount('${createdAccount.AccountCode}', '${createdAccount.AccountDesc}', '${createdAccount.NatureFlag}', '${createdAccount.AccountTypeName}')">VIEW</button>
+                <button class="btn-edit" onclick="openEditModal('${createdAccount.id}', '${createdAccount.AccountCode}', '${createdAccount.AccountDesc}', '${createdAccount.NatureFlag}', '${createdAccount.AccountType}')">EDIT</button>
                 <button class="btn-delete" onclick="deleteAccount('${createdAccount.id}', this)">DELETE</button>
             </td>
         `;
-        tableBody.appendChild(newRow);
-
+        tableBody.appendChild(NewRow);
         addChartForm.reset();
         addChartModal.style.display = 'none';
     })
@@ -235,7 +231,7 @@ editChartForm.addEventListener('submit', function(event) {
             <td>${updatedAccount.AccountCode}</td>
             <td>${updatedAccount.AccountDesc}</td>
             <td>${updatedAccount.NatureFlag ? 'Debit' : 'Credit'}</td>
-            <td>${updatedAccount.AccountType}</td>
+            <td>${updatedAccount.AccountTypeName}</td>
             <td>
                 <button class="btn-view" onclick="viewAccount('${updatedAccount.AccountCode}', '${updatedAccount.AccountDesc}', '${updatedAccount.NatureFlag}', '${updatedAccount.AccountType}')">VIEW</button>
                 <button class="btn-edit" onclick="openEditModal('${updatedAccount.id}', '${updatedAccount.AccountCode}', '${updatedAccount.AccountDesc}', '${updatedAccount.NatureFlag}', '${updatedAccount.AccountType}')">EDIT</button>
