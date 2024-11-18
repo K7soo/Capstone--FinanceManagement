@@ -137,4 +137,39 @@
 
 {% endblock %} {% block extra_js %}
 <script src="{% static 'js/chartofacc.js' %}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select all elements with the class 'caret'
+        const toggler = document.getElementsByClassName("caret");
+
+        // Loop through each 'caret' element to add event listeners
+        for (let i = 0; i < toggler.length; i++) {
+            toggler[i].addEventListener("click", function () {
+                // Toggle the 'active' class on the sibling 'nested' list
+                const nestedList = this.parentElement.querySelector(".nested");
+                if (nestedList) {
+                    nestedList.classList.toggle("active");
+                }
+
+                // Toggle the 'caret-down' class on the clicked caret
+                this.classList.toggle("caret-down");
+            });
+        }
+
+        // Optional: Add logic to dynamically add items to the tree
+        function addItemToTree(parentNode, label) {
+            const li = document.createElement("li"); // Create a new list item
+            li.textContent = label; // Set the label text
+            parentNode.appendChild(li); // Append the item to the parent node
+        }
+
+        // Example: Add a new item to the 'Assets' section
+        const assetsNode = document.querySelector(".nested > li:first-child");
+        if (assetsNode) {
+            addItemToTree(assetsNode, "New Asset Item");
+        }
+    });
+</script>
+
 {% endblock %}

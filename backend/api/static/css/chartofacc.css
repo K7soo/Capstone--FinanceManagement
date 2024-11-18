@@ -52,6 +52,7 @@ h1.title {
     display: block; /* Show nested lists when active */
 }
 
+
 /* End of File Tree CSS */
 
 
@@ -60,12 +61,12 @@ h1.title {
     flex-wrap: wrap;
     gap: 20px;
     padding: 20px;
-    align-items:flex-start
+    align-items:flex-start;
 }
 .flex-left-container{
     flex: 1;
     max-width: 300px;
-    background-color: #f5f5f5;
+    background-color: #fffff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
