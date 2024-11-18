@@ -1,48 +1,51 @@
 from django.urls import path
-from .views import views_listacc, views_, views_charts
+from . import views, views_charts
 
 urlpatterns = [
     # Authentication #
-    path('', views_.admin_login_view, name='home'),
-    path('admin_login/', views_.admin_login_view, name='admin_login'),
+    path('', views.admin_login_view, name='home'),
+    path('admin_login/', views.admin_login_view, name='admin_login'),
 
     # SIDEBAR COMPONENTS #
     # Dashboard #
-    path('dashboard/', views_.dashboard_view, name='dashboard'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+
     # System Setup Dropdown Buttons #
         # List of Accounts
-    path('listofacc/', views_listacc.ListOfAccountsView.as_view(), name='listofacc'),
-    path('listofacc-change/<int:pk>/', views_listacc.ListOfAccountsChangeView.as_view(), name='list_accounts_change_id'),
-        
+    path('listofacc/', views.list_of_accounts_view, name='listofacc'),
+    path('listofacc-change/', views.list_of_accounts_change, name='list_accounts_change'),
+    path('listofacc-change/<int:pk>/', views.list_of_accounts_change, name='list_accounts_change_id'),
+
         # Chart of Accounts
-    path('get-account-types/', views_charts.AccountTypeListView.as_view(), name='get_account_types'),
-    path('chartofacc/', views_charts.ChartOfAccountsView.as_view(), name='chartofacc'),
-    path('chartofacc/<int:pk>/', views_charts.ChartOfAccountDetailView.as_view(), name='chartofacc_detail'),
+    path('chartofacc/', views.chart_of_accounts_view, name='chartofacc'),
+    path('get-account-types/', views_charts.get_account_types, name='getaccs'),
 
         # Journal Templates
-    path('journaltemp/', views_.journal_templates_view, name='journaltemp'),
-    path('journaltemp-change/', views_.journal_templates_change, name='journaltemp'),
-    path('journaltemp-change/<int:pk>', views_.journal_templates_change, name='journaltemp'),
+    path('journaltemp/', views.journal_templates_view, name='journaltemp'),
+    path('journaltemp-change/', views.journal_templates_change, name='journaltemp'),
+    path('journaltemp-change/<int:pk>', views.journal_templates_change, name='journaltemp'),
+
+
 
     # Transaction Dropdown Buttons #
         # Transaction Inbox 
-    path('trinbox/', views_.transaction_inbox_view, name='trinbox'),
+    path('trinbox/', views.transaction_inbox_view, name='trinbox'),
 
         # Journal Entries 
-    path('journalentries/', views_.journal_entries_view, name='journalentries'),
+    path('journalentries/', views.journal_entries_view, name='journalentries'),
 
         # JEV Approval 
-    path('jevapproval/', views_.jev_approval_view, name='jevapproval'),
+    path('jevapproval/', views.jev_approval_view, name='jevapproval'),
 
     # Reports Dropdown #
         # Reports 
-    path('reports/', views_.reports_view, name='reports'),
+    path('reports/', views.reports_view, name='reports'),
         # Trial Balance 
-    path('trialbalance/', views_.trial_balance_view, name='trialbalance'),
+    path('trialbalance/', views.trial_balance_view, name='trialbalance'),
 
     # Payments #
-    path('payment/', views_.payment_view, name='payment'),
+    path('payment/', views.payment_view, name='payment'),
 
     # Rendering of Menubar
-    path('menubar/', views_.menubar_view, name='menubar'),
+    path('menubar/', views.menubar_view, name='menubar'),
 ]
