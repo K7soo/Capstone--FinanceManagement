@@ -31,14 +31,15 @@ h1.title {
 }
 
 .caret::before {
-    content: '\25B6'; /* Right-pointing arrow */
+    content: '\1F4C1'; /* Folder icon */
     color: #61396f;
     display: inline-block;
     margin-right: 6px;
 }
 
 .caret-down::before {
-    transform: rotate(90deg); /* Rotate arrow for expanded state */
+    content: '\1F4C2'; /* Open folder icon */
+    transform:'\f07c' ; /* Rotate arrow for expanded state */
 }
 
 .nested {
