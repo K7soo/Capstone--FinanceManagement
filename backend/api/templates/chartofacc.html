@@ -13,9 +13,23 @@
 {% block content %}
 <h1 class="title">Chart of Accounts</h1>
 
-<div class="table-frame">
-    <div class="button-container">
-        <div class="button-chart-of-acc">
+<div class="flex-parent-container">
+    <!-- Sidebar (Optional Left Section) -->
+    <div class="flex-left-container">
+        <h3>Sidebar</h3>
+        <ul>
+            <li>Option 1</li>
+            <li>Option 2</li>
+            <li>Option 3</li>
+        </ul>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="flex-right-container">
+        <h1 class="title">Chart of Accounts</h1>
+
+        <!-- Button Container -->
+        <div class="button-container">
             <button class="add-chart-btn">ADD ACCOUNT</button>
             <div class="dropdown">
                 <button class="dropdown-btncoa">ASSET<i class="fa fa-caret-down"></i></button>
@@ -25,7 +39,6 @@
                     <a href="#">Equity</a>
                 </div>
             </div>
-            
             <div class="dropdown">
                 <button class="dropdown-btncoa">NATURE FLAG <i class="fa fa-caret-down"></i></button>
                 <div class="dropdown-content" id="debitDropdown">
@@ -35,114 +48,57 @@
             </div>
         </div>
 
+        <!-- Table -->
+        <div class="table-frame">
+            <table class="table-acc">
+                <thead>
+                    <tr>
+                        <th>Account Code</th>
+                        <th>Account Description</th>
+                        <th>Nature Flag</th>
+                        <th>Account Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example Data -->
+                    <tr>
+                        <td>111001</td>
+                        <td>Cash on Hand</td>
+                        <td>Debit</td>
+                        <td>Asset</td>
+                        <td><button class="btn-view">VIEW</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <table class="table-acc">
-        <thead>
-            <tr>
-                <th>Account Code</th>
-                <th>Account Description</th>
-                <th>Nature Flag</th>
-                <th>Account Type</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Example Data; this will be dynamically filled -->
-            <tr>
-                <td>111001</td>
-                <td>Cash on Hand</td>
-                <td>Debit</td>
-                <td>Asset</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            <tr>
-                <td>111400</td>
-                <td>Accounts Receivable</td>
-                <td>Debit</td>
-                <td>Asset</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            <tr>
-                <td>111500</td>
-                <td>Inventory</td>
-                <td>Debit</td>
-                <td>Asset</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            <tr>
-                <td>111200</td>
-                <td>Furnitures</td>
-                <td>Debit</td>
-                <td>Asset</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            <tr>
-                <td>111300</td>
-                <td>Vehicles</td>
-                <td>Debit</td>
-                <td>Asset</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            <tr>
-                <td>111002</td>
-                <td>Cheque</td>
-                <td>Debit</td>
-                <td>Asset</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            <tr>
-                <td>111007</td>
-                <td>Bonds</td>
-                <td>Debit</td>
-                <td>Asset</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            {% for account in accounts %}
-            <tr>
-                <td>{{ account.AccountCode }}</td>
-                <td>{{ account.AccountDesc }}</td>
-                <td>{{ account.NatureFlag }}</td>
-                <td>{{ account.AccountType }}</td>
-                <td>
-                    <button class="btn-view">VIEW</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
+
 <!-- Add Account Modal -->
 <div id="addChartModal" class="modal">
     <div class="modal-content">
-        <span class="close-btn" style="cursor:pointer;">&times;</span>
+        <span class="close-btn">&times;</span>
         <h2>Add New Account</h2>
-        <form id="addChartForm">
-            <div class="form-grid">
-                
-                <label for="AccountCode">Account Code:</label>
-                <input type="text" class="textbox" name="AccountCode" required>
-                <label for="AccountDesc">Account Description:</label>
-                <input type="text" class="textbox-desc" name="AccountDesc" required>
-
-                <label for="NatureFlag">Nature Flag (D/C):</label>
-                <select id="NatureFlag" name="NatureFlag" required>
-                    <option value="Debit">Debit</option>
-                    <option value="Credit">Credit</option>
-                </select>
-
-                <label for="AccountType">Account Type:</label>
-                <label for="AccountType">Account Type:</label>
-                <select id="AccountType" name="AccountType" required>
-                    <option value="">Select Account Type</option>
-                    <!-- Options will be loaded here dynamically -->
-                </select><br><br>
-
-                <button type="submit" class="submit-btn">Add Account</button>
-            </div>
+        <form id="addChartForm" class="form-grid">
+            <label for="AccountCode">Account Code:</label>
+            <input type="text" name="AccountCode" required>
+            <label for="AccountDesc">Account Description:</label>
+            <input type="text" name="AccountDesc" required>
+            <label for="NatureFlag">Nature Flag:</label>
+            <select name="NatureFlag" required>
+                <option value="Debit">Debit</option>
+                <option value="Credit">Credit</option>
+            </select>
+            <label for="AccountType">Account Type:</label>
+            <select name="AccountType" required>
+                <option value="">Select Account Type</option>
+            </select>
+            <button type="submit" class="submit-btn">Add Account</button>
         </form>
     </div>
 </div>
+
 {% endblock %}
 
 

@@ -9,6 +9,29 @@ h1.title {
     margin-top: 35px;
 }
 
+.flex-parent-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    align-items:flex-start
+}
+.flex-left-container{
+    flex: 1;
+    max-width: 300px;
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.flex-right-container {
+    flex: 3; /* Adjust proportionally */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Spacing between elements inside */
+    width: 100%; /* Ensure it takes the full width */
+}
+
 /* add button design */
 .add-chart-btn {
     background-color: #008425; /* Gold color */
@@ -113,6 +136,7 @@ tr:nth-child(even) {
     justify-content:baseline;
     width: 60%; 
     margin: 0px 0px 12px 0px; 
+    gap: 10px;
 }
 
 .button-chart-of-acc{
