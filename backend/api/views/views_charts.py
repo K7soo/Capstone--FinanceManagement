@@ -3,7 +3,6 @@ from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView
 from rest_framework.permissions import AllowAny
 from django.shortcuts import render, get_object_or_404
-from rest_framework import status
 from ..models import AccountType, ChartOfAccs
 from ..serializers import AccountTypeSerializer, ChartOfAccsSerializer
 

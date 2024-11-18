@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework import generics, status, views
+from rest_framework import status, views
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from ..models import AccountType
