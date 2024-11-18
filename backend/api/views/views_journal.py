@@ -8,6 +8,9 @@ from ..models import TRTemplate, ChartOfAccs
 from ..serializers import TRTemplateSerializer, ChartOfAccsSerializer
 from django.http import JsonResponse
 
+queryset = TRTemplate.objects.all()
+serializer_class = TRTemplateSerializer
+
 class ChartOfAccsListView(APIView):
     permission_classes = [AllowAny]
 

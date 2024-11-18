@@ -9,6 +9,7 @@ urlpatterns = [
     # SIDEBAR COMPONENTS #
     # Dashboard #
     path('dashboard/', views_.dashboard_view, name='dashboard'),
+
     # System Setup Dropdown Buttons #
         # List of Accounts
     path('listofacc/', views_listacc.ListOfAccountsView.as_view(), name='listofacc'),
@@ -20,7 +21,7 @@ urlpatterns = [
     path('chartofacc/<int:pk>/', views_charts.ChartOfAccountDetailView.as_view(), name='chartofacc_detail'),
 
         # Journal Templates
-    
+    path('get-chart-types/', views_journal.ChartOfAccsListView.as_view(), name='get_chartofacc'),
     path('journaltemplate/', views_journal.JournalTemplatesView.as_view(), name='journaltemplate'),
     path('journaltemplate/<int:pk>/', views_journal.JournalTemplatesDetailView.as_view(), name='journaltemplate_detail'),
 

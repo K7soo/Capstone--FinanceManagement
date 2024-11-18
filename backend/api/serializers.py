@@ -37,6 +37,16 @@ class ChartOfAccsSerializer(serializers.ModelSerializer):
             "AccountDesc",
             "NatureFlag",
         ]
+        
+    def validate_NatureFlag(self, value):
+        if not isinstance(value, bool):
+            raise serializers.ValidationError("NatureFlag must be a valid boolean.")
+        return value
+
+    def validate_AccountType(self, value):
+        if not AccountType.objects.filter(pk=value).exists():
+            raise serializers.ValidationError("Invalid AccountType. Must be an existing ID.")
+        return value
 
 # Account Serializer
 class AccountTypeSerializer(serializers.ModelSerializer):
