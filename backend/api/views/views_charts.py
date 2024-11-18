@@ -1,13 +1,14 @@
 from django.http import JsonResponse
-from rest_framework.views import APIView
-from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView
+from rest_framework import status, views
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 from django.shortcuts import render, get_object_or_404
 from ..models import AccountType, ChartOfAccs
 from ..serializers import AccountTypeSerializer, ChartOfAccsSerializer
 
+
 # Get Account Types (Rendering View of Chart of Accounts)
-class AccountTypeListView(APIView):
+class AccountTypeListView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -16,20 +17,28 @@ class AccountTypeListView(APIView):
         return JsonResponse(serializer.data, safe=False)
 
 # Chart of Accounts - List and Create
-class ChartOfAccountsView(ListCreateAPIView):
+class ChartOfAccountsView(views.APIView):
     permission_classes = [AllowAny]
-    queryset = ChartOfAccs.objects.all()
-    serializer_class = ChartOfAccsSerializer
-
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            queryset = self.get_queryset()
-            serializer = self.get_serializer(queryset, many=True)
-            return JsonResponse(serializer.data, safe=False)
-        return render(request, 'chartofacc.html', {'ChartOfAccounts': self.get_serializer(self.get_queryset(), many=True).data})
+            chart_of_accs = ChartOfAccs.objects.all()
+            serializer = ChartOfAccsSerializer(chart_of_accs, many=True)
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+        
+        chart_of_accs = ChartOfAccs.objects.all()
+        serializer = ChartOfAccsSerializer(chart_of_accs, many=True)
+        return render(request, 'chartofacc.html', {'ChartOfAccounts': serializer.data})
 
+    def post(self, request):
+        serializer = ChartOfAccsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+        
 # Chart of Accounts - Retrieve, Update (PUT), Partial Update (PATCH)
-class ChartOfAccountDetailView(RetrieveUpdateAPIView):
+class ChartOfAccountDetailView(views.APIView):
     permission_classes = [AllowAny]
     queryset = ChartOfAccs.objects.all()
     serializer_class = ChartOfAccsSerializer
