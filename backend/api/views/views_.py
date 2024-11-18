@@ -24,6 +24,9 @@ def journal_temp_view(request):
 def transaction_inbox_view(request):
     return render(request, 'trinbox.html')
 
+def transaction_type_view(request):
+    return render(request, 'trtype.html')
+
 def journal_entries_view(request):
     return render(request, 'journalentries.html')
 
