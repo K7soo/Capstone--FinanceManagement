@@ -28,6 +28,8 @@ class TransactionTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ChartOfAccsSerializer(serializers.ModelSerializer):
+    AccountTypeName = serializers.CharField(source='AccountType.AccountName', read_only=True)
+
     class Meta:
         model = ChartOfAccs
         fields = [
@@ -36,8 +38,9 @@ class ChartOfAccsSerializer(serializers.ModelSerializer):
             "AccountCode",
             "AccountDesc",
             "NatureFlag",
+            "AccountTypeName"
         ]
-        
+
     def validate_NatureFlag(self, value):
         if not isinstance(value, bool):
             raise serializers.ValidationError("NatureFlag must be a valid boolean.")
