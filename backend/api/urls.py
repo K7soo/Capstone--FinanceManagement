@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import views_listacc, views_, views_charts
+from .views import *
 
 urlpatterns = [
     # Authentication #
@@ -20,9 +20,9 @@ urlpatterns = [
     path('chartofacc/<int:pk>/', views_charts.ChartOfAccountDetailView.as_view(), name='chartofacc_detail'),
 
         # Journal Templates
-    path('journaltemp/', views_.journal_templates_view, name='journaltemp'),
-    path('journaltemp-change/', views_.journal_templates_change, name='journaltemp'),
-    path('journaltemp-change/<int:pk>', views_.journal_templates_change, name='journaltemp'),
+    
+    path('journaltemplate/', views_journal.JournalTemplatesView.as_view(), name='journaltemplate'),
+    path('journaltemplate/<int:pk>/', views_journal.JournalTemplatesDetailView.as_view(), name='journaltemplate_detail'),
 
     # Transaction Dropdown Buttons #
         # Transaction Inbox 
