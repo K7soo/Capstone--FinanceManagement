@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-<!-- Always do a load static  -->
+<!-- Always do a load static -->
 {% load static %}
 
 {% block title %}
@@ -8,16 +8,96 @@ Transaction Type
 {% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/trtype.css' %}">
+<link rel="stylesheet" href="{% static 'css/trtype.css' %}">
 {% endblock %}
 
 {% block content %}
 
-<h1>Transaction Type Page </h1>
+<h1 class="title">Transaction Type Page</h1>
+
+<div class="transaction-type-dashboard">
+    <!-- Left Section - Tree Structure -->
+    <div class="tree-container">
+        <h3>File Tree</h3>
+        <div class="outer">
+            <ul id="ul">
+                <li>
+                    <span class="caret">List of Transaction Types</span>
+                    <ul class="nested">
+                        <li>Cash Transactions</li>
+                        <li>Non-Cash Transactions</li>
+                        <li>Adjustments and Closing Entries</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Right Section - Table and Filter -->
+    <div class="table-container">
+        <div class="filter-container">
+            <label for="records-per-page">Records Per Page:</label>
+            <select id="records-per-page" name="records-per-page" class="filter-select">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+
+        <!-- Transaction Table -->
+        <table class="transaction-table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ADJ</td>
+                    <td>Adjustments and Closing Entries</td>
+                    <td>
+                        <button class="btn-edit">Edit</button>
+                        <button class="btn-delete">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CAS</td>
+                    <td>Cash Transactions</td>
+                    <td>
+                        <button class="btn-edit">Edit</button>
+                        <button class="btn-delete">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>NCAS</td>
+                    <td>Non-Cash Transactions</td>
+                    <td>
+                        <button class="btn-edit">Edit</button>
+                        <button class="btn-delete">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
 
-
 {% block extra_js %}
-    <script src="{% static 'js/trtype.js' %}"></script>
+<script src="{% static 'js/trtype.js' %}"></script>
+<script>
+    // File Tree Toggle Logic
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggler = document.getElementsByClassName("caret");
+        for (let i = 0; i < toggler.length; i++) {
+            toggler[i].addEventListener("click", function () {
+                this.parentElement.querySelector(".nested").classList.toggle("active");
+                this.classList.toggle("caret-down");
+            });
+        }
+    });
+</script>
 {% endblock %}
