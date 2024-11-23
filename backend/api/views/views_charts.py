@@ -12,7 +12,7 @@ class AccountTypeListView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        account_types = AccountType.objects.all().values('id', 'AccountName')  # Fetch only necessary fields
+        account_types = AccountType.objects.all()  # Return model instances
         serializer = AccountTypeSerializer(account_types, many=True)
         return JsonResponse(serializer.data, safe=False)
 
@@ -30,21 +30,18 @@ class ChartOfAccountsView(views.APIView):
         return render(request, 'chartofacc.html', {'ChartOfAccounts': serializer.data})
 
     def post(self, request):
-    # Ensure that only the `id` is passed for `AccountType`
         data = request.data.copy()
-        try:
-            account_type = AccountType.objects.get(id=data['AccountType'])  # Validate if the AccountType exists
-            data['AccountType'] = account_type.id  # Replace the object with the id
-        except AccountType.DoesNotExist:
-            return JsonResponse({'AccountType': ['Invalid AccountType ID provided.']}, status=status.HTTP_400_BAD_REQUEST)
+        print("request data: ", data)
+        # try:
+        #     data['AccountType_FK'] = int(data['AccountType'])
+        # except ValueError:
+        #     return JsonResponse({'error': 'AccountType must be a valid integer.'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = ChartOfAccsSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-
-        print("Validation Errors:", serializer.errors)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)       
             
 # Chart of Accounts - Retrieve, Update (PUT), Partial Update (PATCH)
 class ChartOfAccountDetailView(views.APIView):

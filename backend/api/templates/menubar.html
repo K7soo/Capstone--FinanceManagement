@@ -1,28 +1,16 @@
 <div class="menubar-wrapper">
-    <div class="sidebar-header">
-        <h2>FINANCE MANAGEMENT</h2>
-        <button class="menu-btn" onclick="toggleSidebar()">
-            <i class="fa fa-bars"></i>
-        </button>
-    </div>
+    <button class="menu-btn" onclick="toggleSidebar()">
+        <i class="fa fa-bars"></i>
+    </button>
+    <h2 class="menubar-title">FINANCE MANAGEMENT</h2>
     <ul class="menubar-list">
-        <div class="sidebar-header">
-            <h2>FINANCE MANAGEMENT</h2>
-            <button class="menu-btn" onclick="toggleSidebar()">
-              <i class="fa fa-bars"></i>
-            </button>
-          </div>
         <li class="profile-icon">
             <i class="fa fa-user" onclick="toggleProfileDropdown()"></i>
-            
-            <!-- Profile dropdown menu -->
             <div class="profile-dropdown">
                 <p>Account ID: user123</p>
                 <a href="#">Settings</a>
-                <a class="logout" href="{% url 'admin_login' %}">Logout</a> <!-- Updated to call the logout function -->
+                <a class="logout" href="{% url 'admin_login' %}">Logout</a>
             </div>
         </li>
-
-
     </ul>
 </div>
