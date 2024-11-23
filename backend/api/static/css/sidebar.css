@@ -43,7 +43,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 15px 10px 20px;
+    padding: 15px 15px 10px 15px;
     font-size: 14px;
     color: #333;
     background-color: #ffffff;
@@ -70,7 +70,7 @@
     border-radius: 5px;
     height: fit-content ;
     width: 1.5rem;
-    padding: 5px;
+    padding: 1px;
 }
 
 /* bookkeeping dropdown button */
