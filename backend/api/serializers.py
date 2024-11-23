@@ -28,17 +28,15 @@ class TransactionTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ChartOfAccsSerializer(serializers.ModelSerializer):
-    AccountTypeName = serializers.CharField(source='AccountType.AccountName', read_only=True)
-
+    AccountType_FK = serializers.PrimaryKeyRelatedField(queryset = AccountType.objects.all())
     class Meta:
         model = ChartOfAccs
         fields = [
-            "id",
-            "AccountType",
+            "id",               # <-- Primary Key of COA
+            "AccountType_FK",   # <-- Foreign Key pointed at AccountType Table
             "AccountCode",
             "AccountDesc",
             "NatureFlag",
-            "AccountTypeName"
         ]
 
     def validate_NatureFlag(self, value):

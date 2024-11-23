@@ -39,7 +39,7 @@ class TransactionType(models.Model):
     TransactionTypeDesc = models.TextField()
 
 class ChartOfAccs(models.Model):
-    AccountType = models.ForeignKey('AccountType', on_delete=models.CASCADE)
+    AccountType_FK = models.ForeignKey('AccountType', on_delete=models.CASCADE)
     AccountCode = models.CharField(max_length=100)
     AccountDesc = models.TextField()
     NatureFlag = models.BooleanField()
