@@ -16,3 +16,44 @@ function logout() {
     console.log("Logging out..."); // For debugging
     window.location.href = "/admin_login/"; // Redirect to the login page
 }
+
+// Toggle the sidebar
+function toggleSidebar() {
+    const sidebar = document.querySelector(".sidebar"); // Sidebar element
+    const mainContent = document.querySelector(".main-content"); // Main content area
+    const menubar = document.querySelector(".menubar-wrapper"); // Menubar wrapper
+
+    // Toggle the collapsed state of the sidebar
+    sidebar.classList.toggle("collapsed");
+
+    // Adjust styles dynamically based on the sidebar state
+    if (sidebar.classList.contains("collapsed")) {
+        // Sidebar is collapsed
+        mainContent.style.marginLeft = "60px"; // Adjust content margin for collapsed sidebar
+        menubar.classList.remove("sidebar-expanded"); // Remove expanded class from menubar
+    } else {
+        // Sidebar is expanded
+        mainContent.style.marginLeft = "250px"; // Adjust content margin for expanded sidebar
+        menubar.classList.add("sidebar-expanded"); // Add expanded class to menubar
+    }
+}
+
+// Initialize sidebar state on page load
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.querySelector(".sidebar");
+    const mainContent = document.querySelector(".main-content");
+    const menubar = document.querySelector(".menubar-wrapper");
+
+    // Check for any saved sidebar state (if applicable)
+    const isCollapsed = localStorage.getItem("sidebar-collapsed");
+
+    if (isCollapsed === "true") {
+        sidebar.classList.add("collapsed");
+        mainContent.style.marginLeft = "60px";
+        menubar.classList.remove("sidebar-expanded");
+    } else {
+        sidebar.classList.remove("collapsed");
+        mainContent.style.marginLeft = "250px";
+        menubar.classList.add("sidebar-expanded");
+    }
+});
