@@ -39,17 +39,12 @@
 }
 
 
-
-
-
-
-
 .sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px 10px 10px;
-    font-size: 18px;
+    font-size: 14px;
     color: #333;
     background-color: #ffffff;
 }
@@ -82,9 +77,9 @@
 a,
 .dropdown-btn {
     margin: 6px;
-    padding: 10px 10px 10px 4px;
+    padding: 7px 7px 7px 4px;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 14px;
     color: #000000;
     display: flex;
     align-items: center; /* Align items for icon and text */
@@ -136,8 +131,8 @@ a i,
 }
 
 .dropdown-container a {
-    font-size: 16px;
-    color: #666;
+    font-size: 14px;
+    color: #000000;
 }
 
 .sidebar-footer {
