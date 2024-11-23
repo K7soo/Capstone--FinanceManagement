@@ -1,7 +1,9 @@
-// Toggle dropdown menu and save state
 var dropdowns = document.getElementsByClassName("dropdown-btn");
 for (let i = 0; i < dropdowns.length; i++) {
-    dropdowns[i].addEventListener("click", function () {
+    dropdowns[i].addEventListener("click", function (event) {
+        // Prevent the default behavior
+        event.preventDefault();
+
         // Toggle active class
         this.classList.toggle("active");
 
@@ -18,6 +20,7 @@ for (let i = 0; i < dropdowns.length; i++) {
         }
     });
 }
+
 
 // Restore dropdown states on page load
 document.addEventListener("DOMContentLoaded", function () {
