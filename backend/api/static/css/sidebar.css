@@ -29,26 +29,20 @@
 }
 
 .sidebar.collapsed {
-    width: 60px; /* Collapsed width */
+    width: 0px; /* Collapsed width */
+        margin-left: 0; /* Remove space */
+
 }
 
-.sidebar.collapsed .sidebar-header h2 {
-    display: none; /* Hide title when collapsed */
+.sidebar.hidden {
+    display: none; /* Fully hide sidebar */
 }
 
-.sidebar.collapsed a,
-.sidebar.collapsed .dropdown-btn {
-    justify-content: center; /* Center icons */
-}
 
-.sidebar.collapsed a span,
-.sidebar.collapsed .dropdown-btn span {
-    display: none; /* Hide text */
-}
 
-.sidebar.collapsed .dropdown-btn .fa-caret-down {
-    display: none; /* Hide arrow icon when collapsed */
-}
+
+
+
 
 .sidebar-header {
     display: flex;
@@ -77,9 +71,11 @@
 /* for hovering the hamburger button to make it violet */
 .menu-btn:hover{
     background-color: #61396f; /* Violet color */
-    color: white !important;
+    color: white;
     border-radius: 10px;
-    padding: 10px;
+    height: fit-content ;
+    width: 1.5rem;
+    padding: 5px;
 }
 
 /* bookkeeping dropdown button */
@@ -161,10 +157,7 @@ a i,
     color: #ff0707;
 }
 
-.sidebar-footer.collapsed img,
-.sidebar-footer.collapsed p {
-    display: none; /* Hide logo and text */
-}
+
 
 /* Main content styles */
 .main-content {
@@ -175,6 +168,4 @@ a i,
     z-index: 0; /* Ensure main content stays below sidebar */
 }
 
-.sidebar.collapsed + .main-content {
-    margin-left: 60px; /* Adjust main content margin when the sidebar is collapsed */
-}
+
