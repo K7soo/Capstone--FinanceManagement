@@ -62,8 +62,11 @@ class ChartOfAccountDetailView(views.APIView):
             serializer = ChartOfAccsSerializer(chart_of_accs, data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                print("Success: Data is updated.")
                 return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+            print("Failed: Data update is unsuccessful.")
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except ChartOfAccs.DoesNotExist:
             return Response({'error': 'Accounts not found'}, status=status.HTTP_404_NOT_FOUND)
+    
         
