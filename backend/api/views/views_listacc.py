@@ -6,8 +6,7 @@ from rest_framework.permissions import AllowAny
 from ..models import AccountType
 from ..serializers import AccountTypeSerializer
 
-
-# Class-based View for List of Accounts
+# List of Accounts - List and Create
 class ListOfAccountsView(views.APIView):
     permission_classes = [AllowAny]
     def get(self, request):
@@ -28,10 +27,9 @@ class ListOfAccountsView(views.APIView):
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Class-based View for CRUD Operations on Individual Accounts
+# List of Accounts - Retrieve, Update (PUT), Partial Update (PATCH)
 class ListOfAccountsChangeView(views.APIView):
     permission_classes = [AllowAny]
-
     def get(self, request, pk=None):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             accounts = AccountType.objects.all()
