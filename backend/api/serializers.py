@@ -13,19 +13,67 @@ class TransactionsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TRTemplateSerializer(serializers.ModelSerializer):
+    TransactionType_FK = serializers.PrimaryKeyRelatedField(queryset = TransactionType.objects.all())
+    TRTemplateDetails_FK = serializers.PrimaryKeyRelatedField(
+        many=True, 
+        queryset = TRTemplateDetails.objects.all()
+    )
+    
     class Meta:
         model = TRTemplate
-        fields = '__all__'
+        fields = [
+            "id",
+            "TRTemplateCode",
+            "Transaction_FK",
+            "TRTemplateDetails_FK",
+        ]
+        
+    def create(self, validated_data):
+        # Extract nested data for TRTemplateDetails
+        details_data = validated_data.pop('details')
+        tr_template = TRTemplate.objects.create(**validated_data)
+
+        # Create TRTemplateDetails objects
+        for detail_data in details_data:
+            TRTemplateDetails.objects.create(TRTemplate_FK=tr_template, **detail_data)
+
+        return tr_template
+
+    def update(self, instance, validated_data):
+        # Update TRTemplate fields
+        details_data = validated_data.pop('details')
+        instance.TRTemplateCode = validated_data.get('TRTemplateCode', instance.TRTemplateCode)
+        instance.TransactionType_FK = validated_data.get('TransactionType_FK', instance.TransactionType_FK)
+        instance.save()
+
+        # Update TRTemplateDetails
+        for detail_data in details_data:
+            detail_id = detail_data.get('id', None)
+            if detail_id:
+                detail_instance = TRTemplateDetails.objects.get(id=detail_id, TRTemplate_FK=instance)
+                detail_instance.Account_FK = detail_data.get('Account_FK', detail_instance.Account_FK)
+                detail_instance.DC_Flag = detail_data.get('DC_Flag', detail_instance.DC_Flag)
+                detail_instance.save()
+            else:
+                TRTemplateDetails.objects.create(TRTemplate_FK=instance, **detail_data)
+
+        return instance
 
 class TRTemplateDetailsSerializer(serializers.ModelSerializer):
+    Account_FK = serializers.PrimaryKeyRelatedField(queryset =ChartOfAccs.objects.all())
     class Meta:
         model = TRTemplateDetails
-        fields = '__all__'
+        fields = [
+            "id",
+            "Account_FK",
+            "DC_Flag",
+        ]
 
 class TransactionTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionType
         fields = [
+            "id",
             "TransactionTypeName",
             "TransactionCode",
             "TransactionTypeDesc",
