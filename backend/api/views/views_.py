@@ -20,6 +20,9 @@ def dashboard_view(request):
 def journal_temp_view(request):
     pass
 
+def transaction_type_view(request):
+    return render(request, "trtype.html")
+
 # Transaction inbox sidebar button
 def transaction_inbox_view(request):
     return render(request, 'trinbox.html')

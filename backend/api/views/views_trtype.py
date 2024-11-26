@@ -17,7 +17,7 @@ class TransactionTypeView(views.APIView):
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
         transaction_type = TransactionType.objects.all()
         serializer = TransactionTypeSerializer(transaction_type, many=True)
-        return render(request, "chartofacc.html", {"TransactionType": serializer.data})
+        return render(request, "trtype.html", {"TransactionType": serializer.data})
 
     def post(self, request):
         serializer = TransactionTypeSerializer(data=request.data)
@@ -25,9 +25,6 @@ class TransactionTypeView(views.APIView):
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def transaction_type_view(request):
-        return render(request, "trtype.html")
 
 
 class TransactionTypeDetailView(views.APIView):
