@@ -116,10 +116,11 @@ table {
 
 
 th, td {
-    padding: 12px; /* Add padding for better spacing */
+    padding: 10px; /* Add padding for better spacing */
     text-align: left; /* Align text to the left */
     border-bottom: 1px solid #ffffff; /* Light grey border */
     white-space: normal; /* Prevent text from wrapping */
+    flex-wrap: nowrap;
     word-wrap: break-word; /* Ensure long words wrap */
     
 }
@@ -312,7 +313,7 @@ tr:nth-child(even) {
 }
 .textbox-desc {
     font-family:'Poppins', sans-serif;
-    border: #ececec;
+    border: #898989;
     height:100%;
     width: 100%;
     max-width: 1000%;
