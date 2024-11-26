@@ -55,19 +55,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Toggle sidebar visibility
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
+    const sidebarWrapper = document.querySelector('.sidebar-wrapper');
     const mainContent = document.querySelector('.main-content');
-    
+
     sidebar.classList.toggle('collapsed');
-    
-    console.log('Sidebar toggled:', sidebar.classList.contains('collapsed')); // Check if toggle is working
-    
-    // Adjust the main content margin-left based on sidebar state
+    sidebarWrapper.classList.toggle('collapsed'); // Collapse the wrapper as well if needed
+
     if (sidebar.classList.contains('collapsed')) {
-        mainContent.style.marginLeft = '0px'; // Adjust this value to match the collapsed sidebar width
+        mainContent.style.marginLeft = '0'; // No margin when sidebar is collapsed
     } else {
-        mainContent.style.marginLeft = '250px'; // Adjust this value to match the expanded sidebar width
+        mainContent.style.marginLeft = '250px'; // Adjust for expanded sidebar width
     }
 }
+

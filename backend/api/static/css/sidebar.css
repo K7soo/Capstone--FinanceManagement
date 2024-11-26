@@ -29,11 +29,13 @@
 }
 
 .sidebar.collapsed {
-    width: 0px; /* Collapsed width */
-        margin-left: 0; /* Remove space */
-
+    width: 0; /* Ensure no width when collapsed */
+    overflow: hidden; /* Hide any content */
+    position: absolute; /* Remove it from the document flow */
 }
-
+.sidebar-wrapper.collapsed {
+    display: none; /* Hide the entire wrapper if necessary */
+}
 .sidebar.hidden {
     display: none; /* Fully hide sidebar */
 }
@@ -43,7 +45,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 15px 10px 15px;
+    padding: 15px 1px 10px 15px;
     font-size: 14px;
     color: #333;
     background-color: #ffffff;
@@ -167,7 +169,7 @@ a i,
 
 /* Main content styles */
 .main-content {
-    margin-left: 250px; /* Default margin to make space for the sidebar */
+    margin-left: 0; /* Default margin to make space for the sidebar */
     padding: 20px;
     transition: margin-left 0.3s ease;
     position: relative; /* Ensure main content appears correctly */
