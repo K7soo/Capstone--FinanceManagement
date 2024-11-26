@@ -313,7 +313,7 @@ tr:nth-child(even) {
     background-color: #8724ac;
     color:#ffffff;
     padding: auto;
-    margin: 20px 0px 0px 0px; 
+    margin-left: auto;
     border: none;
     width: 8rem;
     border-radius: 5px;
