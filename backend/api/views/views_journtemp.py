@@ -24,11 +24,11 @@ class JournalTemplatesView(APIView):
 
     def get(self, request):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            templates = TRTemplate.objects.all()
+            templates = TRTemplate.objects.prefetch_related('details').all()
             serializer = TRTemplateSerializer(templates, many=True)
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
-        templates = TRTemplate.objects.all()
+        templates = TRTemplate.objects.prefetch_related('details').all()
         serializer = TRTemplateSerializer(templates, many=True)
         return render(
             request,
@@ -39,7 +39,7 @@ class JournalTemplatesView(APIView):
     def post(self, request):
         serializer = TRTemplateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save()  # Handles nested creation via the serializer
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -50,7 +50,7 @@ class JournalTemplatesDetailView(APIView):
 
     def get(self, request, pk):
         try:
-            template = TRTemplate.objects.get(pk=pk)
+            template = TRTemplate.objects.prefetch_related('details').get(pk=pk)
             serializer = TRTemplateSerializer(template)
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
         except TRTemplate.DoesNotExist:
@@ -64,7 +64,7 @@ class JournalTemplatesDetailView(APIView):
             template = TRTemplate.objects.get(pk=pk)
             serializer = TRTemplateSerializer(template, data=request.data)
             if serializer.is_valid():
-                serializer.save()
+                serializer.save()  # Handles nested updates via the serializer
                 return JsonResponse(serializer.data, status=status.HTTP_200_OK)
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except TRTemplate.DoesNotExist:
@@ -78,7 +78,7 @@ class JournalTemplatesDetailView(APIView):
             template = TRTemplate.objects.get(pk=pk)
             serializer = TRTemplateSerializer(template, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save()
+                serializer.save()  # Handles partial updates
                 return JsonResponse(serializer.data, status=status.HTTP_200_OK)
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except TRTemplate.DoesNotExist:
@@ -90,7 +90,7 @@ class JournalTemplatesDetailView(APIView):
     def delete(self, request, pk):
         try:
             template = TRTemplate.objects.get(pk=pk)
-            template.delete()
+            template.delete()  # Automatically cascades and deletes associated TRTemplateDetails
             return JsonResponse(
                 {"message": "Journal Template deleted successfully"},
                 status=status.HTTP_204_NO_CONTENT,
