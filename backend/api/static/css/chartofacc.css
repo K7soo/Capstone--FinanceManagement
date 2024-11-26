@@ -209,7 +209,8 @@ tr:nth-child(even) {
     margin: 10% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 40%;
+    width: 90%;
+    max-width: 500px; /* Ensure it doesn't grow too large */
     border-radius: 5px;
 }
 
@@ -311,7 +312,7 @@ tr:nth-child(even) {
 .submit-btn {
     background-color: #8724ac;
     color:#ffffff;
-    padding: 10px 15px 30px 15px;
+    padding: auto;
     margin: 20px 0px 0px 0px; 
     border: none;
     width: 8rem;
@@ -364,9 +365,6 @@ tr:nth-child(even) {
 
 .form-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 10px 50px;
-    margin: 10px 0px 10px 0px;     /* yung haba ng modal form*/
-    align-items: left;
-    height: auto;
+    grid-template-columns: 1fr; /* Switch to single-column */
+    gap: 10px; /* Adjust gaps */
 }
