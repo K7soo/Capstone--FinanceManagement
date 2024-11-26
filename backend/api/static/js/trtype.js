@@ -88,3 +88,58 @@ document.addEventListener("DOMContentLoaded", function () {
         transactionTable.appendChild(newRow);
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const fileTree = document.getElementById("fileTree");
+    const transactionTableBody = document.querySelector(".transaction-table tbody");
+
+    // Sample data (can be replaced with real API data)
+    const transactionData = {
+        Reservations: [
+            { code: "RES01", description: "Reservation Type 1" },
+            { code: "RES02", description: "Reservation Type 2" },
+        ],
+        "Item Procurement": [
+            { code: "PROC01", description: "Procurement Type 1" },
+            { code: "PROC02", description: "Procurement Type 2" },
+        ],
+        "Order Transactions": [
+            { code: "ORD01", description: "Order Type 1" },
+            { code: "ORD02", description: "Order Type 2" },
+        ],
+    };
+
+    // Add event listener to the file tree
+    fileTree.addEventListener("click", function (event) {
+        const clickedElement = event.target;
+
+        // Check if the clicked element has a data-category attribute
+        const category = clickedElement.getAttribute("data-category");
+        if (category && transactionData[category]) {
+            console.log(`Category selected: ${category}`);
+            updateTransactionTable(transactionData[category]);
+        } else {
+            console.log("No valid category selected.");
+        }
+    });
+
+    // Function to update the transaction table
+    function updateTransactionTable(data) {
+        // Clear existing rows
+        transactionTableBody.innerHTML = "";
+
+        // Populate the table with new data
+        data.forEach((transaction) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${transaction.code}</td>
+                <td>${transaction.description}</td>
+                <td>
+                    <button class="btn-edit">Edit</button>
+                    <button class="btn-delete">Delete</button>
+                </td>
+            `;
+            transactionTableBody.appendChild(row);
+        });
+    }
+});

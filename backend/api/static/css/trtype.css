@@ -170,14 +170,17 @@ h1.title {
     margin-bottom: 10px;
 }
 
+
 .tree-structure ul {
     list-style: none;
     padding-left: 20px;
 }
 
-.tree-structure ul li {
+.tree-structure ul, li {
     margin: 10px 0;
     font-size: 14px;
+    cursor: pointer; /* Ensure the pointer cursor appears */
+
 }
 
 .tree-main {
@@ -191,6 +194,7 @@ h1.title {
     background: #ffffff;
     padding: 20px;
     border-radius: 8px;
+    border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -223,16 +227,16 @@ h1.title {
 .transaction-table th,
 .transaction-table td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: none;
 }
 
 .transaction-table th {
-    background-color: #bcbcbc;
+    background-color: #e5e5e5;
     color: black;
 }
 
 .transaction-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #fefefe;
 }
 
 /* Action Buttons */
