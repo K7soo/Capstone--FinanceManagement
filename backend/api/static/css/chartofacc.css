@@ -61,19 +61,20 @@ h1.title {
     display: flex;
     flex-wrap: nowrap;
     gap: 20px;
-    padding: 20px;
+    padding: auto;
     align-items:flex-start;
+    width: 100%; /* Ensure it spans full width */
 }
-.flex-left-container{
-    flex: 1;
-    max-width: 300px;
+.flex-left-container {
+    flex: 0 0 300px; /* Fixed width */
+    max-width: 300px; /* Prevent shrinking */
     background-color: #ffffff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 .flex-right-container {
-    flex: 3; /* Adjust proportionally */
+    flex: 1; /* Adjust proportionally */
     display: flex;
     flex-direction: column;
     gap: 20px; /* Spacing between elements inside */
