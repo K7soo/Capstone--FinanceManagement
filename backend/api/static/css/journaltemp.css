@@ -98,8 +98,8 @@ h1.title {
   display: flex;
   flex-direction: column; /* Stack filters vertically */
   justify-content: flex-start;
-  align-items: center;
-}
+    align-items: flex-start; /* Align items to the left */
+  }
 
 
 .filter-container label {
@@ -108,30 +108,15 @@ h1.title {
   color: #61396f;
 }
 
-.filter-select {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-/* Input Styling */
-.filter-input {
-    padding: 5px;
+/* Input Fields */
+.filter-container input,
+.filter-container select {
+    width: 100%; /* Take full container width */
+    max-width: 300px; /* Optional: Limit the width */
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    width: 100px; /* Set a standard width */
-}
-
-/* Dropdown Select Styling */
-.filter-select {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    width: 200px; /* Set a standard width */
+    font-size: 14px;
 }
 
 /* Add Button */
