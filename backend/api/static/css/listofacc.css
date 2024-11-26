@@ -124,6 +124,15 @@ th, td {
     word-wrap: break-word; /* Ensure long words wrap */
     
 }
+td.actions {
+    text-align: center; /* Center buttons in the cell */
+    white-space: nowrap; /* Prevent wrapping of buttons */
+}
+
+td.actions > * {
+    display: inline-block; /* Ensure inline display for buttons */
+}
+
 
 th {
     background-color: #e5e5e5; /* Violet for header */
@@ -203,6 +212,7 @@ tr:nth-child(even) {
     border-radius: 5px;
     margin-top: 10px;
 }
+
 
 .account-table {
     width: 100%;

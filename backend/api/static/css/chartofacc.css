@@ -166,15 +166,16 @@ table {
 }
 
 th, td {
-    padding: 12px;
+    padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
     white-space: normal; /* Allow wrapping */
     word-wrap: break-word; /* Break long words */
+    flex-wrap: no-wrap;
 }
 
 th {
-    background-color: #bcbcbc;
+    background-color: #e5e5e5;
     color: rgb(0, 0, 0);
 }
 
