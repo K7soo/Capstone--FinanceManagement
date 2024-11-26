@@ -118,7 +118,7 @@ table {
 th, td {
     padding: 12px; /* Add padding for better spacing */
     text-align: left; /* Align text to the left */
-    border-bottom: 1px solid #ddd; /* Light grey border */
+    border-bottom: 1px solid #ffffff; /* Light grey border */
     white-space: normal; /* Prevent text from wrapping */
     word-wrap: break-word; /* Ensure long words wrap */
     
