@@ -6,18 +6,20 @@ from rest_framework.permissions import AllowAny
 from ..models import AccountType
 from ..serializers import AccountTypeSerializer
 
+
 # List of Accounts - List and Create
 class ListOfAccountsView(views.APIView):
     permission_classes = [AllowAny]
+
     def get(self, request):
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
             accounts = AccountType.objects.all()
             serializer = AccountTypeSerializer(accounts, many=True)
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
         accounts = AccountType.objects.all()
         serializer = AccountTypeSerializer(accounts, many=True)
-        return render(request, 'listofacc.html', {'Accounts': serializer.data})
+        return render(request, "listofacc.html", {"Accounts": serializer.data})
 
     def post(self, request):
         serializer = AccountTypeSerializer(data=request.data)
@@ -30,8 +32,9 @@ class ListOfAccountsView(views.APIView):
 # List of Accounts - Retrieve, Update (PUT), Partial Update (PATCH)
 class ListOfAccountsChangeView(views.APIView):
     permission_classes = [AllowAny]
+
     def get(self, request, pk=None):
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
             accounts = AccountType.objects.all()
             serializer = AccountTypeSerializer(accounts, many=True)
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
@@ -40,9 +43,14 @@ class ListOfAccountsChangeView(views.APIView):
         try:
             account = AccountType.objects.get(pk=pk)
             account.delete()
-            return Response({'message': 'Account deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {"message": "Account deleted successfully"},
+                status=status.HTTP_204_NO_CONTENT,
+            )
         except AccountType.DoesNotExist:
-            return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Account not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def put(self, request, pk=None):
         try:
@@ -53,4 +61,6 @@ class ListOfAccountsChangeView(views.APIView):
                 return JsonResponse(serializer.data, status=status.HTTP_200_OK)
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except AccountType.DoesNotExist:
-            return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Account not found"}, status=status.HTTP_404_NOT_FOUND
+            )

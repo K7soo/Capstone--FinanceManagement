@@ -21,7 +21,7 @@ List of Accounts
         <table class="table-acc">
             <thead>
                 <tr>
-                    <th>Account Name</th>
+                    <th>Account Code</th>
                     <th>Description</th>
                     <th>Actions</th>
                 </tr>
@@ -39,7 +39,7 @@ List of Accounts
                 </tr>
                 {% for account in accounts %}
                 <tr>
-                    <td>{{ account.AccountName }}</td>
+                    <td>{{ account.AccountCode }}</td>
                     <td>{{ account.AccountTypeDesc }}</td>
                     <td>
                         <button class="btn-edit">EDIT</button>
@@ -58,8 +58,8 @@ List of Accounts
             <h2>Add New Account</h2>
             <form id="addAccountForm">
                 <div class="form-grid">
-                    <label for="AccountName">Account Name:</label>
-                    <input type="text" id="AccountName" class="textbox" name="AccountName" required>
+                    <label for="AccountCode">Account Code:</label>
+                    <input type="text" id="AccountName" class="textbox" name="AccountCode" required>
     
                     <label for="AccountTypeDesc">Account Description:</label>
                     <input type="text" id="AccountTypeDesc" class="textbox-desc" name="AccountTypeDesc" required>
@@ -84,8 +84,8 @@ List of Accounts
             <h2>Edit Account</h2>
             <form id="editAccountForm">
                 <div class="form-grid">
-                    <label for="EditAccountName">Account Name:</label>
-                    <input type="text" id="EditAccountName" class="textbox" name="EditAccountName" required>
+                    <label for="EditAccountCode">Account Code:</label>
+                    <input type="text" id="EditAccountCode" class="textbox" name="EditAccountCode" required>
 
                     <label for="EditAccountTypeDesc">Account Description:</label>
                     <input type="text" id="EditAccountTypeDesc" class="textbox-desc" name="EditAccountTypeDesc" required>
