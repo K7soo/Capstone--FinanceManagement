@@ -10,6 +10,96 @@ h1.title {
     margin-top: 35px;
 }
 
+/* Modal Container Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 40%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Title Styling */
+.modal-content h2 {
+    color: #61396f;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form Grid Styling */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Single-column layout */
+    gap: 15px; /* Spacing between fields */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* Stack label and input vertically */
+}
+
+.form-group label {
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Button Group Styling */
+.button-group {
+    display: flex;
+    justify-content: flex-start; /* Align buttons to the left */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px;
+    margin-left: auto;
+}
+
+.btn-cancel,
+.btn-add-template-modal {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background-color: #e60000;
+}
+
+.btn-add-template-modal {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-add-template-modal:hover {
+    background-color: #218838;
+}
+
+
+
 /* File Tree CSS */
 .outer ul {
     font-family: 'Poppins', sans-serif;

@@ -44,9 +44,40 @@ Transaction Type
                 <option value="100">100</option>
             </select>
         </div>
-        <div>
-            <button class="btn-add">Add</button>
-        </div>
+        
+<!-- Button to open the Add Transaction Type modal -->
+<button id="openTransactionTypeModalButton" class="btn-add">Add Transaction Type</button>
+
+<!-- Add Transaction Type Modal -->
+<div id="addTransactionTypeModal" class="modal">
+    <div class="modal-content">
+        <h2>Add New Transaction Type</h2>
+        <form id="addTransactionTypeForm" class="form-grid">
+            <div class="form-group">
+                <label for="TransactionTypeName">Transaction Type Name:</label>
+                <input type="text" id="TransactionTypeName" name="TransactionTypeName" placeholder="Enter Transaction Type Name" required />
+            </div>
+            <div class="form-group">
+                <label for="TransactionCode">Transaction Code:</label>
+                <input type="text" id="TransactionCode" name="TransactionCode" placeholder="Enter Transaction Code" required />
+            </div>
+            <div class="form-group">
+                <label for="TypeDescription">Type Description:</label>
+                <input type="text" id="TypeDescription" name="TypeDescription" placeholder="Enter Type Description" required />
+            </div>
+            <!-- Button group -->
+            <div class="button-group">
+                <button type="button" class="btn-cancel" id="cancelTransactionTypeButton">Cancel</button>
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                <button type="submit" class="btn-add-template-modal">Add Transaction Type</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
         <!-- Transaction Table -->
         <table class="transaction-table">
             <thead>
