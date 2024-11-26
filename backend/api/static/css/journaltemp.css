@@ -146,16 +146,16 @@ h1.title {
 .journal-table th,
 .journal-table td {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: none;
 }
 
 .journal-table th {
-  background-color: #bcbcbc;
+  background-color: #e5e5e5;
   color: black;
 }
 
 .journal-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #f5f5f5;
 }
 
 .journal-table .btn-edit {
