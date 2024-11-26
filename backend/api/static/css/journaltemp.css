@@ -1,212 +1,177 @@
 body {
-    background-color: #f8f8ff; /* Light background */
-    font-family: 'Poppins', sans-serif;
+  background-color: #f8f8ff; /* Light background */
+  font-family: 'Poppins', sans-serif;
 }
-/* Modal styles */
+
+/* Title Styling */
 h1.title {
-    color: #61396f; /* Violet color */
-    text-align: left; /* Center the title */
-    margin-top: 35px;
+  color: #61396f; /* Violet color */
+  text-align: left; /* Align title to the left */
+  margin-top: 35px;
 }
 
-/* create voucher button design */
-.create-voucher-button {
-    background-color: #008425; /* Green color */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+/* Journal Template Dashboard Layout */
+.journal-template-dashboard {
+  display: flex;
+  justify-content: space-between; /* Align file tree and table side by side */
+  gap: 20px; /* Space between file tree and table */
+  padding: 20px;
+  background-color: #f8f8ff;
 }
 
-
-/* add button design */ 
-.create-voucher-button:hover {
-    background-color: #61396f; /* Change to violet on hover */
+/* File Tree Container */
+.tree-container {
+  flex: 1; /* Take 1 part of the space */
+  background: #ffffff; /* White background */
+  padding: 20px; /* Inner padding */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  max-width: 300px; /* Limit width of the file tree */
 }
 
-.dropdown {
-    position: relative;
-    display: inline-block;
+.tree-container h3 {
+  font-size: 18px; /* Title font size */
+  font-weight: bold; /* Bold text */
+  color: #333333; /* Dark gray */
+  margin-bottom: 15px; /* Space below the title */
+  text-align: center; /* Center title for consistency */
 }
 
-.dropdown-btncoa {
-    background-color: #61396f; /* Violet color */
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+/* File Tree Structure */
+.outer ul {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #333;
+  padding: 10px;
+  list-style: none; /* Remove bullets */
 }
 
-.dropdown-btn:hover {
-    background-color: #4b2d52; /* Darker violet */
+#fileTree {
+  margin: 0;
+  padding-left: 10px; /* Indent nested items */
 }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f8f8ff; /* Light background */
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    border-radius: 5px;
+.caret {
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+  font-weight: bold;
 }
 
-.dropdown-content a {
-    color: #3b3b3b; /* Dark grey color */
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 14px;
+.caret::before {
+  content: '\1F4C1'; /* Folder icon */
+  color: #61396f;
+  display: inline-block;
+  margin-right: 6px;
 }
 
-.dropdown-content a:hover {
-    background-color: #d1a35a; /* Gold on hover */
+.caret-down::before {
+  content: '\1F4C2'; /* Open folder icon */
+  transform: rotate(0); /* Normal rotation */
 }
 
-.dropdown:hover .dropdown-content {
-    display: block; /* Show dropdown on hover */
+.nested {
+  display: none; /* Hide nested lists initially */
+  margin-left: 20px; /* Add indentation */
 }
 
-/* chart of accounts table */
-table {
-    width: 90%; /* Set width to ensure it fits nicely */
-    margin: 20px auto; /* Center the table */
-    border-collapse: collapse; /* Collapse borders */
+.nested li {
+  padding: 5px 0;
 }
 
-
-th, td {
-    padding: 12px; /* Add padding for better spacing */
-    text-align: left; /* Align text to the left */
-    border-bottom: 1px solid #ddd; /* Light grey border */
+.nested.active {
+  display: block; /* Show nested lists when active */
 }
 
-th {
-    background-color: #bcbcbc; /* Violet for header */
-    color: rgb(0, 0, 0); /* White text for header */
+/* Table Container */
+.table-container {
+  flex: 2; /* Take 2 parts of the space */
+  background: #ffffff; /* White background */
+  padding: 20px; /* Inner padding */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2; /* Light grey for even rows */
+/* Filter Section */
+.filter-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.button-container {
-    display: flex;
-    width: 60%; 
-    /* margin: 0 auto 20px; Center the container and add margin */
+.filter-container label {
+  margin-right: 10px;
+  font-weight: bold;
+  color: #61396f;
 }
 
-
-/* End of table components */
-.modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.4);
+.filter-select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.modal-content {
-    background-color: #f8f8ff;
-    margin: 10% auto; 
-    padding: 20px;
-    border: 1px solid #888;
-    width: 40%;
-    border-radius: 5px;
-}
-
-.close {
-    color: #000000;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #61396f;
-    cursor: pointer;
-}
-
+/* Add Button */
 .btn-add {
-    background-color: #2D9C35;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
+  background-color: #ffcc00; /* Yellow color */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
 }
 
-.btn-save {
-    background-color: #61396f;
-    color: #ffffff;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
+.btn-add:hover {
+  background-color: #ffd633; /* Lighter yellow on hover */
 }
 
-.account-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+/* Journal Table Styling */
+.journal-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
 }
 
-.account-table th, .account-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+.journal-table th,
+.journal-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
 }
 
-.account-table th {
-    background-color: #61396f;
-    color: #fff;
+.journal-table th {
+  background-color: #bcbcbc;
+  color: black;
 }
 
-.btn-view {
-    background-color: #ff9900;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    height: 30px;
-    width: 90px;
+.journal-table tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
-.submit-btn {
-    color: #d1a35a;
-    
+.journal-table .btn-edit {
+  background-color: #28a745; /* Green */
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.table-acc {
-    width: 100%;
-    border-collapse: collpase;
-    font-size: 14px;
-    padding: 0px 0px 0px 0px;
-
+.journal-table .btn-delete {
+  background-color: #dc3545; /* Red */
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.table-frame{
-    width:100%;
-    overflow-x:auto;
-    overflow-y: auto;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    height:500px;
+.journal-table .btn-edit:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.journal-table .btn-delete:hover {
+  background-color: #c82333; /* Darker red on hover */
 }

@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-<!-- Always do a load static  -->
 {% load static %}
 
 {% block title %}
@@ -8,47 +7,76 @@ Journal Templates
 {% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/journaltemp.css' %}">
+<link rel="stylesheet" href="{% static 'css/journaltemp.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1 class="title">Journal Template </h1>
-<div class="table-frame">
-    <div class="button-container">
-        <!-- Create Voucher Button -->
-        <button class="create-voucher-button">CREATE</button>
+
+<h1 class="title">Journal Template</h1>
+<div class="journal-template-dashboard">
+  <!-- File Tree Container -->
+  <div class="tree-container">
+    <h3>File Tree</h3>
+    <div class="outer">
+      <ul id="fileTree">
+        <li>
+          <span class="caret">List of Transaction Types</span>
+          <ul class="nested">
+            <li>Reservations</li>
+            <li>Item Procurement</li>
+            <li>Order Transactions</li>
+          </ul>
+        </li>
+      </ul>
     </div>
-    <table class="table-acc">
-        <thead>
-            <tr>
-                <th>Template Code</th>
-                <th>Transaction Type</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Example Data; this will be dynamically filled -->
-            <tr>
-                <td>TP 001</td>
-                <td>Payment</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            <tr>
-                <td>TP 002</td>
-                <td>Payment</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-            <tr>
-                <td>TP 003</td>
-                <td>Expense</td>
-                <td><button class="btn-view">VIEW</button></td>
-            </tr>
-        </tbody>
+  </div>
+
+  <!-- Table Container -->
+  <div class="table-container">
+
+    <!-- Journal Table -->
+    <table class="journal-table">
+      <thead>
+        <tr>
+          <th>Account Code</th>
+          <th>Account Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ADJ</td>
+          <td>Adjustments and Closing Entries</td>
+          <td>
+            <button class="btn-edit">Edit</button>
+            <button class="btn-delete">Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td>CAS</td>
+          <td>Cash Transactions</td>
+          <td>
+            <button class="btn-edit">Edit</button>
+            <button class="btn-delete">Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td>NCAS</td>
+          <td>Non-Cash Transactions</td>
+          <td>
+            <button class="btn-edit">Edit</button>
+            <button class="btn-delete">Delete</button>
+          </td>
+        </tr>
+      </tbody>
     </table>
+  </div>
 </div>
+
+
+
 {% endblock %}
 
-
 {% block extra_js %}
-    <script src="{% static 'js/journaltemp.js' %}"></script>
+<script src="{% static 'js/journaltemp.js' %}"></script>
 {% endblock %}
