@@ -33,7 +33,24 @@ Journal Templates
 
   <!-- Table Container -->
   <div class="table-container">
-
+    <div class="filter-container">
+      <!-- Template Code Input -->
+      <label for="templateCode">Template Code:</label>
+      <input type="text" id="templateCode" class="filter-input" placeholder="Enter Template Code" />
+    
+      <!-- Transaction Type Dropdown -->
+      <label for="transactionType">Transaction Type:</label>
+      <select id="transactionType" class="filter-select">
+        <option value="reservations">Reservations</option>
+        <option value="itemProcurement">Item Procurement</option>
+        <option value="orderTransactions">Order Transactions</option>
+      </select>
+    
+      <!-- Particulars Input -->
+      <label for="particulars">Particulars:</label>
+      <input type="text" id="particulars" class="filter-input" placeholder="Enter Particulars" />
+    </div>
+    
     <!-- Journal Table -->
     <table class="journal-table">
       <thead>

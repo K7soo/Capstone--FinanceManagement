@@ -13,6 +13,7 @@ h1.title {
 /* Journal Template Dashboard Layout */
 .journal-template-dashboard {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between; /* Align file tree and table side by side */
   gap: 20px; /* Space between file tree and table */
   padding: 20px;
@@ -95,9 +96,11 @@ h1.title {
 .filter-container {
   margin-bottom: 20px;
   display: flex;
+  flex-direction: column; /* Stack filters vertically */
   justify-content: flex-start;
   align-items: center;
 }
+
 
 .filter-container label {
   margin-right: 10px;
@@ -109,6 +112,26 @@ h1.title {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+/* Input Styling */
+.filter-input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100px; /* Set a standard width */
+}
+
+/* Dropdown Select Styling */
+.filter-select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 200px; /* Set a standard width */
 }
 
 /* Add Button */
