@@ -6,10 +6,7 @@ from .models import (
     TRTemplate, 
     TransactionType, 
     ChartOfAccs, 
-    AccountType, 
-    Discounts, 
-    Payments, 
-    PaymentGateway
+    AccountType,
 )
 
 # Register all models with the admin site
@@ -20,7 +17,4 @@ admin.site.register(TRTemplate)
 admin.site.register(TransactionType)
 admin.site.register(ChartOfAccs)
 admin.site.register(AccountType)
-admin.site.register(Discounts)
-admin.site.register(Payments)
-admin.site.register(PaymentGateway)
 

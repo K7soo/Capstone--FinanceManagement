@@ -21,16 +21,17 @@ urlpatterns = [
     path('chartofacc/<int:pk>/', views_charts.ChartOfAccountDetailView.as_view(), name='chartofacc_detail'),
 
         # Journal Templates
-    path('get-chart-types/', views_journal.ChartOfAccsListView.as_view(), name='get_chartofacc'),
-    path('journaltemplate/', views_journal.JournalTemplatesView.as_view(), name='journaltemplate'),
-    path('journaltemplate/<int:pk>/', views_journal.JournalTemplatesDetailView.as_view(), name='journaltemplate_detail'),
+    path('get-chart-types/', views_journtemp.ChartOfAccsListView.as_view(), name='get_chartofacc'),
+    path('journaltemplate/', views_journtemp.JournalTemplatesView.as_view(), name='journaltemplate'),
+    path('journaltemplate/<int:pk>/', views_journtemp.JournalTemplatesDetailView.as_view(), name='journaltemplate_detail'),
+
+    # Transaction Type
+    path('trtype/', views_trtype.TransactionTypeView.as_view(), name='transactiontype'),
+    path('trtype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
 
     # Transaction Dropdown Buttons #
         # Transaction Inbox 
     path('trinbox/', views_.transaction_inbox_view, name='trinbox'),
-
-        # Transaction Type
-    path('trtype/', views_.transaction_type_view, name='trtype'),
 
         # Journal Entries 
     path('journalentries/', views_.journal_entries_view, name='journalentries'),

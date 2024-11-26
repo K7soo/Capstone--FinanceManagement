@@ -5,34 +5,19 @@
 <h1 class="title">Chart of Accounts</h1>
 
 <div class="flex-parent-container">
-    <!-- Sidebar (Optional Left Section) -->
+    <!-- Sidebar -->
     <div class="flex-left-container">
         <h3>File Tree</h3>
         <div class="outer">
             <ul id="fileTree">
-                <li>
-                    <span class="caret">List of Accounts</span>
-                    <ul class="nested">
-                        <li>Assets</li>
-                        <li>Liabilities</li>
-                        <li>
-                            <span class="caret">Sub Folder</span>
-                            <ul class="nested">
-                                <li>Sub File 1</li>
-                                <li>Sub File 2</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                <!-- Dynamic file tree content will be inserted here -->
             </ul>
         </div>
     </div>
     
     <!-- Main Content Section -->
     <div class="flex-right-container">
-        <!-- Table -->
         <div class="table-frame">
-            <!-- Button Container -->
             <div class="button-container">
                 <button class="add-chart-btn">ADD ACCOUNT</button>
             </div>
@@ -41,22 +26,12 @@
                     <tr>
                         <th>Account Code</th>
                         <th>Account Description</th>
-                        <th>Nature Flag</th>
                         <th>Account Type</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example Data -->
-                    <tr>
-                        <td>111001</td>
-                        <td>Cash on Hand</td>
-                        <td>Debit</td>
-                        <td>Asset</td>
-                        <td><button class="btn-view">VIEW</button></td>
-                        <td><button class="btn-edit">EDIT</button></td>
-                        <td><button class="btn-delete">DELETE</button></td>
-                    </tr>
+                    <!-- Dynamic rows will be inserted here -->
                 </tbody>
             </table>
         </div>
@@ -73,14 +48,9 @@
             <input type="text" name="AccountCode" required />
             <label for="AccountDesc">Account Description:</label>
             <input type="text" name="AccountDesc" required />
-            <label for="NatureFlag">Nature Flag:</label>
-            <select name="NatureFlag" required>
-                <option value="Debit">Debit</option>
-                <option value="Credit">Credit</option>
-            </select>
             <label for="AccountType">Account Type:</label>
             <select class="accountType" name="AccountType" required>
-                <option value="">SELECT</option>
+                <option value="">Select Account Type</option>
             </select>
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
             <button type="submit" class="submit-btn">ADD ACCOUNT</button>
@@ -88,6 +58,7 @@
     </div>
 </div>
 
+<!-- Edit Account Modal -->
 <div id="editChartModal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -95,21 +66,12 @@
         <form id="editChartForm" class="form-grid">
             <label for="EditAccountCode">Account Code:</label>
             <input type="text" id="EditAccountCode" name="AccountCode" required />
-
             <label for="EditAccountDesc">Account Description:</label>
             <input type="text" id="EditAccountDesc" name="AccountDesc" required />
-
-            <label for="EditNatureFlag">Nature Flag:</label>
-            <select id="EditNatureFlag" name="NatureFlag" required>
-                <option value="Debit">Debit</option>
-                <option value="Credit">Credit</option>
-            </select>
-
             <label for="EditAccountType">Account Type:</label>
             <select id="EditAccountType" class="accountType" name="AccountType" required>
-                <option value="">SELECT</option>
+                <option value="">Select Account Type</option>
             </select>
-
             <input type="hidden" id="EditAccountId" name="id" />
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
             <button type="submit" class="submit-btn">SAVE CHANGES</button>
@@ -117,7 +79,9 @@
     </div>
 </div>
 
-{% endblock %} {% block extra_js %}
+{% endblock %} 
+
+{% block extra_js %}
 <script src="{% static 'js/chartofacc.js' %}"></script>
 
 <script>

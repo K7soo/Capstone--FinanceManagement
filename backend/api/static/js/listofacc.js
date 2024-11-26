@@ -50,11 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const newRow = document.createElement('tr');
             newRow.setAttribute('data-id', account.id);
             newRow.innerHTML = `
-                <td>${account.AccountName}</td>
+                <td>${account.AccountCode}</td>
                 <td>${account.AccountTypeDesc}</td>
                 <td>
-                    <button class="btn-view" onclick="viewAccount('${account.AccountName}', '${account.AccountTypeDesc}')">VIEW</button>
-                    <button class="btn-edit" onclick="openEditModal('${account.id}', '${account.AccountName}', '${account.AccountTypeDesc}')">EDIT</button>
+                    <button class="btn-view" onclick="viewAccount('${account.AccountCode}', '${account.AccountTypeDesc}')">VIEW</button>
+                    <button class="btn-edit" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')">EDIT</button>
                     <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
                 </td>
             `;
@@ -100,10 +100,10 @@ addAccountForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent page refresh
     console.log("Form submission event triggered for adding a new account");
 
-    const accountName = document.querySelector('input[name="AccountName"]').value;
+    const accountCode = document.querySelector('input[name="AccountCode"]').value;
     const accountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value || "No Description";
 
-    const newAccount = { AccountName: accountName, AccountTypeDesc: accountTypeDesc };
+    const newAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
     console.log("Data to be submitted:", newAccount);
 
     fetch('/listofacc/', {
@@ -124,11 +124,11 @@ addAccountForm.addEventListener('submit', (event) => {
         console.log("Account successfully added:", createdAccount);
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
-            <td>${createdAccount.AccountName}</td>
+            <td>${createdAccount.AccountCode}</td>
             <td>${createdAccount.AccountTypeDesc}</td>
             <td>
-                <button class="btn-view" onclick="viewAccount('${createdAccount.AccountName}', '${createdAccount.AccountTypeDesc}')">VIEW</button>
-                <button class="btn-edit" onclick="openEditModal('${createdAccount.id}', '${createdAccount.AccountName}', '${createdAccount.AccountTypeDesc}')">EDIT</button>
+                <button class="btn-view" onclick="viewAccount('${createdAccount.AccountCode}', '${createdAccount.AccountTypeDesc}')">VIEW</button>
+                <button class="btn-edit" onclick="openEditModal('${createdAccount.id}', '${createdAccount.AccountCode}', '${createdAccount.AccountTypeDesc}')">EDIT</button>
                 <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
             </td>
         `;
@@ -140,9 +140,9 @@ addAccountForm.addEventListener('submit', (event) => {
 });
 
 // Function to open the Edit Account modal with account details populated
-function openEditModal(id, name, description) {
+function openEditModal(id, code, description) {
     document.getElementById('EditAccountId').value = id;
-    document.getElementById('EditAccountName').value = name;
+    document.getElementById('EditAccountCode').value = code ;
     document.getElementById('EditAccountTypeDesc').value = description;
     editAccountModal.style.display = 'block';
 }
@@ -152,10 +152,10 @@ editAccountForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
     const accountId = document.getElementById('EditAccountId').value;
-    const accountName = document.getElementById('EditAccountName').value;
+    const accountCode = document.getElementById('EditAccountCode').value;
     const accountTypeDesc = document.getElementById('EditAccountTypeDesc').value;
 
-    const updatedAccount = { AccountName: accountName, AccountTypeDesc: accountTypeDesc };
+    const updatedAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
 
     fetch(`/listofacc-change/${accountId}/`, {
         method: 'PUT',
@@ -175,7 +175,7 @@ editAccountForm.addEventListener('submit', function(event) {
         console.log("Account successfully updated:", updatedData);
         const row = document.querySelector(`tr[data-id="${accountId}"]`);
         if (row) {
-            row.cells[0].textContent = updatedData.AccountName;
+            row.cells[0].textContent = updatedData.AccountCode;
             row.cells[1].textContent = updatedData.AccountTypeDesc;
         }
         editAccountForm.reset();
@@ -207,6 +207,6 @@ function deleteAccount(button) {
 }
 
 // Function to handle the "View" button click
-function viewAccount(accountName, accountTypeDesc) {
-    alert(`Account Name: ${accountName}\nDescription: ${accountTypeDesc}`);
+function viewAccount(accountCode, accountTypeDesc) {
+    alert(`Account Code: ${accountCode}\nDescription: ${accountTypeDesc}`);
 }

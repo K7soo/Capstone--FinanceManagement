@@ -2,11 +2,6 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import TRTemplate, TRTemplateDetails, TransactionDetails, Transactions, TransactionType, ChartOfAccs, AccountType, Discounts, PaymentGateway, Payments
 
-class TRTemplateDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TRTemplateDetails
-        fields = '__all__'
-
 class TransactionDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionDetails
@@ -22,10 +17,19 @@ class TRTemplateSerializer(serializers.ModelSerializer):
         model = TRTemplate
         fields = '__all__'
 
+class TRTemplateDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TRTemplateDetails
+        fields = '__all__'
+
 class TransactionTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionType
-        fields = '__all__'
+        fields = [
+            "TransactionTypeName",
+            "TransactionCode",
+            "TransactionTypeDesc",
+        ]
 
 class ChartOfAccsSerializer(serializers.ModelSerializer):
     AccountType_FK = serializers.PrimaryKeyRelatedField(queryset = AccountType.objects.all())
@@ -36,7 +40,6 @@ class ChartOfAccsSerializer(serializers.ModelSerializer):
             "AccountType_FK",   # <-- Foreign Key pointed at AccountType Table
             "AccountCode",
             "AccountDesc",
-            "NatureFlag",
         ]
 
     def validate_NatureFlag(self, value):
@@ -55,7 +58,7 @@ class AccountTypeSerializer(serializers.ModelSerializer):
         model = AccountType
         fields = [
             "id",
-            "AccountName",
+            "AccountCode",
             "AccountTypeDesc",
         ]
 
