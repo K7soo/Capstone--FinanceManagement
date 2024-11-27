@@ -31,36 +31,26 @@ Journal Templates
     </div>
   </div>
 
+  <!-- Table Container -->
   <div class="table-container">
     <!-- Button to Trigger Modal -->
     <button class="btn-add" onclick="openAddTemplateModal()">Add Journal Template</button>
-  
+
     <!-- Journal Templates Table -->
     <table class="journal-table">
       <thead>
         <tr>
-          <th>Account Code</th>
-          <th>Account Description</th>
-          <th>Debit</th>
-          <th>Credit</th>
-          <th>Actions</th>
+          <th>Template Code</th>
+          <th>Transaction Type</th>
+          <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>CAS</td>
-          <td>Cash Transactions</td>
-          <td><input type="checkbox" disabled /></td>
-          <td><input type="checkbox" disabled /></td>
-          <td>
-            <button class="btn-edit">Edit</button>
-            <button class="btn-delete">Delete</button>
-          </td>
-        </tr>
+      <tbody id="journalTemplateTable">
+        <!-- Rows added via the modal will appear here -->
       </tbody>
     </table>
   </div>
-  
+
   <!-- Modal Structure -->
   <div id="addTemplateModal" class="modal">
     <div class="modal-content">
@@ -72,16 +62,16 @@ Journal Templates
         <!-- Modal Left Section -->
         <div class="modal-left">
           <label for="templateCode">Template Code:</label>
-          <input type="text" id="templateCode" name="templateCode" placeholder="Enter Template Code" />
-  
+          <input type="text" id="templateCode" placeholder="Enter Template Code" />
+
           <label for="transactionType">Transaction Type:</label>
-          <select id="transactionType" name="transactionType">
+          <select id="transactionType">
             <option value="reservations">Reservations</option>
             <option value="itemProcurement">Item Procurement</option>
             <option value="orderTransactions">Order Transactions</option>
           </select>
         </div>
-  
+
         <!-- Modal Right Section -->
         <div class="modal-right">
           <table class="modal-table">
@@ -91,10 +81,12 @@ Journal Templates
                 <th>Account Description</th>
                 <th>Debit</th>
                 <th>Credit</th>
-                <th>Remove</th> <!-- New column for the "X" button -->  
+                <th>Remove</th>
               </tr>
             </thead>
-            <tbody id="templateRows"></tbody>
+            <tbody id="templateRows">
+              <!-- Rows added via the modal's Add Row button -->
+            </tbody>
           </table>
           <button class="btn-add-row" onclick="addTemplateRow()">Add Row</button>
         </div>
@@ -104,9 +96,7 @@ Journal Templates
       </div>
     </div>
   </div>
-  
-
-  
+</div>
 
 
 {% endblock %}

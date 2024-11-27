@@ -136,7 +136,7 @@ h1.title {
   background-color: #ffd633; /* Lighter yellow on hover */
 }
 
-/* Journal Table Styling */
+/* Styling for Journal Templates Table */
 .journal-table {
   width: 100%;
   border-collapse: collapse;
@@ -146,7 +146,7 @@ h1.title {
 .journal-table th,
 .journal-table td {
   padding: 10px;
-  border: none;
+  border: 1px solid #ddd;
 }
 
 .journal-table th {
@@ -158,15 +158,6 @@ h1.title {
   background-color: #f5f5f5;
 }
 
-.journal-table .btn-edit {
-  background-color: #28a745; /* Green */
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .journal-table .btn-delete {
   background-color: #dc3545; /* Red */
   color: white;
@@ -176,16 +167,11 @@ h1.title {
   cursor: pointer;
 }
 
-.journal-table .btn-edit:hover {
-  background-color: #218838; /* Darker green on hover */
-}
-
 .journal-table .btn-delete:hover {
-  background-color: #c82333; /* Darker red on hover */
+  background-color: #c82333; /* Darker red */
 }
 
-
-/*---------- Modal Styling -------------*/
+/* Modal Styling */
 .modal {
   display: none;
   position: fixed;
@@ -202,7 +188,6 @@ h1.title {
   background-color: #fff;
   margin: 5% auto;
   padding: 20px;
-  border: 1px solid #888;
   border-radius: 8px;
   width: 70%;
   max-width: 900px;
@@ -245,11 +230,12 @@ h1.title {
 
 .modal-left input,
 .modal-left select {
-  padding: 10px;
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 14px;
-  width: 100%;
 }
 
 .modal-right table {
@@ -296,18 +282,16 @@ h1.title {
   color: white;
 }
 
-
-/*  button for removing a row in modal*/
+/* Remove Button */
 .btn-remove-row {
-  background-color: #dc3545; /* Red color */
+  background-color: #dc3545;
   color: white;
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-  font-weight: bold;
 }
 
 .btn-remove-row:hover {
-  background-color: #c82333; /* Darker red */
+  background-color: #c82333;
 }
