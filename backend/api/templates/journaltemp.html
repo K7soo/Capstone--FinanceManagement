@@ -31,11 +31,10 @@ Journal Templates
     </div>
   </div>
 
-  <!-- Table Container -->
   <div class="table-container">
     <!-- Button to Trigger Modal -->
     <button class="btn-add" onclick="openAddTemplateModal()">Add Journal Template</button>
-
+  
     <!-- Journal Templates Table -->
     <table class="journal-table">
       <thead>
@@ -50,8 +49,8 @@ Journal Templates
       </tbody>
     </table>
   </div>
-
-  <!-- Modal Structure -->
+  
+  <!-- Modal for Adding Templates -->
   <div id="addTemplateModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -63,7 +62,7 @@ Journal Templates
         <div class="modal-left">
           <label for="templateCode">Template Code:</label>
           <input type="text" id="templateCode" placeholder="Enter Template Code" />
-
+  
           <label for="transactionType">Transaction Type:</label>
           <select id="transactionType">
             <option value="reservations">Reservations</option>
@@ -71,7 +70,7 @@ Journal Templates
             <option value="orderTransactions">Order Transactions</option>
           </select>
         </div>
-
+  
         <!-- Modal Right Section -->
         <div class="modal-right">
           <table class="modal-table">
@@ -96,7 +95,34 @@ Journal Templates
       </div>
     </div>
   </div>
-</div>
+  
+  <!-- Modal for Viewing Templates -->
+  <div id="viewTemplateModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>View Journal Template</h2>
+        <span class="close" onclick="closeViewTemplateModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p><strong>Template Code:</strong> <span id="viewTemplateCode"></span></p>
+        <p><strong>Transaction Type:</strong> <span id="viewTransactionType"></span></p>
+        <table class="modal-table">
+          <thead>
+            <tr>
+              <th>Account Code</th>
+              <th>Account Description</th>
+              <th>Debit</th>
+              <th>Credit</th>
+            </tr>
+          </thead>
+          <tbody id="viewTemplateRows">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
 
 
 {% endblock %}

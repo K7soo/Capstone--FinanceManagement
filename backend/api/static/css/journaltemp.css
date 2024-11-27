@@ -295,3 +295,44 @@ h1.title {
 .btn-remove-row:hover {
   background-color: #c82333;
 }
+
+
+/*--------------------- View Template Modal ---------------*/
+#viewTemplateModal .modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 70%;
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#viewTemplateModal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#viewTemplateModal .modal-header h2 {
+  margin: 0;
+  color: #61396f;
+}
+
+#viewTemplateModal .modal-header .close {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+#viewTemplateModal .modal-body {
+  margin-top: 20px;
+}
+
+#viewTemplateModal .modal-table th,
+#viewTemplateModal .modal-table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
