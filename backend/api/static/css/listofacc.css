@@ -25,7 +25,7 @@ h1.title {
 .table-frame{
     width:100%;
     overflow-x:auto;
-    overflow-y: auto;
+    overflow-y: hidden; /* Prevent unnecessary vertical scrolling */
     background-color: #fff;
     padding: 30px;
     border-radius: 8px;
@@ -116,19 +116,31 @@ table {
 
 
 th, td {
-    padding: 12px; /* Add padding for better spacing */
+    padding: 10px; /* Add padding for better spacing */
     text-align: left; /* Align text to the left */
-    border-bottom: 1px solid #ddd; /* Light grey border */
-    white-space: nowrap; /* Prevent text from wrapping */
+    border-bottom: 1px solid #ffffff; /* Light grey border */
+    white-space: normal; /* Prevent text from wrapping */
+    flex-wrap: nowrap;
+    word-wrap: break-word; /* Ensure long words wrap */
+    
+}
+td.actions {
+    text-align: center; /* Center buttons in the cell */
+    white-space: nowrap; /* Prevent wrapping of buttons */
 }
 
+td.actions > * {
+    display: inline-block; /* Ensure inline display for buttons */
+}
+
+
 th {
-    background-color: #bcbcbc; /* Violet for header */
+    background-color: #e5e5e5; /* Violet for header */
     color: rgb(0, 0, 0); /* White text for header */
 }
 
 tr:nth-child(even) {
-    background-color: #f2f2f2; /* Light grey for even rows */
+    background-color: #f8f8f8; /* Light grey for even rows */
 }
 
 .button-container {
@@ -200,6 +212,7 @@ tr:nth-child(even) {
     border-radius: 5px;
     margin-top: 10px;
 }
+
 
 .account-table {
     width: 100%;
@@ -310,7 +323,7 @@ tr:nth-child(even) {
 }
 .textbox-desc {
     font-family:'Poppins', sans-serif;
-    border: #ececec;
+    border: #898989;
     height:100%;
     width: 100%;
     max-width: 1000%;
