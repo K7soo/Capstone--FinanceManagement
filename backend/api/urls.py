@@ -22,6 +22,8 @@ urlpatterns = [
 
         # Journal Templates
     path('get-chart-types/', views_journtemp.ChartOfAccsListView.as_view(), name='get_chartofacc'),
+    path('journaltemplate/', views_journtemp.TRTemplateDetailsView.as_view(), name='journaldetail'),
+    path('journaltemplate/<int:pk>', views_journtemp.TRTemplateDetailsDetailView.as_view(), name='journaldetail_detail'),
     path('journaltemplate/', views_journtemp.JournalTemplatesView.as_view(), name='journaltemplate'),
     path('journaltemplate/<int:pk>/', views_journtemp.JournalTemplatesDetailView.as_view(), name='journaltemplate_detail'),
 
