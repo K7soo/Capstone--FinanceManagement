@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+Reports
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservations List</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <h1>Reservations List</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Venue</th>
+                <th>Service Type</th>
+                <th>Guest Count</th>
+                <th>Reservation Date</th>
+                <th>Reservation Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.customer }}</td>
+                <td>{{ reservation.venue }}</td>
+                <td>{{ reservation.service_type }}</td>
+                <td>{{ reservation.guest_count }}</td>
+                <td>{{ reservation.reservation_date }}</td>
+                <td>{{ reservation.reservation_time }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No reservations available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+</body>
+
+{% endblock %}

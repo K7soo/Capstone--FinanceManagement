@@ -128,7 +128,9 @@ addChartForm.addEventListener('submit', event => {
 
     fetch('/chartofacc/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken },
         body: JSON.stringify(newAccount),
     })
     .then(response => {

@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-v7v#(i^h&inmhh=co@_nd#knjr2$zd29s!0(22qla=+#wyp3=@
 # DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 DEBUG = "true"
 # ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['192.168.1.29', 'localhost', '127.0.0.1']
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

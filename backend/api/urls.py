@@ -6,6 +6,10 @@ urlpatterns = [
     path('', views_.admin_login_view, name='home'),
     path('admin_login/', views_.admin_login_view, name='admin_login'),
 
+    # Exposed API's
+        # RRBS -- Sample URL
+        path('reservations-view/', views_api.ReservationsView.as_view(), name='reservations_view'),
+    
     # SIDEBAR COMPONENTS #
     # Dashboard #
     path('dashboard/', views_.dashboard_view, name='dashboard'),
@@ -38,9 +42,9 @@ urlpatterns = [
 
 
     # Transaction Type
-    path('trtype/', views_trtype.TransactionTypeView.as_view(), name='transactiontype'),
+    path('transactiontype/', views_trtype.TransactionTypeView.as_view(), name='transactiontype'),
     
-    path('trtype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
+    path('transactiontype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
 
 
     # Transaction Dropdown Buttons #

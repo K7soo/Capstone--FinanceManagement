@@ -45,44 +45,69 @@ Transaction Type
             </select>
         </div>
         
-<!-- Button to open the Add Transaction Type modal -->
-<button id="openTransactionTypeModalButton" class="btn-add">Add Transaction Type</button>
+        <!-- Button to open the Add Transaction Type modal -->
+        <button id="openTransactionTypeModalButton" class="btn-add">Add Transaction Type</button>
 
-<!-- Add Transaction Type Modal -->
-<div id="addTransactionTypeModal" class="modal">
-    <div class="modal-content">
-        <h2>Add New Transaction Type</h2>
-        <form id="addTransactionTypeForm" class="form-grid">
-            <div class="form-group">
-                <label for="TransactionTypeName">Transaction Type Name:</label>
-                <input type="text" id="TransactionTypeName" name="TransactionTypeName" placeholder="Enter Transaction Type Name" required />
+        <!-- Add Transaction Type Modal -->
+        <div id="addTransactionTypeModal" class="modal">
+            <div class="modal-content">
+                <h2>Add New Transaction Type</h2>
+                <form id="addTransactionTypeForm" class="form-grid">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <div class="form-group">
+                        <label for="TransactionTypeName">Transaction Type Name:</label>
+                        <input type="text" id="TransactionTypeName" name="TransactionTypeName" placeholder="Enter Transaction Name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="TransactionCode">Transaction Code:</label>
+                        <input type="text" id="TransactionCode" name="TransactionCode" placeholder="Enter Transaction Code" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="TypeDescription">Type Description:</label>
+                        <input type="text" id="TransactionTypeDesc" name="TransactionTypeDesc" placeholder="Enter Description" required />
+                    </div>
+                    <!-- Button group -->
+                    <div class="button-group">
+                        <button type="button" class="btn-cancel" id="cancelTransactionTypeButton">Cancel</button>
+                        <button type="submit" class="btn-add-template-modal">Add Transaction Type</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="TransactionCode">Transaction Code:</label>
-                <input type="text" id="TransactionCode" name="TransactionCode" placeholder="Enter Transaction Code" required />
-            </div>
-            <div class="form-group">
-                <label for="TypeDescription">Type Description:</label>
-                <input type="text" id="TypeDescription" name="TypeDescription" placeholder="Enter Type Description" required />
-            </div>
-            <!-- Button group -->
-            <div class="button-group">
-                <button type="button" class="btn-cancel" id="cancelTransactionTypeButton">Cancel</button>
-                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                <button type="submit" class="btn-add-template-modal">Add Transaction Type</button>
-            </div>
-        </form>
-    </div>
-</div>
+        </div>
 
-
-
+        <!-- Edit Transaction Type Modal -->
+        <div id="editTransactionTypeModal" class="modal">
+            <div class="modal-content">
+                <h2>Edit Transaction Type</h2>
+                <form id="editTransactionTypeForm" class="form-grid">
+                    <input type="hidden" id="EditTransactionId">
+                    <div class="form-group">
+                        <label for="EditTransactionCode">Transaction Code:</label>
+                        <input type="text" id="EditTransactionCode" name="EditTransactionCode" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="EditTransactionTypeName">Transaction Type Name:</label>
+                        <input type="text" id="EditTransactionTypeName" name="EditTransactionTypeName" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="EditTransactionDescription">Type Description:</label>
+                        <input type="text" id="EditTransactionDescription" name="EditTransactionDescription" required />
+                    </div>
+                    <!-- Button group -->
+                    <div class="button-group">
+                        <button type="button" class="btn-cancel" id="cancelEditTransactionTypeButton">Cancel</button>
+                        <button type="submit" class="btn-add-template-modal">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <!-- Transaction Table -->
         <table class="transaction-table">
             <thead>
                 <tr>
                     <th>Code</th>
+                    <th>Transaction Type Name</th>
                     <th>Description</th>
                     <th>Actions</th>
                 </tr>
@@ -91,25 +116,28 @@ Transaction Type
                 <tr>
                     <td>ADJ</td>
                     <td>Adjustments and Closing Entries</td>
+                    <td>Description of Adjustments</td>
                     <td>
-                        <button class="btn-edit">Edit</button>
-                        <button class="btn-delete">Delete</button>
+                        <button class="btn-edit" onclick="openEditModal('1', 'ADJ', 'Adjustments and Closing Entries', 'Description of Adjustments')">Edit</button>
+                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
                     </td>
                 </tr>
                 <tr>
                     <td>CAS</td>
                     <td>Cash Transactions</td>
+                    <td>Description of Cash Transactions</td>
                     <td>
-                        <button class="btn-edit">Edit</button>
-                        <button class="btn-delete">Delete</button>
+                        <button class="btn-edit" onclick="openEditModal('2', 'CAS', 'Cash Transactions', 'Description of Cash Transactions')">Edit</button>
+                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
                     </td>
                 </tr>
                 <tr>
                     <td>NCAS</td>
                     <td>Non-Cash Transactions</td>
+                    <td>Description of Non-Cash Transactions</td>
                     <td>
-                        <button class="btn-edit">Edit</button>
-                        <button class="btn-delete">Delete</button>
+                        <button class="btn-edit" onclick="openEditModal('3', 'NCAS', 'Non-Cash Transactions', 'Description of Non-Cash Transactions')">Edit</button>
+                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
                     </td>
                 </tr>
             </tbody>
