@@ -124,6 +124,7 @@ th, td {
     word-wrap: break-word; /* Ensure long words wrap */
     
 }
+
 td.actions {
     text-align: center; /* Center buttons in the cell */
     white-space: nowrap; /* Prevent wrapping of buttons */
@@ -230,6 +231,10 @@ tr:nth-child(even) {
     background-color: #61396f;
     color: #fff;
 }
+
+/* buttons on list of accs */
+
+
 .btn-edit {
     background-color: #0053ec;
     color: white;
@@ -238,7 +243,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 90px;
+    width: 80px;
 }
 .btn-edit:hover{
     background-color: #2f78ff;
@@ -253,7 +258,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 90px;
+    width: 80px;
 }
 .btn-view:hover{
     background-color: #ffad32;
@@ -267,7 +272,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 90px;
+    width: 80px;
 }
 .btn-delete:hover{
     background-color: #ff3d3d;
