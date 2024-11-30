@@ -67,41 +67,71 @@ document.addEventListener("DOMContentLoaded", () => {
 // Show Add Account modal when 'Add Account' button is clicked
 addAccountBtn.addEventListener('click', () => {
     console.log("Add Account button clicked, opening add modal.");
-    addAccountModal.style.display = 'block';
+    addAccountModal.style.display = 'flex';
+    addAccountModal.classList.add('show');
+    document.body.classList.add('modal-open'); // Prevent scrolling of the body
 });
 
 // Close any modal when 'X' button or 'Cancel' button is clicked
 closeModalBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        addAccountModal.style.display = 'none';
-        editAccountModal.style.display = 'none';
+        closeModal();
     });
 });
 
 cancelModalBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        addAccountModal.style.display = 'none';
-        editAccountModal.style.display = 'none';
+        closeModal();
     });
 });
 
 // Close the modal when clicking outside the modal content
 window.addEventListener('click', (event) => {
-    if (event.target === addAccountModal) {
-        addAccountModal.style.display = 'none';
-    }
-    if (event.target === editAccountModal) {
-        editAccountModal.style.display = 'none';
+    if (event.target === addAccountModal || event.target === editAccountModal) {
+        closeModal();
     }
 });
 
-// ADD NEW ACCOUNT
+// Function to close modals and reset body state
+function closeModal() {
+    addAccountModal.style.display = 'none';
+    editAccountModal.style.display = 'none';
+    addAccountModal.classList.remove('show');
+    editAccountModal.classList.remove('show');
+    document.body.classList.remove('modal-open'); // Allow scrolling of the body
+}
+
+// ADD NEW ACCOUNT with validation
 addAccountForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent page refresh
     console.log("Form submission event triggered for adding a new account");
 
-    const accountCode = document.querySelector('input[name="AccountCode"]').value;
-    const accountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value || "No Description";
+    const accountCode = document.querySelector('input[name="AccountCode"]').value.trim();
+    const accountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value.trim();
+
+    // Form validation
+    const accountCodePattern = /^\d{1,10}$/;
+    if (!accountCodePattern.test(accountCode)) {
+        alert('Account Code must be a number with up to 10 digits.');
+        return;
+    }
+
+    const accountTypeDescPattern = /^[a-zA-Z.,\s]+$/;
+    if (!accountTypeDescPattern.test(accountTypeDesc)) {
+        alert('Account Description can only contain letters, commas, dots, and spaces.');
+        return;
+    }
+
+    // Additional validation for meaningful description
+    if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
+        alert('Account Description must be between 10 and 100 characters long.');
+        return;
+    }
+
+    if (accountTypeDesc.split(' ').length < 2) {
+        alert('Account Description must contain at least two words.');
+        return;
+    }
 
     const newAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
     console.log("Data to be submitted:", newAccount);
@@ -123,6 +153,7 @@ addAccountForm.addEventListener('submit', (event) => {
     .then(createdAccount => {
         console.log("Account successfully added:", createdAccount);
         const newRow = document.createElement('tr');
+        newRow.setAttribute('data-id', createdAccount.id);
         newRow.innerHTML = `
             <td>${createdAccount.AccountCode}</td>
             <td>${createdAccount.AccountTypeDesc}</td>
@@ -134,7 +165,7 @@ addAccountForm.addEventListener('submit', (event) => {
         `;
         tableBody.appendChild(newRow);
         addAccountForm.reset();
-        addAccountModal.style.display = 'none';
+        closeModal();
     })
     .catch(error => console.error('Failed to add account:', error));
 });
@@ -142,18 +173,44 @@ addAccountForm.addEventListener('submit', (event) => {
 // Function to open the Edit Account modal with account details populated
 function openEditModal(id, code, description) {
     document.getElementById('EditAccountId').value = id;
-    document.getElementById('EditAccountCode').value = code ;
+    document.getElementById('EditAccountCode').value = code;
     document.getElementById('EditAccountTypeDesc').value = description;
-    editAccountModal.style.display = 'block';
+    editAccountModal.style.display = 'flex';
+    editAccountModal.classList.add('show');
+    document.body.classList.add('modal-open'); // Prevent scrolling of the body
 }
 
-// UPDATE
+// UPDATE with validation
 editAccountForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
     const accountId = document.getElementById('EditAccountId').value;
-    const accountCode = document.getElementById('EditAccountCode').value;
-    const accountTypeDesc = document.getElementById('EditAccountTypeDesc').value;
+    const accountCode = document.getElementById('EditAccountCode').value.trim();
+    const accountTypeDesc = document.getElementById('EditAccountTypeDesc').value.trim();
+
+    // Form validation
+    const accountCodePattern = /^\d{1,10}$/;
+    if (!accountCodePattern.test(accountCode)) {
+        alert('Account Code must be a number with up to 10 digits.');
+        return;
+    }
+
+    const accountTypeDescPattern = /^[a-zA-Z.,\s]+$/;
+    if (!accountTypeDescPattern.test(accountTypeDesc)) {
+        alert('Account Description can only contain letters, commas, dots, and spaces.');
+        return;
+    }
+
+    // Additional validation for meaningful description
+    if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
+        alert('Account Description must be between 10 and 100 characters long.');
+        return;
+    }
+
+    if (accountTypeDesc.split(' ').length < 2) {
+        alert('Account Description must contain at least two words.');
+        return;
+    }
 
     const updatedAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
 
@@ -179,7 +236,7 @@ editAccountForm.addEventListener('submit', function(event) {
             row.cells[1].textContent = updatedData.AccountTypeDesc;
         }
         editAccountForm.reset();
-        editAccountModal.style.display = 'none';
+        closeModal();
     })
     .catch(error => console.error('Failed to update account:', error));
 });
