@@ -1,16 +1,7 @@
-{% extends 'base.html' %}
-
-{% load static %}
-
-{% block title %}
-Journal Templates
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/journaltemp.css' %}">
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %} Journal Templates
+{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/journaltemp.css' %}" />
+{% endblock %} {% block content %}
 
 <h1 class="title">Journal Template</h1>
 <div class="journal-template-dashboard">
@@ -33,8 +24,10 @@ Journal Templates
 
   <div class="table-container">
     <!-- Button to Trigger Modal -->
-    <button class="btn-add" onclick="openAddTemplateModal()">Add Journal Template</button>
-  
+    <button class="btn-add" onclick="openAddTemplateModal()">
+      Add Journal Template
+    </button>
+
     <!-- Journal Templates Table -->
     <table class="journal-table">
       <thead>
@@ -49,53 +42,105 @@ Journal Templates
       </tbody>
     </table>
   </div>
-  
+
   <!-- Modal for Adding Templates -->
   <div id="addTemplateModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2>Add New Journal Template</h2>
-        <span class="close" onclick="closeAddTemplateModal()">&times;</span>
-      </div>
-      <div class="modal-body">
-        <!-- Modal Left Section -->
-        <div class="modal-left">
-          <label for="templateCode">Template Code:</label>
-          <input type="text" id="templateCode" placeholder="Enter Template Code" />
-  
-          <label for="transactionType">Transaction Type:</label>
-          <select id="transactionType">
-            <option value="reservations">Reservations</option>
-            <option value="itemProcurement">Item Procurement</option>
-            <option value="orderTransactions">Order Transactions</option>
-          </select>
+        <div class="modal-header">
+            <h2>Add New Journal Template</h2>
+            <span class="close" onclick="closeAddTemplateModal()">&times;</span>
         </div>
-  
-        <!-- Modal Right Section -->
-        <div class="modal-right">
-          <table class="modal-table">
-            <thead>
-              <tr>
-                <th>Account Code</th>
-                <th>Account Description</th>
-                <th>Debit</th>
-                <th>Credit</th>
-                <th>Remove</th>
-              </tr>
-            </thead>
-            <tbody id="templateRows">
-              <!-- Rows added via the modal's Add Row button -->
-            </tbody>
-          </table>
-          <button class="btn-add-row" onclick="addTemplateRow()">Add Row</button>
+        <div class="modal-body">
+            <!-- Modal Left Section -->
+            <div class="modal-left">
+                <label for="templateCode">Template Code:</label>
+                <input type="text" id="templateCode" placeholder="Enter Template Code" />
+
+                <label for="transactionType">Transaction Type:</label>
+                <select id="transactionType">
+                    <option value="reservations">Reservations</option>
+                    <option value="itemProcurement">Item Procurement</option>
+                    <option value="orderTransactions">Order Transactions</option>
+                </select>
+
+                <!-- Button to Save Template (Step 1) -->
+                <button class="btn-save-template-step1" onclick="saveTemplate()">Save Template</button>
+            </div>
+
+            <!-- Modal Right Section - initially hidden -->
+            <div class="modal-right" style="display: none;" id="modalRightSection">
+                <h3>Attach Accounts to Template</h3>
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th>Account Code</th>
+                            <th>Account Description</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody id="templateRows">
+                        <!-- Rows added via the modal's Add Row button -->
+                    </tbody>
+                </table>
+                <button class="btn-add-row" onclick="addTemplateRow()">Add Row</button>
+                <button class="btn-save-template" onclick="saveEditedTemplate()">Save Changes</button>
+            </div>
         </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-save-template" onclick="saveTemplate()">Save Template</button>
-      </div>
     </div>
-  </div>
-  
+</div>
+
+
+  <!-- Modal for Editing Templates (Adding Rows) -->
+  <div id="addTemplateModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Journal Template</h2>
+            <span class="close" onclick="closeAddTemplateModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <!-- Modal Left Section -->
+            <div class="modal-left">
+                <label for="templateCode">Template Code:</label>
+                <input type="text" id="templateCode" placeholder="Enter Template Code" />
+
+                <label for="transactionType">Transaction Type:</label>
+                <select id="transactionType">
+                    <option value="reservations">Reservations</option>
+                    <option value="itemProcurement">Item Procurement</option>
+                    <option value="orderTransactions">Order Transactions</option>
+                </select>
+
+                <!-- Button to Save Template (Step 1) -->
+                <button class="btn-save-template-step1" onclick="saveTemplate()">Save Template</button>
+            </div>
+
+            <!-- Modal Right Section - initially hidden -->
+            <div class="modal-right" style="display: none;" id="modalRightSection">
+                <h3>Attach Accounts to Template</h3>
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th>Account Code</th>
+                            <th>Account Description</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody id="templateRows">
+                        <!-- Rows added via the modal's Add Row button -->
+                    </tbody>
+                </table>
+                <button class="btn-add-row" onclick="addTemplateRow()">Add Row</button>
+                <button class="btn-save-template" onclick="saveEditedTemplate()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
   <!-- Modal for Viewing Templates -->
   <div id="viewTemplateModal" class="modal">
     <div class="modal-content">
@@ -104,8 +149,13 @@ Journal Templates
         <span class="close" onclick="closeViewTemplateModal()">&times;</span>
       </div>
       <div class="modal-body">
-        <p><strong>Template Code:</strong> <span id="viewTemplateCode"></span></p>
-        <p><strong>Transaction Type:</strong> <span id="viewTransactionType"></span></p>
+        <p>
+          <strong>Template Code:</strong> <span id="viewTemplateCode"></span>
+        </p>
+        <p>
+          <strong>Transaction Type:</strong>
+          <span id="viewTransactionType"></span>
+        </p>
         <table class="modal-table">
           <thead>
             <tr>
@@ -122,11 +172,8 @@ Journal Templates
       </div>
     </div>
   </div>
-  
 
-
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/journaltemp.js' %}"></script>
-{% endblock %}
+  {% endblock %} {% block extra_js %}
+  <script src="{% static 'js/journaltemp.js' %}"></script>
+  {% endblock %}
+</div>
