@@ -185,6 +185,7 @@ addAccountForm.addEventListener('submit', (event) => {
         `;
         tableBody.appendChild(newRow);
         addAccountForm.reset();
+        clearValidationErrors();
         closeModal();
     })
     .catch(error => console.error('Failed to add account:', error));
@@ -192,9 +193,37 @@ addAccountForm.addEventListener('submit', (event) => {
 
 // Real-time validation for inputs
 document.querySelectorAll('input').forEach(input => {
-    input.addEventListener('blur', () => {
-        const event = new Event('submit', { cancelable: true });
-        addAccountForm.dispatchEvent(event);
+    input.addEventListener('blur', (event) => {
+        const target = event.target;
+        const accountCodeError = document.getElementById('accountCodeError');
+        const accountDescError = document.getElementById('accountDescError');
+
+        if (target.name === 'AccountCode') {
+            const accountCode = target.value.trim();
+            const accountCodePattern = /^\d{1,10}$/;
+            if (!accountCodePattern.test(accountCode)) {
+                accountCodeError.textContent = 'Account Code must be a number with up to 10 digits.';
+                accountCodeError.classList.add('visible');
+            } else {
+                accountCodeError.textContent = '';
+                accountCodeError.classList.remove('visible');
+            }
+        }
+
+        if (target.name === 'AccountTypeDesc') {
+            const accountTypeDesc = target.value.trim();
+            const accountTypeDescPattern = /^[a-zA-Z.,\s]+$/;
+            if (!accountTypeDescPattern.test(accountTypeDesc)) {
+                accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
+                accountDescError.classList.add('visible');
+            } else if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
+                accountDescError.textContent = 'Account Description must be between 10 and 100 characters long.';
+                accountDescError.classList.add('visible');
+            } else {
+                accountDescError.textContent = '';
+                accountDescError.classList.remove('visible');
+            }
+        }
     });
 });
 
