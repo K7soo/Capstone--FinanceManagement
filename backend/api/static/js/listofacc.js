@@ -67,33 +67,39 @@ document.addEventListener("DOMContentLoaded", () => {
 // Show Add Account modal when 'Add Account' button is clicked
 addAccountBtn.addEventListener('click', () => {
     console.log("Add Account button clicked, opening add modal.");
-    addAccountModal.style.display = 'block';
+    addAccountModal.style.display = 'flex';
+    addAccountModal.classList.add('show');
+    document.body.classList.add('modal-open'); // Prevent scrolling of the body
 });
 
 // Close any modal when 'X' button or 'Cancel' button is clicked
 closeModalBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        addAccountModal.style.display = 'none';
-        editAccountModal.style.display = 'none';
+        closeModal();
     });
 });
 
 cancelModalBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        addAccountModal.style.display = 'none';
-        editAccountModal.style.display = 'none';
+        closeModal();
     });
 });
 
 // Close the modal when clicking outside the modal content
 window.addEventListener('click', (event) => {
-    if (event.target === addAccountModal) {
-        addAccountModal.style.display = 'none';
-    }
-    if (event.target === editAccountModal) {
-        editAccountModal.style.display = 'none';
+    if (event.target === addAccountModal || event.target === editAccountModal) {
+        closeModal();
     }
 });
+
+// Function to close modals and reset body state
+function closeModal() {
+    addAccountModal.style.display = 'none';
+    editAccountModal.style.display = 'none';
+    addAccountModal.classList.remove('show');
+    editAccountModal.classList.remove('show');
+    document.body.classList.remove('modal-open'); // Allow scrolling of the body
+}
 
 // ADD NEW ACCOUNT with validation
 addAccountForm.addEventListener('submit', (event) => {
@@ -134,6 +140,7 @@ addAccountForm.addEventListener('submit', (event) => {
     .then(createdAccount => {
         console.log("Account successfully added:", createdAccount);
         const newRow = document.createElement('tr');
+        newRow.setAttribute('data-id', createdAccount.id);
         newRow.innerHTML = `
             <td>${createdAccount.AccountCode}</td>
             <td>${createdAccount.AccountTypeDesc}</td>
@@ -145,7 +152,7 @@ addAccountForm.addEventListener('submit', (event) => {
         `;
         tableBody.appendChild(newRow);
         addAccountForm.reset();
-        addAccountModal.style.display = 'none';
+        closeModal();
     })
     .catch(error => console.error('Failed to add account:', error));
 });
@@ -155,7 +162,9 @@ function openEditModal(id, code, description) {
     document.getElementById('EditAccountId').value = id;
     document.getElementById('EditAccountCode').value = code;
     document.getElementById('EditAccountTypeDesc').value = description;
-    editAccountModal.style.display = 'block';
+    editAccountModal.style.display = 'flex';
+    editAccountModal.classList.add('show');
+    document.body.classList.add('modal-open'); // Prevent scrolling of the body
 }
 
 // UPDATE with validation
@@ -201,7 +210,7 @@ editAccountForm.addEventListener('submit', function(event) {
             row.cells[1].textContent = updatedData.AccountTypeDesc;
         }
         editAccountForm.reset();
-        editAccountModal.style.display = 'none';
+        closeModal();
     })
     .catch(error => console.error('Failed to update account:', error));
 });
