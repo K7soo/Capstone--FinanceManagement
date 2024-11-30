@@ -82,6 +82,7 @@ closeModalBtns.forEach(btn => {
 cancelModalBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         closeModal();
+        clearValidationErrors();
     });
 });
 
@@ -89,6 +90,7 @@ cancelModalBtns.forEach(btn => {
 window.addEventListener('click', (event) => {
     if (event.target === addAccountModal || event.target === editAccountModal) {
         closeModal();
+        clearValidationErrors();
     }
 });
 
@@ -99,6 +101,14 @@ function closeModal() {
     addAccountModal.classList.remove('show');
     editAccountModal.classList.remove('show');
     document.body.classList.remove('modal-open'); // Allow scrolling of the body
+}
+
+// Function to clear validation error messages
+function clearValidationErrors() {
+    document.getElementById('accountCodeError').textContent = '';
+    document.getElementById('accountCodeError').classList.remove('visible');
+    document.getElementById('accountDescError').textContent = '';
+    document.getElementById('accountDescError').classList.remove('visible');
 }
 
 // ADD NEW ACCOUNT with validation
@@ -178,6 +188,14 @@ addAccountForm.addEventListener('submit', (event) => {
         closeModal();
     })
     .catch(error => console.error('Failed to add account:', error));
+});
+
+// Real-time validation for inputs
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('blur', () => {
+        const event = new Event('submit', { cancelable: true });
+        addAccountForm.dispatchEvent(event);
+    });
 });
 
 // Function to open the Edit Account modal with account details populated
