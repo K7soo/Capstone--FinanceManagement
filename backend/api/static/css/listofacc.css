@@ -282,11 +282,11 @@ tr:nth-child(even) {
     background-color: #8724ac;
     color:#ffffff;
     padding: 10px 10px;
-    padding-bottom: 25px;
+    padding-bottom: 10px;
     border: none;
-    width: 150px;
+    width: 125px;
     border-radius: 5px;
-    height: 50px;
+    height: 40px;
 }
 .modal-add-btn:hover {
     background-color: #61396f;
@@ -295,12 +295,12 @@ tr:nth-child(even) {
 .modal-cancel-btn {
     background-color: #bebebe;
     color:#ffffff;
-    padding-top: 10px ;
-    padding-bottom: 25px;
+    padding: 10px 10px;
+    padding-bottom: 10px;
     border: none;
-    width: 6.9rem;
+    width: 100px;
     border-radius: 5px;
-    height: 30px;
+    height: 40px;
 }
 .modal-cancel-btn:hover {
     background-color: #ff3d3d;
