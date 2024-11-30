@@ -214,23 +214,97 @@ tr:nth-child(even) {
     margin-top: 10px;
 }
 
-
+/* Styles for account-table */
 .account-table {
-    width: 100%;
-    border-collapse: collapse;
+    width: 100%; /* Full width of the container */
+    border-collapse: collapse; /* Remove gaps between borders */
     margin-top: 20px;
+    table-layout: fixed; /* Ensures fixed width for columns */
 }
 
 .account-table th, .account-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+    border: 1px solid #ddd; /* Light border for cells */
+    padding: 10px; /* Add padding for spacing */
+    text-align: left; /* Align text to the left */
+    vertical-align: middle; /* Ensure vertical alignment in cells */
+    word-wrap: break-word; /* Break long words into new lines */
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis; /* Add ellipsis (...) for overflowing text */
 }
 
-.account-table th {
-    background-color: #61396f;
-    color: #fff;
+/* Fix specific column widths */
+.account-table th:nth-child(2),
+.account-table td:nth-child(2) {
+    width: 300px; /* Fixed width for the Description column */
+    max-width: 300px; /* Prevent expanding beyond this size */
 }
+
+.account-table th:nth-child(3),
+.account-table td:nth-child(3) {
+    width: 150px; /* Fixed width for Actions column */
+    text-align: center; /* Center align content horizontally */
+    vertical-align: middle; /* Center align content vertically */
+}
+
+/* Style for table headers */
+.account-table th {
+    background-color: #61396f; /* Violet header background */
+    color: #fff; /* White text */
+    text-align: center; /* Center align header text */
+    padding: 12px;
+}
+
+/* Align action buttons properly */
+td.actions {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center; /* Center buttons vertically */
+    height: 100%; /* Ensure it fills the cell's height */
+    white-space: nowrap; /* Prevent buttons from wrapping */
+    gap: 10px; /* Add spacing between buttons */
+}
+
+/* Ensure consistent button size */
+td.actions button,
+td.actions .btn-edit,
+td.actions .btn-view,
+td.actions .btn-delete {
+    height: 30px; /* Set button height */
+    min-width: 60px; /* Ensure buttons have a minimum width */
+    display: inline-flex; /* Consistent alignment */
+    justify-content: center; /* Center text inside the button */
+    align-items: center; /* Vertically center text */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .account-table th, .account-table td {
+        font-size: 12px; /* Reduce font size */
+        padding: 8px; /* Adjust padding for smaller screens */
+    }
+
+    td.actions {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 5px; /* Reduce spacing between buttons */
+    }
+
+    td.actions button {
+        width: 100%; /* Make buttons take full width */
+        min-width: unset; /* Remove minimum width */
+    }
+}
+
+/* Zoom compatibility */
+@media (min-resolution: 1.25dppx) {
+    .account-table th, .account-table td {
+        font-size: 16px; /* Adjust font size for better readability */
+    }
+
+    td.actions button {
+        height: 40px; /* Increase button height */
+    }
+}
+
 
 /* buttons on list of accs */
 

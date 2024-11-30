@@ -95,13 +95,24 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// ADD NEW ACCOUNT
+// ADD NEW ACCOUNT with validation
 addAccountForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent page refresh
     console.log("Form submission event triggered for adding a new account");
 
-    const accountCode = document.querySelector('input[name="AccountCode"]').value;
-    const accountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value || "No Description";
+    const accountCode = document.querySelector('input[name="AccountCode"]').value.trim();
+    const accountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value.trim();
+
+    // Form validation
+    if (!accountCode) {
+        alert('Account Code is required.');
+        return;
+    }
+
+    if (!accountTypeDesc) {
+        alert('Account Description is required.');
+        return;
+    }
 
     const newAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
     console.log("Data to be submitted:", newAccount);
@@ -142,18 +153,29 @@ addAccountForm.addEventListener('submit', (event) => {
 // Function to open the Edit Account modal with account details populated
 function openEditModal(id, code, description) {
     document.getElementById('EditAccountId').value = id;
-    document.getElementById('EditAccountCode').value = code ;
+    document.getElementById('EditAccountCode').value = code;
     document.getElementById('EditAccountTypeDesc').value = description;
     editAccountModal.style.display = 'block';
 }
 
-// UPDATE
+// UPDATE with validation
 editAccountForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
     const accountId = document.getElementById('EditAccountId').value;
-    const accountCode = document.getElementById('EditAccountCode').value;
-    const accountTypeDesc = document.getElementById('EditAccountTypeDesc').value;
+    const accountCode = document.getElementById('EditAccountCode').value.trim();
+    const accountTypeDesc = document.getElementById('EditAccountTypeDesc').value.trim();
+
+    // Form validation
+    if (!accountCode) {
+        alert('Account Code is required.');
+        return;
+    }
+
+    if (!accountTypeDesc) {
+        alert('Account Description is required.');
+        return;
+    }
 
     const updatedAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
 
