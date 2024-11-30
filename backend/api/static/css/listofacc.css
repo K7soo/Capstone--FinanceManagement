@@ -243,7 +243,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 80px;
+    width: 60px;
 }
 .btn-edit:hover{
     background-color: #2f78ff;
@@ -258,7 +258,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 80px;
+    width: 60px;
 }
 .btn-view:hover{
     background-color: #ffad32;
@@ -272,7 +272,7 @@ tr:nth-child(even) {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 80px;
+    width: 70px;
 }
 .btn-delete:hover{
     background-color: #ff3d3d;
@@ -286,7 +286,7 @@ tr:nth-child(even) {
     border: none;
     width: 150px;
     border-radius: 5px;
-    height: 30px;
+    height: 50px;
 }
 .modal-add-btn:hover {
     background-color: #61396f;
