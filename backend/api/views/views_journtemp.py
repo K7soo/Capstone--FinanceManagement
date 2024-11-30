@@ -24,7 +24,7 @@ class TRTemplateDetailsView(APIView):
 
     # List all TRTemplateDetails
     def get(self, request):
-        details = TRTemplateDetails.objects.select_related('Account_FK', 'TRTemplate_FK').all()
+        details = TRTemplateDetails.objects.select_related('Account_FK', 'Template_FK').all()
         serializer = TRTemplateDetailsSerializer(details, many=True)
         return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
@@ -42,60 +42,36 @@ class TRTemplateDetailsDetailView(APIView):
 
     # Retrieve a specific TRTemplateDetail
     def get(self, request, pk):
-        try:
-            detail = TRTemplateDetails.objects.select_related('Account_FK', 'TRTemplate_FK').get(pk=pk)
-            serializer = TRTemplateDetailsSerializer(detail)
-            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-        except TRTemplateDetails.DoesNotExist:
-            return JsonResponse(
-                {"error": "TRTemplateDetail not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        detail = get_object_or_404(TRTemplateDetails, pk=pk)
+        serializer = TRTemplateDetailsSerializer(detail)
+        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
     # Update (full) a specific TRTemplateDetail
     def put(self, request, pk):
-        try:
-            detail = TRTemplateDetails.objects.get(pk=pk)
-            serializer = TRTemplateDetailsSerializer(detail, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except TRTemplateDetails.DoesNotExist:
-            return JsonResponse(
-                {"error": "TRTemplateDetail not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        detail = get_object_or_404(TRTemplateDetails, pk=pk)
+        serializer = TRTemplateDetailsSerializer(detail, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Partial Update (patch) a specific TRTemplateDetail
     def patch(self, request, pk):
-        try:
-            detail = TRTemplateDetails.objects.get(pk=pk)
-            serializer = TRTemplateDetailsSerializer(detail, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except TRTemplateDetails.DoesNotExist:
-            return JsonResponse(
-                {"error": "TRTemplateDetail not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        detail = get_object_or_404(TRTemplateDetails, pk=pk)
+        serializer = TRTemplateDetailsSerializer(detail, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Delete a specific TRTemplateDetail
     def delete(self, request, pk):
-        try:
-            detail = TRTemplateDetails.objects.get(pk=pk)
-            detail.delete()
-            return JsonResponse(
-                {"message": "TRTemplateDetail deleted successfully"},
-                status=status.HTTP_204_NO_CONTENT,
-            )
-        except TRTemplateDetails.DoesNotExist:
-            return JsonResponse(
-                {"error": "TRTemplateDetail not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        detail = get_object_or_404(TRTemplateDetails, pk=pk)
+        detail.delete()
+        return JsonResponse(
+            {"message": "TRTemplateDetail deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 # List and Create Journal Templates
@@ -103,23 +79,28 @@ class JournalTemplatesView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            templates = TRTemplate.objects.prefetch_related('details__Account_FK').all()
-            serializer = TRTemplateSerializer(templates, many=True)
-            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-
-        templates = TRTemplate.objects.prefetch_related('details__Account_FK').all()
+        templates = TRTemplate.objects.all()
         serializer = TRTemplateSerializer(templates, many=True)
-        return render(
-            request,
-            'journaltemp.html',
-            {'JournalTemplate': serializer.data},
-        )
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+        return render(request, 'journaltemp.html', {'JournalTemplate': serializer.data})
 
     def post(self, request):
         serializer = TRTemplateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()  # Save the TRTemplate with nested TRTemplateDetails
+            template = serializer.save()
+
+            # Handle nested TRTemplateDetails
+            if 'details' in request.data:
+                details_data = request.data['details']
+                for detail_data in details_data:
+                    detail_data['Template_FK'] = template.id
+                    detail_serializer = TRTemplateDetailsSerializer(data=detail_data)
+                    if detail_serializer.is_valid():
+                        detail_serializer.save()
+                    else:
+                        return JsonResponse(detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -129,54 +110,30 @@ class JournalTemplatesDetailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, pk):
-        try:
-            template = TRTemplate.objects.prefetch_related('details__Account_FK').get(pk=pk)
-            serializer = TRTemplateSerializer(template)
-            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-        except TRTemplate.DoesNotExist:
-            return JsonResponse(
-                {"error": "Journal Template not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        template = get_object_or_404(TRTemplate, pk=pk)
+        serializer = TRTemplateSerializer(template)
+        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
-        try:
-            template = TRTemplate.objects.get(pk=pk)
-            serializer = TRTemplateSerializer(template, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except TRTemplate.DoesNotExist:
-            return JsonResponse(
-                {"error": "Journal Template not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        template = get_object_or_404(TRTemplate, pk=pk)
+        serializer = TRTemplateSerializer(template, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk):
-        try:
-            template = TRTemplate.objects.get(pk=pk)
-            serializer = TRTemplateSerializer(template, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except TRTemplate.DoesNotExist:
-            return JsonResponse(
-                {"error": "Journal Template not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        template = get_object_or_404(TRTemplate, pk=pk)
+        serializer = TRTemplateSerializer(template, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        try:
-            template = TRTemplate.objects.get(pk=pk)
-            template.delete()  # Automatically cascades and deletes associated TRTemplateDetails
-            return JsonResponse(
-                {"message": "Journal Template deleted successfully"},
-                status=status.HTTP_204_NO_CONTENT,
-            )
-        except TRTemplate.DoesNotExist:
-            return JsonResponse(
-                {"error": "Journal Template not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        template = get_object_or_404(TRTemplate, pk=pk)
+        template.delete()  # Automatically cascades and deletes associated TRTemplateDetails
+        return JsonResponse(
+            {"message": "Journal Template deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT,
+        )

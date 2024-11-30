@@ -2,15 +2,21 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class TRTemplateDetails(models.Model):
-    Account_FK = models.ForeignKey('ChartOfAccs', on_delete=models.CASCADE)
-    Debit = models.BooleanField(default=False)
-    Credit = models.BooleanField(default=False)
-
 class TRTemplate(models.Model):
     TRTemplateCode = models.CharField(max_length=50)
-    TransactionType_FK = models.ForeignKey('TransactionType', on_delete=models.CASCADE)
-    details = models.ManyToManyField(TRTemplateDetails, related_name='templates')
+    TransactionType_FK = models.ForeignKey(
+        'TransactionType', on_delete=models.CASCADE, null=True, blank=False
+    )
+
+class TRTemplateDetails(models.Model):
+    Template_FK = models.ForeignKey(
+        'TRTemplate', on_delete=models.CASCADE, null=True, blank=True
+    ) 
+    Account_FK = models.ForeignKey(
+        'ChartOfAccs', on_delete=models.CASCADE, null=False, blank=False
+    )
+    Debit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    Credit = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 
 class TransactionType(models.Model):
