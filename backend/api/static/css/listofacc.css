@@ -189,8 +189,8 @@ tr:nth-child(even) {
 
 .btn-comp{
     display: flex;
-    /* justify-content:baseline; */
-    width: 60%; 
+    justify-content: flex-end; /* Align buttons to the right */
+    width: 100%; 
     margin: 0px 0px 12px 0px; 
     gap:5px;
 }
@@ -277,7 +277,7 @@ tr:nth-child(even) {
 .btn-delete:hover{
     background-color: #ff3d3d;
 }
-
+/* MODAL BUTTONS */
 .modal-add-btn {
     background-color: #8724ac;
     color:#ffffff;
