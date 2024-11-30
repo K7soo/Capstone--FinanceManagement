@@ -109,27 +109,37 @@ addAccountForm.addEventListener('submit', (event) => {
     const accountCode = document.querySelector('input[name="AccountCode"]').value.trim();
     const accountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value.trim();
 
+    const accountCodeError = document.getElementById('accountCodeError');
+    const accountDescError = document.getElementById('accountDescError');
+
     // Form validation
+    let valid = true;
+
     const accountCodePattern = /^\d{1,10}$/;
     if (!accountCodePattern.test(accountCode)) {
-        alert('Account Code must be a number with up to 10 digits.');
-        return;
+        accountCodeError.textContent = 'Account Code must be a number with up to 10 digits.';
+        accountCodeError.classList.add('visible');
+        valid = false;
+    } else {
+        accountCodeError.textContent = '';
+        accountCodeError.classList.remove('visible');
     }
 
     const accountTypeDescPattern = /^[a-zA-Z.,\s]+$/;
     if (!accountTypeDescPattern.test(accountTypeDesc)) {
-        alert('Account Description can only contain letters, commas, dots, and spaces.');
-        return;
+        accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
+        accountDescError.classList.add('visible');
+        valid = false;
+    } else if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
+        accountDescError.textContent = 'Account Description must be between 10 and 100 characters long.';
+        accountDescError.classList.add('visible');
+        valid = false;
+    } else {
+        accountDescError.textContent = '';
+        accountDescError.classList.remove('visible');
     }
 
-    // Additional validation for meaningful description
-    if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
-        alert('Account Description must be between 10 and 100 characters long.');
-        return;
-    }
-
-    if (accountTypeDesc.split(' ').length < 2) {
-        alert('Account Description must contain at least two words.');
+    if (!valid) {
         return;
     }
 
@@ -188,27 +198,37 @@ editAccountForm.addEventListener('submit', function(event) {
     const accountCode = document.getElementById('EditAccountCode').value.trim();
     const accountTypeDesc = document.getElementById('EditAccountTypeDesc').value.trim();
 
+    const accountCodeError = document.getElementById('accountCodeError');
+    const accountDescError = document.getElementById('accountDescError');
+
     // Form validation
+    let valid = true;
+
     const accountCodePattern = /^\d{1,10}$/;
     if (!accountCodePattern.test(accountCode)) {
-        alert('Account Code must be a number with up to 10 digits.');
-        return;
+        accountCodeError.textContent = 'Account Code must be a number with up to 10 digits.';
+        accountCodeError.classList.add('visible');
+        valid = false;
+    } else {
+        accountCodeError.textContent = '';
+        accountCodeError.classList.remove('visible');
     }
 
     const accountTypeDescPattern = /^[a-zA-Z.,\s]+$/;
     if (!accountTypeDescPattern.test(accountTypeDesc)) {
-        alert('Account Description can only contain letters, commas, dots, and spaces.');
-        return;
+        accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
+        accountDescError.classList.add('visible');
+        valid = false;
+    } else if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
+        accountDescError.textContent = 'Account Description must be between 10 and 100 characters long.';
+        accountDescError.classList.add('visible');
+        valid = false;
+    } else {
+        accountDescError.textContent = '';
+        accountDescError.classList.remove('visible');
     }
 
-    // Additional validation for meaningful description
-    if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
-        alert('Account Description must be between 10 and 100 characters long.');
-        return;
-    }
-
-    if (accountTypeDesc.split(' ').length < 2) {
-        alert('Account Description must contain at least two words.');
+    if (!valid) {
         return;
     }
 

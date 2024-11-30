@@ -111,7 +111,6 @@ tr:nth-child(even) {
 
 
 /* LIST OF ACCOUNTS MODAL */
-/* LIST OF ACCOUNTS MODAL */
 .modal {
     display: none;
     justify-content: center; /* Center horizontally */
@@ -130,6 +129,7 @@ tr:nth-child(even) {
 .modal-content {
     position: relative;
     background-color: #f8f8ff; /* Modal background */
+
     border-radius: 8px; /* Rounded corners */
     width: 90%; /* Default width (responsive) */
     max-width: 600px; /* Maximum width for modal */
@@ -214,6 +214,50 @@ body.modal-open .modal {
     }
 }
 
+
+/* Error Message Styling Aligned with Inputs */
+.error-message {
+    grid-column: 2 / 3; /* Make sure error messages are aligned under the input field */
+    color: #d9534f; /* Red color for error messages */
+    font-size: 10px; /* Slightly smaller font size for better distinction */
+    height: 45px; /* Fixed height to prevent shifting */
+    display: block; /* Make sure the error message appears on its own line */
+    font-weight: bold; /* Make the message stand out */
+    visibility: hidden; /* Initially hidden */
+    margin-top: auto ;
+    overflow: hidden; /* Prevent additional height expansion */
+}
+
+/* Error Message when visible */
+.error-message.visible {
+    visibility: visible; /* Show when needed */
+}
+
+/* Align Buttons to Form */
+.btn-comp {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Adjusting the layout to keep input fields and messages aligned */
+#addAccountForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Consistent spacing between form elements */
+    align-items: flex-start; /* Align items to the start */
+    width: 100%; /* Keep the form container full width */
+}
+
+#addAccountForm input[type="text"] {
+    width: 100%; /* Full width inside the form */
+    padding: 10px; /* Add padding for better user experience */
+    border: 1px solid #000000;
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+    margin-bottom: 5px; /* Space between the input field and its validation error message */
+}
 
 /* END OF LIST OF ACCOUNTS ADD ACCOUNT MODAL */
 
@@ -423,11 +467,20 @@ td.actions .btn-delete {
 
 .form-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 10px 50px;
+    grid-template-columns: 1fr 2fr; /* Two columns for labels and inputs */
+    gap: 10px 20px; /* Adjust spacing between rows and columns */
+    align-items: center; /* Vertically align inputs and labels */
+    width: 100%;
     margin-bottom: 20px;
-    align-items: left;
 }
+.form-grid input[type="text"] {
+    width: 100%; /* Make input fields take the full width of the column */
+    padding: 10px;
+    border: 1px solid #ccc; /* Light border for inputs */
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+}
+
 
 .table-acc {
     width: 100%;

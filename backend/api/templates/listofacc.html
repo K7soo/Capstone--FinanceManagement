@@ -57,12 +57,15 @@ List of Accounts
             <h2>Add New Account</h2>
             <form id="addAccountForm">
                 <div class="form-grid">
+                    
                     <label for="AccountCode">Account Code:</label>
                     <input type="text" id="AccountName" class="textbox" name="AccountCode" required>
-    
+                    <div id="accountCodeError" class="error-message"></div> <!-- Validation message placeholder -->
+
                     <label for="AccountTypeDesc">Account Description:</label>
                     <input type="text" id="AccountTypeDesc" class="textbox-desc" name="AccountTypeDesc" required>
-                    
+                    <div id="accountDescError" class="error-message"></div> <!-- Validation message placeholder -->
+
                     <!-- Save CSRF Token -->
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                 </div>
