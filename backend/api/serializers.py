@@ -13,42 +13,17 @@ class TransactionsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TRTemplateSerializer(serializers.ModelSerializer):
-    details = serializers.PrimaryKeyRelatedField(
-        queryset=TRTemplateDetails.objects.all(), many=True, write_only=True
-    )
-
-    details_ids = serializers.PrimaryKeyRelatedField(
-        many=True, read_only=True, source='details'
-    )
-
+    TransactionType_FK = serializers.PrimaryKeyRelatedField(queryset = TransactionType.objects.all())
     class Meta:
         model = TRTemplate
-        fields = ['id', 'TRTemplateCode', 'TransactionType_FK', 'details', 'details_ids']
+        fields = ['id', 'TRTemplateCode', 'TransactionType_FK']
 
-    def create(self, validated_data):
-        details_data = validated_data.pop('details', [])
-        template = TRTemplate.objects.create(**validated_data)
-        
-        template.details.add(*details_data)
-        
-        return template
-
-    def update(self, instance, validated_data):
-        details_data = validated_data.pop('details', None)
-
-        instance.TRTemplateCode = validated_data.get('TRTemplateCode', instance.TRTemplateCode)
-        instance.TransactionType_FK = validated_data.get('TransactionType_FK', instance.TransactionType_FK)
-        instance.save()
-
-        if details_data is not None:
-            instance.details.set(details_data) 
-        
-        return instance
-    
 class TRTemplateDetailsSerializer(serializers.ModelSerializer):
+    Account_FK = serializers.PrimaryKeyRelatedField(queryset = AccountType.objects.all())
+    Template_FK = serializers.PrimaryKeyRelatedField(queryset = TRTemplate.objects.all())
     class Meta:
         model = TRTemplateDetails
-        fields = ['id', 'Account_FK', 'Debit', 'Credit']
+        fields = ['id', 'Template_FK', 'Account_FK', 'Debit', 'Credit']
 
 class TransactionTypeSerializer(serializers.ModelSerializer):
     class Meta:
