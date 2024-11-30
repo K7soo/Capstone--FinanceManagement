@@ -41,8 +41,9 @@ urlpatterns = [
         # JEV Approval 
     path('jevapproval/', views_.jev_approval_view, name='jevapproval'),
 
+    path('trialbalance/', views_.trial_balance_view, name='trialbalance'),
     # temp url
-    path('add-account-type/', AddAccountTypeView.as_view(), name='add_account_type'),
+    # path('add-account-type/', AddAccountTypeView.as_view(), name='add_account_type'),
     
     # path('transactioninbox/', views.transactioninbox_view, name='transactioninbox'),
     # path('login/', views.login_view, name='login'),
