@@ -41,15 +41,10 @@ urlpatterns = [
         # JEV Approval 
     path('jevapproval/', views_.jev_approval_view, name='jevapproval'),
 
-    # Reports Dropdown #
-        # Reports 
-    path('reports/', views_.reports_view, name='reports'),
-        # Trial Balance 
-    path('trialbalance/', views_.trial_balance_view, name='trialbalance'),
-
-    # Payments #
-    path('payment/', views_.payment_view, name='payment'),
-
-    # Rendering of Menubar
-    path('menubar/', views_.menubar_view, name='menubar'),
+    # temp url
+    path('add-account-type/', AddAccountTypeView.as_view(), name='add_account_type'),
+    
+    # path('transactioninbox/', views.transactioninbox_view, name='transactioninbox'),
+    # path('login/', views.login_view, name='login'),
+    # path('', views.portal_view, name='home'),
 ]
