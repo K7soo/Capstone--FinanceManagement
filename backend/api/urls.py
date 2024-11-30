@@ -59,10 +59,4 @@ urlpatterns = [
     
         # Trial Balance 
     path('trialbalance/', views_.trial_balance_view, name='trialbalance'),
-
-    # Payments #
-    path('payment/', views_.payment_view, name='payment'),
-
-    # Rendering of Menubar
-    path('menubar/', views_.menubar_view, name='menubar'),
 ]

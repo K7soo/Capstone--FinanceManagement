@@ -186,7 +186,6 @@ tr:nth-child(even) {
 .button-container {
     display: flex;
     justify-content: baseline;
-    width: 60%;
     margin: 0px 0px 12px 0px;
     gap: 10px;
 }
@@ -198,10 +197,9 @@ tr:nth-child(even) {
 
 .btn-view, .btn-edit, .btn-delete {
     padding: 5px 10px;
-    width: 80px;
+    width: 60%;
     text-align: center;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
 
@@ -216,7 +214,7 @@ tr:nth-child(even) {
     }
 
     .btn-view, .btn-edit, .btn-delete {
-        width: auto;
+        width: 60%;
         font-size: 12px;
     }
 }

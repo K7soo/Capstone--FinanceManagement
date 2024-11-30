@@ -9,6 +9,7 @@
     border-right: 1px solid #ddd;
     z-index: 1;
     transition: width 0.3s; /* Smooth transition for sidebar width */
+    
 }
 
 .sidebar {
@@ -29,15 +30,24 @@
 }
 
 .sidebar.collapsed {
-    width: 0; /* Ensure no width when collapsed */
-    overflow: hidden; /* Hide any content */
-    position: absolute; /* Remove it from the document flow */
+    width: 0;
+    height: 0; /* Set height to 0 as well */
+    overflow: hidden; /* Hide overflow content */
+    position: absolute; /* Ensure it doesn't affect layout */
+    margin: 0; /* Remove any potential margins */
+    padding: 0; /* Remove any internal spacing */
+    border: none; /* Remove any border */
 }
+
 .sidebar-wrapper.collapsed {
     display: none; /* Hide the entire wrapper if necessary */
 }
 .sidebar.hidden {
-    display: none; /* Fully hide sidebar */
+    display: none; /* Fully hide the sidebar */
+    width: 0; /* Ensure no visual width */
+    height: 0; /* Ensure no visual height */
+    overflow: hidden; /* Prevent any visible content */
+    margin: 0; /* Ensure no spacing from margins */
 }
 
 
