@@ -4,6 +4,7 @@ from .views import *
 urlpatterns = [
     # Authentication #
     path('', views_.admin_login_view, name='home'),
+    
     path('admin_login/', views_.admin_login_view, name='admin_login'),
 
     # Exposed API's
@@ -32,13 +33,13 @@ urlpatterns = [
         # Journal Templates
     path('get-chart-types/', views_journtemp.ChartOfAccsListView.as_view(), name='get_chartofacc'),
     
-    path('journaldetails/', views_journtemp.TRTemplateDetailsView.as_view(), name='journaldetail'),
+    path('journaltemplate/', views_journtemp.JournalTemplateView.as_view(), name='journaltemplate'),
     
-    path('journaldetails/<int:pk>', views_journtemp.TRTemplateDetailsDetailView.as_view(), name='journaldetail_detail'),
+    path('journaltemplate/<int:pk>', views_journtemp.JournalTemplateDetailView.as_view(), name='journaltemplatedetail'),
     
-    path('journaltemplate/', views_journtemp.JournalTemplatesView.as_view(), name='journaltemplate'),
+    path('journaltemplatedetails/', views_journtemp.TemplateBodyView.as_view(), name='journaltemplatebody'),
     
-    path('journaltemplate/<int:pk>/', views_journtemp.JournalTemplatesDetailView.as_view(), name='journaltemplate_detail'),
+    path('journaltemplatedetails/<int:pk>/', views_journtemp.TemplateBodyDetailView.as_view(), name='journaltemplatebody'),
 
 
     # Transaction Type

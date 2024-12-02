@@ -1,128 +1,224 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Define journalTemplates in the global scope
-  window.journalTemplates = [];
+// Function to get CSRF token from the browser's cookies
+function getCsrfToken() {
+    let csrfToken = null;
+    if (document.cookie && document.cookie !== '') {
+        document.cookie.split(';').forEach(cookie => {
+            const trimmedCookie = cookie.trim();
+            if (trimmedCookie.startsWith('csrftoken=')) {
+                csrfToken = trimmedCookie.split('=')[1];
+            }
+        });
+    }
+    return csrfToken;
+}
 
-  // Open Add Template Modal
-  window.openAddTemplateModal = function () {
-      document.getElementById('addTemplateModal').style.display = 'block';
-      document.getElementById('modalRightSection').style.display = 'none'; // Hide row addition initially
-      document.querySelector('.btn-save-template-step1').style.display = 'block'; // Show save template button for step 1
-  };
+// Define Constant Elements
+const csrfToken = getCsrfToken();
+const addTemplateBtn = document.querySelector('.add-template-btn');
+const addTemplateModal = document.getElementById('addTemplateModal');
+const editTemplateModal = document.getElementById('editTemplateModal');
+const closeModalBtns = document.querySelectorAll('.close-btn');
+const cancelModalBtns = document.querySelectorAll('.modal-cancel-btn');
+const addTemplateForm = document.getElementById('addTemplateForm');
+const editTemplateForm = document.getElementById('editTemplateForm');
+const templateTableBody = document.querySelector('.template-table tbody');
 
-  // Close Add Template Modal
-  window.closeAddTemplateModal = function () {
-      document.getElementById('addTemplateModal').style.display = 'none';
-  };
+// Global variable to store the list of journal templates
+window.loadJournalTemplates = [];
 
-  // Open Edit Template Modal
-  window.openEditTemplateModal = function (templateIndex) {
-      const template = journalTemplates[templateIndex];
-      document.getElementById('templateCode').value = template.templateCode;
-      document.getElementById('transactionType').value = template.transactionType;
-      document.getElementById('modalRightSection').style.display = 'block'; // Show row addition area
-      document.querySelector('.btn-save-template-step1').style.display = 'none';
+console.log("JavaScript loaded successfully");
 
-      // Clear existing rows and populate with saved accounts
-      const rowsContainer = document.getElementById('templateRows');
-      rowsContainer.innerHTML = '';
-      template.accounts.forEach(account => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-              <td><input type="text" placeholder="Account Code" value="${account.accountCode}" /></td>
-              <td><input type="text" placeholder="Account Description" value="${account.accountDesc}" /></td>
-              <td><input type="checkbox" name="debit" ${account.debit ? 'checked' : ''} /></td>
-              <td><input type="checkbox" name="credit" ${account.credit ? 'checked' : ''} /></td>
-              <td><button class="btn-remove-row" onclick="removeTemplateRow(this)">X</button></td>
-          `;
-          rowsContainer.appendChild(row);
-      });
+// Load and display the journal templates
+function loadJournalTemplates() {
+    fetch('/journaltemplate/?t=' + new Date().getTime(), {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load journal templates');
+        }
+        return response.json();
+    })
+    .then(templates => {
+        console.log("Fetched journal templates:", templates);
+        templateTableBody.innerHTML = ""; // Clear the table body
+        templates.forEach(template => addRowToTable(template));
+    })
+    .catch(error => console.error('Error fetching journal templates:', error));
+}
 
-      document.getElementById('addTemplateModal').style.display = 'block';
-      window.currentEditingIndex = templateIndex;
-  };
+// Add a row to the journal template table
+function addRowToTable(template) {
+    const newRow = document.createElement('tr');
+    newRow.setAttribute('data-id', template.id);
+    newRow.innerHTML = `
+        <td>${template.TRTemplateCode}</td>
+        <td>${template.TransactionType_FK}</td>
+        <td>
+            <button class="btn-view" onclick="viewTemplate('${template.id}')">VIEW</button>
+            <button class="btn-edit" onclick="openEditTemplateModal('${template.id}')">EDIT</button>
+            <button class="btn-delete" onclick="deleteTemplate(this)">DELETE</button>
+        </td>
+    `;
+    templateTableBody.appendChild(newRow);
+}
 
-  // Add Row to Modal Table
-  window.addTemplateRow = function () {
-      const table = document.getElementById('templateRows');
-      const row = document.createElement('tr');
-      row.innerHTML = `
-          <td><input type="text" placeholder="Account Code" /></td>
-          <td><input type="text" placeholder="Account Description" /></td>
-          <td><input type="checkbox" name="debit" /></td>
-          <td><input type="checkbox" name="credit" /></td>
-          <td><button class="btn-remove-row" onclick="removeTemplateRow(this)">X</button></td>
-      `;
-      table.appendChild(row);
-  };
-
-  // Remove Row from Modal Table
-  window.removeTemplateRow = function (button) {
-      const row = button.parentElement.parentElement;
-      row.remove();
-  };
-
-  // Save Template (first step)
-  window.saveTemplate = function () {
-      const templateCode = document.getElementById('templateCode').value;
-      const transactionType = document.getElementById('transactionType').value;
-
-      if (!templateCode || !transactionType) {
-          alert('Please fill in all fields.');
-          return;
-      }
-
-      // Save the initial template data
-      const newTemplate = { templateCode, transactionType, accounts: [] };
-      journalTemplates.push(newTemplate);
-
-      // Update the main table
-      const table = document.getElementById('journalTemplateTable');
-      const row = document.createElement('tr');
-      row.innerHTML = `
-          <td>${templateCode}</td>
-          <td>${transactionType}</td>
-          <td>
-              <button class="btn-view" onclick="openViewTemplateModal(${journalTemplates.length - 1})">View</button>
-              <button class="btn-edit" onclick="openEditTemplateModal(${journalTemplates.length - 1})">Edit</button>
-              <button class="btn-delete" onclick="deleteTemplateRow(this)">Delete</button>
-          </td>
-      `;
-      table.appendChild(row);
-
-      // Reveal the right-side section for adding rows
-      document.getElementById('modalRightSection').style.display = 'block'; // Show row addition area
-      document.querySelector('.btn-save-template-step1').style.display = 'none'; // Hide save template button after step 1
-  };
-
-  // Save Edited Template (second step for adding rows)
-  window.saveEditedTemplate = function () {
-      const templateIndex = window.currentEditingIndex;
-      const accounts = [];
-
-      document.querySelectorAll('#templateRows tr').forEach(row => {
-          const accountCode = row.querySelector('td:nth-child(1) input').value;
-          const accountDesc = row.querySelector('td:nth-child(2) input').value;
-          const debit = row.querySelector('td:nth-child(3) input').checked;
-          const credit = row.querySelector('td:nth-child(4) input').checked;
-
-          accounts.push({ accountCode, accountDesc, debit, credit });
-      });
-
-      // Update the template with new rows
-      journalTemplates[templateIndex].accounts = accounts;
-
-      closeAddTemplateModal();
-  };
-
-  // Delete Row from Main Table
-  window.deleteTemplateRow = function (button) {
-      const row = button.parentElement.parentElement;
-      row.remove();
-  };
-
-  // Open View Template Modal
-  window.openViewTemplateModal = function (templateIndex) {
-      const template = journalTemplates[templateIndex];
-      alert(`Template Code: ${template.templateCode}\nTransaction Type: ${template.transactionType}`);
-  };
+// Show the Add Template modal
+addTemplateBtn.addEventListener('click', () => {
+    console.log("Add Template button clicked, opening modal.");
+    addTemplateModal.style.display = 'block';
 });
+
+// Handle Add Template form submission
+addTemplateForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const templateCode = document.querySelector('input[name="TRTemplateCode"]').value;
+    const transactionType = document.querySelector('select[name="TransactionType_FK"]').value;
+
+    if (!templateCode || !transactionType) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: transactionType };
+
+    fetch('/journaltemplate/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken },
+        body: JSON.stringify(newTemplate),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to add template');
+        }
+        return response.json();
+    })
+    .then(createdTemplate => {
+        console.log("Template added successfully:", createdTemplate);
+        addRowToTable(createdTemplate);
+        addTemplateForm.reset();
+        addTemplateModal.style.display = 'none';
+    })
+    .catch(error => console.error('Error adding template:', error));
+});
+
+// Handle Edit Template modal opening
+function openEditTemplateModal(templateId) {
+    console.log("Opening edit modal for template:", templateId);
+
+    fetch(`/journaltemplate/${templateId}/`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch template details');
+        }
+        return response.json();
+    })
+    .then(template => {
+        // Populate the modal fields with the selected template's data
+        document.getElementById('EditTemplateId').value = template.id;
+        document.getElementById('EditTemplateCode').value = template.TRTemplateCode;
+        document.getElementById('EditTransactionType').value = template.TransactionType_FK;
+
+        // Display the edit modal
+        editTemplateModal.style.display = 'block';
+    })
+    .catch(error => console.error('Error fetching template details:', error));
+}
+
+// Handle Edit Template form submission
+editTemplateForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const templateId = document.getElementById('EditTemplateId').value;
+    const updatedTemplate = {
+        TRTemplateCode: document.getElementById('EditTemplateCode').value,
+        TransactionType_FK: document.getElementById('EditTransactionType').value,
+    };
+
+    fetch(`/journaltemplate/${templateId}/`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+        body: JSON.stringify(updatedTemplate),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update template');
+        }
+        return response.json();
+    })
+    .then(updatedData => {
+        console.log("Template updated successfully:", updatedData);
+        loadJournalTemplates(); // Refresh the table
+        editTemplateModal.style.display = 'none';
+    })
+    .catch(error => console.error('Error updating template:', error));
+});
+
+// Handle Template Deletion
+function deleteTemplate(button) {
+    const row = button.closest('tr');
+    const templateId = row.dataset.id;
+
+    fetch(`/journaltemplate/${templateId}/`, {
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': csrfToken },
+    })
+    .then(response => {
+        if (response.ok) {
+            row.remove();
+            console.log("Template deleted successfully.");
+        } else {
+            throw new Error('Failed to delete template');
+        }
+    })
+    .catch(error => console.error('Error deleting template:', error));
+}
+
+// View template details in an alert
+function viewTemplate(templateId) {
+    fetch(`/journaltemplate/${templateId}/`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch template details');
+        }
+        return response.json();
+    })
+    .then(template => {
+        alert(`Template Code: ${template.TRTemplateCode}\nTransaction Type: ${template.TransactionType_FK}`);
+    })
+    .catch(error => console.error('Error fetching template details:', error));
+}
+
+// Close modals on clicking the close button or outside modal
+closeModalBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        addTemplateModal.style.display = 'none';
+        editTemplateModal.style.display = 'none';
+    });
+});
+
+window.addEventListener('click', event => {
+    if (event.target === addTemplateModal) {
+        addTemplateModal.style.display = 'none';
+    }
+    if (event.target === editTemplateModal) {
+        editTemplateModal.style.display = 'none';
+    }
+});
+
+// Initialize the page
+loadJournalTemplates();
