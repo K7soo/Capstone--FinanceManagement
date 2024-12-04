@@ -15,14 +15,14 @@ Statement of Account
 
 <h1 class="title">Journal Entries </h1>
 
-<div class="transaction-type-dashboard">
+<div class="journal-entries--dashboard">
     <!-- Left Section - Tree Structure -->
     <div class="tree-container">
         <h3>File Tree</h3>
         <div class="outer">
             <ul id="fileTree">
                 <li>
-                    <span class="caret">List of Transaction Types</span>
+                    <span class="caret">List Journal Entries Page</span>
                     <ul class="nested">
                         <li data-category="Reservations">Reservations</li>
                         <li data-category="Item Procurement">Item Procurement</li>
@@ -45,8 +45,6 @@ Statement of Account
             </select>
         </div>
         
-        <!-- Button to open the Add Transaction Type modal -->
-        <button id="openTransactionTypeModalButton" class="btn-add">Add Transaction Type</button>
 
         <!-- Add Transaction Type Modal -->
         <div id="addTransactionTypeModal" class="modal">
@@ -75,71 +73,21 @@ Statement of Account
             </div>
         </div>
 
-        <!-- Edit Transaction Type Modal -->
-        <div id="editTransactionTypeModal" class="modal">
-            <div class="modal-content">
-                <h2>Edit Transaction Type</h2>
-                <form id="editTransactionTypeForm" class="form-grid">
-                    <input type="hidden" id="EditTransactionId">
-                    <div class="form-group">
-                        <label for="EditTransactionCode">Transaction Code:</label>
-                        <input type="text" id="EditTransactionCode" name="EditTransactionCode" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="EditTransactionTypeName">Transaction Type Name:</label>
-                        <input type="text" id="EditTransactionTypeName" name="EditTransactionTypeName" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="EditTransactionDescription">Type Description:</label>
-                        <input type="text" id="EditTransactionDescription" name="EditTransactionDescription" required />
-                    </div>
-                    <!-- Button group -->
-                    <div class="button-group">
-                        <button type="button" class="btn-cancel" id="cancelEditTransactionTypeButton">Cancel</button>
-                        <button type="submit" class="btn-add-template-modal">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
 
-        <!-- Transaction Table -->
-        <table class="transaction-table">
+
+        <!-- Journal Entries Table -->
+        <table class="journal-entries-table">
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Accounts</th>
                     <th>Debit</th>
                     <th>Credit</th>
+
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>ADJ</td>
-                    <td>Adjustments and Closing Entries</td>
-                    <td>Description of Adjustments</td>
-                    <td>
-                        <button class="btn-edit" onclick="openEditModal('1', 'ADJ', 'Adjustments and Closing Entries', 'Description of Adjustments')">Edit</button>
-                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>CAS</td>
-                    <td>Cash Transactions</td>
-                    <td>Description of Cash Transactions</td>
-                    <td>
-                        <button class="btn-edit" onclick="openEditModal('2', 'CAS', 'Cash Transactions', 'Description of Cash Transactions')">Edit</button>
-                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>NCAS</td>
-                    <td>Non-Cash Transactions</td>
-                    <td>Description of Non-Cash Transactions</td>
-                    <td>
-                        <button class="btn-edit" onclick="openEditModal('3', 'NCAS', 'Non-Cash Transactions', 'Description of Non-Cash Transactions')">Edit</button>
-                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
-                    </td>
-                </tr>
+
             </tbody>
         </table>
     </div>

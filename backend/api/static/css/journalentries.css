@@ -68,7 +68,7 @@ h1.title {
     display: flex;
     justify-content: flex-start; /* Align buttons to the left */
     gap: 10px; /* Space between buttons */
-    margin-top: 20px;
+    margin-top: 20px; 
     margin-left: auto;
 }
 
@@ -148,7 +148,7 @@ h1.title {
 
 
 /* Container Styling */
-.transaction-type-dashboard {
+.journal-entries-dashboard {
     display: flex;
     justify-content: space-between;
     padding: 20px;
@@ -218,24 +218,24 @@ h1.title {
 }
 
 /* Table Styling */
-.transaction-table {
+.journal-entries-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
 
-.transaction-table th,
-.transaction-table td {
+.journal-entries-table th,
+.journal-entries-table td {
     padding: 10px;
     border: none;
 }
 
-.transaction-table th {
+.journal-entries-table th {
     background-color: #e5e5e5;
     color: black;
 }
 
-.transaction-table tr:nth-child(even) {
+.journal-entries-table tr:nth-child(even) {
     background-color: #fefefe;
 }
 
