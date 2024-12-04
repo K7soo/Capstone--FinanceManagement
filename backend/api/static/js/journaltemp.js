@@ -149,7 +149,9 @@ addTemplateForm.addEventListener('submit', event => {
         console.log("Template added successfully:", createdTemplate);
         addRowToTable(createdTemplate);
         addTemplateForm.reset();
-        closeAddTemplateModal();
+
+        // Make the right-hand side modal section visible for adding rows
+        document.getElementById('modalRightSection').style.display = 'block';
     })
     .catch(error => console.error('Error adding template:', error));
 });
