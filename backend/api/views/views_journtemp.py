@@ -1,15 +1,15 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework.views import APIView
+# from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import status
-from ..models import TRTemplate, TRTemplateDetails, ChartOfAccs
-from ..serializers import TRTemplateSerializer, TRTemplateDetailsSerializer, ChartOfAccsSerializer
+from rest_framework import status, views
+from ..models import TRTemplate, TRTemplateDetails, ChartOfAccs, TransactionType
+from ..serializers import TRTemplateSerializer, TRTemplateDetailsSerializer, ChartOfAccsSerializer, TransactionTypeSerializer
 from django.http import JsonResponse
 
 
 # Chart of Accounts List View
-class ChartOfAccsListView(APIView):
+class ChartOfAccsListView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -17,9 +17,16 @@ class ChartOfAccsListView(APIView):
         serializer = ChartOfAccsSerializer(charts, many=True)
         return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
+class TransactionTypeGet(views.APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        transaction_type = TransactionType.objects.all()
+        serializer = TransactionTypeSerializer(transaction_type, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 # List and Create Journal Templates
-class JournalTemplateView(APIView):
+class JournalTemplateView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -38,7 +45,7 @@ class JournalTemplateView(APIView):
 
 
 # Retrieve, Update, Delete Journal Template
-class JournalTemplateDetailView(APIView):
+class JournalTemplateDetailView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, pk):
@@ -72,7 +79,7 @@ class JournalTemplateDetailView(APIView):
 
 
 # List and Create TRTemplateDetails
-class TemplateBodyView(APIView):
+class TemplateBodyView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -89,7 +96,7 @@ class TemplateBodyView(APIView):
 
 
 # Retrieve, Update, Delete TRTemplateDetail
-class TemplateBodyDetailView(APIView):
+class TemplateBodyDetailView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, pk):

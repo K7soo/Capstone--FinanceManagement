@@ -27,6 +27,34 @@ window.journalTemplates = [];
 
 console.log("JavaScript loaded successfully");
 
+function loadTransactionTypes() {
+    fetch('/get-transaction-types/', { // Replace with your actual endpoint for fetching transaction types
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to load transaction types');
+        }
+        return response.json();
+    })
+    .then(transactionTypes => {
+        console.log("Fetched transaction types:", transactionTypes);
+        const transactionTypeSelect = document.getElementById('transactionType');
+        transactionTypeSelect.innerHTML = "<option value=''>Choose Transaction Type</option>"; // Add placeholder option
+
+        transactionTypes.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type.id;  // Use ID as the value
+            option.textContent = type.TransactionTypeName;  // Display name in the dropdown
+            transactionTypeSelect.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Error fetching transaction types:', error));
+}
+
 // Load and display the journal templates
 function loadJournalTemplates() {
     fetch('/journaltemplate/?t=' + new Date().getTime(), {
@@ -66,10 +94,12 @@ function addRowToTable(template) {
 }
 
 // Show the Add Template modal
-addTemplateBtn.addEventListener('click', () => {
+function openAddTemplateModal() {
     console.log("Add Template button clicked, opening modal.");
     addTemplateModal.style.display = 'block';
-});
+    loadTransactionTypes(); // Load transaction types when the modal is opened
+}
+window.openAddTemplateModal = openAddTemplateModal;
 
 // Close Add Template modal
 function closeAddTemplateModal() {
@@ -94,7 +124,7 @@ addTemplateForm.addEventListener('submit', event => {
         return;
     }
 
-    const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: transactionType };
+    const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
 
     console.log("Submitting template:", newTemplate);
 
@@ -108,7 +138,10 @@ addTemplateForm.addEventListener('submit', event => {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Failed to add template');
+            return response.json().then(errorData => {
+                console.error('Backend validation errors:', errorData);
+                throw new Error('Failed to add template');
+            });
         }
         return response.json();
     })
@@ -154,7 +187,7 @@ editTemplateForm.addEventListener('submit', event => {
     const templateId = document.getElementById('EditTemplateId').value;
     const updatedTemplate = {
         TRTemplateCode: document.getElementById('EditTemplateCode').value,
-        TransactionType_FK: document.getElementById('EditTransactionType').value,
+        TransactionType_FK: parseInt(document.getElementById('EditTransactionType').value),
     };
 
     fetch(`/journaltemplate/${templateId}/`, {
