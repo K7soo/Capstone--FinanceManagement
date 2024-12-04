@@ -12,30 +12,36 @@ function getCsrfToken() {
     return csrfToken;
 }
 
-// Select modal elements
-const modal = document.getElementById('addJournalTemplateModal');
-const openModalButton = document.getElementById('openAddJournalTemplateModal'); // Fixed selector
-const closeModalButton = document.querySelector('.close-btn'); // Fixed selector
-const cancelButton = document.getElementById('cancelJournalTemplateButton');
+// Ensure this code runs after the DOM has fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+    // Select modal elements
+    const modal = document.getElementById('addJournalTemplateModal');
+    const openModalButton = document.getElementById('openAddJournalTemplateModal'); // Open button
+    const cancelButton = document.getElementById('cancelJournalTemplateButton'); // Cancel button
 
-// Open modal
-openModalButton.addEventListener('click', () => {
-    modal.style.display = 'block';
-});
-
-// Close modal on "X" button
-closeModalButton.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-// Close modal on "Cancel" button
-cancelButton.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-// Close modal when clicking outside
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
+    // Ensure modal and buttons are found
+    if (!modal || !openModalButton || !cancelButton) {
+        console.error("Modal or buttons not found in the DOM. Check the HTML structure and element IDs.");
+        return;
     }
+
+    // Open modal
+    openModalButton.addEventListener('click', () => {
+        console.log("Open modal button clicked");
+        modal.style.display = 'block';
+    });
+
+    // Close modal on "Cancel" button
+    cancelButton.addEventListener('click', () => {
+        console.log("Cancel button clicked");
+        modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            console.log("Clicked outside the modal");
+            modal.style.display = 'none';
+        }
+    });
 });
