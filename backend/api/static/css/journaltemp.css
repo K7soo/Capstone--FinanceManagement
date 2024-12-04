@@ -159,17 +159,51 @@ h1.title {
 }
 
 .journal-table .btn-delete {
-  background-color: #dc3545; /* Red */
+  background-color: #dc3545; 
   color: white;
   padding: 5px 10px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
+  border-radius: 5px;
+  height: 30px;
+  width: 80px;
 }
 
 .journal-table .btn-delete:hover {
-  background-color: #c82333; /* Darker red */
+  background-color: #c82333; 
 }
+
+.journal-table .btn-edit {
+  background-color: #ff9900;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 30px;
+  width: 80px;
+}
+
+.journal-table .btn-edit:hover{
+  background-color: #ffad32;
+}
+
+
+.journal-table .btn-view {
+  background-color: #0053ec;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 30px;
+  width: 80px;
+}
+
+.journal-table .btn-view:hover{
+  background-color: #2f78ff;
+}
+
 
 /* Modal Styling */
 .modal {
