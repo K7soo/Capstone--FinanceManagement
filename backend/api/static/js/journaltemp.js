@@ -14,17 +14,16 @@ function getCsrfToken() {
 
 // Define Constant Elements
 const csrfToken = getCsrfToken();
-const addTemplateBtn = document.querySelector('.add-template-btn');
+const addTemplateBtn = document.querySelector('.btn-add');
 const addTemplateModal = document.getElementById('addTemplateModal');
 const editTemplateModal = document.getElementById('editTemplateModal');
-const closeModalBtns = document.querySelectorAll('.close-btn');
-const cancelModalBtns = document.querySelectorAll('.modal-cancel-btn');
+const closeModalBtns = document.querySelectorAll('.close'); 
 const addTemplateForm = document.getElementById('addTemplateForm');
 const editTemplateForm = document.getElementById('editTemplateForm');
-const templateTableBody = document.querySelector('.template-table tbody');
+const templateTableBody = document.getElementById('journalTemplateTable');
 
 // Global variable to store the list of journal templates
-window.loadJournalTemplates = [];
+window.journalTemplates = [];
 
 console.log("JavaScript loaded successfully");
 
@@ -72,11 +71,23 @@ addTemplateBtn.addEventListener('click', () => {
     addTemplateModal.style.display = 'block';
 });
 
+// Close Add Template modal
+function closeAddTemplateModal() {
+    addTemplateModal.style.display = 'none';
+}
+window.closeAddTemplateModal = closeAddTemplateModal;
+
+// Close Edit Template modal
+function closeEditTemplateModal() {
+    editTemplateModal.style.display = 'none';
+}
+window.closeEditTemplateModal = closeEditTemplateModal;
+
 // Handle Add Template form submission
 addTemplateForm.addEventListener('submit', event => {
     event.preventDefault();
-    const templateCode = document.querySelector('input[name="TRTemplateCode"]').value;
-    const transactionType = document.querySelector('select[name="TransactionType_FK"]').value;
+    const templateCode = document.getElementById('templateCode').value;
+    const transactionType = document.getElementById('transactionType').value;
 
     if (!templateCode || !transactionType) {
         alert("Please fill in all fields.");
@@ -85,11 +96,14 @@ addTemplateForm.addEventListener('submit', event => {
 
     const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: transactionType };
 
+    console.log("Submitting template:", newTemplate);
+
     fetch('/journaltemplate/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken },
+            'X-CSRFToken': csrfToken
+        },
         body: JSON.stringify(newTemplate),
     })
     .then(response => {
@@ -102,7 +116,7 @@ addTemplateForm.addEventListener('submit', event => {
         console.log("Template added successfully:", createdTemplate);
         addRowToTable(createdTemplate);
         addTemplateForm.reset();
-        addTemplateModal.style.display = 'none';
+        closeAddTemplateModal();
     })
     .catch(error => console.error('Error adding template:', error));
 });
@@ -124,16 +138,15 @@ function openEditTemplateModal(templateId) {
         return response.json();
     })
     .then(template => {
-        // Populate the modal fields with the selected template's data
         document.getElementById('EditTemplateId').value = template.id;
         document.getElementById('EditTemplateCode').value = template.TRTemplateCode;
         document.getElementById('EditTransactionType').value = template.TransactionType_FK;
 
-        // Display the edit modal
         editTemplateModal.style.display = 'block';
     })
     .catch(error => console.error('Error fetching template details:', error));
 }
+window.openEditTemplateModal = openEditTemplateModal;
 
 // Handle Edit Template form submission
 editTemplateForm.addEventListener('submit', event => {
@@ -157,8 +170,8 @@ editTemplateForm.addEventListener('submit', event => {
     })
     .then(updatedData => {
         console.log("Template updated successfully:", updatedData);
-        loadJournalTemplates(); // Refresh the table
-        editTemplateModal.style.display = 'none';
+        loadJournalTemplates(); 
+        closeEditTemplateModal();
     })
     .catch(error => console.error('Error updating template:', error));
 });
@@ -206,19 +219,21 @@ function viewTemplate(templateId) {
 // Close modals on clicking the close button or outside modal
 closeModalBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        addTemplateModal.style.display = 'none';
-        editTemplateModal.style.display = 'none';
+        closeAddTemplateModal();
+        closeEditTemplateModal();
     });
 });
 
 window.addEventListener('click', event => {
     if (event.target === addTemplateModal) {
-        addTemplateModal.style.display = 'none';
+        closeAddTemplateModal();
     }
     if (event.target === editTemplateModal) {
-        editTemplateModal.style.display = 'none';
+        closeEditTemplateModal();
     }
 });
 
 // Initialize the page
-loadJournalTemplates();
+document.addEventListener("DOMContentLoaded", () => {
+    loadJournalTemplates();
+});
