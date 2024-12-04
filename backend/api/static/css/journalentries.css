@@ -85,11 +85,13 @@ h1.title {
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .btn-cancel {
     background-color: #ff4d4d;
     color: white;
+
 }
 
 .btn-cancel:hover {
@@ -99,11 +101,20 @@ h1.title {
 .btn-add-template {
     background-color: #61396f;
     color: white;
-    margin-bottom: 10px;
 }
 
 .btn-add-template:hover {
     background-color: #8724ac;
+}
+
+.btn-add-journtemp-modal {
+    padding: 10px 20px; /* Ensure consistent padding */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #61396f;
+    color: white;
 }
 
 
