@@ -12,10 +12,9 @@ Statement of Account
 {% endblock %}
 
 {% block content %}
+<h1 class="title">Journal Entries</h1>
 
-<h1 class="title">Journal Entries </h1>
-
-<div class="journal-entries--dashboard">
+<div class="journal-entries-dashboard">
     <!-- Left Section - Tree Structure -->
     <div class="tree-container">
         <h3>File Tree</h3>
@@ -24,15 +23,15 @@ Statement of Account
                 <li>
                     <span class="caret">List Journal Entries Page</span>
                     <ul class="nested">
-                        <li data-category="Reservations">Reservations</li>
-                        <li data-category="Item Procurement">Item Procurement</li>
-                        <li data-category="Order Transactions">Order Transactions</li>
+                        <li data-category=""></li>
+                        <li data-category=""></li>
+                        <li data-category="Order Transactions"></li>
                     </ul>
                 </li>
             </ul>
         </div>
     </div>
-    
+
     <!-- Right Section - Table and Filter -->
     <div class="table-container">
         <div class="filter-container">
@@ -44,36 +43,59 @@ Statement of Account
                 <option value="100">100</option>
             </select>
         </div>
-        
+        <button class="btn-add-template" id="openAddJournalTemplateModal">Add Journal Template</button>
 
-        <!-- Add Transaction Type Modal -->
-        <div id="addTransactionTypeModal" class="modal">
+        
+        <!-- Add Journal Template Modal -->
+        <div id="addJournalTemplateModal" class="modal">
             <div class="modal-content">
-                <h2>Add New Transaction Type</h2>
-                <form id="addTransactionTypeForm" class="form-grid">
+                <h2>Add Journal Template</h2>
+                <form id="journalTemplateForm" class="form-grid">
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+                    <!-- Transaction Type Selection -->
                     <div class="form-group">
-                        <label for="TransactionTypeName">Transaction Type Name:</label>
-                        <input type="text" id="TransactionTypeName" name="TransactionTypeName" placeholder="Enter Transaction Name" required />
+                        <label for="transactionType">Transaction Type:</label>
+                        <select id="transactionType" name="transactionType" required>
+                            <option value="" disabled selected>Select Transaction Type</option>
+                            <option value="reservations">Reservations</option>
+                            <option value="itemProcurement">Item Procurement</option>
+                            <option value="orderTransactions">Order Transactions</option>
+                        </select>
                     </div>
+
+                    <!-- Template Name -->
                     <div class="form-group">
-                        <label for="TransactionCode">Transaction Code:</label>
-                        <input type="text" id="TransactionCode" name="TransactionCode" placeholder="Enter Transaction Code" required />
+                        <label for="templateName">Template Name:</label>
+                        <input type="text" id="templateName" name="templateName" placeholder="Enter Template Name" required />
                     </div>
+
+                    <!-- Date -->
                     <div class="form-group">
-                        <label for="TypeDescription">Type Description:</label>
-                        <input type="text" id="TransactionTypeDesc" name="TransactionTypeDesc" placeholder="Enter Description" required />
+                        <label for="templateDate">Date:</label>
+                        <input type="date" id="templateDate" name="templateDate" required />
                     </div>
-                    <!-- Button group -->
+
+                    <!-- Template Code -->
+                    <div class="form-group">
+                        <label for="templateCode">Template Code:</label>
+                        <input type="text" id="templateCode" name="templateCode" placeholder="Enter Template Code" required />
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="templateDescription">Description:</label>
+                        <textarea id="templateDescription" name="templateDescription" placeholder="Enter Description" rows="4" required></textarea>
+                    </div>
+
+                    <!-- Button Group -->
                     <div class="button-group">
-                        <button type="button" class="btn-cancel" id="cancelTransactionTypeButton">Cancel</button>
-                        <button type="submit" class="btn-add-template-modal">Add Transaction Type</button>
+                        <button type="button" class="btn-cancel" id="cancelJournalTemplateButton">Cancel</button>
+                        <button type="submit" class="btn-add-template">Add Journal Template</button>
                     </div>
                 </form>
             </div>
         </div>
-
-
 
         <!-- Journal Entries Table -->
         <table class="journal-entries-table">
@@ -83,15 +105,15 @@ Statement of Account
                     <th>Accounts</th>
                     <th>Debit</th>
                     <th>Credit</th>
-
                 </tr>
             </thead>
             <tbody>
-
+                <!-- Dynamic rows will be added here -->
             </tbody>
         </table>
     </div>
 </div>
+
 {% endblock %}
 
 

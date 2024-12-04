@@ -14,20 +14,22 @@ h1.title {
 .modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto; /* Enable scrolling for overflow content */
 }
 
 .modal-content {
     background-color: #ffffff;
-    margin: 10% auto;
+    margin: 5% auto; /* Reduced top margin */
     padding: 20px;
     border-radius: 8px;
-    width: 40%;
+    width: 90%; /* Default modal width for responsiveness */
+    max-width: 600px; /* Limit the maximum width */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -42,7 +44,7 @@ h1.title {
 .form-grid {
     display: grid;
     grid-template-columns: 1fr; /* Single-column layout */
-    gap: 15px; /* Spacing between fields */
+    gap: 15px; /* Spacing between form groups */
 }
 
 .form-group {
@@ -52,32 +54,37 @@ h1.title {
 
 .form-group label {
     color: #333;
+    font-weight: bold;
     margin-bottom: 5px;
 }
 
-.form-group input {
+.form-group input,
+.form-group select,
+.form-group textarea {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     width: 100%;
     box-sizing: border-box;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Button Group Styling */
 .button-group {
     display: flex;
-    justify-content: flex-start; /* Align buttons to the left */
+    justify-content: flex-end; /* Align buttons to the right */
     gap: 10px; /* Space between buttons */
-    margin-top: 20px; 
-    margin-left: auto;
+    margin-top: 20px;
 }
 
 .btn-cancel,
-.btn-add-template-modal {
-    padding: 10px 20px;
+.btn-add-template {
+    padding: 10px 20px; /* Ensure consistent padding */
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .btn-cancel {
@@ -89,14 +96,30 @@ h1.title {
     background-color: #e60000;
 }
 
-.btn-add-template-modal {
-    background-color: #28a745;
+.btn-add-template {
+    background-color: #61396f;
     color: white;
+    margin-bottom: 10px;
 }
 
-.btn-add-template-modal:hover {
-    background-color: #218838;
+.btn-add-template:hover {
+    background-color: #8724ac;
 }
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%; /* Adjust width for smaller screens */
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 12px; /* Smaller font size for smaller screens */
+    }
+}
+
 
 
 
