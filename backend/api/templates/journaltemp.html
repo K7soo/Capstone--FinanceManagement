@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% load static %} {% block title %} Journal Templates {% endblock %} {% block extra_css %} <link rel="stylesheet" href="{% static 'css/journaltemp.css' %}" /> {% endblock %} {% block content %}
+{% extends 'base.html' %} {% load static %} {% block title %} Journal Templates
+{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/journaltemp.css' %}" /> {% endblock %} {% block content %}
 
 <h1 class="title">Journal Template</h1>
 <div class="journal-template-dashboard">
@@ -42,58 +44,51 @@
 
   <!-- Modal for Adding Templates -->
   <div id="addTemplateModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Add New Journal Template</h2>
-        <span class="close" onclick="closeAddTemplateModal()">&times;</span>
-      </div>
-      <div class="modal-body">
-        <!-- Modal Left Section -->
-        <form id="addTemplateForm">
-          <div class="modal-left">
-            <label for="templateCode">Template Code:</label>
-            <input type="text" id="templateCode" placeholder="Enter Template Code" />
+    <form id="addTemplateForm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Journal Template</h2>
+                <span class="close" onclick="closeAddTemplateModal()">&times;</span>
+            </div>
 
-            <label for="transactionType">Transaction Type:</label>
-            <select id="transactionType">
-              <option value="reservations">Reservations</option>
-              <option value="itemProcurement">Item Procurement</option>
-              <option value="orderTransactions">Order Transactions</option>
-            </select>
+            <div class="modal-body">
+                <!-- Template Header Information -->
+                <div id="templateHeaderSection">
+                    <label for="templateCode">Template Code:</label>
+                    <input type="text" id="templateCode" placeholder="Enter Template Code" required />
 
-            <!-- Button to Save Template (Step 1) -->
-            <button type="submit" class="btn-save-template">
-              Save Template
-            </button>
-          </div>
-        </form>
+                    <label for="transactionType">Transaction Type:</label>
+                    <select id="transactionType" required>
+                        <option value="">Choose Transaction Type</option>
+                        <!-- Transaction Types will be populated dynamically -->
+                    </select>
+                </div>
 
-        <!-- Modal Right Section - initially hidden -->
-        <div class="modal-right" style="display: none" id="modalRightSection">
-          <h3>Attach Accounts to Template</h3>
-          <table class="modal-table">
-            <thead>
-              <tr>
-                <th>Account Code</th>
-                <th>Account Description</th>
-                <th>Debit</th>
-                <th>Credit</th>
-                <th>Remove</th>
-              </tr>
-            </thead>
-            <tbody id="templateRows">
-              <!-- Rows added via the modal's Add Row button -->
-            </tbody>
-          </table>
-          <button class="btn-add-row" onclick="addTemplateRow()">
-            Add Row
-          </button>
-          <button class="btn-save-template" onclick="saveEditedTemplate()">
-            Save Changes
-          </button>
+                <!-- Template Body (Chart of Accounts) -->
+                <div class="modal-body" id="templateBodySection">
+                    <h3>Attach Accounts to Template</h3>
+                    <table class="modal-table">
+                        <thead>
+                            <tr>
+                                <th>Account Code</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody id="templateRows">
+                            <!-- Rows added dynamically -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-add-row" onclick="addTemplateRow()">Add Row</button>
+                        <button type="submit" class="btn-save-template">Save Template</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </form>
   </div>
 
   <!-- Modal for Editing Templates (Adding Rows) -->
@@ -112,16 +107,7 @@
             <input type="text" id="EditTemplateCode" placeholder="Enter Template Code" />
 
             <label for="EditTransactionType">Transaction Type:</label>
-            <select id="EditTransactionType">
-              <option value="reservations">Reservations</option>
-              <option value="itemProcurement">Item Procurement</option>
-              <option value="orderTransactions">Order Transactions</option>
-            </select>
-
-            <!-- Button to Save Template (Step 1) -->
-            <button type="submit" class="btn-save-template">
-              Save Template
-            </button>
+            <select id="EditTransactionType"></select>
           </div>
         </form>
 
@@ -145,7 +131,7 @@
           <button class="btn-add-row" onclick="addTemplateRow()">
             Add Row
           </button>
-          <button class="btn-save-template" onclick="saveEditedTemplate()">
+          <button type="submit" class="btn-save-template" onclick="saveEditedTemplate()">
             Save Changes
           </button>
         </div>
