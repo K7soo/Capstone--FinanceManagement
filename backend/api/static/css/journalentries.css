@@ -1,0 +1,300 @@
+body {
+    background-color: #f8f8ff; /* Light background */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Modal styles */
+h1.title {
+    color: #61396f; /* Violet color */
+    text-align: left; /* Align title to the left */
+    margin-top: 35px;
+}
+
+/* Modal Container Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto; /* Enable scrolling for overflow content */
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 5% auto; /* Reduced top margin */
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%; /* Default modal width for responsiveness */
+    max-width: 600px; /* Limit the maximum width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Title Styling */
+.modal-content h2 {
+    color: #61396f;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form Grid Styling */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Single-column layout */
+    gap: 15px; /* Spacing between form groups */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* Stack label and input vertically */
+}
+
+.form-group label {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Button Group Styling */
+.button-group {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px;
+}
+
+.btn-cancel,
+.btn-add-template {
+    padding: 10px 20px; /* Ensure consistent padding */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.btn-cancel {
+    background-color: #ff4d4d;
+    color: white;
+
+}
+
+.btn-cancel:hover {
+    background-color: #e60000;
+}
+
+.btn-add-template {
+    background-color: #61396f;
+    color: white;
+}
+
+.btn-add-template:hover {
+    background-color: #8724ac;
+}
+
+.btn-add-journtemp-modal {
+    padding: 10px 20px; /* Ensure consistent padding */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #61396f;
+    color: white;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%; /* Adjust width for smaller screens */
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 12px; /* Smaller font size for smaller screens */
+    }
+}
+
+
+
+
+/* File Tree CSS */
+.outer ul {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #333;
+    padding: 10px;
+    list-style: none; /* Remove bullets */
+}
+
+#ul {
+    margin: 0;
+    padding-left: 10px; /* Indent nested items */
+}
+
+.caret {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+    font-weight: bold;
+}
+
+.caret::before {
+    content: '\1F4C1'; /* Folder icon */
+    color: #61396f;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.caret-down::before {
+    content: '\1F4C2'; /* Open folder icon */
+    transform:'\f07c' ; /* Rotate arrow for expanded state */
+}
+
+.nested {
+    display: none; /* Hide nested lists initially */
+    margin-left: 20px; /* Add indentation */
+}
+
+.nested li {
+    padding: 5px 0;
+}
+
+.nested.active {
+    display: block; /* Show nested lists when active */
+}
+
+
+
+/* Container Styling */
+.journal-entries-dashboard {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f8f8ff;
+}
+
+/* Left Section: Tree Structure */
+.tree-container {
+    flex: 1;
+    margin-right: 20px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tree-container h2 {
+    color: #008425;
+    margin-bottom: 10px;
+}
+
+
+.tree-structure ul {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.tree-structure ul, li {
+    margin: 10px 0;
+    font-size: 14px;
+    cursor: pointer; /* Ensure the pointer cursor appears */
+
+}
+
+.tree-main {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Right Section: Table and Filter */
+.table-container {
+    flex: 2;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.filter-container label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #61396f;
+}
+
+.filter-select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Table Styling */
+.journal-entries-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.journal-entries-table th,
+.journal-entries-table td {
+    padding: 10px;
+    border: none;
+}
+
+.journal-entries-table th {
+    background-color: #e5e5e5;
+    color: black;
+}
+
+.journal-entries-table tr:nth-child(even) {
+    background-color: #fefefe;
+}
+
+/* Action Buttons */
+.btn-edit,
+.btn-delete,
+.btn-add {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-add {
+    background-color: #ffcf0e;
+    color: white;
+    margin-bottom:10px;
+}
+
+.btn-edit {
+    background-color: #008425;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #ff3b3b;
+    color: white;
+}

@@ -86,26 +86,7 @@
 }
 
 /* bookkeeping dropdown button */
-a,
-.dropdown-btn {
-    margin: 6px;
-    padding: 7px 7px 7px 4px;
-    text-decoration: none;
-    font-size: 14px;
-    color: #000000;
-    display: flex;
-    align-items: center; /* Align items for icon and text */
-    justify-content: flex-start; /* Adjust alignment to the left */
-    width: 100%;
-    text-align: left;
-    border: none;
-    background: none;
-    outline: none;
-    cursor: pointer;
-    transition: background-color 0.3s, border-radius 0.3s, margin 0.3s; /* Smooth transition */
-    overflow: hidden; /* Prevent background overflow */
-    box-sizing: border-box; /* Ensure padding and border are included in total width */
-}
+
 /* Default state of the caret icon pointing down */
 .fa-caret-down {
     transform: rotate(180deg); /* Default downward position */
@@ -121,16 +102,37 @@ a,
 /* Hovering dropdownbutton */
 a:hover,
 .dropdown-btn:hover {
-    background-color: #61396f; /* Violet color */
+    background-color: #968DF4; /* Violet color */
     color: white ;
     border-radius: 10px; /* Adjust this value for more or less rounding */
+}
+
+a,
+.dropdown-btn {
+    margin: 6px;
+    padding: 7px 7px 7px 4px;
+    text-decoration: none;
+    font-size: 14px;
+    color: #292929;
+    display: flex;
+    align-items: center; /* Align items for icon and text */
+    justify-content: flex-start; /* Adjust alignment to the left */
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s, border-radius 0.3s, margin 0.3s; /* Smooth transition */
+    overflow: hidden; /* Prevent background overflow */
+    box-sizing: border-box; /* Ensure padding and border are included in total width */
 }
 
 /* dashboard,transaction, bookkeeping, reports, payment button design */
 a.active,
 .dropdown-btn.active {
     background-color: none; /* Remove violet background from active state */
-    color: #000000; /* Inherit default color */
+    color: #292929; /* Inherit default color */
     padding: 7px 10px 7px 10px;
     margin-top: 10px;
     margin-bottom: 5px;
@@ -155,9 +157,16 @@ a i,
 
 .dropdown-container a {
     font-size: 14px;
-    color: #000000;
+    color: #292929;
 }
-
+.dropdown-container a:hover{
+    font-size: 14px;
+    color: #ffffff; /*968DF4*/
+}
+.dropdown-container a::after{
+    font-size: 14px;
+    color: #968DF4; /*968DF4*/
+}
 .sidebar-footer {
     position: absolute;
     bottom: 20px;
