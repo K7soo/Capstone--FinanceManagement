@@ -9,7 +9,7 @@ urlpatterns = [
 
     # Exposed API's
         # RRBS -- Sample URL
-        path('reservations-view/', views_api.ReservationsView.as_view(), name='reservations_view'),
+        path('reservations-view/', views_api.ReservationsView.as_view(), name='reservations_api'),
     
     # SIDEBAR COMPONENTS #
     # Dashboard #
@@ -66,4 +66,5 @@ urlpatterns = [
     
         # Trial Balance 
     path('trialbalance/', views_.trial_balance_view, name='trialbalance'),
+
 ]

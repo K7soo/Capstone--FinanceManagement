@@ -170,16 +170,17 @@ addTemplateForm.addEventListener('submit', event => {
             const debitChecked = row.querySelector('.debit-checkbox').checked;
             const creditChecked = row.querySelector('.credit-checkbox').checked;
 
+            // Update field names to match your Django model
             const newTemplateDetail = {
-                TRTemplateHeaderId: createdTemplate.id,
-                AccountCode: accountCode,
+                Template_FK: createdTemplate.id, // Updated field name to match the model
+                Account_FK: accountCode, // Updated field name to match the model
                 Debit: debitChecked ? 1 : 0,
                 Credit: creditChecked ? 1 : 0
             };
 
             console.log("Submitting template body:", newTemplateDetail);
 
-            fetch('/journaltemplatedetail/', {
+            fetch('/journaltemplatedetails/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

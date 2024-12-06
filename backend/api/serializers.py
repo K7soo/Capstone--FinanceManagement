@@ -19,7 +19,7 @@ class TRTemplateSerializer(serializers.ModelSerializer):
         fields = ['id', 'TRTemplateCode', 'TransactionType_FK']
 
 class TRTemplateDetailsSerializer(serializers.ModelSerializer):
-    Account_FK = serializers.PrimaryKeyRelatedField(queryset = AccountType.objects.all())
+    Account_FK = serializers.PrimaryKeyRelatedField(queryset = ChartOfAccs.objects.all())
     Template_FK = serializers.PrimaryKeyRelatedField(queryset = TRTemplate.objects.all())
     class Meta:
         model = TRTemplateDetails

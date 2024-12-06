@@ -10,7 +10,7 @@ class ReservationsView(views.APIView):
 
     def get(self, request):
         # URL for the API hosted on Laptop 1
-        api_url = "http://192.168.1.28:8000/reservations/"
+        api_url = "http://192.168.1.82:8000/reservations/"
         
         try:
             response = requests.get(api_url)
