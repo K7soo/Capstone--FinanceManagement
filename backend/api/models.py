@@ -65,12 +65,12 @@ class Transactions(models.Model):
     )
     TransactionNo = models.CharField(max_length=100, null=False, blank=False)
     TransactionStatus = models.CharField(max_length=50, null=False, blank=False)
-    Discount_FK = models.ForeignKey(
-        "Discounts", on_delete=models.SET_NULL, null=True, blank=True
-    )
-    Payment_FK = models.ForeignKey(
-        "Payments", on_delete=models.SET_NULL, null=True, blank=True
-    )
+    # Discount_FK = models.ForeignKey(
+    #     "Discounts", on_delete=models.SET_NULL, null=True, blank=True
+    # )
+    # Payment_FK = models.ForeignKey(
+    #     "Payments", on_delete=models.SET_NULL, null=True, blank=True
+    # )
     Particulars = models.TextField(null=False, blank=False)
     Created_By = models.CharField(max_length=100, null=False, blank=False)
     Reviewed_By = models.CharField(max_length=100, null=True, blank=True)
