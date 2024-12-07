@@ -15,22 +15,6 @@ Statement of Account
 <h1 class="title">Journal Entries</h1>
 
 <div class="journal-entries-dashboard">
-    <!-- Left Section - Tree Structure -->
-    <div class="tree-container">
-        <h3>File Tree</h3>
-        <div class="outer">
-            <ul id="fileTree">
-                <li>
-                    <span class="caret">List Journal Entries Page</span>
-                    <ul class="nested">
-                        <li data-category=""></li>
-                        <li data-category=""></li>
-                        <li data-category="Order Transactions"></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
 
     <!-- Right Section - Table and Filter -->
     <div class="table-container">
@@ -43,76 +27,86 @@ Statement of Account
                 <option value="100">100</option>
             </select>
         </div>
-        <button class="btn-add-template" id="openAddJournalTemplateModal">Add Journal Template</button>
+        <button class="btn-add-template" id="openAddJournalEntriesModal">Add Journal Entries</button>
 
 
         <!-- Add Journal Template Modal -->
-        <div id="addJournalTemplateModal" class="modal">
+        <div id="addJournalEntriesModal" class="modal">
             <div class="modal-content">
-                <h2>Add Journal Template</h2>
-                <form id="journalTemplateForm" class="form-grid">
+                <h2>Add Journal Entries</h2>
+                <form id="journalEntriesForm" class="form-grid">
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+                    <div class="form-group">
+                        <label for="entryCode">Entry Code:</label>
+                        <input type="text" id="entryCode" name="entryCode" placeholder="Enter Entry Code" required />
+                    </div>
+
 
                     <!-- Transaction Type Selection -->
                     <div class="form-group">
                         <label for="transactionType">Transaction Type:</label>
                         <select id="transactionType" name="transactionType" required>
                             <option value="" disabled selected>Select Transaction Type</option>
-                            <option value="reservations">Reservations</option>
-                            <option value="itemProcurement">Item Procurement</option>
-                            <option value="orderTransactions">Order Transactions</option>
+                            <option value="transactionType" >Sample Type</option>
                         </select>
                     </div>
 
-                    <!-- Template Name -->
                     <div class="form-group">
-                        <label for="templateName">Template Name:</label>
-                        <input type="text" id="templateName" name="templateName" placeholder="Enter Template Name" required />
+                        <label for="addTemplate">Add Template:</label>
+                        <select id="addTemplate" name="addTemplate" required>
+                            <option value="" disabled selected>Select</option>
+                            <!-- Options can be dynamically added here -->
+                            <option value="template1">Template 1</option>
+                            <option value="template2">Template 2</option>
+                            <option value="template3">Template 3</option>
+                        </select>
                     </div>
+
 
                     <!-- Date -->
                     <div class="form-group">
-                        <label for="templateDate">Date:</label>
-                        <input type="date" id="templateDate" name="templateDate" required />
+                        <label for="entriesDate">Date:</label>
+                        <input type="date" id="entriesDate" name="entriesDate" required />
                     </div>
 
-                    <!-- Template Code -->
-                    <div class="form-group">
-                        <label for="templateCode">Template Code:</label>
-                        <input type="text" id="templateCode" name="templateCode" placeholder="Enter Template Code" required />
-                    </div>
 
                     <!-- Description -->
                     <div class="form-group">
-                        <label for="templateDescription">Description:</label>
-                        <textarea id="templateDescription" name="templateDescription" placeholder="Enter Description" rows="4" required></textarea>
+                        <label for="EntriesDescription">Description:</label>
+                        <textarea id="EntriesDescription" name="entriesDescription" placeholder="Enter Description" rows="4" required></textarea>
                     </div>
 
                     <!-- Button Group -->
                     <div class="button-group">
-                        <button type="button" class="btn-cancel" id="cancelJournalTemplateButton">Cancel</button>
-                        <button type="submit" class="btn-add-journtemp-modal">Add Journal Template</button>
+                        <button type="button" class="btn-cancel" id="cancelJournalEntriesButton">Cancel</button>
+                        <button type="submit" class="btn-add-journalEntry-modal">Add Journal Entry</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Journal Entries Table -->
-        <table class="journal-entries-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Accounts</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dynamic rows will be added here -->
-            </tbody>
-        </table>
-    </div>
-</div>
+        <div class="journal-entries-table-container" style="display: none;">
+            <table class="journal-entries-table">
+                <thead>
+                    <tr class="template-header-row">
+                        <th class="transaction-type-header">Transaction Type</th>
+                        <th class="template-header">Template</th>
+                    </tr>
+                    <tr class="journal-entries-header-row">
+                        <th style="width:10%">Date</th>
+                        <th class="accounts-header">Accounts</th>
+                        <th class="debit-header">Debit</th>
+                        <th class="credit-header">Credit</th>
+                    </tr>
+                </thead>
+                <tbody id="journalEntriesBody">
+                    <!-- Rows will go here -->
+                </tbody>
+            </table>
+        </div>
+        
+
 
 {% endblock %}
 
