@@ -365,8 +365,15 @@ h1.title {
 }
 
 #viewTemplateModal .modal-table th,
-#viewTemplateModal .modal-table td {
+#viewTemplateModal .modal-table td
+tr {
   padding: 10px;
   text-align: left;
-  border: 1px solid #ddd;
+  border: 1px solid #070707;
 }
+.modal-table th{
+  border: 1px solid #070707;
+  border-color: #070707;
+}
+
+
