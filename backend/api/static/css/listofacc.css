@@ -393,11 +393,8 @@ td.actions .btn-delete {
     }
 }
 
-
 /* buttons on list of accs */
-
-
-.btn-edit {
+.btn-view {
     background-color: #0053ec;
     color: white;
     padding: 5px 10px;
@@ -405,14 +402,14 @@ td.actions .btn-delete {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 60px;
+    width: 80px;
 }
-.btn-edit:hover{
+.btn-view:hover{
     background-color: #2f78ff;
 }
 
 /* view button */
-.btn-view {
+.btn-edit {
     background-color: #ff9900;
     color: white;
     padding: 5px 10px;
@@ -420,9 +417,9 @@ td.actions .btn-delete {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 60px;
+    width: 80px;
 }
-.btn-view:hover{
+.btn-edit:hover{
     background-color: #ffad32;
 }
 
@@ -434,7 +431,7 @@ td.actions .btn-delete {
     cursor: pointer;
     border-radius: 5px;
     height: 30px;
-    width: 70px;
+    width: 80px;
 }
 .btn-delete:hover{
     background-color: #ff3d3d;
