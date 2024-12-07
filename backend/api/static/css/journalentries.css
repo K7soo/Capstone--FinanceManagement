@@ -103,11 +103,11 @@ h1.title {
     color: white;
 }
 
-.btn-add-template:hover {
+.btn-add-journalEntry-modal:hover {
     background-color: #8724ac;
 }
 
-.btn-add-journtemp-modal {
+.btn-add-journalEntry-modal {
     padding: 10px 20px; /* Ensure consistent padding */
     border: none;
     border-radius: 5px;
@@ -272,6 +272,40 @@ h1.title {
 .journal-entries-table tr:nth-child(even) {
     background-color: #fefefe;
 }
+
+/* Default styling for the table */
+.journal-entries-table th {
+    background-color: #e5e5e5;
+    color: #000;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Styling for the first row (template header) */
+  .template-header-row th {
+    width: 40%;
+    font-size: 14px;
+    background-color: #f2f2f2; /* Slightly lighter for visual distinction */
+    text-align: center;
+  }
+  
+ 
+  /* Styling for the second-row headers */
+  .journal-entries-header-row th {
+    font-size: 13px;
+    text-align: left;
+  }
+  
+  /* Example widths for second-row headers */
+  
+
+  
+  .debit-header,
+  .credit-header {
+    width: 20%; /* Equal width for Debit and Credit columns */
+  }
+  
 
 /* Action Buttons */
 .btn-edit,
