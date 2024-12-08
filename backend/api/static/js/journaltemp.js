@@ -29,7 +29,7 @@ window.accountMap = {}; // Map for Account IDs to descriptions
 console.log("JavaScript loaded successfully");
 
 function loadTransactionTypes() {
-    fetch('/get-transaction-types/', { // Replace with your actual endpoint for fetching transaction types
+    return fetch('/get-transaction-types/', { // Replace with your actual endpoint for fetching transaction types
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
@@ -129,7 +129,7 @@ function loadTransactionTypeMap() {
 // Add a row to the journal template table
 function addRowToTable(template) {
     // Retrieve the transaction type name from the map
-    const transactionTypeName = transactionTypeMap[template.TransactionType_FK] || 'Unknown';
+    const transactionTypeName = transactionTypeMap[parseInt(template.TransactionType_FK)] || 'Unknown';
 
     const newRow = document.createElement('tr');
     newRow.setAttribute('data-id', template.id);
@@ -384,6 +384,8 @@ window.addEventListener('click', event => {
 
 // Initial load
 document.addEventListener('DOMContentLoaded', () => {
-    loadJournalTemplates();
-    console.log("Page fully loaded, journal templates fetched.");
+    loadTransactionTypes().then(() => {
+        loadJournalTemplates();
+        console.log("Page fully loaded, journal templates and transaction types fetched.");
+    }).catch(error => console.error('Error loading transaction types:', error));
 });

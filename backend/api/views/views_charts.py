@@ -52,7 +52,6 @@ class ChartOfAccountDetailView(views.APIView):
             chart_of_accs = ChartOfAccs.objects.all()
             serializer = ChartOfAccsSerializer(chart_of_accs, many=True)
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-        pass
 
     def delete(self, request, pk=None):
         try:

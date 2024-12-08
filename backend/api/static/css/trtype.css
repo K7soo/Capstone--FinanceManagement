@@ -253,14 +253,32 @@ h1.title {
     background-color: #ffcf0e;
     color: white;
     margin-bottom:10px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 200px;
 }
 
 .btn-edit {
-    background-color: #008425;
+    background-color: #ff9900;
     color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
 }
 
 .btn-delete {
-    background-color: #ff3b3b;
+    background-color: #f30000;
     color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
 }

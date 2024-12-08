@@ -49,7 +49,7 @@ class JournalTemplateDetailView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, pk):
-        template = get_object_or_404(TRTemplate, pk=pk)
+        template = TRTemplate.objects.get(pk=pk)
         serializer = TRTemplateSerializer(template)
         return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
