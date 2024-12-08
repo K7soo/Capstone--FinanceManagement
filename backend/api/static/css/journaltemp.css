@@ -249,6 +249,7 @@ h1.title {
 .modal-body {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   gap: 20px;
 }
 
@@ -332,6 +333,11 @@ h1.title {
 
 
 /*--------------------- View Template Modal ---------------*/
+
+.acounts-template-title{
+  margin-bottom: -10px;
+}
+
 #viewTemplateModal .modal-content {
   background-color: #fff;
   margin: 5% auto;
@@ -362,18 +368,35 @@ h1.title {
 
 #viewTemplateModal .modal-body {
   margin-top: 20px;
+  border:1px solid #070707;
 }
 
 #viewTemplateModal .modal-table th,
-#viewTemplateModal .modal-table td
-tr {
+#viewTemplateModal .modal-table td {
   padding: 10px;
   text-align: left;
-  border: 1px solid #070707;
+
 }
-.modal-table th{
-  border: 1px solid #070707;
-  border-color: #070707;
+#viewTemplateModal .modal-table {
+  border-collapse: collapse; /* Ensure borders don't double up */
+  width: 100%; /* Optional for full-width table */
+}
+.modal-table, th, td {
+  border-collapse: collapse; /* Merge borders */
+  font-family: 'Poppins', sans-serif; /* Apply a clean font */
+  text-align: center; /* Center-align content */
+  overflow-x: auto
+  
 }
 
+.account-code{
+  width: 100%;
+}
+
+
+  /* border for add template */
+  .templateRows tr, th, td{
+    border:1px solid #070707 ;
+
+  }
 

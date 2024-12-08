@@ -64,9 +64,9 @@
                     </select>
                 </div>
 
+                <h3 class="acounts-template-title">Attach Accounts to Template</h3>
                 <!-- Template Body (Chart of Accounts) -->
                 <div class="modal-body" id="templateBodySection">
-                    <h3>Attach Accounts to Template</h3>
                     <table class="modal-table">
                         <thead>
                             <tr>
@@ -80,12 +80,11 @@
                             <!-- Rows added dynamically -->
                         </tbody>
                     </table>
-                    
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-add-row" onclick="addTemplateRow()">Add Row</button>
-                        <button type="submit" class="btn-save-template">Save Template</button>
-                    </div>
                 </div>
+                <div class="modal-buttons">
+                  <button type="button" class="btn-add-row" onclick="addTemplateRow()">Add Row</button>
+                  <button type="submit" class="btn-save-template">Save Template</button>
+              </div>
             </div>
         </div>
     </form>
@@ -117,7 +116,7 @@
           <table class="modal-table">
             <thead>
               <tr>
-                <th>Account Code</th>
+                <th class="account-code">Account Code</th>
                 <th>Account Description</th>
                 <th>Debit</th>
                 <th>Credit</th>
