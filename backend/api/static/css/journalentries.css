@@ -296,7 +296,10 @@ h1.title {
     font-size: 13px;
     text-align: left;
   }
-  
+
+  .journal-entries-table td i {
+    font-style: italic;
+}
   /* Example widths for second-row headers */
   
 
