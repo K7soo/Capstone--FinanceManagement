@@ -48,7 +48,10 @@ Statement of Account
                         <label for="transactionType">Transaction Type:</label>
                         <select id="transactionType" name="transactionType" required>
                             <option value="" disabled selected>Select Transaction Type</option>
-                            <option value="transactionType" >Sample Type</option>
+                            <option value="CAS" >Cash Transactions</option>
+                            <option value="ADJ" >Adjustments and Closing Entries</option>
+                            <option value="COL" >Collections</option>
+
                         </select>
                     </div>
 
@@ -85,26 +88,29 @@ Statement of Account
                 </form>
             </div>
         </div>
-
+        
         <div class="journal-entries-table-container" style="display: none;">
             <table class="journal-entries-table">
                 <thead>
-                    <tr class="template-header-row">
+                    <tr>
+                        <th class="entry-code-header">Entry Code</th>
                         <th class="transaction-type-header">Transaction Type</th>
                         <th class="template-header">Template</th>
                     </tr>
-                    <tr class="journal-entries-header-row">
-                        <th style="width:10%">Date</th>
-                        <th class="accounts-header">Accounts</th>
-                        <th class="debit-header">Debit</th>
-                        <th class="credit-header">Credit</th>
+                    <tr>
+                        <th>Date</th>
+                        <th>Accounts</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
                     </tr>
                 </thead>
                 <tbody id="journalEntriesBody">
-                    <!-- Rows will go here -->
+                    <!-- Rows will be dynamically added here -->
                 </tbody>
             </table>
         </div>
+        
+        
         
 
 
