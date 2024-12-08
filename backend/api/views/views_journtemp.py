@@ -48,10 +48,27 @@ class JournalTemplateView(views.APIView):
 class JournalTemplateDetailView(views.APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request, pk):
-        template = TRTemplate.objects.get(pk=pk)
-        serializer = TRTemplateSerializer(template)
-        return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+    def get(self, request, pk=None):
+        if pk is None:
+            return JsonResponse({"error": "Template ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        template = get_object_or_404(TRTemplate, pk=pk)
+        template_serializer = TRTemplateSerializer(template)
+
+        # Fetch related template details
+        details = TRTemplateDetails.objects.filter(Template_FK=template)
+        details_serializer = TRTemplateDetailsSerializer(details, many=True)
+
+        # Combine template and details
+        response_data = {
+            "template": template_serializer.data,
+            "details": details_serializer.data
+        }
+
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+
+        return JsonResponse(response_data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
         template = get_object_or_404(TRTemplate, pk=pk)
@@ -73,9 +90,7 @@ class JournalTemplateDetailView(views.APIView):
         template = get_object_or_404(TRTemplate, pk=pk)
         template.delete()
         return JsonResponse(
-            {"message": "Journal Template deleted successfully"},
-            status=status.HTTP_204_NO_CONTENT,
-        )
+            {"message": "Journal Template deleted successfully"}, status=status.HTTP_204_NO_CONTENT,)
 
 
 # List and Create TRTemplateDetails

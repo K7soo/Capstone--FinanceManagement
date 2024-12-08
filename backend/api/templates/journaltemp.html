@@ -92,51 +92,52 @@
 
   <!-- Modal for Editing Templates (Adding Rows) -->
   <div id="editTemplateModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Edit Journal Template</h2>
-        <span class="close" onclick="closeAddTemplateModal()">&times;</span>
-      </div>
-      <div class="modal-body">
-        <!-- Modal Left Section -->
-        <form id="editTemplateForm">
-          <div class="modal-left">
-            <input type="hidden" id="EditTemplateId" />
-            <label for="EditTemplateCode">Template Code:</label>
-            <input type="text" id="EditTemplateCode" placeholder="Enter Template Code" />
+    <form id="editTemplateForm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Journal Template</h2>
+                <span class="close" onclick="closeEditTemplateModal()">&times;</span>
+            </div>
 
-            <label for="EditTransactionType">Transaction Type:</label>
-            <select id="EditTransactionType"></select>
-          </div>
-        </form>
+            <div class="modal-body">
+                <!-- Template Header Information -->
+                <div id="editTemplateHeaderSection">
+                    <label for="editTemplateCode">Template Code:</label>
+                    <input type="text" id="editTemplateCode" placeholder="Enter Template Code" required />
 
-        <!-- Modal Right Section - initially hidden -->
-        <div class="modal-right" style="display: none" id="modalRightSection">
-          <h3>Attach Accounts to Template</h3>
-          <table class="modal-table">
-            <thead>
-              <tr>
-                <th class="account-code">Account Code</th>
-                <th>Account Description</th>
-                <th>Debit</th>
-                <th>Credit</th>
-                <th>Remove</th>
-              </tr>
-            </thead>
-            <tbody id="templateRows">
-              <!-- Rows added via the modal's Add Row button -->
-            </tbody>
-          </table>
-          <button class="btn-add-row" onclick="addTemplateRow()">
-            Add Row
-          </button>
-          <button type="submit" class="btn-save-template" onclick="saveEditedTemplate()">
-            Save Changes
-          </button>
+                    <label for="editTransactionType">Transaction Type:</label>
+                    <select id="editTransactionType" required>
+                        <option value="">Choose Transaction Type</option>
+                        <!-- Transaction Types will be populated dynamically -->
+                    </select>
+                </div>
+
+                <h3 class="accounts-template-title">Edit Attached Accounts</h3>
+                <!-- Template Body (Chart of Accounts) -->
+                <div class="modal-body" id="editTemplateBodySection">
+                    <table class="modal-table">
+                        <thead>
+                            <tr>
+                                <th>Account Code</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody class="editTemplateRows" id="editTemplateRows">
+                            <!-- Rows added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-buttons">
+                  <button type="button" class="btn-add-row" onclick="addEditTemplateRow()">Add Row</button>
+                  <button type="button" class="btn-save-template" onclick="saveEditedTemplate()">Save Changes</button>
+              </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </form>
   </div>
+
 
   <!-- Modal for Viewing Templates -->
   <div id="viewTemplateModal" class="modal">

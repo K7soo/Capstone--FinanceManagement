@@ -100,7 +100,13 @@ function loadChartOfAccounts() {
     .then(accounts => {
         console.log("Fetched chart of accounts:", accounts);
         tableBody.innerHTML = ""; // Clear the table body
-        accounts.forEach(account => addRowToTable(account));
+        accounts.forEach(account => {
+            if (account && account.AccountType_FK && accountTypeMap[account.AccountType_FK]) {
+                addRowToTable(account);
+            } else {
+                console.warn("Category has no accounts or is malformed:", account);
+            }
+        });
     })
     .catch(error => console.error('Error fetching chart of accounts:', error));
 }
@@ -254,5 +260,3 @@ window.addEventListener('click', event => {
 document.addEventListener("DOMContentLoaded", () => {
     loadAccountTypeMap().then(loadChartOfAccounts);
 });
-
-// Code for chart of accs

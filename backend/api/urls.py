@@ -20,10 +20,11 @@ urlpatterns = [
     # Journal Templates
     path('get-chart-types/', views_journtemp.ChartOfAccsListView.as_view(), name='get_chartofaccs'),
     path('get-transaction-types/', views_journtemp.TransactionTypeGet.as_view(), name='get_transactiontypes'),
+
     path('journaltemplate/', views_journtemp.JournalTemplateView.as_view(), name='journaltemplate'),
-    path('journaltemplate/<int:pk>', views_journtemp.JournalTemplateDetailView.as_view(), name='journaltemplatedetail'),
+    path('journaltemplate/<int:pk>/', views_journtemp.JournalTemplateDetailView.as_view(), name='journaltemplatedetail'),
     path('journaltemplatedetails/', views_journtemp.TemplateBodyView.as_view(), name='journaltemplatebody'),
-    path('journaltemplatedetails/<int:pk>/', views_journtemp.TemplateBodyDetailView.as_view(), name='journaltemplatebody'),
+    path('journaltemplatedetails/<int:pk>/', views_journtemp.TemplateBodyDetailView.as_view(), name='journaltemplatebodydetail'),
     # Transaction Type
     path('transactiontype/', views_trtype.TransactionTypeView.as_view(), name='transactiontype'),
     path('transactiontype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
