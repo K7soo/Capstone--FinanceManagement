@@ -71,12 +71,52 @@ class JournalTemplateDetailView(views.APIView):
         return JsonResponse(response_data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
+        # Extract template and details data
+        template_data = request.data.get('template')
+        details_data = request.data.get('details', [])
+
+        if not template_data:
+            return JsonResponse({"error": "Template data is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update the template
         template = get_object_or_404(TRTemplate, pk=pk)
-        serializer = TRTemplateSerializer(template, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        template_serializer = TRTemplateSerializer(template, data=template_data)
+
+        if template_serializer.is_valid():
+            template_serializer.save()
+        else:
+            return JsonResponse(template_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update or create details
+        detail_errors = []
+        for detail_data in details_data:
+            detail_id = detail_data.get('id')
+            if detail_id:  # Update existing detail
+                detail = get_object_or_404(TRTemplateDetails, pk=detail_id)
+                detail_serializer = TRTemplateDetailsSerializer(detail, data=detail_data)
+                if detail_serializer.is_valid():
+                    detail_serializer.save()
+                else:
+                    detail_errors.append(detail_serializer.errors)
+            else:  # Create new detail
+                detail_data['Template_FK'] = pk
+                detail_serializer = TRTemplateDetailsSerializer(data=detail_data)
+                if detail_serializer.is_valid():
+                    detail_serializer.save()
+                else:
+                    detail_errors.append(detail_serializer.errors)
+
+        if detail_errors:
+            return JsonResponse({"detail_errors": detail_errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Return the updated template data
+        response_data = {
+            "template": template_serializer.data,
+            "details": [
+                TRTemplateDetailsSerializer(detail).data for detail in TRTemplateDetails.objects.filter(Template_FK=template)
+            ],
+        }
+        return JsonResponse(response_data, status=status.HTTP_200_OK)
 
     def patch(self, request, pk):
         template = get_object_or_404(TRTemplate, pk=pk)
