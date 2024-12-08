@@ -254,3 +254,5 @@ window.addEventListener('click', event => {
 document.addEventListener("DOMContentLoaded", () => {
     loadAccountTypeMap().then(loadChartOfAccounts);
 });
+
+// Code for chart of accs
