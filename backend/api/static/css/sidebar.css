@@ -53,10 +53,10 @@
 
 .sidebar-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    padding: 15px 15px 10px 15px;
-    font-size: 14px;
+    padding: -1px 15px 10px 15px;
+    font-size: 12px;
     color: #333;
     background-color: #ffffff;
 }
@@ -64,27 +64,41 @@
 /* finance management text */
 .sidebar-header h2 {
     font-size: 14px;
-    margin: 0;
-    padding: -1px 0px 0px 0px;
+
+    padding: 1px 0px 0px 10px;
 }
 /* hamburger button */
-.menu-btn{
-    background-color:white;
+/* Base styles for the menu button */
+.menu-btn {
+    background-color: white;
     margin-left: 20px;
     border: none;
     outline: none;
+    width: 1.5rem; /* Set a fixed width */
+    height: 1.5rem; /* Set a fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the icon */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s, color 0.3s; /* Smooth hover transition */
+    overflow: hidden; /* Prevent overflow */
 }
 
-/* for hovering the hamburger button to make it violet */
-.menu-btn:hover{
+/* Hover styles for the menu button */
+.menu-btn:hover {
     background-color: #61396f; /* Violet color */
     color: white;
-    border-radius: 5px;
-    height: fit-content ;
-    width: 1.5rem;
-    padding: 1px;
 }
 
+/* Ensure consistent dimensions on hover */
+.menu-btn i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: auto;
+    width: 100%;
+    height: 100%;
+}
 /* bookkeeping dropdown button */
 
 /* Default state of the caret icon pointing down */
@@ -185,6 +199,8 @@ a i,
     font-size: 14px;
     color: #968DF4; /*968DF4*/
 }
+
+
 .sidebar-footer {
     position: absolute;
     bottom: 20px;
