@@ -279,7 +279,7 @@ tr:nth-child(even) {
     margin-top: 10px;
 }
 
-.btn-view {
+.btn-edit {
     background-color: #ff9900;
     color: white;
     padding: 5px 10px;
@@ -289,11 +289,11 @@ tr:nth-child(even) {
     height: 30px;
     width: 90px;
 }
-.btn-view:hover{
+.btn-edit:hover{
     background-color: #ffad32;
 }
 
-.btn-edit {
+.btn-view {
     background-color: #0053ec;
     color: white;
     padding: 5px 10px;
@@ -303,7 +303,7 @@ tr:nth-child(even) {
     height: 30px;
     width: 90px;
 }
-.btn-edit:hover{
+.btn-view:hover{
     background-color: #2f78ff;
 }
 

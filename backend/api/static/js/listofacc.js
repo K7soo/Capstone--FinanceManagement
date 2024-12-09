@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${account.AccountCode}</td>
                 <td>${account.AccountTypeDesc}</td>
                 <td>
-                    <button class="btn-view" onclick="viewAccount('${account.AccountCode}', '${account.AccountTypeDesc}')">VIEW</button>
                     <button class="btn-edit" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')">EDIT</button>
                     <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
                 </td>
@@ -140,8 +139,8 @@ addAccountForm.addEventListener('submit', (event) => {
         accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
         accountDescError.classList.add('visible');
         valid = false;
-    } else if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
-        accountDescError.textContent = 'Account Description must be between 10 and 100 characters long.';
+    } else if (accountTypeDesc.length <= 5 || accountTypeDesc.length > 50) {
+        accountDescError.textContent = 'Account Description must be between 5 and 50 characters long.';
         accountDescError.classList.add('visible');
         valid = false;
     } else {
@@ -178,7 +177,6 @@ addAccountForm.addEventListener('submit', (event) => {
             <td>${createdAccount.AccountCode}</td>
             <td>${createdAccount.AccountTypeDesc}</td>
             <td>
-                <button class="btn-view" onclick="viewAccount('${createdAccount.AccountCode}', '${createdAccount.AccountTypeDesc}')">VIEW</button>
                 <button class="btn-edit" onclick="openEditModal('${createdAccount.id}', '${createdAccount.AccountCode}', '${createdAccount.AccountTypeDesc}')">EDIT</button>
                 <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
             </td>
@@ -216,8 +214,8 @@ document.querySelectorAll('input').forEach(input => {
             if (!accountTypeDescPattern.test(accountTypeDesc)) {
                 accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
                 accountDescError.classList.add('visible');
-            } else if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
-                accountDescError.textContent = 'Account Description must be between 10 and 100 characters long.';
+            } else if (accountTypeDesc.length <= 5 || accountTypeDesc.length > 50) {
+                accountDescError.textContent = 'Account Description must be between 5 and 50 characters long.';
                 accountDescError.classList.add('visible');
             } else {
                 accountDescError.textContent = '';
@@ -266,8 +264,8 @@ editAccountForm.addEventListener('submit', function(event) {
         accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
         accountDescError.classList.add('visible');
         valid = false;
-    } else if (accountTypeDesc.length < 10 || accountTypeDesc.length > 100) {
-        accountDescError.textContent = 'Account Description must be between 10 and 100 characters long.';
+    } else if (accountTypeDesc.length <= 5 || accountTypeDesc.length > 50) {
+        accountDescError.textContent = 'Account Description must be between 5 and 50 characters long.';
         accountDescError.classList.add('visible');
         valid = false;
     } else {
