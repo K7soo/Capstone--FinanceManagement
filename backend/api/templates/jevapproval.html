@@ -12,9 +12,61 @@ JEV Approval
 {% endblock %}
 
 {% block content %}
-
-<h1>JEV Approval Page </h1>
-
+<h1 class="title">JEV Approval</h1>
+<p>JEV Review/Approval and Posting to General Ledger.</p>
+<div>
+<div class="table-frame">
+    <!-- Transaction Table -->
+    <table class="transaction-table">
+        <thead>
+            <tr>
+                <th>Transaction Date</th>
+                <th>JEV No.</th>
+                <th>Particulars</th>
+                <th>Prepared By</th>
+                <th>Remarks</th>
+                <th>Last Remarks From</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <!-- Example Row - Use Django's loop to iterate through transactions -->
+            <tr>
+                <td>Dec 01, 2024</td>
+                <td>JEV 2024-12-01</td>
+                <td>Payments of customers on orders through Dine-in Reservations and Events. </td>
+                <td>Maui Mark Lopez</td>
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="btn-list">
+                        <button class="btn-edit">VIEW</button>
+                        <button class="btn-view">EDIT JEV</button>
+                        <button class="btn-notes">NOTES/REMARKS</button>
+                        <button class="btn-external">PRINT</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Dec 07, 2024</td>
+                <td>JEV 2024-12-07</td>
+                <td>Payments for procurement of items from suppliers. </td>
+                <td>John Loyd Cabral</td>
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="btn-list">
+                        <button class="btn-edit">VIEW</button>
+                        <button class="btn-view">EDIT JEV</button>
+                        <button class="btn-notes">NOTES/REMARKS</button>
+                        <button class="btn-external">PRINT</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
 {% endblock %}
 
 
