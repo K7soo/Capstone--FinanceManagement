@@ -19,13 +19,13 @@
     top: 0;
     left: 0;
     background-color: #fff;
-    padding-top: 20px;
+    padding-top: 5px;
     padding-right: 10px;
     border-right: 1px solid #ddd;
     transition: width 0.3s;
     font-family: 'Poppins';
     overflow-y: auto;
-    
+    font-weight: bold;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
@@ -102,18 +102,23 @@
 /* Hovering dropdownbutton */
 a:hover,
 .dropdown-btn:hover {
-    background-color: #968DF4; /* Violet color */
-    color: white ;
+    background-color: #61396f; /* Violet color */
+    color: rgb(255, 255, 255);
     border-radius: 10px; /* Adjust this value for more or less rounding */
 }
 
+/* dropdown element (setup, transaction, reports) */
 a,
 .dropdown-btn {
-    margin: 6px;
-    padding: 7px 7px 7px 4px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px 7px 10px 25px;
     text-decoration: none;
     font-size: 14px;
-    color: #292929;
+    color: #333333;
     display: flex;
     align-items: center; /* Align items for icon and text */
     justify-content: flex-start; /* Adjust alignment to the left */
@@ -128,17 +133,29 @@ a,
     box-sizing: border-box; /* Ensure padding and border are included in total width */
 }
 
-/* dashboard,transaction, bookkeeping, reports, payment button design */
+/* non dropdown element (dashboard, api, payment) */
+a.focus,
 a.active,
-.dropdown-btn.active {
+a.dropdown-btn.active {
     background-color: none; /* Remove violet background from active state */
-    color: #292929; /* Inherit default color */
-    padding: 7px 10px 7px 10px;
+    color: #333333; /* Inherit default color */
+    padding: 7px 10px 7px 30px;
     margin-top: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     margin-left: 5px;
     margin-right: 5px;
+    justify-content: flex-start;
+}
 
+i.active {
+    display: flex; /* Use flex to center the icon */
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    width: 30px; /* Ensure the icon takes the full width of its container */
+}
+
+a.active:hover{
+    color: #ffffff;
 }
 
 a i,
@@ -149,24 +166,24 @@ a i,
     width: 30px; /* Ensure the icon takes the full width of its container */
 }
 
+/* background dropdown container */
 .dropdown-container {
     display: none;
-    background-color: #f9f9f9;
-    padding-left: 30px;
+    background-color: #ffffff;
 }
 
+/* container background and hover */
 .dropdown-container a {
     font-size: 14px;
-    color: #292929;
+    color: #333333;
 }
 .dropdown-container a:hover{
     font-size: 14px;
     color: #ffffff; /*968DF4*/
 }
-.dropdown-container a::after{
-    font-size: 14px;
-    color: #968DF4; /*968DF4*/
-}
+
+
+
 .sidebar-footer {
     position: absolute;
     bottom: 20px;
