@@ -75,7 +75,6 @@ function addRowToTable(account) {
         <td>${account.AccountDesc}</td>
         <td>${accountTypeName}</td>
         <td>
-            <button class="btn-view" onclick="viewAccount('${account.AccountCode}', '${account.AccountDesc}', '${accountTypeName}')">VIEW</button>
             <button class="btn-edit" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountDesc}', '${account.AccountType_FK}')">EDIT</button>
             <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
         </td>
