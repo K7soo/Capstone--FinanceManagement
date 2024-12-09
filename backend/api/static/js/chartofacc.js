@@ -80,6 +80,7 @@ function addRowToTable(account) {
             <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
         </td>
     `;
+    // make it add eventListener, fetch class find nearest table row
     tableBody.appendChild(newRow);
 }
 
