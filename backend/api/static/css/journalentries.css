@@ -313,7 +313,8 @@ h1.title {
 /* Action Buttons */
 .btn-edit,
 .btn-delete,
-.btn-add {
+.btn-add,
+.btn-view {
     padding: 5px 10px;
     border: none;
     cursor: pointer;
@@ -334,4 +335,9 @@ h1.title {
 .btn-delete {
     background-color: #ff3b3b;
     color: white;
+}
+.btn-view {
+    background-color: #ffcf0e;
+    color: white;
+
 }

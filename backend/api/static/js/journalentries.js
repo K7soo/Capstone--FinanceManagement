@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const journalEntriesForm = document.getElementById('journalEntriesForm');
     const journalEntriesTableContainer = document.querySelector('.journal-entries-table-container');
     const journalEntriesBody = document.getElementById('journalEntriesBody');
+    const viewModal = document.getElementById('viewJournalEntryModal');
+    const closeViewModalButton = document.getElementById('closeViewJournalEntryModal');
 
     // Open Modal
     openModalButton.addEventListener('click', () => {
@@ -41,16 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show the table container if hidden
         journalEntriesTableContainer.style.display = 'block';
 
-        // Update the table headers dynamically
-        const entryCodeHeader = document.querySelector('.entry-code-header');
-        const transactionTypeHeader = document.querySelector('.transaction-type-header');
-        const templateHeader = document.querySelector('.template-header');
-
-        // Add the dynamic values to the header
-        entryCodeHeader.textContent = entryCode;
-        transactionTypeHeader.textContent = transactionType;
-        templateHeader.textContent = addTemplate;
-
         // Create a new row with the values
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
@@ -58,6 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <td><i>${entriesDescription}</i></td>
             <td>--</td>
             <td>--</td>
+            <td>
+                <button class="btn-view" data-entry-code="${entryCode}" data-transaction-type="${transactionType}" data-template="${addTemplate}" data-description="${entriesDescription}">View</button>
+                <button class="btn-delete">Delete</button>
+            </td>
         `;
 
         // Append the new row to the table body
@@ -68,5 +64,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Close the modal
         modal.style.display = 'none';
+    });
+
+    // Handle View button click
+    journalEntriesBody.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-view')) {
+            const entryCode = event.target.getAttribute('data-entry-code');
+            const transactionType = event.target.getAttribute('data-transaction-type');
+            const addTemplate = event.target.getAttribute('data-template');
+            const description = event.target.getAttribute('data-description');
+
+            document.getElementById('viewEntryCode').textContent = entryCode;
+            document.getElementById('viewTransactionType').textContent = transactionType;
+            document.getElementById('viewTemplate').textContent = addTemplate;
+            document.getElementById('viewDescription').textContent = description;
+
+            viewModal.style.display = 'block';
+        }
+    });
+
+    // Handle Delete button click
+    journalEntriesBody.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-delete')) {
+            const row = event.target.closest('tr');
+            row.remove();
+        }
+    });
+
+    // Close View Modal
+    closeViewModalButton.addEventListener('click', () => {
+        viewModal.style.display = 'none';
     });
 });

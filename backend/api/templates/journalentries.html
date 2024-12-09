@@ -93,15 +93,11 @@ Statement of Account
             <table class="journal-entries-table">
                 <thead>
                     <tr>
-                        <th class="entry-code-header">Entry Code</th>
-                        <th class="transaction-type-header">Transaction Type</th>
-                        <th class="template-header">Template</th>
-                    </tr>
-                    <tr>
                         <th>Date</th>
                         <th>Accounts</th>
                         <th>Debit</th>
                         <th>Credit</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="journalEntriesBody">
@@ -110,7 +106,31 @@ Statement of Account
             </table>
         </div>
         
-        
+        <!-- View Journal Entry Modal -->
+<div id="viewJournalEntryModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2>View Journal Entry</h2>
+        <form id="viewJournalEntryForm">
+            <div>
+                <label>Entry Code:</label>
+                <span id="viewEntryCode"></span>
+            </div>
+            <div>
+                <label>Transaction Type:</label>
+                <span id="viewTransactionType"></span>
+            </div>
+            <div>
+                <label>Template:</label>
+                <span id="viewTemplate"></span>
+            </div>
+            <div>
+                <label>Description:</label>
+                <span id="viewDescription"></span>
+            </div>
+            <button type="button" id="closeViewJournalEntryModal" class="btn-cancel">Close</button>
+        </form>
+    </div>
+</div>
         
 
 
