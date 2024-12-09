@@ -16,14 +16,14 @@ Transaction Inbox
     <!-- Filter Section -->
     <!-- Filter Button -->
     <div class="filter-button-container">
-        <div class="filter-section">
+        <div class="filter-inbox">
             <div class="filter-left">
                 <!-- Transaction Type Filter -->
                 <label for="transaction-type" class="filter-label"
                     >Transaction Type:
                 </label>
                 <select
-                    id="transaction-type" name="transaction-type" class="filter-select">
+                    id="transaction-type" name="transaction-type" class="select">
                     <option value="all">All</option>
                     <option value="type1">Type 1</option>
                     <option value="type2">Type 2</option>
@@ -34,20 +34,16 @@ Transaction Inbox
             <div class="filter-right">
                 <!-- Date Range Filter -->
                 <label for="date-from" class="filter-label">Transaction Date:</label>
-                <input type="date" id="date-from" name="date-from" class="date-input" />
+                <input type="date" id="date-from" name="date-from" class="input" />
                 <span class="date-span">to</span>
-                <input type="date" id="date-to" name="date-to" class="date-input" />
+                <input type="date" id="date-to" name="date-to" class="input" />
             </div>
         </div>
 
         <!-- Records Per Page -->
-        <div class="records-per-page">
-            <label for="records-per-page" class="filter-label">Records Per Page:</label>
-            <select
-            id="records-per-page"
-            name="records-per-page"
-            class="records-select"
-            >
+        <div class="records-filter">
+            <label for="records-per-page" class="label">Records Per Page:</label>
+            <select id="records-per-page" name="records-per-page" class="label">
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
@@ -115,7 +111,7 @@ Transaction Inbox
                     <div class="btn-list">
                         <button class="btn-edit">CREATE JEV</button>
                         <button class="btn-view">VIEW</button>
-                        <button class="btn-external">NOTES/REMARKS</button>
+                        <button class="btn-notes">NOTES/REMARKS</button>
                     </div>
                 </td>
             </tr>
@@ -131,7 +127,7 @@ Transaction Inbox
                     <div class="btn-list">
                         <button class="btn-edit">CREATE JEV</button>
                         <button class="btn-view">VIEW</button>
-                        <button class="btn-external">NOTES/REMARKS</button>
+                        <button class="btn-notes">NOTES/REMARKS</button>
                     </div>
                 </td>
             </tr>
