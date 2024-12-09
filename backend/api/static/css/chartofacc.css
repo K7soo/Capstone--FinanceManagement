@@ -400,3 +400,14 @@ tr:nth-child(even) {
     grid-template-columns: 1fr; /* Switch to single-column */
     gap: 10px; /* Adjust gaps */
 }
+
+.form-grid input, select{
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 10px;
+}

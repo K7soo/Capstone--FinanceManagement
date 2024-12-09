@@ -10,6 +10,12 @@ h1.title {
   margin-top: 35px;
 }
 
+
+hr.line {
+  border: 1px solid rgb(167, 167, 167); 
+  width: 100%;
+}
+
 /* Journal Template Dashboard Layout */
 .journal-template-dashboard {
   display: flex;
@@ -235,7 +241,7 @@ h1.title {
 }
 
 .modal-header h2 {
-  margin: 0;
+  margin-bottom: 20px;
   color: #61396f;
 }
 
@@ -250,7 +256,18 @@ h1.title {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
+}
+
+.modal-body input, select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: flex;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 10px;
 }
 
 .modal-left,
@@ -393,10 +410,8 @@ h1.title {
   width: 100%;
 }
 
-
-  /* border for add template */
-  .templateRows tr, th, td{
-    border:1px solid #070707 ;
-
-  }
+/* border for add template */
+.templateRows tr, th, td{
+  border: 1px solid #ddd;
+}
 

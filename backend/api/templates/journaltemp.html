@@ -24,7 +24,7 @@
   <div class="table-container">
     <!-- Button to Trigger Modal -->
     <button class="btn-add" onclick="openAddTemplateModal()">
-      Add Journal Template
+      ADD JOURNAL TEMPLATE
     </button>
 
     <!-- Journal Templates Table -->
@@ -53,17 +53,17 @@
 
             <div class="modal-body">
                 <!-- Template Header Information -->
-                <div id="templateHeaderSection">
+                <div id="templateHeaderSection" class="header">
                     <label for="templateCode">Template Code:</label>
-                    <input type="text" id="templateCode" placeholder="Enter Template Code" required />
+                    <input type="text" id="templateCode" placeholder="Enter Template Code" class="input" required />
 
                     <label for="transactionType">Transaction Type:</label>
-                    <select id="transactionType" required>
+                    <select id="transactionType" class="select" required>
                         <option value="">Choose Transaction Type</option>
                         <!-- Transaction Types will be populated dynamically -->
                     </select>
                 </div>
-
+                <hr class="line">
                 <h3 class="acounts-template-title">Attach Accounts to Template</h3>
                 <!-- Template Body (Chart of Accounts) -->
                 <div class="modal-body" id="templateBodySection">
