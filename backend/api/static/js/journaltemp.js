@@ -337,16 +337,27 @@ function editTemplate(templateId) {
         const template = data.template;
         const details = data.details;
 
-        // Ensure chartOfAccounts is loaded
-        if (!window.chartOfAccounts || window.chartOfAccounts.length === 0) {
-            console.error("Chart of accounts is not loaded.");
-            alert("Error: Chart of accounts is not loaded. Please reload the page.");
-            return;
-        }
+        // Ensure transaction types are loaded
+        loadTransactionTypes().then(() => {
+            const editTransactionTypeDropdown = document.getElementById('editTransactionType');
+            editTransactionTypeDropdown.innerHTML = ''; // Clear existing options
+
+            Object.keys(window.transactionTypeMap).forEach(transactionTypeId => {
+                const option = document.createElement('option');
+                option.value = transactionTypeId;
+                option.textContent = window.transactionTypeMap[transactionTypeId];
+
+                // Pre-select the current Transaction Type
+                if (parseInt(transactionTypeId) === template.TransactionType_FK) {
+                    option.selected = true;
+                }
+
+                editTransactionTypeDropdown.appendChild(option);
+            });
+        });
 
         // Populate the edit modal fields
         document.getElementById('editTemplateCode').value = template.TRTemplateCode;
-        document.getElementById('editTransactionType').value = template.TransactionType_FK;
 
         // Clear and populate the template details section
         const editTemplateRowsContainer = document.getElementById('editTemplateRows');
