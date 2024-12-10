@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+General Ledger
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/general_ledger.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1 class="title">General Ledger</h1>
+<div class="general-ledger-container">
+    <form id="generalLedgerForm">
+        <div class="form-grid">
+            <!-- Specific Account Dropdown -->
+            <label for="specificAccount">Specific Account:</label>
+            <select id="specificAccount" class="dropdown" name="specificAccount" required>
+                <option value="">Select an option</option>
+                <option value="asset">Asset</option>
+                <option value="expense">Expense</option>
+                <!-- Add more options as needed -->
+            </select>
+
+            <!-- As of Date -->
+            <label for="asOfDate">As of:</label>
+            <input type="date" id="asOfDate" name="asOfDate" class="textbox" required>
+
+            <!-- Duration Date -->
+            <label for="durationDateStart">Duration Date:</label>
+            <div class="duration-date">
+                <input type="date" id="durationDateStart" name="durationDateStart" class="textbox" required>
+                <span class="to-label">to</span>
+                <input type="date" id="durationDateEnd" name="durationDateEnd" class="textbox" required>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-container">
+            <button type="button" class="btn-print">Print</button>
+            <button type="button" class="btn-export">Export to Excel</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/general_ledger.js' %}"></script>
+{% endblock %}
