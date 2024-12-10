@@ -151,7 +151,7 @@ function openAddTemplateModal() {
     addTemplateModal.style.display = 'block';
     loadTransactionTypes(); // Load transaction types when the modal is opened
     loadChartOfAccounts(); // Load chart of accounts when the modal is opened
-    document.getElementById('modalRightSection').style.display = 'block'; // Show right-hand section by default
+    document.getElementById('templateHeaderSection').style.display = 'block'; // Show right-hand section by default
 }
 window.openAddTemplateModal = openAddTemplateModal;
 
