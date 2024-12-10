@@ -5,7 +5,7 @@ body {
 
 /* Modal styles */
 h1.title {
-    color: #61396f; /* Violet color */
+    color: #6f42c1; /* Violet color */
     text-align: left; /* Align title to the left */
     margin-top: 35px;
 }
@@ -250,7 +250,7 @@ h1.title {
 }
 
 .btn-add {
-    background-color: #ffcf0e;
+    background-color: #6f42c1;
     color: white;
     margin-bottom:10px;
     padding: 5px 10px;
@@ -259,6 +259,9 @@ h1.title {
     border-radius: 5px;
     height: 30px;
     width: 200px;
+}
+.btn-add {
+    background-color: #5a00e8;
 }
 
 .btn-edit {
@@ -271,6 +274,9 @@ h1.title {
     height: 30px;
     width: 80px;
 }
+.btn-edit:hover{
+    background-color: #ff9e0d;
+}
 
 .btn-delete {
     background-color: #f30000;
@@ -281,4 +287,7 @@ h1.title {
     border-radius: 5px;
     height: 30px;
     width: 80px;
+}
+.btn-delete {
+    background-color: #ff0000;
 }

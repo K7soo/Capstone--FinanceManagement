@@ -4,7 +4,7 @@ body {
 }
 /* Modal styles */
 h1.title {
-    color: #61396f; /* Violet color */
+    color: #6f42c1; /* Violet color */
     text-align: left; /* Center the title */
     margin-top: 35px;
 }
@@ -30,7 +30,7 @@ h1.title {
 
 .caret::before {
     content: '\1F4C1'; /* Folder icon */
-    color: #61396f;
+    color: #6f42c1;
     display: inline-block;
     margin-right: 6px;
 }
@@ -83,7 +83,7 @@ h1.title {
 
 /* add button design */
 .add-chart-btn {
-    background-color: #008425; /* Gold color */
+    background-color: #6f42c1; /* Gold color */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -95,10 +95,9 @@ h1.title {
     
 }
 
-
 /* add button design */ 
 .add-chart-btn:hover {
-    background-color: #00c010; /* Change to violet on hover */
+    background-color: #5a00e8; /* Change to violet on hover */
 }
 
 .dropdown {
@@ -107,7 +106,7 @@ h1.title {
 }
 
 .dropdown-btncoa {
-    background-color: #61396f; /* Violet color */
+    background-color: #6f42c1; /* Violet color */
     color: white;
     padding: 10px 20px;
     font-size: 16px;
@@ -260,7 +259,7 @@ tr:nth-child(even) {
 }
 
 .btn-add {
-    background-color: #2D9C35;
+    background-color: #6f42c1;
     color: #fff;
     padding: 10px 20px;
     border: none;
@@ -270,7 +269,7 @@ tr:nth-child(even) {
 }
 
 .btn-save {
-    background-color: #61396f;
+    background-color: #2D9C35;
     color: #ffffff;
     padding: 10px 20px;
     border: none;

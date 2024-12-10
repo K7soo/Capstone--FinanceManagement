@@ -5,7 +5,7 @@ body {
 
 /* Modal styles */
 h1.title {
-    color: #61396f; /* Violet color */
+    color: #6f42c1; /* Violet color */
     text-align: left; /* Align title to the left */
     margin-top: 35px;
 }
@@ -35,7 +35,7 @@ h1.title {
 
 /* Title Styling */
 .modal-content h2 {
-    color: #61396f;
+    color: #6f42c1;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -99,7 +99,7 @@ h1.title {
 }
 
 .btn-add-template {
-    background-color: #61396f;
+    background-color: #6f42c1;
     color: white;
 }
 
@@ -113,7 +113,7 @@ h1.title {
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    background-color: #61396f;
+    background-color: #6f42c1;
     color: white;
 }
 
@@ -156,7 +156,7 @@ h1.title {
 
 .caret::before {
     content: '\1F4C1'; /* Folder icon */
-    color: #61396f;
+    color: #6f42c1;
     display: inline-block;
     margin-right: 6px;
 }
@@ -242,7 +242,7 @@ h1.title {
 .filter-container label {
     margin-right: 10px;
     font-weight: bold;
-    color: #61396f;
+    color: #6f42c1;
 }
 
 .filter-select {

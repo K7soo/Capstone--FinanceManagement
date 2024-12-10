@@ -90,7 +90,7 @@
 
 /* Hover styles for the menu button */
 .menu-btn:hover {
-    background-color: #61396f; /* Violet color */
+    background-color: #6f42c1; /* Violet color */
     color: white;
 }
 
@@ -120,7 +120,7 @@
 /* Hovering dropdownbutton */
 a:hover,
 .dropdown-btn:hover {
-    background-color: #61396f; /* Violet color */
+    background-color: #6f42c1; /* Violet color */
     color: rgb(255, 255, 255);
     border-radius: 10px; /* Adjust this value for more or less rounding */
 }

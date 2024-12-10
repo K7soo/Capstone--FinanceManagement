@@ -5,7 +5,7 @@ body {
 
 /* Title Styling */
 h1.title {
-  color: #61396f; /* Violet color */
+  color: #6f42c1; /* Violet color */
   text-align: left; /* Align title to the left */
   margin-top: 35px;
 }
@@ -66,7 +66,7 @@ hr.line {
 
 .caret::before {
   content: '\1F4C1'; /* Folder icon */
-  color: #61396f;
+  color: #6f42c1;
   display: inline-block;
   margin-right: 6px;
 }
@@ -111,7 +111,7 @@ hr.line {
 .filter-container label {
   margin-right: 10px;
   font-weight: bold;
-  color: #61396f;
+  color: #6f42c1;
 }
 
 /* Input Fields */
@@ -127,7 +127,7 @@ hr.line {
 
 /* Add Button */
 .btn-add {
-  background-color: #ffcc00; /* Yellow color */
+  background-color: #6f42c1; /* Yellow color */
   color: white;
   padding: 10px 15px;
   border: none;
@@ -139,7 +139,7 @@ hr.line {
 }
 
 .btn-add:hover {
-  background-color: #ffd633; /* Lighter yellow on hover */
+  background-color: #5a00e8; /* Lighter yellow on hover */
 }
 
 /* Styling for Journal Templates Table */
@@ -242,7 +242,7 @@ hr.line {
 
 .modal-header h2 {
   margin-bottom: 20px;
-  color: #61396f;
+  color: #6f42c1;
 }
 
 .modal-header .close {
@@ -277,7 +277,7 @@ hr.line {
 
 .modal-left label {
   font-weight: bold;
-  color: #61396f;
+  color: #6f42c1;
 }
 
 .modal-left input,
@@ -320,7 +320,7 @@ hr.line {
 }
 
 .btn-add {
-  background-color: #ffcc00;
+  background-color: #6f42c1;
   color: white;
 }
 
@@ -373,7 +373,7 @@ hr.line {
 
 #viewTemplateModal .modal-header h2 {
   margin: 0;
-  color: #61396f;
+  color: #6f42c1;
 }
 
 #viewTemplateModal .modal-header .close {
