@@ -25,7 +25,7 @@
         ><i class="fa fa-fw fa-list-alt"></i><span>Chart of Accounts</span></a
       >
       <a href="{% url 'journaltemplate' %}"
-        ><i class="fa fa-fw fa-address-book"></i><span>Journal Templates</span></a
+        ><i class="fa fa-fw fa-address-book"></i><span>Journal Entry Preparation  </span></a
       >
     </div>
     <!-- End of System Setup Dropdown -->
@@ -45,6 +45,12 @@
       <a href="{% url 'journalentries' %}">
         <i class="fa fa-fw fa-table"></i><span>Journal Entries</span>
       </a>
+      <a href="{% url 'general_journal' %}">
+        <i class="fa fa-fw fa-like"></i><span>General Journal</span></a>
+      
+      </a>
+      <a href="{% url 'general_ledger' %}">
+        <i class="fa fa-fw fa-like"></i><span>General Ledger</span></a>
     </div>
     <!-- End of Transaction Dropdown -->
 
@@ -57,9 +63,7 @@
       <a href="{% url 'trialbalance' %}"
         ><i class="fa fa-fw fa-balance-scale"></i><span>Trial Balance</span></a
       >
-      <a href="{% url 'jevapproval' %}"
-        ><i class="fa fa-fw fa-like"></i><span>JEV Approval</span></a
-      >
+
     </div>
     <!-- End of Reports Dropdown -->
 

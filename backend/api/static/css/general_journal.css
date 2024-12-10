@@ -1,0 +1,209 @@
+body {
+    background-color: #f8f8ff; /* Light background */
+    font-family: 'Poppins', sans-serif;
+}
+
+
+
+h1.title {
+    color: #61396f; 
+    text-align: left; /* Center the title */
+    margin-top: 35px;
+}
+
+
+
+
+.btn-comp{
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    width: 100%; 
+    margin: 0px 0px 12px 0px; 
+    gap:5px;
+}
+.btn-add {
+    background-color: #2D9C35;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-save {
+    background-color: #61396f;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+
+
+
+
+
+/* Ensure consistent button size */
+td.actions button,
+td.actions .btn-edit,
+td.actions .btn-view,
+td.actions .btn-delete {
+    height: 30px; /* Set button height */
+    min-width: 60px; /* Ensure buttons have a minimum width */
+    display: inline-flex; /* Consistent alignment */
+    justify-content: center; /* Center text inside the button */
+    align-items: center; /* Vertically center text */
+}
+
+
+
+/* buttons on list of accs */
+.btn-view {
+    background-color: #0053ec;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
+}
+.btn-view:hover{
+    background-color: #2f78ff;
+}
+
+/* view button */
+.btn-edit {
+    background-color: #ff9900;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
+}
+.btn-edit:hover{
+    background-color: #ffad32;
+}
+
+.btn-delete {
+    background-color: #f30000;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
+}
+.btn-delete:hover{
+    background-color: #ff3d3d;
+}
+
+
+.textbox {
+    border: 0.1px solid #000000;
+    font-family:'Poppins', sans-serif;
+    padding: 10px;
+    overflow-x: auto;
+    box-sizing: border-box;
+    border-radius: 5px; /* Rounded corners */
+}
+.textbox-desc {
+    border: 0.1px solid #000000;
+    font-family:'Poppins', sans-serif;
+    height:100%;    
+    width: 100%;
+    max-width: 1000%;
+    padding: 10px 10px 50px 10px;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: break-word;
+    resize: vertical;
+    box-sizing: border-box;
+    border-radius: 5px; /* Rounded corners */
+
+}
+
+body {
+    background-color: #f8f8ff; /* Light background */
+    font-family: 'Poppins', sans-serif;
+}
+
+h1.title {
+    color: #61396f;
+    text-align: left;
+    margin-top: 35px;
+    margin-bottom: 20px;
+}
+
+.table-container {
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    width: 90%; /* Adjust the width as needed */
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.general-journal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.general-journal-table th, 
+.general-journal-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd; /* Light border for table cells */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.general-journal-table th {
+    background-color: #f9f9f9; /* Header background */
+    color: #000000; /* Header text color */
+    text-align: center;
+}
+
+.general-journal-table tr:nth-child(even) {
+    background-color: #f8f8f8; /* Light grey for even rows */
+}
+
+.general-journal-table tr:hover {
+    background-color: #f1f1f1; /* Highlight on hover */
+}
+
+.general-journal-table td {
+    text-align: center; /* Center align for table cells */
+}
+
+
+.btn-view {
+    background-color: #FFA500; /* Orange for buttons */
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-view {
+    background-color: #61396f; /* Violet for View button */
+}
+
+.btn-edit:hover {
+    background-color: #e69500; /* Darker orange on hover */
+}
+
+.btn-view:hover {
+    background-color: #4d2e57; /* Darker violet on hover */
+}

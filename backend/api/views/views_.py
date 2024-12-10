@@ -53,3 +53,10 @@ def menubar_view(request):
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
 
+#general journal
+def general_journal_view(request):
+    return render(request, 'general_journal.html')
+
+#general ledger
+def general_ledger_view(request):
+    return render(request, 'general_ledger.html')

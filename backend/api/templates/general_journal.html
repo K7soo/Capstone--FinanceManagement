@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+General Journal
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/general_journal.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1 class="title">General Journal</h1>
+<div class="table-container">
+    <table class="general-journal-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example Row -->
+            <tr>
+                <td>2024-01-01</td>
+                <td>10,000.00</td>
+                <td>10,000.00</td>
+                <td>0.00</td>
+                <td class="actions">
+                    <button class="btn-view">VIEW</button>
+                </td>
+            </tr>
+            <!-- Add dynamic rows here -->
+            {% for entry in journal_entries %}
+            <tr>
+                <td>{{ entry.date }}</td>
+                <td>{{ entry.amount }}</td>
+                <td>{{ entry.debit }}</td>
+                <td>{{ entry.credit }}</td>
+                <td class="actions">
+                    <button class="btn-view">VIEW</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/general_journal.js' %}"></script>
+{% endblock %}
