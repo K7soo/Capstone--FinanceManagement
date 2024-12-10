@@ -38,4 +38,9 @@ urlpatterns = [
     path('reports/', views_.reports_view, name='reports'),
     # Trial Balance 
     path('trialbalance/', views_.trial_balance_view, name='trialbalance'),
+    # General Journal
+    path('generaljournal/', views_.general_journal_view, name='general_journal'),
+    # General Ledger
+    path('generalledger/', views_.general_ledger_view, name='general_ledger'),
 ]
+    
