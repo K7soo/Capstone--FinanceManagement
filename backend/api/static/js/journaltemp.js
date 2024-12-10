@@ -337,6 +337,9 @@ function editTemplate(templateId) {
         const template = data.template;
         const details = data.details;
 
+        // Set the hidden input value for templateId
+        document.getElementById('editTemplateId').value = templateId;
+
         // Ensure transaction types are loaded
         loadTransactionTypes().then(() => {
             const editTransactionTypeDropdown = document.getElementById('editTransactionType');
@@ -394,16 +397,28 @@ function editTemplate(templateId) {
     .catch(error => console.error('Error fetching template for editing:', error));
 }
 
+
 // Ensure this function is globally accessible
 window.editTemplate = editTemplate;
 
 // Save Edited Template
 function saveEditedTemplate() {
     const templateId = document.getElementById('editTemplateId').value;
+    if (!templateId) {
+        console.error("Template ID is missing!");
+        alert("Template ID is missing. Please reload the page and try again.");
+        return;
+    }
+
     const updatedTemplate = {
         TRTemplateCode: document.getElementById('editTemplateCode').value,
         TransactionType_FK: parseInt(document.getElementById('editTransactionType').value),
     };
+
+    if (!updatedTemplate.TRTemplateCode || isNaN(updatedTemplate.TransactionType_FK)) {
+        alert("Please provide a valid Template Code and Transaction Type.");
+        return;
+    }
 
     const updatedDetails = [];
     const editTemplateRows = document.querySelectorAll('#editTemplateRows tr');
@@ -412,6 +427,11 @@ function saveEditedTemplate() {
         const accountCode = parseInt(row.querySelector('.account-code').value);
         const debitChecked = row.querySelector('.debit-checkbox').checked;
         const creditChecked = row.querySelector('.credit-checkbox').checked;
+
+        if (!accountCode || (debitChecked === creditChecked)) {
+            console.warn("Invalid row data:", { accountCode, debitChecked, creditChecked });
+            return; // Skip invalid rows
+        }
 
         const detail = {
             Account_FK: accountCode,
@@ -427,10 +447,17 @@ function saveEditedTemplate() {
         updatedDetails.push(detail);
     });
 
+    if (updatedDetails.length === 0) {
+        alert("Please add at least one valid account detail.");
+        return;
+    }
+
     const payload = {
         template: updatedTemplate,
         details: updatedDetails,
     };
+
+    console.log("Payload being sent:", JSON.stringify(payload));
 
     fetch(`/journaltemplate/${templateId}/`, {
         method: 'PUT',
@@ -442,7 +469,10 @@ function saveEditedTemplate() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Failed to update template');
+            return response.json().then(errorData => {
+                console.error('Server-side validation errors:', errorData);
+                throw new Error('Failed to update template');
+            });
         }
         return response.json();
     })
