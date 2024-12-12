@@ -3,7 +3,11 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-
+@media (max-width: 1080px) {
+    .grid-container {
+        grid-template-columns: 2fr; /* Stack on smaller screens */
+    }
+}
 
 h1.title {
     color: #61396f; 
@@ -11,6 +15,95 @@ h1.title {
     margin-top: 35px;
 }
 
+/* list of accs*/
+.table-container {
+    display: flex;
+    justify-content: center; /* Center the table */
+    overflow-x: auto; /* Enable horizontal scrolling when needed */
+    width: 100%; /* Ensure it takes the full width of the screen */
+    padding: 20px; /* Add padding for aesthetics */
+}
+
+table {
+    width: auto; /* Adjust width automatically based on content */
+    border-collapse: collapse; 
+    margin: auto; /* Center the table inside the container */
+}
+
+
+
+th, td {
+    padding: 10px; /* Add padding for better spacing */
+    text-align: left; /* Align text to the left */
+    border-bottom: 1px solid #ffffff; /* Light grey border */
+    white-space: normal; /* Prevent text from wrapping */
+    flex-wrap: nowrap;
+    word-wrap: break-word; /* Ensure long words wrap */
+    
+}
+
+td.actions {
+    text-align: center; /* Center buttons in the cell */
+    white-space: nowrap; /* Prevent wrapping of buttons */
+}
+
+td.actions > * {
+    display: inline-block; /* Ensure inline display for buttons */
+}
+
+
+th {
+    background-color: #e5e5e5; /* Violet for header */
+    color: rgb(0, 0, 0); /* White text for header */
+}
+
+tr:nth-child(even) {
+    background-color: #f8f8f8; /* Light grey for even rows */
+}
+
+
+
+
+/* Error Message Styling Aligned with Inputs */
+.error-message {
+    grid-column: 2 / 3; /* Make sure error messages are aligned under the input field */
+    color: #d9534f; /* Red color for error messages */
+    font-size: 10px; /* Slightly smaller font size for better distinction */
+    height: 45px; /* Fixed height to prevent shifting */
+    display: block; /* Make sure the error message appears on its own line */
+    font-weight: bold; /* Make the message stand out */
+    visibility: hidden; /* Initially hidden */
+    margin-top: auto ;
+    overflow: hidden; /* Prevent additional height expansion */
+}
+
+/* Error Message when visible */
+.error-message.visible {
+    visibility: visible; /* Show when needed */
+}
+
+/* Align Buttons to Form */
+.btn-comp {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+
+
+.close {
+    color: #000000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #61396f;
+    cursor: pointer;
+}
 
 .btn-comp{
     display: flex;
@@ -40,69 +133,6 @@ h1.title {
 }
 
 
-
-
-
-
-/* Ensure consistent button size */
-td.actions button,
-td.actions .btn-edit,
-td.actions .btn-view,
-td.actions .btn-delete {
-    height: 30px; /* Set button height */
-    min-width: 60px; /* Ensure buttons have a minimum width */
-    display: inline-flex; /* Consistent alignment */
-    justify-content: center; /* Center text inside the button */
-    align-items: center; /* Vertically center text */
-}
-
-
-
-/* buttons on list of accs */
-.btn-view {
-    background-color: #0053ec;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    height: 30px;
-    width: 80px;
-}
-.btn-view:hover{
-    background-color: #2f78ff;
-}
-
-/* view button */
-.btn-edit {
-    background-color: #ff9900;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    height: 30px;
-    width: 80px;
-}
-.btn-edit:hover{
-    background-color: #ffad32;
-}
-
-.btn-delete {
-    background-color: #f30000;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    height: 30px;
-    width: 80px;
-}
-.btn-delete:hover{
-    background-color: #ff3d3d;
-}
-
-
 .textbox {
     border: 0.1px solid #000000;
     font-family:'Poppins', sans-serif;
@@ -127,6 +157,25 @@ td.actions .btn-delete {
 
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Two columns for labels and inputs */
+    gap: 10px 20px; /* Adjust spacing between rows and columns */
+    align-items: center; /* Vertically align inputs and labels */
+    width: 100%;
+    margin-bottom: 20px;
+}
+.form-grid input[type="text"] {
+    width: 100%; /* Make input fields take the full width of the column */
+    padding: 10px;
+    border: 1px solid #ccc; /* Light border for inputs */
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+
+
+
 body {
     background-color: #f8f8ff; /* Light background */
     font-family: 'Poppins', sans-serif;
@@ -139,69 +188,74 @@ h1.title {
     margin-bottom: 20px;
 }
 
-.table-container {
-    display: flex;
-    justify-content: center;
-    overflow-x: auto;
-    width: 90%; /* Adjust the width as needed */
-    margin: auto;
-    padding: 20px;
+.general-ledger-container {
     background-color: #ffffff;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.general-journal-table {
-    width: 100%;
-    border-collapse: collapse;
+    width: 80%;
     margin: auto;
 }
 
-.general-journal-table th, 
-.general-journal-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border: 1px solid #ddd; /* Light border for table cells */
-    white-space: nowrap; /* Prevent text wrapping */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.general-journal-table th {
-    background-color: #f9f9f9; /* Header background */
-    color: #000000; /* Header text color */
-    text-align: center;
+.textbox,
+.dropdown {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.general-journal-table tr:nth-child(even) {
-    background-color: #f8f8f8; /* Light grey for even rows */
+.duration-date {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.general-journal-table tr:hover {
-    background-color: #f1f1f1; /* Highlight on hover */
+.to-label {
+    font-weight: bold;
+    color: #61396f;
 }
 
-.general-journal-table td {
-    text-align: center; /* Center align for table cells */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
 }
 
+.btn-print {
+    background-color: #FFCC00;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
 
-.btn-view {
-    background-color: #FFA500; /* Orange for buttons */
+.btn-export {
+    background-color: #2D9C35;
     color: #fff;
     border: none;
-    padding: 8px 12px;
+    padding: 10px 20px;
     border-radius: 5px;
-    font-weight: bold;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.btn-view {
-    background-color: #61396f; /* Violet for View button */
+.btn-print:hover {
+    background-color: #e6b800;
 }
 
-.btn-edit:hover {
-    background-color: #e69500; /* Darker orange on hover */
-}
-
-.btn-view:hover {
-    background-color: #4d2e57; /* Darker violet on hover */
+.btn-export:hover {
+    background-color: #248a2b;
 }
