@@ -156,25 +156,35 @@ a:hover,
     width: auto;
 }
 
-/* The design of buttons in dropdown */
+/******************* The design of buttons in dropdown ***************/
 
+.dropdown-container{
+    padding-left: 30px;
+}
+
+.dropdown-container.focus{
+    background-color: #6f42c1;
+}
 /* Default state */
 .dropdown-container a {
     font-size: 14px;
     color: #333333; /* Default text color */
     transition: transform 0.3s ease, color 0.3s ease; /* Smooth scaling and color transition */
 }
-
-
 .dropdown-container a:hover {
     /* transform: scale(1.1);  if you want to hover scale use this*/
     color: #6f42c1; /* Change text color when hovered */
 }
 
 /* Active or clicked state */
-.dropdown-container a.active:active {
+.dropdown-container a.active:focus {
     color: #6f42c1; /* Keep the text color when clicked */
 }
+
+/* indent left of dropdown components */
+
+
+
 
 a.component-design {
     display: inline-block; /* Ensure proper scaling */
@@ -201,20 +211,12 @@ a i,
     width: 20px; /* Ensure the icon takes the full width of its container */
 }
 
-/* indent left of dropdown components */
-.dropdown-container{
-    padding-left: 32px;
-}
 
-.dropdown-container.active{
-    background-color: #6f42c1;
-}
 
 /* Main content styles in sidebar always remember*/
 .main-content {
     margin-left: 0; /* Default margin to make space for the sidebar */
     padding: 20px;
-    transition: margin-left 0.3s ease;
+    /* transition: margin-left 0.3s ease; salarin pag nagrerefresh nagsisimula sa left side */
     position: relative; /* Ensure main content appears correctly */
-    z-index: 0; /* Ensure main content stays below sidebar */
 }
