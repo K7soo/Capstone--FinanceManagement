@@ -6,32 +6,32 @@
         <i class="fa fa-bars"></i>
       </button>
     </div>
-
-    <!-- Components of the sidebar -->
-    <a class="component-design" href="{% url 'dashboard' %}">
-      <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
-    </a>
-    <a class="component-design" href="{% url 'reservations_api' %}">
-      <i class="fa fa-fw fa-list"></i><span>API - Reservations</span>
-    </a>
-
+    <div class="sidebar-links">
+      <!-- Components of the sidebar -->
+      <a class="component-design" href="{% url 'dashboard' %}">
+        <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
+      </a>
+      <a class="component-design" href="{% url 'reservations_api' %}">
+        <i class="fa fa-fw fa-list"></i><span>API - Reservations</span>
+      </a>
+    </div>
     <!-- System Setup Dropdown -->
     <button class="dropdown-btn">
       <i class="fa fa-fw fa-book"></i>
       <span>System Setup</span>
       <i class="fa fa-caret-down"></i>
     </button>
-      <div class="dropdown-container">
-        <a class="component-design" href="{% url 'listofacc' %}">
-          <span>Accounts Setup</span>
-        </a>
-        <a class="component-design" href="{% url 'chartofacc' %}">
-          <span>Chart of Accounts</span>
-        </a>
-        <a class="component-design" href="{% url 'journaltemplate' %}">
-          <span>Journal Entry Preparation</span>
-        </a>
-      </div>
+    <div class="dropdown-container">
+      <a class="component-design" href="{% url 'listofacc' %}">
+        <span>Accounts Setup</span>
+      </a>
+      <a class="component-design" href="{% url 'chartofacc' %}">
+        <span>Chart of Accounts</span>
+      </a>
+      <a class="component-design" href="{% url 'journaltemplate' %}">
+        <span>Journal Entry Preparation</span>
+      </a>
+    </div>
     <!-- End of System Setup Dropdown -->
 
     <!-- Transaction Dropdown -->

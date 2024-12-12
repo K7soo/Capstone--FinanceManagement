@@ -1,3 +1,4 @@
+// Dropdown functionality
 var dropdowns = document.getElementsByClassName("dropdown-btn");
 for (let i = 0; i < dropdowns.length; i++) {
     dropdowns[i].addEventListener("click", function (event) {
@@ -53,8 +54,34 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     }
+
+    // Highlight clicked link inside dropdown
+    const links = document.querySelectorAll('.sidebar-links a, .dropdown-container a');
+    links.forEach((link) => {
+        link.addEventListener('click', function (event) {
+            // Remove active class from all links
+            links.forEach((item) => item.classList.remove('active'));
+
+            // Add active class to the clicked link
+            this.classList.add('active');
+        });
+
+        // Restore active state if the link is in localStorage
+        if (localStorage.getItem(`active-link`) === link.href) {
+            links.forEach((item) => item.classList.remove('active'));
+            link.classList.add('active');
+        }
+
+        // Save the active link to localStorage on click
+        link.addEventListener('click', () => {
+            localStorage.setItem('active-link', link.href);
+        });
+    });
 });
 
+
+
+// Sidebar toggle functionality
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     const sidebarWrapper = document.querySelector('.sidebar-wrapper');
@@ -69,4 +96,3 @@ function toggleSidebar() {
         mainContent.style.marginLeft = '250px'; // Adjust for expanded sidebar width
     }
 }
-
