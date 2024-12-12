@@ -1,10 +1,23 @@
 {% extends 'base.html' %}
 
+<!-- Always do a load static  -->
+{% load static %}
+
 {% block title %}
-trialbalance
+Statement of Account
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/trialbalance.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1>Trial Balance Page</h1>
-<p>This is the content of the Trial Balance page.</p>
+
+<h1 class="title">Trial Balance </h1>
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script src="{% static 'js/trialbalance.js' %}"></script>
 {% endblock %}
