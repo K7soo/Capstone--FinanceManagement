@@ -182,7 +182,7 @@ body.modal-open .modal {
 }
 
 .modal-add-btn:hover {
-    background-color: #61396f;
+    background-color: #6f42c1;
 }
 
 .modal-cancel-btn {
@@ -200,7 +200,7 @@ body.modal-open .modal {
 }
 
 .modal-edit-btn:hover {
-    background-color: #61396f;
+    background-color: #6f42c1;
 }
 
 /* Responsive Design */
@@ -271,7 +271,7 @@ body.modal-open .modal {
 
 .close:hover,
 .close:focus {
-    color: #61396f;
+    color: #6f42c1;
     cursor: pointer;
 }
 
@@ -293,7 +293,7 @@ body.modal-open .modal {
 }
 
 .btn-save {
-    background-color: #61396f;
+    background-color: #6f42c1;
     color: #ffffff;
     padding: 10px 20px;
     border: none;
@@ -336,7 +336,7 @@ body.modal-open .modal {
 
 /* Style for table headers */
 .account-table th {
-    background-color: #61396f; /* Violet header background */
+    background-color: #6f42c1; /* Violet header background */
     color: #fff; /* White text */
     text-align: center; /* Center align header text */
     padding: 12px;

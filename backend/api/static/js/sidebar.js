@@ -69,4 +69,3 @@ function toggleSidebar() {
         mainContent.style.marginLeft = '250px'; // Adjust for expanded sidebar width
     }
 }
-

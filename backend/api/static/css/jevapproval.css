@@ -23,7 +23,7 @@ h1.title {
 }
 
 .filter-button:hover, .records-per-page-button:hover {
-    background-color: #61396f; /* Change to violet on hover */
+    background-color: #6f42c1; /* Change to violet on hover */
 }
 
 /* Dropdown styles */
@@ -194,6 +194,6 @@ tr:nth-child(even) {
 }
 
 .close:hover, .close:focus {
-    color: #61396f;
+    color: #6f42c1;
     cursor: pointer;
 }

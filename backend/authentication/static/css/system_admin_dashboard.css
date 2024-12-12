@@ -54,7 +54,7 @@ tr:hover {
 }
 
 .dropdown-toggle {
-    background-color: #61396f;
+    background-color: #6f42c1;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -64,7 +64,7 @@ tr:hover {
 }
 
 .dropdown-toggle:hover {
-    background-color: #61396f;
+    background-color: #6f42c1;
     color: white;
 }
 
@@ -72,7 +72,7 @@ tr:hover {
 
 /* Modal Styles */
 .modal-header {
-    background-color: #61396f;
+    background-color: #6f42c1;
     color: white;
 }
 

@@ -75,7 +75,7 @@
             box-sizing: border-box; /* Ensure padding and border are included in total width */
 
             &:hover {
-                background-color: #61396f; /* Violet color */
+                background-color: #6f42c1; /* Violet color */
                 color: white !important;
                 border-radius: 10px; /* Adjust this value for more or less rounding */
             }

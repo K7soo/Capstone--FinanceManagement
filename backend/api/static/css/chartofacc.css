@@ -254,7 +254,7 @@ tr:nth-child(even) {
 
 .close:hover,
 .close:focus {
-    color: #61396f;
+    color: #6f42c1;
     cursor: pointer;
 }
 
@@ -333,7 +333,7 @@ tr:nth-child(even) {
 }
 
 .account-table th {
-    background-color: #61396f;
+    background-color: #6f42c1;
     color: #fff;
 }
 
@@ -354,7 +354,7 @@ tr:nth-child(even) {
 
 }
 .submit-btn:hover {
-    background-color: #61396f;
+    background-color: #6f42c1;
 }
     
 .table-acc {

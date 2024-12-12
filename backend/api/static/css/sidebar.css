@@ -1,51 +1,50 @@
-/* Sidebar wrapper styles */
+/* The whole sidebar */
+
 .sidebar-wrapper {
     position: fixed;
     top: 50px; /* Position below the menubar, assuming menubar is 50px in height */
     left: 0;
     width: 250px;
-    /* height: calc(100% - 50px); Adjust height to avoid overlapping menubar */
     background-color: #cccccc;
     border-right: 1px solid #ddd;
     z-index: 1;
-    transition: width 0.3s; /* Smooth transition for sidebar width */
-    
+
 }
 
+/* Sidebar Style */
 .sidebar {
     display: flex;
     flex-direction: column; /* Stack items vertically */
     justify-content: flex-start; /* Start items from the top */
+    /* align-items:; */
     overflow-x: hidden;
     height: 100vh;
     width: 250px;
     position: fixed;
     top: 0;
-    left: 0;
+    /* left: 0;  Unnecesary?*/
     background-color: #fff;
     padding-top: 5px;
     padding-right: 10px;
-    border-right: 1px solid #ddd;
-    transition: width 0.3s;
-    font-family: 'Poppins';
+    border-right: 1px solid #cacaca;
+    transition: transform 0.3s ease, width 0.3s ease; /* Smooth transition for transform and width */    font-family: 'Poppins';
     overflow-y: auto;
-    
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height so that it doesnt overlap the main content*/
 }
 
+/* To Collapse the Sidebar */
 .sidebar.collapsed {
     width: 0;
-    height: 0; /* Set height to 0 as well */
+    height: 0; 
     overflow: hidden; /* Hide overflow content */
     position: absolute; /* Ensure it doesn't affect layout */
     margin: 0; /* Remove any potential margins */
     padding: 0; /* Remove any internal spacing */
     border: none; /* Remove any border */
+
 }
 
-.sidebar-wrapper.collapsed {
-    display: none; /* Hide the entire wrapper if necessary */
-}
+/* Fully Hide the Sidebar */
 .sidebar.hidden {
     display: none; /* Fully hide the sidebar */
     width: 0; /* Ensure no visual width */
@@ -54,157 +53,21 @@
     margin: 0; /* Ensure no spacing from margins */
 }
 
-
+/* container of the sidebar header  */
 .sidebar-header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: -1px 15px 10px 15px;
-    font-size: 12px;
+    padding-left: 16px;
     color: #333;
     background-color: #ffffff;
 }
-
-/* finance management text */
-.sidebar-header h2 {
-    font-size: 14px;
-
-    padding: 1px 0px 0px 10px;
-}
-/* hamburger button */
-/* Base styles for the menu button */
-.menu-btn {
-    background-color: white;
-    margin-left: 20px;
-    border: none;
-    outline: none;
-    width: 1.5rem; /* Set a fixed width */
-    height: 1.5rem; /* Set a fixed height */
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Center the icon */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s, color 0.3s; /* Smooth hover transition */
-    overflow: hidden; /* Prevent overflow */
+/* Finance management header */
+.sidebar-title{
+    font-size: .90rem;
 }
 
-/* Hover styles for the menu button */
-.menu-btn:hover {
-    background-color: #6f42c1; /* Violet color */
-    color: white;
-}
-
-/* Ensure consistent dimensions on hover */
-.menu-btn i {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: auto;
-    width: 100%;
-    height: 100%;
-}
-/* bookkeeping dropdown button */
-
-/* Default state of the caret icon pointing down */
-.fa-caret-down {
-    transform: rotate(180deg); /* Default downward position */
-    transition: transform 0.3s ease; /* Smooth transition */
-}
-
-/* Rotated state pointing up */
-.fa-caret-down.rotated {
-    transform: rotate(0deg); /* Pointing up */
-}
-
-
-/* Hovering dropdownbutton */
-a:hover,
-.dropdown-btn:hover {
-    background-color: #6f42c1; /* Violet color */
-    color: rgb(255, 255, 255);
-    border-radius: 10px; /* Adjust this value for more or less rounding */
-}
-
-/* dropdown element (setup, transaction, reports) */
-a,
-.dropdown-btn {
-    font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
-    padding: 10px 7px 10px 25px;
-    text-decoration: none;
-    font-size: 14px;
-    color: #333333;
-    display: flex;
-    align-items: center; /* Align items for icon and text */
-    justify-content: flex-start; /* Adjust alignment to the left */
-    width: 100%;
-    text-align: left;
-    border: none;
-    background: none;
-    outline: none;
-    cursor: pointer;
-    transition: background-color 0.3s, border-radius 0.3s, margin 0.3s; /* Smooth transition */
-    overflow: hidden; /* Prevent background overflow */
-    box-sizing: border-box; /* Ensure padding and border are included in total width */
-}
-
-/* non dropdown element (dashboard, api, payment) */
-a.focus,
-a.active,
-a.dropdown-btn.active {
-    background-color: none; /* Remove violet background from active state */
-    color: #333333; /* Inherit default color */
-    padding: 7px 10px 7px 30px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
-    justify-content: flex-start;
-}
-
-i.active {
-    display: flex; /* Use flex to center the icon */
-    align-items: center; /* Center icon vertically */
-    justify-content: center; /* Center icon horizontally */
-    width: 30px; /* Ensure the icon takes the full width of its container */
-}
-
-a.active:hover{
-    color: #ffffff;
-}
-
-a i,
-.dropdown-btn i {
-    display: flex; /* Use flex to center the icon */
-    align-items: center; /* Center icon vertically */
-    justify-content: center; /* Center icon horizontally */
-    width: 30px; /* Ensure the icon takes the full width of its container */
-}
-
-/* background dropdown container */
-.dropdown-container {
-    display: none;
-    background-color: #ffffff;
-}
-
-/* container background and hover */
-.dropdown-container a {
-    font-size: 14px;
-    color: #333333;
-}
-.dropdown-container a:hover{
-    font-size: 14px;
-    color: #ffffff; /*968DF4*/
-}
-.dropdown-container a::after{
-    font-size: 14px;
-    color: #968DF4; /*968DF4*/
-}
-
-
+/* Tikme Dine Logo */
 .sidebar-footer {
     flex-shrink: 0; /* Prevent shrinking */
     text-align: center;
@@ -224,8 +87,130 @@ a i,
 }
 
 
+/* Menu Button Hamburger */
+.menu-btn {
+    background-color: white;
+    margin-left: 16px;
+    border: none;
+    outline: none;
+    width: 1.5rem; /* Set a fixed width */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the icon */
+    border-radius: 5px; /* Rounded corners */
+    overflow: hidden; /* Prevent overflow */
+}
+/* Menu Button Hamburger Hovering */
+.menu-btn:hover {
+    background-color: #6f42c1; /* Violet color */
+    border-radius: 20%;
+    transition: background-color 0.3s, color 0.5s; /* Smooth hover transition */
+    color: white;
+    padding: 6px 6px 6px 6px; /*size of the hover on hamburger*/
+}
 
-/* Main content styles */
+/* Default state of the caret icon pointing down */
+.fa-caret-down {
+    transform: rotate(180deg); /* Default downward position */
+    transition: transform 0.3s ease; /*take note that if you click any components its like it will refresh too*/
+}
+.fa-caret-down.rotated {
+    transform: rotate(0deg); /* Pointing up */
+}
+
+a,
+.dropdown-btn {
+    text-decoration: none; /* Remove underline */
+    margin: 1px 1px 1px 1px;
+    padding: 10px 5px 10px 20px; 
+    font-size: 14px;
+    font-family: 'Poppins';
+    color: #333333;
+    display: flex;
+    align-items: center; /* Align items for icon and text */
+    align-content: center;
+    justify-content: flex-start; /* Adjust alignment to the left */
+    width: 100%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    box-sizing: border-box; /* Ensure padding and border are included in total width */
+}   
+
+/* Dropdown Properties */
+a:hover,
+.dropdown-btn:hover {
+    /* background: #f1f1f1;  */
+    color: #6f42c1;
+    border-radius: 6px; 
+}
+
+/* This is when the dropdown button on the sidebar state is opened */
+.dropdown-btn.active {
+    /* background: #f1f1f1;  */
+    color: #6f42c1;
+    border-radius: 6px; 
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px 10px 10px 10px;
+    width: auto;
+}
+
+/* The design of buttons in dropdown */
+
+/* Default state */
+.dropdown-container a {
+    font-size: 14px;
+    color: #333333; /* Default text color */
+    transition: transform 0.3s ease, color 0.3s ease; /* Smooth scaling and color transition */
+}
+
+
+.dropdown-container a:hover {
+    /* transform: scale(1.1);  if you want to hover scale use this*/
+    color: #6f42c1; /* Change text color when hovered */
+}
+
+/* Active or clicked state */
+.dropdown-container a.active:active {
+    color: #6f42c1; /* Keep the text color when clicked */
+}
+
+a.component-design {
+    display: inline-block; /* Ensure proper scaling */
+    background-color: transparent; /* Default background */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth scaling and color change */
+}
+
+a.component-design.hover {
+    transform: scale(1.1); /* Scale the element to 110% of its size */
+    background-color: #6f42c1; /* Active state */
+}
+
+a.component-design.active {
+    color: #6f42c1; /* Active state */
+}
+
+/* This is for the spacing of dropdown button between the caret and icon */
+a i,
+.dropdown-btn i {
+    display: flex; /* Use flex to center the icon */
+    align-items: space-around; /* Center icon vertically */
+    justify-content: space-around; /* Center icon horizontally */
+    width: 20px; /* Ensure the icon takes the full width of its container */
+}
+
+/* indent left of dropdown components */
+.dropdown-container{
+    padding-left: 32px;
+}
+
+.dropdown-container.active{
+    background-color: #6f42c1;
+}
+
+/* Main content styles in sidebar always remember*/
 .main-content {
     margin-left: 0; /* Default margin to make space for the sidebar */
     padding: 20px;
@@ -233,5 +218,3 @@ a i,
     position: relative; /* Ensure main content appears correctly */
     z-index: 0; /* Ensure main content stays below sidebar */
 }
-
-

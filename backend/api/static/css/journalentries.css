@@ -100,13 +100,13 @@ textarea {
     padding: 10px 15px;
     border: none;
     background-color: #f0f0f0;
-    color: #61396f;
+    color: #6f42c1;
     font-weight: bold;
     margin-right: 5px;
 }
 
 .tab-link.active {
-    background-color: #61396f;
+    background-color: #6f42c1;
     color: #fff;
 }
 
