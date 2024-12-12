@@ -30,64 +30,116 @@ Statement of Account
         <button class="btn-add-template" id="openAddJournalEntriesModal">Add Journal Entries</button>
 
 
-        <!-- Add Journal Template Modal -->
-        <div id="addJournalEntriesModal" class="modal">
-            <div class="modal-content">
-                <h2>Add Journal Entries</h2>
-                <form id="journalEntriesForm" class="form-grid">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<!-- Add Journal Template Modal -->
+<div id="addJournalEntriesModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2>Add Journal Entries</h2>
 
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-link active" data-tab="particulars">Particulars</button>
+            <button class="tab-link" data-tab="accounting-entries">Accounting Entries</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Particulars Form -->
+            <div id="particulars" class="tab-panel active">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="entryCode">Entry Code:</label>
                         <input type="text" id="entryCode" name="entryCode" placeholder="Enter Entry Code" required />
                     </div>
+                    <div class="form-group">
+                        <label for="entryDate">Date:</label>
+                        <input type="date" id="entryDate" />
+                    </div>
+                </div>
+                
+                    <div class="form-group full-width">
+                        <label for="entryDescription">Particulars:</label>
+                        <textarea id="entryDescription" placeholder="Enter Description"></textarea>
+                    </div>
+                </form>
+            </div>
 
-
-                    <!-- Transaction Type Selection -->
+            <!-- Accounting Entries Form -->
+            <div id="accounting-entries" class="tab-panel">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addTemplate">Template:</label>
+                        <select id="addTemplate" name="addTemplate">
+                            <option value="">Select Template</option>
+                            <!-- Add other options here -->
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="transactionType">Transaction Type:</label>
-                        <select id="transactionType" name="transactionType" required>
-                            <option value="" disabled selected>Select Transaction Type</option>
-                            <option value="CAS" >Cash Transactions</option>
-                            <option value="ADJ" >Adjustments and Closing Entries</option>
-                            <option value="COL" >Collections</option>
-
+                        <select id="transactionType" name="transactionType">
+                            <option value="">Select Transaction Type</option>
+                            <!-- Add other options here -->
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label for="addTemplate">Add Template:</label>
-                        <select id="addTemplate" name="addTemplate" required>
-                            <option value="" disabled selected>Select</option>
-                            <!-- Options can be dynamically added here -->
-                            <option value="template1">Template 1</option>
-                            <option value="template2">Template 2</option>
-                            <option value="template3">Template 3</option>
-                        </select>
-                    </div>
+                </div>
+                
 
 
-                    <!-- Date -->
-                    <div class="form-group">
-                        <label for="entriesDate">Date:</label>
-                        <input type="date" id="entriesDate" name="entriesDate" required />
-                    </div>
-
-
-                    <!-- Description -->
-                    <div class="form-group">
-                        <label for="EntriesDescription">Description:</label>
-                        <textarea id="EntriesDescription" name="entriesDescription" placeholder="Enter Description" rows="4" required></textarea>
-                    </div>
-
-                    <!-- Button Group -->
-                    <div class="button-group">
-                        <button type="button" class="btn-cancel" id="cancelJournalEntriesButton">Cancel</button>
-                        <button type="submit" class="btn-add-journalEntry-modal">Add Journal Entry</button>
+                    <!-- Accounts Table -->
+                    <div class="accounts-section">
+                        <table class="accounts-table">
+                            <thead>
+                                <tr>
+                                    <th>Accounts</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <select class="account-dropdown">
+                                            <option value="inventory">Inventory for Consumption</option>
+                                            <option value="cash">Cash</option>
+                                        </select>
+                                    </td>
+                                    <td><input type="text" placeholder="1000.00" class="debit-input" /></td>
+                                    <td><input type="text" placeholder="0.00" class="credit-input" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </form>
             </div>
         </div>
+        <!-- Modal Actions -->
+        <div class="button-group">
+            <button type="button" class="btn-cancel" id="cancelJournalEntriesButton">Cancel</button>
+            <button type="submit" class="btn-add-journalEntry-modal">Add Journal Entry</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabLinks.forEach((link) => {
+        link.addEventListener('click', function () {
+            // Remove active class from all links and panels
+            tabLinks.forEach((link) => link.classList.remove('active'));
+            tabPanels.forEach((panel) => panel.classList.remove('active'));
+
+            // Add active class to clicked link and corresponding panel
+            this.classList.add('active');
+            const targetPanel = document.getElementById(this.getAttribute('data-tab'));
+            targetPanel.classList.add('active');
+        });
+    });
+});
+</script>
+
         
         <div class="journal-entries-table-container" style="display: none;">
             <table class="journal-entries-table">

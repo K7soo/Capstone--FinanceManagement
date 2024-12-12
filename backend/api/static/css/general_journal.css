@@ -12,8 +12,6 @@ h1.title {
 }
 
 
-
-
 .btn-comp{
     display: flex;
     justify-content: flex-end; /* Align buttons to the right */

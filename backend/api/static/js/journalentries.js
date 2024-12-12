@@ -2,12 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('addJournalEntriesModal');
     const openModalButton = document.getElementById('openAddJournalEntriesModal');
     const cancelButton = document.getElementById('cancelJournalEntriesButton');
-    const journalEntriesForm = document.getElementById('journalEntriesForm');
+    const journalEntriesForm = document.getElementById('particularsForm'); // Updated to match the form ID
     const journalEntriesTableContainer = document.querySelector('.journal-entries-table-container');
     const journalEntriesBody = document.getElementById('journalEntriesBody');
     const viewModal = document.getElementById('viewJournalEntryModal');
     const closeViewModalButton = document.getElementById('closeViewJournalEntryModal');
-
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabPanels = document.querySelectorAll('.tab-panel');
     // Open Modal
     openModalButton.addEventListener('click', () => {
         modal.style.display = 'block';
@@ -25,6 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
+
+
+    
     // Add new Journal Entry
     journalEntriesForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -32,8 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const entryCode = document.getElementById('entryCode').value.trim();
         const transactionType = document.getElementById('transactionType').value.trim();
         const addTemplate = document.getElementById('addTemplate').value.trim();
-        const entriesDate = document.getElementById('entriesDate').value.trim();
-        const entriesDescription = document.getElementById('EntriesDescription').value.trim();
+        const entriesDate = document.getElementById('entryDate').value.trim();
+        const entriesDescription = document.getElementById('entryDescription').value.trim(); // Corrected the ID
 
         if (!entryCode || !transactionType || !addTemplate || !entriesDate || !entriesDescription) {
             alert('All fields are required.');
@@ -88,6 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('btn-delete')) {
             const row = event.target.closest('tr');
             row.remove();
+
+            // Hide the table container if no entries remain
+            if (!journalEntriesBody.children.length) {
+                journalEntriesTableContainer.style.display = 'none';
+            }
         }
     });
 
@@ -95,4 +105,20 @@ document.addEventListener('DOMContentLoaded', () => {
     closeViewModalButton.addEventListener('click', () => {
         viewModal.style.display = 'none';
     });
-});
+        // Tab Switching Logic
+        tabLinks.forEach((tab) => {
+            tab.addEventListener('click', function () {
+                // Remove active class from all tabs and panels
+                tabLinks.forEach((link) => link.classList.remove('active'));
+                tabPanels.forEach((panel) => panel.classList.remove('active'));
+    
+                // Add active class to clicked tab and its corresponding panel
+                this.classList.add('active');
+                const targetPanel = document.getElementById(this.getAttribute('data-tab'));
+                targetPanel.classList.add('active');
+            });
+        });
+    });
+
+
+
