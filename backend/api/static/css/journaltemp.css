@@ -165,7 +165,7 @@ hr.line {
 }
 
 .journal-table .btn-delete {
-  background-color: #dc3545; 
+  background-color: #f30000; 
   color: white;
   padding: 5px 10px;
   border: none;
@@ -336,7 +336,7 @@ hr.line {
 
 /* Remove Button */
 .btn-remove {
-  background-color: #dc3545;
+  background-color: #f30000;
   color: white;
   border: none;
   padding: 5px 10px;
