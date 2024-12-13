@@ -145,6 +145,11 @@ a:hover,
     border-radius: 6px; 
 }
 
+/* .dropdown-btn {
+    color: #6f42c1;
+    border-radius: 6px; 
+} */
+
 /* This is when the dropdown button on the sidebar state is opened */
 .dropdown-btn.active {
     /* background: #f1f1f1;  */
@@ -181,7 +186,7 @@ a:hover,
 
 /* Active or clicked state */
 .dropdown-container a.active {
-    color: #b4a6cd; /* Keep the text color when clicked */
+    color: #ffff; /* Keep the text color when clicked */
 }
 
 
@@ -200,10 +205,9 @@ a.component-design.hover {
 
 /* COLORS for active state when clicked*/
 a.component-design.active {
-    color: #ffffff;
     background-color: #6f42c1; /* Active state */
-    border-radius: 6px; 
-
+    border-radius: 6px;
+    color: #ffffff;
 }
 
 /* This is for the spacing of dropdown button between the caret and icon */

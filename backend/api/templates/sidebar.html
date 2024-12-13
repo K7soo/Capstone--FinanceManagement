@@ -11,9 +11,9 @@
       <a class="component-design" href="{% url 'dashboard' %}">
         <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
       </a>
-      <a class="component-design" href="{% url 'reservations_api' %}">
+      <!-- <a class="component-design" href="{% url 'reservations_api' %}">
         <i class="fa fa-fw fa-list"></i><span>API - Reservations</span>
-      </a>
+      </a> -->
     </div>
     <!-- System Setup Dropdown -->
     <button class="dropdown-btn">
@@ -28,8 +28,11 @@
       <a class="component-design" href="{% url 'chartofacc' %}">
         <span>Chart of Accounts</span>
       </a>
+      <a class="component-design" href="{% url 'transactiontype' %}">
+        <span>Transaction Type</span>
+      </a>
       <a class="component-design" href="{% url 'journaltemplate' %}">
-        <span>Journal Entry Preparation</span>
+        <span>Entry Templates</span>
       </a>
     </div>
     <!-- End of System Setup Dropdown -->
@@ -44,20 +47,18 @@
       <a class="component-design" href="{% url 'trinbox' %}">
         <span>Transaction Inbox</span>
       </a>
-      <a class="component-design" href="{% url 'transactiontype' %}">
-        <span>Transaction Type</span>
-      </a>
+
       <a class="component-design" href="{% url 'journalentries' %}">
         <span>Journal Entries</span>
+      </a>
+      <a class="component-design" href="{% url 'jevapproval' %}">
+        <span>JEV Approval</span>
       </a>
       <a class="component-design" href="{% url 'general_journal' %}">
         <span>General Journal</span>
       </a>
       <a class="component-design" href="{% url 'general_ledger' %}">
         <span>General Ledger</span>
-      </a>
-      <a class="component-design" href="{% url 'jevapproval' %}">
-        <span>JEV Approval</span>
       </a>
     </div>
     <!-- End of Transaction Dropdown -->
@@ -75,10 +76,10 @@
     </div>
     <!-- End of Reports Dropdown -->
 
-    <a class="component-design" href="#payment">
+    <!-- <a class="component-design" href="#payment">
       <i class="fa fa-fw fa-money"></i>
       <span>Payment</span>
-    </a>
+    </a> -->
 
     <!-- Sidebar footer for logo and version -->
     <div class="sidebar-footer">

@@ -139,37 +139,32 @@
   </div>
 
 
-  <!-- Modal for Viewing Templates -->
   <div id="viewTemplateModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2>View Journal Template</h2>
-        <span class="close" onclick="closeViewTemplateModal()">&times;</span>
-      </div>
-      <div class="modal-body">
-        <p>
-          <strong>Template Code:</strong> <span id="viewTemplateCode"></span>
-        </p>
-        <p>
-          <strong>Transaction Type:</strong>
-          <span id="viewTransactionType"></span>
-        </p>
-        <table class="modal-table">
-          <thead>
-            <tr>
-              <th>Account Code</th>
-              <th>Account Description</th>
-              <th>Debit</th>
-              <th>Credit</th>
-            </tr>
-          </thead>
-          <tbody id="viewTemplateRows">
-            <!-- Populated dynamically -->
-          </tbody>
-        </table>
-      </div>
+        <div class="modal-header">
+            <h2>View Journal Template</h2>
+            <span id="closeViewTemplateModal" class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p><strong>Template Code:</strong> <span id="viewTemplateCode"></span></p>
+            <p><strong>Transaction Type:</strong> <span id="viewTransactionType"></span></p>
+            <table class="modal-table">
+                <thead>
+                    <tr>
+                        <th>Account Code</th>
+                        <th>Account Description</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                    </tr>
+                </thead>
+                <tbody id="viewTemplateRows">
+                    <!-- Rows will be dynamically populated -->
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
+</div>
+
 
   {% endblock %} {% block extra_js %}
   <script src="{% static 'js/journaltemp.js' %}"></script>
