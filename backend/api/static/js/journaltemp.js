@@ -272,6 +272,7 @@ function toggleDebitCredit(checkbox, type) {
 
 function viewTemplate(templateId) {
     console.log("Viewing template:", templateId);
+
     fetch(`/journaltemplate/${templateId}/`, {
         method: 'GET',
         headers: {
@@ -290,29 +291,59 @@ function viewTemplate(templateId) {
         const template = data.template;
         const details = data.details;
 
-        // Prepare the details for display
-        let detailsString = "Template Details:\n";
-        if (details.length > 0) {
+        // Update modal header with template information
+        document.getElementById('viewTemplateCode').textContent = template.TRTemplateCode;
+        document.getElementById('viewTransactionType').textContent =
+            window.transactionTypeMap[template.TransactionType_FK] || 'Unknown';
+
+        // Clear and populate the modal table
+        const viewTemplateRows = document.getElementById('viewTemplateRows');
+        viewTemplateRows.innerHTML = ''; // Clear existing rows
+
+        if (details && details.length > 0) {
             details.forEach(detail => {
-                detailsString += `
-                    Account: ${window.accountMap[detail.Account_FK] || "Unknown"}
-                    Debit: ${detail.Debit}
-                    Credit: ${detail.Credit}\n
+                const debit = parseFloat(detail.Debit) || 0; // Ensure Debit is a number
+                const credit = parseFloat(detail.Credit) || 0; // Ensure Credit is a number
+
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${detail.Account_FK}</td>
+                    <td>${window.accountMap[detail.Account_FK] || 'Unknown'}</td>
+                    <td>${debit.toFixed(2)}</td>
+                    <td>${credit.toFixed(2)}</td>
                 `;
+                viewTemplateRows.appendChild(newRow);
             });
         } else {
-            detailsString += "No details available.";
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = `
+                <td colspan="4">No details available.</td>
+            `;
+            viewTemplateRows.appendChild(emptyRow);
         }
 
-        // Display template and details in an alert or modal
-        alert(`
-            Template Code: ${template.TRTemplateCode}
-            Transaction Type: ${window.transactionTypeMap[template.TransactionType_FK] || 'Unknown'}
-            ${detailsString}
-        `);
+        // Show the modal
+        document.getElementById('viewTemplateModal').style.display = 'block';
     })
     .catch(error => console.error('Error viewing template:', error));
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const closeModalButton = document.getElementById('closeViewTemplateModal');
+    const viewTemplateModal = document.getElementById('viewTemplateModal');
+
+    // Add event listener to close the modal
+    closeModalButton.addEventListener('click', () => {
+        viewTemplateModal.style.display = 'none';
+    });
+
+    // Optional: Close the modal when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+        if (event.target === viewTemplateModal) {
+            viewTemplateModal.style.display = 'none';
+        }
+    });
+});
+
 
 // Function to edit a template // 
 
