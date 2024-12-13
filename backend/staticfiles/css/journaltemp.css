@@ -43,9 +43,7 @@ h1 {
     transition: background-color 0.3s ease;
 }
 
-.dropdown-btn:hover {
-    background-color: #4b2d52; /* Darker violet */
-}
+
 
 .dropdown-content {
     display: none;
