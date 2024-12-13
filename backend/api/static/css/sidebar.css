@@ -145,11 +145,10 @@ a:hover,
     border-radius: 6px; 
 }
 
-.dropdown-btn {
-    /* background: #f1f1f1;  */
+/* .dropdown-btn {
     color: #6f42c1;
     border-radius: 6px; 
-}
+} */
 
 /* This is when the dropdown button on the sidebar state is opened */
 .dropdown-btn.active {
