@@ -170,6 +170,10 @@ a:hover,
     font-size: 14px;
     color: #333333; /* Default text color */
 }
+.sidebar-links{
+    margin-left: 8px;
+ 
+}
 .dropdown-container a:hover {
     /* transform: scale(1.1);  if you want to hover scale use this*/
     color: #6f42c1; /* Change text color when hovered */
@@ -194,8 +198,12 @@ a.component-design.hover {
     background-color: #6f42c1; /* Active state */
 }
 
+/* COLORS for active state when clicked*/
 a.component-design.active {
-    color: #6f42c1; /* Active state */
+    color: #ffffff;
+    background-color: #6f42c1; /* Active state */
+    border-radius: 6px; 
+
 }
 
 /* This is for the spacing of dropdown button between the caret and icon */
