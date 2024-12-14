@@ -260,3 +260,104 @@ window.addEventListener('click', event => {
 document.addEventListener("DOMContentLoaded", () => {
     loadAccountTypeMap().then(loadChartOfAccounts);
 });
+
+
+// remove this if theres a bug
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileTree = document.getElementById('fileTree');
+        // Fetch and populate the file tree with account data
+        function loadFileTree() {
+            fetch('/get-account-types/', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to load file tree data');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Fetched data:', data); // Inspect the API response
+                const fileTree = document.getElementById('fileTree');
+                fileTree.innerHTML = ''; // Clear existing tree content
+
+                // Create the root node
+                const rootNode = document.createElement('li');
+                rootNode.innerHTML = `<span class="caret">List of Accounts</span>`;
+                const rootNested = document.createElement('ul');
+                rootNested.classList.add('nested');
+
+                // Populate accounts grouped by AccountName
+                data.forEach((category) => {
+                    if (category.AccountName && Array.isArray(category.Accounts)) {
+                        const categoryNode = document.createElement('li');
+                        categoryNode.innerHTML = `<span class="caret">${category.AccountName}</span>`;
+                        const categoryNested = document.createElement('ul');
+                        categoryNested.classList.add('nested');
+
+                        // Add accounts under each category
+                        category.Accounts.forEach((account) => {
+                            const accountNode = document.createElement('li');
+                            accountNode.innerHTML = `<span>${account.AccountCode} - ${account.AccountDesc}</span>`;
+                            accountNode.classList.add('account-item');
+                            accountNode.dataset.accountId = account.id; // Optional: Use data attributes for future actions
+                            categoryNested.appendChild(accountNode);
+                        });
+
+                        categoryNode.appendChild(categoryNested);
+                        rootNested.appendChild(categoryNode);
+                    } else {
+                        console.warn('Category has no accounts or is malformed:', category);
+                    }
+                });
+
+                rootNode.appendChild(rootNested);
+                fileTree.appendChild(rootNode);
+
+                // Add toggle functionality
+                addToggleFunctionality();
+            })
+            .catch((error) => console.error('Error loading file tree:', error));
+        }
+
+        // Add toggle functionality to the file tree
+        function addToggleFunctionality() {
+            const toggler = document.getElementsByClassName('caret');
+            for (let i = 0; i < toggler.length; i++) {
+                toggler[i].addEventListener('click', function () {
+                    const nestedList = this.parentElement.querySelector('.nested');
+                    if (nestedList) {
+                        nestedList.classList.toggle('active');
+                        this.classList.toggle('caret-down');
+                    }
+                });
+            }
+        }
+
+        // Optional: Add click event to handle account clicks
+        function handleAccountClick(event) {
+            const accountId = event.target.dataset.accountId;
+            if (accountId) {
+                console.log('Account clicked:', accountId);
+                // You can use this to display details, load data, etc.
+                alert(`Account Selected: ${accountId}`);
+            }
+        }
+
+        // Call the function to load the file tree on page load
+        loadFileTree();
+
+        // Add a global event listener for account clicks
+        const fileTreeContainer = document.getElementById('fileTree');
+        if (fileTreeContainer) {
+            fileTreeContainer.addEventListener('click', event => {
+                if (event.target && event.target.classList.contains('account-item')) {
+                    handleAccountClick(event);
+                }
+            });
+        }
+    });
