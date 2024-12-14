@@ -1,5 +1,7 @@
 /* The whole sidebar */
-
+body{
+    background-color: #ebebeb
+}
 .sidebar-wrapper {
     position: fixed;
     top: 50px; /* Position below the menubar, assuming menubar is 50px in height */
@@ -8,11 +10,13 @@
     background-color: #cccccc;
     border-right: 1px solid #ddd;
     z-index: 1;
-
+    box-sizing: border-box; /* Include padding/border */
 }
 
 /* Sidebar Style */
 .sidebar {
+    max-height: 100vh; /* Correct usage */
+    position: fixed;
     display: flex;
     flex-direction: column; /* Stack items vertically */
     justify-content: flex-start; /* Start items from the top */
@@ -20,7 +24,6 @@
     overflow-x: hidden;
     height: 100vh;
     width: 250px;
-    position: fixed;
     top: 0;
     /* left: 0;  Unnecesary?*/
     background-color: #fff;
@@ -42,10 +45,12 @@
     padding: 0; /* Remove any internal spacing */
     border: none; /* Remove any border */
 
+
 }
 
 /* Fully Hide the Sidebar */
 .sidebar.hidden {
+
     display: none; /* Fully hide the sidebar */
     width: 0; /* Ensure no visual width */
     height: 0; /* Ensure no visual height */
@@ -175,7 +180,7 @@ a:hover,
     color: #333333; /* Default text color */
 }
 .sidebar-links{
-    margin-left: 8px;
+    margin-left: 7px;
  
 }
 .dropdown-container a:hover {
@@ -195,6 +200,7 @@ a.component-design {
     background-color: transparent; /* Default background */
     transition: background-color 0.3s ease; /* Smooth transition */
     /* transition: transform 0.3s ease, background-color 0.3s ease;  */
+    padding-left: 14px; /*for padding left of dashboard component*/
 }
 
 a.component-design.hover {
@@ -226,4 +232,6 @@ a i,
     padding: 20px;
     /* transition: margin-left 0.3s ease; salarin pag nagrerefresh nagsisimula sa left side */
     position: relative; /* Ensure main content appears correctly */
+    min-height: 100vh; /* Ensure it fills the viewport height */
+
 }

@@ -36,7 +36,7 @@
     display: flex;
     align-items: center;
     /* border: 1px solid rgb(0, 0, 0); Troubleshooting border */
-    color: #552b49;
+    color: #8c2dcbda;
     margin-right: 30px; /* Corrected margin syntax to add spacing between icons */
 }
 
