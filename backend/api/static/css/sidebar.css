@@ -125,11 +125,7 @@ a,
     padding: 10px 5px 10px 20px; 
     font-size: 14px;
     font-family: 'Poppins';
-<<<<<<< HEAD
-    color: #337066;
-=======
     color: #333333;
->>>>>>> parent of 98bd67c (FE: Testing version control, changed the color of)
     display: flex;
     align-items: center; /* Align items for icon and text */
     align-content: center;
@@ -149,10 +145,9 @@ a:hover,
     border-radius: 6px; 
 }
 
-/* .dropdown-btn {
-    color: #6f42c1;
+.dropdown-btn {
     border-radius: 6px; 
-} */
+}
 
 /* This is when the dropdown button on the sidebar state is opened */
 .dropdown-btn.active {
