@@ -12,7 +12,23 @@ body{
     z-index: 1;
     box-sizing: border-box; /* Include padding/border */
 }
+.sidebar-wrapper {
+    overflow-y: auto; /* Enable vertical scrolling */
+    scrollbar-width: thin; /* For Firefox: thin scrollbar */
+}
 
+.sidebar-wrapper::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
+.sidebar-wrapper:hover::-webkit-scrollbar {
+    display: block; /* Show the scrollbar on hover */
+}
+
+.sidebar-wrapper {
+    scrollbar-color: #dedede #e0e0e0; /* thumb color and track color */
+    scrollbar-width: thin; /* Thin scrollbar */
+}
 /* Sidebar Style */
 .sidebar {
     max-height: 100vh; /* Correct usage */
@@ -27,7 +43,7 @@ body{
     top: 0;
     /* left: 0;  Unnecesary?*/
     background-color: #fff;
-    padding-top: 5px;
+    padding-top: 55px;
     padding-right: 10px;
     border-right: 1px solid #cacaca;
     transition: transform 0.3s ease, width 0.3s ease; /* Smooth transition for transform and width */    font-family: 'Poppins';
@@ -104,15 +120,16 @@ body{
     justify-content: center; 
     border-radius: 5px; 
     overflow: hidden; 
+    font-size: 15px;
     transition: margin-left 0.3s ease, background-color 0.3s ease;
 }
 /* Menu Button Hamburger Hovering */
 .menu-btn:hover {
-    background-color: #6f42c1; 
+    background-color: #3c1e6f; 
     border-radius: 20%;
     transition: background-color 0.3s, color 0.5s;
     color: white;
-    padding: 6px 10px 6px 10px; 
+    padding: 6px 12px 6px 12px; 
 }
 
 /* Default state of the caret icon pointing down */
