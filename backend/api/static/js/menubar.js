@@ -1,15 +1,16 @@
 function toggleProfileDropdown() {
-    const profileIcon = document.querySelector(".profile-icon");
-    profileIcon.classList.toggle("active");
+    const profileComponent = document.querySelector(".profile-component");
+    profileComponent.classList.toggle("active");
 }
 
-// Close the dropdown if clicked outside
+// Close the dropdown when clicking outside
 document.addEventListener("click", function (event) {
-    const profileIcon = document.querySelector(".profile-icon");
-    if (!profileIcon.contains(event.target)) {
-        profileIcon.classList.remove("active");
+    const profileComponent = document.querySelector(".profile-component");
+    if (!profileComponent.contains(event.target)) {
+        profileComponent.classList.remove("active");
     }
 });
+
 
 function logout() {
     // Perform any necessary logout operations here (e.g., clearing session storage)
@@ -62,3 +63,4 @@ document.addEventListener("DOMContentLoaded", function () {
         menubar.classList.remove("sidebar-collapsed");
     }
 });
+

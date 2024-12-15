@@ -1,15 +1,28 @@
-<div class="menubar-wrapper">
-    <button class="menu-btn" onclick="toggleSidebar()">
-        <i class="fa fa-bars"></i>
-    </button>
-    <ul class="menubar-list">
-        <li class="profile-icon">
-            <i class="fa fa-user" onclick="toggleProfileDropdown()"></i>
+<div class="menubar-container">
+    <!-- Left Section: Hamburger Icon -->
+    <div class="menubar-left">
+        <h2 class="sidebar-title">FINANCE MANAGEMENT</h2>        
+        <button id="hamburgerBtn" class="menu-btn" onclick="toggleSidebar()">
+            <i class="fa fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Right Section: Profile Dropdown -->
+    <div class="menubar-right">
+        <div class="profile-component">
+            <!-- Profile Toggle -->
+            <div class="profile-toggle" onclick="toggleProfileDropdown()">
+                <i class="fa fa-user"></i>
+                <i class="fa fa-caret-down"></i>
+            </div>
+    
+            <!-- Profile Dropdown Menu -->
             <div class="profile-dropdown">
                 <p>Account ID: user123</p>
-                <a href="#">Settings</a>
-                <a class="logout" href="{% url 'admin_login' %}">Logout</a>
+                <a href="#" class="menu-item">Settings</a>
+                <a href="{% url 'admin_login' %}" class="menu-item logout">Logout</a>
             </div>
-        </li>
-    </ul>
+        </div>
+    </div>
+    
 </div>

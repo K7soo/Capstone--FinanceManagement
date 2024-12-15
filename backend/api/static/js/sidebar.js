@@ -82,17 +82,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // Sidebar toggle functionality
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-    const mainContent = document.querySelector('.main-content');
+// function toggleSidebar() {
+//     const sidebar = document.querySelector('.sidebar');
+//     const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+//     const mainContent = document.querySelector('.main-content');
 
-    sidebar.classList.toggle('collapsed');
-    sidebarWrapper.classList.toggle('collapsed'); // Collapse the wrapper as well if needed
+//     sidebar.classList.toggle('collapsed');
+//     sidebarWrapper.classList.toggle('collapsed'); 
 
-    if (sidebar.classList.contains('collapsed')) {
-        mainContent.style.marginLeft = '0'; // No margin when sidebar is collapsed
-    } else {
-        mainContent.style.marginLeft = '250px'; // Adjust for expanded sidebar width
-    }
-}
+//     if (sidebar.classList.contains('collapsed')) {
+//         mainContent.style.marginLeft = '0'; 
+//     } else {
+//         mainContent.style.marginLeft = '250px'; 
+//     }
+// }

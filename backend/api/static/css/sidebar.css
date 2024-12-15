@@ -23,7 +23,7 @@ body{
     /* align-items:; */
     overflow-x: hidden;
     height: 100vh;
-    width: 250px;
+    width: 220px;
     top: 0;
     /* left: 0;  Unnecesary?*/
     background-color: #fff;
@@ -33,6 +33,7 @@ body{
     transition: transform 0.3s ease, width 0.3s ease; /* Smooth transition for transform and width */    font-family: 'Poppins';
     overflow-y: auto;
     box-sizing: border-box; /* Include padding and border in the element's total width and height so that it doesnt overlap the main content*/
+    transform: translateX(0); /* Default position */
 }
 
 /* To Collapse the Sidebar */
@@ -44,8 +45,7 @@ body{
     margin: 0; /* Remove any potential margins */
     padding: 0; /* Remove any internal spacing */
     border: none; /* Remove any border */
-
-
+    transform: translateX(-100%); /* Slide out to the left */
 }
 
 /* Fully Hide the Sidebar */
@@ -69,7 +69,7 @@ body{
 }
 /* Finance management header */
 .sidebar-title{
-    font-size: .90rem;
+    font-size: .80rem;
 }
 
 /* Tikme Dine Logo */
@@ -111,7 +111,7 @@ body{
     border-radius: 20%;
     transition: background-color 0.3s, color 0.5s; /* Smooth hover transition */
     color: white;
-    padding: 6px 6px 6px 6px; /*size of the hover on hamburger*/
+    padding: 6px 10px 6px 10px; /*size of the hover on hamburger*/
 }
 
 /* Default state of the caret icon pointing down */
@@ -181,7 +181,6 @@ a:hover,
 }
 .sidebar-links{
     margin-left: 7px;
- 
 }
 .dropdown-container a:hover {
     /* transform: scale(1.1);  if you want to hover scale use this*/

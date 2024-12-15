@@ -1,88 +1,95 @@
-.menubar-wrapper {
+/* Menubar Container */
+.menubar-container {
+    display: flex;
+    justify-content: space-between; /* Align items to far left and right */
+    align-items: center; /* Vertically align items */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 50px; /* Adjust this height as needed */
-    background-color: #ffffff; /* Example background color */
+    height: 50px; 
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    z-index: 1;
+    padding: 0 20px; /* Spacing on sides */
+    box-sizing: border-box;
+}
+
+/* Left Section: Hamburger Menu */
+.menubar-left {
     display: flex;
     align-items: center;
-    z-index: 1; /* Adjust z-index as needed */
+    justify-content: flex-start;
+}
+
+/* .menu-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+} */
+/* 
+.menu-btn:hover {
+    background-color: #6f42c1; 
+    border-radius: 20%;
+    transition: background-color 0.3s, color 0.5s; 
     color: white;
-    padding: 0 20px; /* Add padding on the sides */
-    border: 1px solid #ddd;
-}
+    padding: 6px 10px 6px 10px; 
+} */
 
-/* Align menu items to the right */
-.menubar-list {
+
+/* Right Section: Profile Dropdown */
+.menubar-right {
     display: flex;
     align-items: center;
-    margin-left: auto; /* Push the icons to the right side */
-    list-style-type: none;
-    padding: 0;
-    gap: 20px;
-}
-/* Account Name font size */
- /* p.acc-name {
-    font-size: 14px;
- } */
- a.menu-settings{
-    padding: 100px;
-    
- }
-/* Icon styles */
-.menubar-list li {
-    font-size: 20px; /* Adjust icon size */
-    display: flex;
-    align-items: center;
-    /* border: 1px solid rgb(0, 0, 0); Troubleshooting border */
-    color: #8c2dcbda;
-    margin-right: 30px; /* Corrected margin syntax to add spacing between icons */
 }
 
-/* Remove fixed position */
-.profile-icon {
-    position: relative;
+.profile-component {
+    position: relative; /* Parent for dropdown positioning */
     cursor: pointer;
 }
 
-/* Profile dropdown menu */
 .profile-dropdown {
-    display: none;
+    display: none; /* Hidden by default */
     position: absolute;
-    top: 50px;
+    top: 100%; /* Place below the profile toggle */
     right: 0;
     background-color: #fff;
-    color: #333;
-    padding: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    width: 150px;
-    text-align: left;
-    z-index: 3;
-}
-
-/* Show the profile dropdown when active */
-.profile-icon.active .profile-dropdown {
-    display: block;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+    z-index: 1000;
 }
 
 .profile-dropdown p {
     margin: 0;
-    font-weight: bold;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ddd;
     font-size: 14px;
+    font-weight: bold;
+    color: #333;
 }
 
-.profile-dropdown a {
+.menu-item {
     display: block;
-    padding: 10px 5px;
+    padding: 10px;
     text-decoration: none;
     color: #333;
-    font-size: 12px;
-    font-family: 'Poppins', sans-serif; /* Make sure to add this line */
+    transition: background-color 0.2s ease;
 }
 
+.menu-item.logout {
+    color: red;
+}
 
-.profile-dropdown a:hover {
-    color: #554c4c; /* Hover color */
+.menu-item:hover {
+    background-color: #f0f0f0;
+}
+
+.profile-component.active .profile-dropdown {
+    display: block; /* Show dropdown when parent is active */
 }
