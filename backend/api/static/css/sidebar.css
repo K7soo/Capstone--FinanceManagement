@@ -98,20 +98,21 @@ body{
     margin-left: 16px;
     border: none;
     outline: none;
-    width: 1.5rem; /* Set a fixed width */
+    width: 1.5rem; 
     display: flex;
     align-items: center;
-    justify-content: center; /* Center the icon */
-    border-radius: 5px; /* Rounded corners */
-    overflow: hidden; /* Prevent overflow */
+    justify-content: center; 
+    border-radius: 5px; 
+    overflow: hidden; 
+    transition: margin-left 0.3s ease, background-color 0.3s ease;
 }
 /* Menu Button Hamburger Hovering */
 .menu-btn:hover {
-    background-color: #6f42c1; /* Violet color */
+    background-color: #6f42c1; 
     border-radius: 20%;
-    transition: background-color 0.3s, color 0.5s; /* Smooth hover transition */
+    transition: background-color 0.3s, color 0.5s;
     color: white;
-    padding: 6px 10px 6px 10px; /*size of the hover on hamburger*/
+    padding: 6px 10px 6px 10px; 
 }
 
 /* Default state of the caret icon pointing down */

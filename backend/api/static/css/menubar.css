@@ -14,12 +14,40 @@
     padding: 0 20px; /* Spacing on sides */
     box-sizing: border-box;
 }
+.menubar-title {
+    transition: max-width 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
 
+.menubar-title.collapsed {
+    max-width: 0;
+    transform: translateX(-20px); /* Slide out to the left */
+}
+
+.menu-btn {
+    padding-left: 50px;
+    transition: margin-left 0.3s ease;
+}
+
+.menu-btn.collapsed {
+    margin-left: 0; /* Aligns it to the left when sidebar is collapsed */
+}
+
+/* Adjust button position when the sidebar is collapsed */
+.menu-btn.sidebar-collapsed {
+    left: 10px; /* Shift further left when collapsed */
+    transform: translateX(-20px); /* Slide in sync with the sidebar */
+}
+.menubar-title{
+    font-size: .80rem;
+    color: #ffffff;
+}
 /* Left Section: Hamburger Menu */
 .menubar-left {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
 }
 
 /* .menu-btn {
@@ -30,14 +58,14 @@
     color: #333;
     transition: color 0.3s ease;
 } */
-/* 
+
 .menu-btn:hover {
     background-color: #6f42c1; 
     border-radius: 20%;
     transition: background-color 0.3s, color 0.5s; 
     color: white;
     padding: 6px 10px 6px 10px; 
-} */
+}
 
 
 /* Right Section: Profile Dropdown */
