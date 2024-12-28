@@ -15,26 +15,28 @@ h1.title {
     margin-top: 35px;
 }
 
-.grid-container {
+/* .grid-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Three flexible columns */
-    gap: 20px; /* Adjust the space between items */
-}
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px; 
+} */
 
-.table-frame{
+.table-frame-loa{
     width:100%;
     overflow-x:auto;
     overflow-y: hidden; /* Prevent unnecessary vertical scrolling */
     background-color: #fff;
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
     box-sizing: border-box;
+    border-color: solid 51px #e30000;
     height:flex;
 }
 
 /* add button design */
 .add-account-btn {
+    font-family: 'Poppins';
     background-color: #6f42c1; /* Gold color */
     color: white;
     border: none;
