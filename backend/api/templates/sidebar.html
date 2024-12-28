@@ -1,89 +1,113 @@
-<div class="sidebar-wrapper" id="sidebar-wrapper">
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <!-- <h2 class="sidebar-title">FINANCE MANAGEMENT</h2> -->
-      <!-- <button class="menu-btn" onclick="toggleSidebar()">
-        <i class="fa fa-bars"></i>
-      </button> -->
-    </div>
-    <div class="sidebar-links">
-      <!-- Components of the sidebar -->
-      <a class="component-design" href="{% url 'dashboard' %}">
-        <i class="fa fa-fw fa-home"></i><span>Dashboard</span>
-      </a>
-      <!-- <a class="component-design" href="{% url 'reservations_api' %}">
-        <i class="fa fa-fw fa-list"></i><span>API - Reservations</span>
-      </a> -->
-    </div>
-    <!-- System Setup Dropdown -->
-    <button class="dropdown-btn">
-      <i class="fa fa-fw fa-book"></i>
-      <span>System Setup</span>
-      <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-container">
-      <a class="component-design" href="{% url 'listofacc' %}">
-        <span>Accounts Setup</span>
-      </a>
-      <a class="component-design" href="{% url 'chartofacc' %}">
-        <span>Chart of Accounts</span>
-      </a>
-      <a class="component-design" href="{% url 'transactiontype' %}">
-        <span>Transaction Type</span>
-      </a>
-      <a class="component-design" href="{% url 'journaltemplate' %}">
-        <span>Entry Templates</span>
-      </a>
-    </div>
-    <!-- End of System Setup Dropdown -->
+    <nav>
+        <!-- Logo -->
+        <div class="logo-name">
+            <span class="logo_name">Tikme Dine</span>
+        </div>
 
-    <!-- Transaction Dropdown -->
-    <button class="dropdown-btn">
-      <i class="fa fa-fw fa-book"></i>
-      <span>Transaction</span>
-      <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-container">
-      <a class="component-design" href="{% url 'trinbox' %}">
-        <span>Transaction Inbox</span>
-      </a>
+        <!-- Sidebar Menu -->
+        <div class="menu-items">
+            <ul class="nav-links">
+                <!-- Dashboard -->
+                <li class="dropdown">
+                  <a href="{% url 'dashboard' %} ">
+                        <i class="uil uil-estate"></i>
+                        <span class="link-name">Dashboard</span>
+                    </a>
+                </li>
 
-      <a class="component-design" href="{% url 'journalentries' %}">
-        <span>Journal Entries</span>
-      </a>
-      <a class="component-design" href="{% url 'jevapproval' %}">
-        <span>JEV Approval</span>
-      </a>
-      <a class="component-design" href="{% url 'general_journal' %}">
-        <span>General Journal</span>
-      </a>
-      <a class="component-design" href="{% url 'general_ledger' %}">
-        <span>General Ledger</span>
-      </a>
-    </div>
-    <!-- End of Transaction Dropdown -->
+                <!-- System Setup -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="uil uil-book-open"></i>
+                        <span class="link-name">System Setup</span>
+                        <i class="uil uil-angle-down dropdown-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="{% url 'listofacc' %}">Accounts Setup</a></li>
+                        <li><a href="{% url 'chartofacc' %}">Chart of Accounts</a></li>
+                        <li><a href="{% url 'transactiontype' %}">Transaction Type</a></li>
+                        <li><a href="{% url 'journaltemplate' %}">Entry Templates</a></li>
+                      </ul>
+                </li>
+                
 
-    <!-- Reports Dropdown -->
-    <button class="dropdown-btn">
-      <i class="fa fa-fw fa-file"></i>
-      <span>Reports</span>
-      <i class="fa fa-caret-down"></i>
-    </button>
-    <div class="dropdown-container">
-      <a class="component-design" href="{% url 'trialbalance' %}">
-        <span>Trial Balance</span>
-      </a>
-    </div>
-    <!-- End of Reports Dropdown -->
+                <!-- Transaction Dropdown -->
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle">
+                      <i class="uil uil-book-open"></i>
+                      <span class="link-name">Transaction</span>
+                      <i class="uil uil-angle-down dropdown-arrow"></i>
+                  </a>
+                  <ul class="submenu">
+                        <li><a href="{% url 'trinbox' %}">Transaction Inbox</a></li>
+                        <li><a href="{% url 'journalentries' %}">Journal Entries</a></li>
+                        <li><a href="{% url 'jevapproval' %}">JEV Approval</a></li>
+                        <li><a href="{% url 'general_journal' %}">General Journal</a></li>
+                        <li><a href="{% url 'general_ledger' %}">General Ledger</a></li>
+                    </ul>
+              </li>
+              
 
-    <!-- <a class="component-design" href="#payment">
-      <i class="fa fa-fw fa-money"></i>
-      <span>Payment</span>
-    </a> -->
+                <!-- Transaction Dropdown -->
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle">
+                      <i class="uil uil-chart-line"></i>
+                      <span class="link-name">Reports</span>
+                      <i class="uil uil-angle-down dropdown-arrow"></i>
+                  </a>
+                  <ul class="submenu">
+                      <li><a href="{% url 'trialbalance' %}">Trial Balance</a></li>
+                  </ul>
+              </li>
 
-    <!-- Sidebar footer for logo and version -->
-    <div class="sidebar-footer">
-      <img src="/static/images/tikme-logo.png" alt="TikmeDineLogo" />
-    </div>
-  </div>
-</div>
+            <!-- Logout and Dark Mode -->
+            <ul class="logout-mode">
+                <!-- Logout -->
+                <li>
+                    <a href="#">
+                        <i class="uil uil-signout"></i>
+                        <span class="link-name">Logout</span>
+                    </a>
+                </li>
+
+                <!-- Dark Mode -->
+                <li class="mode">
+                    <a href="#">
+                        <i class="uil uil-moon"></i>
+                        <span class="link-name">Dark Mode</span>
+                    </a>
+                    <div class="mode-toggle">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="dashboard">
+        <!-- Top Section -->
+        <div class="top">
+            <i class="uil uil-bars sidebar-toggle"></i>
+            
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="#" class="breadcrumb-link">Dashboard</a>
+                <span class="breadcrumb-divider">/</span>
+                <a href="#" class="breadcrumb-link current">Current Page</a>
+            </div>
+            
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <img src="#" alt="Profile" class="profile-img">
+                <div class="profile-dropdown">
+                    <span class="profile-name">John Doe</span>
+                    <ul>
+                        <li><a href="#">View Profile</a></li>
+                        <li><a href="#">Account Settings</a></li>
+                        <li><a href="#">Activity Logs</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+

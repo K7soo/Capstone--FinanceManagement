@@ -1,98 +1,119 @@
-// Dropdown functionality
-var dropdowns = document.getElementsByClassName("dropdown-btn");
-for (let i = 0; i < dropdowns.length; i++) {
-    dropdowns[i].addEventListener("click", function (event) {
-        // Prevent the default behavior
-        event.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+    const body = document.querySelector("body");
+    const modeToggle = body.querySelector(".mode-toggle");
+    const sidebar = body.querySelector("nav");
+    const sidebarToggle = body.querySelector(".sidebar-toggle");
+    const mainContent = document.querySelector(".main-content");
 
-        // Toggle active class
-        this.classList.toggle("active");
-
-        // Get the associated dropdown container
-        var dropdownContent = this.nextElementSibling;
-
-        // Toggle display and save state to localStorage
-        if (dropdownContent.style.display === "block") {
-            dropdownContent.style.display = "none";
-            localStorage.setItem(`dropdown-${i}`, "closed");
-        } else {
-            dropdownContent.style.display = "block";
-            localStorage.setItem(`dropdown-${i}`, "open");
-        }
-
-        // Find the caret icon within the button and toggle the rotated class
-        const caretIcon = this.querySelector(".fa-caret-down");
-        if (caretIcon) {
-            caretIcon.classList.toggle("rotated");
-        }
-    });
-}
-
-// Restore dropdown states on page load
-document.addEventListener("DOMContentLoaded", function () {
-    for (let i = 0; i < dropdowns.length; i++) {
-        var dropdownContent = dropdowns[i].nextElementSibling;
-
-        // Check localStorage for saved state
-        if (localStorage.getItem(`dropdown-${i}`) === "open") {
-            dropdownContent.style.display = "block";
-            dropdowns[i].classList.add("active");
-
-            // Ensure caret icon points up if dropdown is open
-            const caretIcon = dropdowns[i].querySelector(".fa-caret-down");
-            if (caretIcon) {
-                caretIcon.classList.add("rotated");
-            }
-        } else {
-            dropdownContent.style.display = "none";
-            dropdowns[i].classList.remove("active");
-
-            // Ensure caret icon points down if dropdown is closed
-            const caretIcon = dropdowns[i].querySelector(".fa-caret-down");
-            if (caretIcon) {
-                caretIcon.classList.remove("rotated");
-            }
-        }
+    // Restore mode and sidebar state from localStorage
+    if (localStorage.getItem("mode") === "dark") {
+        body.classList.add("dark");
     }
 
-    // Highlight clicked link inside dropdown
-    const links = document.querySelectorAll('.sidebar-links a, .dropdown-container a');
-    links.forEach((link) => {
-        link.addEventListener('click', function (event) {
-            // Remove active class from all links
-            links.forEach((item) => item.classList.remove('active'));
+    if (localStorage.getItem("status") === "close") {
+        sidebar.classList.add("close");
+        mainContent.style.marginLeft = "90px"; // Initial margin for collapsed state
+    } else {
+        mainContent.style.marginLeft = "260px"; // Default margin for expanded state
+    }
 
-            // Add active class to the clicked link
-            this.classList.add('active');
-        });
+    // Toggle dark mode
+    modeToggle.addEventListener("click", () => {
+        body.classList.toggle("dark");
+        localStorage.setItem("mode", body.classList.contains("dark") ? "dark" : "light");
+    });
 
-        // Restore active state if the link is in localStorage
-        if (localStorage.getItem(`active-link`) === link.href) {
-            links.forEach((item) => item.classList.remove('active'));
-            link.classList.add('active');
+    // Toggle sidebar
+    sidebarToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("close");
+
+        if (sidebar.classList.contains("close")) {
+            localStorage.setItem("status", "close");
+            mainContent.style.marginLeft = "90px";
+        } else {
+            localStorage.setItem("status", "open");
+            mainContent.style.marginLeft = "260px";
         }
+    });
 
-        // Save the active link to localStorage on click
-        link.addEventListener('click', () => {
-            localStorage.setItem('active-link', link.href);
+    // Dropdown Toggle Functionality
+    document.querySelectorAll(".dropdown-toggle").forEach(toggle => {
+        toggle.addEventListener("click", (e) => {
+            e.preventDefault();
+            const parent = toggle.parentElement;
+            const submenu = parent.querySelector(".submenu");
+            const arrow = toggle.querySelector(".dropdown-arrow");
+
+            // Close other dropdowns
+            document.querySelectorAll(".dropdown").forEach(item => {
+                if (item !== parent) {
+                    item.classList.remove("active");
+                    const otherSubmenu = item.querySelector(".submenu");
+                    const otherArrow = item.querySelector(".dropdown-arrow");
+                    if (otherSubmenu) otherSubmenu.style.display = "none";
+                    if (otherArrow) otherArrow.style.transform = "rotate(0deg)";
+                }
+            });
+
+            // Toggle current dropdown
+            parent.classList.toggle("active");
+            submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+            arrow.style.transform = parent.classList.contains("active") ? "rotate(180deg)" : "rotate(0deg)";
         });
     });
+
+    // Profile Dropdown Toggle
+    const profileSection = document.querySelector(".profile-section");
+    const profileDropdown = document.querySelector(".profile-dropdown");
+
+    if (profileSection && profileDropdown) {
+        profileSection.addEventListener("click", (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle("show");
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!profileSection.contains(e.target)) {
+                profileDropdown.classList.remove("show");
+            }
+        });
+    }
+
+    // Breadcrumb and Dynamic Page Content Update
+    const sidebarLinks = document.querySelectorAll(".sidebar-link");
+    const breadcrumbList = document.getElementById("breadcrumb-list");
+    const pageContent = document.getElementById("page-content");
+
+    function updateBreadcrumbs(pageName) {
+        breadcrumbList.innerHTML = `
+            <li><a href="#" data-page="Home" class="breadcrumb-link">Home</a></li>
+            <li> &gt; </li>
+            <li>${pageName}</li>
+        `;
+    }
+
+    sidebarLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const pageName = link.getAttribute("data-page");
+            updateBreadcrumbs(pageName);
+            pageContent.innerHTML = `<h2>${pageName}</h2><p>Welcome to the ${pageName} page.</p>`;
+        });
+    });
+
+    // Optional: Tab Switching
+    const tabs = document.querySelectorAll(".top .breadcrumbs a");
+    const sections = document.querySelectorAll(".main-content > div");
+
+    tabs.forEach((tab, index) => {
+        tab.addEventListener("click", (e) => {
+            e.preventDefault();
+            sections.forEach(section => (section.style.display = "none"));
+            if (sections[index]) sections[index].style.display = "block";
+        });
+    });
+
+    sections.forEach((section, index) => {
+        section.style.display = index === 0 ? "block" : "none";
+    });
 });
-
-
-
-// Sidebar toggle functionality
-// function toggleSidebar() {
-//     const sidebar = document.querySelector('.sidebar');
-//     const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-//     const mainContent = document.querySelector('.main-content');
-
-//     sidebar.classList.toggle('collapsed');
-//     sidebarWrapper.classList.toggle('collapsed'); 
-
-//     if (sidebar.classList.contains('collapsed')) {
-//         mainContent.style.marginLeft = '0'; 
-//     } else {
-//         mainContent.style.marginLeft = '250px'; 
-//     }
-// }

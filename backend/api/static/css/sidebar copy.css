@@ -1,0 +1,509 @@
+/* The whole sidebar */
+body{
+    background-color: #ebebeb
+}
+.sidebar-wrapper {
+    position: fixed;
+    top: 50px; /* Position below the menubar, assuming menubar is 50px in height */
+    left: 0;
+    width: 250px;
+    background-color: #cccccc;
+    border-right: 1px solid #ddd;
+    z-index: 1;
+    box-sizing: border-box; /* Include padding/border */
+}
+.sidebar-wrapper {
+    overflow-y: auto; /* Enable vertical scrolling */
+    scrollbar-width: thin; /* For Firefox: thin scrollbar */
+}
+
+.sidebar-wrapper::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
+.sidebar-wrapper:hover::-webkit-scrollbar {
+    display: block; /* Show the scrollbar on hover */
+}
+
+.sidebar-wrapper {
+    scrollbar-color: #dedede #e0e0e0; /* thumb color and track color */
+    scrollbar-width: thin; /* Thin scrollbar */
+}
+/* Sidebar Style */
+.sidebar {
+    max-height: 100vh; /* Correct usage */
+    position: fixed;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: flex-start; /* Start items from the top */
+    /* align-items:; */
+    overflow-x: hidden;
+    height: 100vh;
+    width: 220px;
+    top: 0;
+    /* left: 0;  Unnecesary?*/
+    background-color: #fff;
+    padding-top: 55px;
+    padding-right: 10px;
+    border-right: 1px solid #cacaca;
+    transition: transform 0.3s ease, width 0.3s ease; /* Smooth transition for transform and width */    font-family: 'Poppins';
+    overflow-y: auto;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height so that it doesnt overlap the main content*/
+    transform: translateX(0); /* Default position */
+}
+
+/* To Collapse the Sidebar */
+.sidebar.collapsed {
+    width: 0;
+    height: 0; 
+    overflow: hidden; /* Hide overflow content */
+    position: absolute; /* Ensure it doesn't affect layout */
+    margin: 0; /* Remove any potential margins */
+    padding: 0; /* Remove any internal spacing */
+    border: none; /* Remove any border */
+    transform: translateX(-100%); /* Slide out to the left */
+}
+
+/* Fully Hide the Sidebar */
+.sidebar.hidden {
+
+    display: none; /* Fully hide the sidebar */
+    width: 0; /* Ensure no visual width */
+    height: 0; /* Ensure no visual height */
+    overflow: hidden; /* Prevent any visible content */
+    margin: 0; /* Ensure no spacing from margins */
+}
+
+/* container of the sidebar header  */
+.sidebar-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 16px;
+    color: #333;
+    background-color: #ffffff;
+}
+/* Finance management header */
+.sidebar-title{
+    font-size: .80rem;
+}
+
+/* Tikme Dine Logo */
+.sidebar-footer {
+    flex-shrink: 0; /* Prevent shrinking */
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+    position: relative; /* Ensure it stays within the sidebar */
+}
+
+.sidebar-footer img {
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+.sidebar-footer p {
+    font-size: 12px;
+    color: #ff0707;
+}
+
+
+/* Menu Button Hamburger */
+.menu-btn {
+    background-color: white;
+    margin-left: 16px;
+    border: none;
+    outline: none;
+    width: 1.5rem; 
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    border-radius: 5px; 
+    overflow: hidden; 
+    font-size: 15px;
+    transition: margin-left 0.3s ease, background-color 0.3s ease;
+}
+/* Menu Button Hamburger Hovering */
+.menu-btn:hover {
+    background-color: #3c1e6f; 
+    border-radius: 20%;
+    transition: background-color 0.3s, color 0.5s;
+    color: white;
+    padding: 6px 12px 6px 12px; 
+}
+
+/* Default state of the caret icon pointing down */
+.fa-caret-down {
+    transform: rotate(180deg); /* Default downward position */
+    transition: transform 0.3s ease; /*take note that if you click any components its like it will refresh too*/
+}
+.fa-caret-down.rotated {
+    transform: rotate(0deg); /* Pointing up */
+}
+
+a,
+.dropdown-btn {
+    text-decoration: none; /* Remove underline */
+    margin: 1px 1px 1px 1px;
+    padding: 10px 5px 10px 20px; 
+    font-size: 14px;
+    font-family: 'Poppins';
+    color: #333333;
+    display: flex;
+    align-items: center; /* Align items for icon and text */
+    align-content: center;
+    justify-content: flex-start; /* Adjust alignment to the left */
+    width: 100%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    box-sizing: border-box; /* Ensure padding and border are included in total width */
+}   
+
+/* Dropdown Properties */
+a:hover,
+.dropdown-btn:hover {
+    /* background: #f1f1f1;  */
+    color: #6f42c1;
+    border-radius: 6px; 
+}
+
+.dropdown-btn {
+    border-radius: 6px; 
+}
+
+/* This is when the dropdown button on the sidebar state is opened */
+.dropdown-btn.active {
+    /* background: #f1f1f1;  */
+    color: #6f42c1;
+    border-radius: 6px; 
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px 10px 10px 10px;
+    width: auto;
+}
+
+/******************* The design of buttons in dropdown ***************/
+/* indent left of dropdown components */
+.dropdown-container{
+    padding-left: 30px;
+}
+
+.dropdown-container.focus{
+    background-color: #6f42c1;
+}
+/* Default state */
+.sidebar-links, .dropdown-container a {
+    font-size: 14px;
+    color: #333333; /* Default text color */
+}
+.sidebar-links{
+    margin-left: 7px;
+}
+.dropdown-container a:hover {
+    /* transform: scale(1.1);  if you want to hover scale use this*/
+    color: #6f42c1; /* Change text color when hovered */
+}
+
+/* Active or clicked state */
+.dropdown-container a.active {
+    color: #ffff; /* Keep the text color when clicked */
+}
+
+
+
+a.component-design {
+    display: inline-block; /* Ensure proper scaling */
+    background-color: transparent; /* Default background */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    /* transition: transform 0.3s ease, background-color 0.3s ease;  */
+    padding-left: 14px; /*for padding left of dashboard component*/
+}
+
+a.component-design.hover {
+    transform: scale(1.1); /* Scale the element to 110% of its size */
+    background-color: #6f42c1; /* Active state */
+}
+
+/* COLORS for active state when clicked*/
+a.component-design.active {
+    background-color: #6f42c1; /* Active state */
+    border-radius: 6px;
+    color: #ffffff;
+}
+
+/* This is for the spacing of dropdown button between the caret and icon */
+a i,
+.dropdown-btn i {
+    display: flex; /* Use flex to center the icon */
+    align-items: space-around; /* Center icon vertically */
+    justify-content: space-around; /* Center icon horizontally */
+    width: 20px; /* Ensure the icon takes the full width of its container */
+}
+
+
+
+/* Main content styles in sidebar always remember*/
+.main-content {
+    margin-left: 0; /* Default margin to make space for the sidebar */
+    padding: 20px;
+    /* transition: margin-left 0.3s ease; salarin pag nagrerefresh nagsisimula sa left side */
+    position: relative; /* Ensure main content appears correctly */
+    min-height: 100vh; /* Ensure it fills the viewport height */
+
+}
+
+/* The whole sidebar */
+body{
+    background-color: #ebebeb
+}
+.sidebar-wrapper {
+    position: fixed;
+    top: 50px; /* Position below the menubar, assuming menubar is 50px in height */
+    left: 0;
+    width: 250px;
+    background-color: #cccccc;
+    border-right: 1px solid #ddd;
+    z-index: 1;
+    box-sizing: border-box; /* Include padding/border */
+}
+.sidebar-wrapper {
+    overflow-y: auto; /* Enable vertical scrolling */
+    scrollbar-width: thin; /* For Firefox: thin scrollbar */
+}
+
+.sidebar-wrapper::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
+.sidebar-wrapper:hover::-webkit-scrollbar {
+    display: block; /* Show the scrollbar on hover */
+}
+
+.sidebar-wrapper {
+    scrollbar-color: #dedede #e0e0e0; /* thumb color and track color */
+    scrollbar-width: thin; /* Thin scrollbar */
+}
+/* Sidebar Style */
+.sidebar {
+    max-height: 100vh; /* Correct usage */
+    position: fixed;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: flex-start; /* Start items from the top */
+    /* align-items:; */
+    overflow-x: hidden;
+    height: 100vh;
+    width: 220px;
+    top: 0;
+    /* left: 0;  Unnecesary?*/
+    background-color: #fff;
+    padding-top: 55px;
+    padding-right: 10px;
+    border-right: 1px solid #cacaca;
+    transition: transform 0.3s ease, width 0.3s ease; /* Smooth transition for transform and width */    font-family: 'Poppins';
+    overflow-y: auto;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height so that it doesnt overlap the main content*/
+    transform: translateX(0); /* Default position */
+}
+
+/* To Collapse the Sidebar */
+.sidebar.collapsed {
+    width: 0;
+    height: 0; 
+    overflow: hidden; /* Hide overflow content */
+    position: absolute; /* Ensure it doesn't affect layout */
+    margin: 0; /* Remove any potential margins */
+    padding: 0; /* Remove any internal spacing */
+    border: none; /* Remove any border */
+    transform: translateX(-100%); /* Slide out to the left */
+}
+
+/* Fully Hide the Sidebar */
+.sidebar.hidden {
+
+    display: none; /* Fully hide the sidebar */
+    width: 0; /* Ensure no visual width */
+    height: 0; /* Ensure no visual height */
+    overflow: hidden; /* Prevent any visible content */
+    margin: 0; /* Ensure no spacing from margins */
+}
+
+/* container of the sidebar header  */
+.sidebar-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 16px;
+    color: #333;
+    background-color: #ffffff;
+}
+/* Finance management header */
+.sidebar-title{
+    font-size: .80rem;
+}
+
+/* Tikme Dine Logo */
+.sidebar-footer {
+    flex-shrink: 0; /* Prevent shrinking */
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+    position: relative; /* Ensure it stays within the sidebar */
+}
+
+.sidebar-footer img {
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+.sidebar-footer p {
+    font-size: 12px;
+    color: #ff0707;
+}
+
+
+/* Menu Button Hamburger */
+.menu-btn {
+    background-color: white;
+    margin-left: 16px;
+    border: none;
+    outline: none;
+    width: 1.5rem; 
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    border-radius: 5px; 
+    overflow: hidden; 
+    font-size: 15px;
+    transition: margin-left 0.3s ease, background-color 0.3s ease;
+}
+/* Menu Button Hamburger Hovering */
+.menu-btn:hover {
+    background-color: #3c1e6f; 
+    border-radius: 20%;
+    transition: background-color 0.3s, color 0.5s;
+    color: white;
+    padding: 6px 12px 6px 12px; 
+}
+
+/* Default state of the caret icon pointing down */
+.fa-caret-down {
+    transform: rotate(180deg); /* Default downward position */
+    transition: transform 0.3s ease; /*take note that if you click any components its like it will refresh too*/
+}
+.fa-caret-down.rotated {
+    transform: rotate(0deg); /* Pointing up */
+}
+
+a,
+.dropdown-btn {
+    text-decoration: none; /* Remove underline */
+    margin: 1px 1px 1px 1px;
+    padding: 10px 5px 10px 20px; 
+    font-size: 14px;
+    font-family: 'Poppins';
+    color: #333333;
+    display: flex;
+    align-items: center; /* Align items for icon and text */
+    align-content: center;
+    justify-content: flex-start; /* Adjust alignment to the left */
+    width: 100%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    box-sizing: border-box; /* Ensure padding and border are included in total width */
+}   
+
+/* Dropdown Properties */
+a:hover,
+.dropdown-btn:hover {
+    /* background: #f1f1f1;  */
+    color: #6f42c1;
+    border-radius: 6px; 
+}
+
+.dropdown-btn {
+    border-radius: 6px; 
+}
+
+/* This is when the dropdown button on the sidebar state is opened */
+.dropdown-btn.active {
+    /* background: #f1f1f1;  */
+    color: #6f42c1;
+    border-radius: 6px; 
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px 10px 10px 10px;
+    width: auto;
+}
+
+/******************* The design of buttons in dropdown ***************/
+/* indent left of dropdown components */
+.dropdown-container{
+    padding-left: 30px;
+}
+
+.dropdown-container.focus{
+    background-color: #6f42c1;
+}
+/* Default state */
+.sidebar-links, .dropdown-container a {
+    font-size: 14px;
+    color: #333333; /* Default text color */
+}
+.sidebar-links{
+    margin-left: 7px;
+}
+.dropdown-container a:hover {
+    /* transform: scale(1.1);  if you want to hover scale use this*/
+    color: #6f42c1; /* Change text color when hovered */
+}
+
+/* Active or clicked state */
+.dropdown-container a.active {
+    color: #ffff; /* Keep the text color when clicked */
+}
+
+
+
+a.component-design {
+    display: inline-block; /* Ensure proper scaling */
+    background-color: transparent; /* Default background */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    /* transition: transform 0.3s ease, background-color 0.3s ease;  */
+    padding-left: 14px; /*for padding left of dashboard component*/
+}
+
+a.component-design.hover {
+    transform: scale(1.1); /* Scale the element to 110% of its size */
+    background-color: #6f42c1; /* Active state */
+}
+
+/* COLORS for active state when clicked*/
+a.component-design.active {
+    background-color: #6f42c1; /* Active state */
+    border-radius: 6px;
+    color: #ffffff;
+}
+
+/* This is for the spacing of dropdown button between the caret and icon */
+a i,
+.dropdown-btn i {
+    display: flex; /* Use flex to center the icon */
+    align-items: space-around; /* Center icon vertically */
+    justify-content: space-around; /* Center icon horizontally */
+    width: 20px; /* Ensure the icon takes the full width of its container */
+}
+
+
+
+/* Main content styles in sidebar always remember*/
+.main-content {
+    margin-left: 0; /* Default margin to make space for the sidebar */
+    padding: 20px;
+    /* transition: margin-left 0.3s ease; salarin pag nagrerefresh nagsisimula sa left side */
+    position: relative; /* Ensure main content appears correctly */
+    min-height: 100vh; /* Ensure it fills the viewport height */
+
+}
