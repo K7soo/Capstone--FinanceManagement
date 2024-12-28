@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Dropdown Toggle Functionality with Persistence
+    // Dropdown Toggle Functionality with Independent and Persistent State
     document.querySelectorAll(".dropdown-toggle").forEach(toggle => {
         const parent = toggle.parentElement;
         const submenu = parent.querySelector(".submenu");
@@ -54,6 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         toggle.addEventListener("click", (e) => {
             e.preventDefault();
+
+            // Toggle the current dropdown
             const isOpen = parent.classList.toggle("active");
             submenu.style.display = isOpen ? "block" : "none";
 
