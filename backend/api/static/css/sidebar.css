@@ -1,5 +1,5 @@
 /* ===== Google Font Import - Poppins ===== */
-@import url('⁦https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap⁩');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
 *{
     margin: 0;
     padding: 0;
@@ -90,19 +90,26 @@ body.dark .activity-data::-webkit-scrollbar-thumb:hover{
    
 }
 
-.dropdown .dropdown-toggle i.dropdown-arrow {
-    font-size: 18px;
+
+/* Default state */
+.dropdown-arrow {
+    display: inline-block;
     transition: transform 0.3s ease;
+    transform: rotate(90deg); /* Default rotation */
 }
 
+/* Rotated state when dropdown is active */
 .dropdown.active .dropdown-arrow {
-    transform: rotate(90deg); /* Rotate the arrow when active */
+    transform: rotate(0deg); /* Rotate down when active */
 }
+
 
 .dropdown-toggle::after {
-    display: none; /* Hides the caret */
-    content: none; /* Ensures no additional content is rendered */
+    content: none !important;
+    display: none !important;
 }
+
+
 
 
 /* Existing Sidebar CSS */

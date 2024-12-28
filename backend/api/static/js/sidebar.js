@@ -13,8 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("status") === "close") {
         sidebar.classList.add("close");
         mainContent.style.marginLeft = "90px"; // Initial margin for collapsed state
+        mainContent.style.width = "calc(100% - 90px)";
     } else {
         mainContent.style.marginLeft = "260px"; // Default margin for expanded state
+        mainContent.style.width = "calc(100% - 260px)";
     }
 
     // Toggle dark mode
@@ -26,39 +28,37 @@ document.addEventListener("DOMContentLoaded", () => {
     // Toggle sidebar
     sidebarToggle.addEventListener("click", () => {
         sidebar.classList.toggle("close");
-
+    
         if (sidebar.classList.contains("close")) {
-            localStorage.setItem("status", "close");
             mainContent.style.marginLeft = "90px";
+            mainContent.style.width = "calc(100% - 90px)";
+            localStorage.setItem("status", "close");
         } else {
-            localStorage.setItem("status", "open");
             mainContent.style.marginLeft = "260px";
+            mainContent.style.width = "calc(100% - 260px)";
+            localStorage.setItem("status", "open");
         }
     });
 
-    // Dropdown Toggle Functionality
+    // Dropdown Toggle Functionality with Persistence
     document.querySelectorAll(".dropdown-toggle").forEach(toggle => {
+        const parent = toggle.parentElement;
+        const submenu = parent.querySelector(".submenu");
+        const dropdownId = parent.getAttribute("data-dropdown-id");
+
+        // Restore dropdown state on page load
+        if (localStorage.getItem(`dropdown-${dropdownId}`) === "open") {
+            parent.classList.add("active");
+            if (submenu) submenu.style.display = "block";
+        }
+
         toggle.addEventListener("click", (e) => {
             e.preventDefault();
-            const parent = toggle.parentElement;
-            const submenu = parent.querySelector(".submenu");
-            const arrow = toggle.querySelector(".dropdown-arrow");
+            const isOpen = parent.classList.toggle("active");
+            submenu.style.display = isOpen ? "block" : "none";
 
-            // Close other dropdowns
-            document.querySelectorAll(".dropdown").forEach(item => {
-                if (item !== parent) {
-                    item.classList.remove("active");
-                    const otherSubmenu = item.querySelector(".submenu");
-                    const otherArrow = item.querySelector(".dropdown-arrow");
-                    if (otherSubmenu) otherSubmenu.style.display = "none";
-                    if (otherArrow) otherArrow.style.transform = "rotate(0deg)";
-                }
-            });
-
-            // Toggle current dropdown
-            parent.classList.toggle("active");
-            submenu.style.display = submenu.style.display === "block" ? "none" : "block";
-            arrow.style.transform = parent.classList.contains("active") ? "rotate(180deg)" : "rotate(0deg)";
+            // Save state in localStorage
+            localStorage.setItem(`dropdown-${dropdownId}`, isOpen ? "open" : "closed");
         });
     });
 
