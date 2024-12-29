@@ -19,7 +19,7 @@ class ListOfAccountsView(views.APIView):
 
         accounts = AccountType.objects.all()
         serializer = AccountTypeSerializer(accounts, many=True)
-        return render(request, "listofacc.html", {"Accounts": serializer.data})
+        return render(request, "System_Setup/listofacc.html", {"Accounts": serializer.data})
 
     def post(self, request):
         serializer = AccountTypeSerializer(data=request.data)
