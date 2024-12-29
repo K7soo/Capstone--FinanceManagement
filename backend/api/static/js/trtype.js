@@ -69,6 +69,7 @@ window.addEventListener("click", (event) => {
     }
 });
 
+
 // Handle Add Transaction Type form submission
 addTransactionTypeForm.addEventListener("submit", (event) => {
     event.preventDefault(); // Prevent page refresh

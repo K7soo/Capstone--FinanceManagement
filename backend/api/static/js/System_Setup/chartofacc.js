@@ -121,8 +121,8 @@ addChartBtn.addEventListener('click', () => {
 // Handle Add Account form submission
 addChartForm.addEventListener('submit', event => {
     event.preventDefault();
-    const accountCode = document.querySelector('input[name="AccountCode"]').value;
-    const accountDesc = document.querySelector('input[name="AccountDesc"]').value;
+    const accountCode = document.querySelector('input[name="AccountCode"]').value.trim();
+    const accountDesc = document.querySelector('input[name="AccountDesc"]').value.trim();
     const accountTypeFK = parseInt(accountTypeDropdown.value);
 
     if (!accountTypeFK) {
@@ -136,8 +136,9 @@ addChartForm.addEventListener('submit', event => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken },
-        body: JSON.stringify(newAccount),
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(newAccount)
     })
     .then(response => {
         if (!response.ok) {
@@ -149,10 +150,38 @@ addChartForm.addEventListener('submit', event => {
         console.log("Account added successfully:", createdAccount);
         addRowToTable(createdAccount);
         addChartForm.reset();
-        addChartModal.style.display = 'none';
+
+        // Use Bootstrap API to hide the modal
+        const bootstrapModal = bootstrap.Modal.getInstance(addChartModal);
+        if (bootstrapModal) {
+            bootstrapModal.hide();
+        } else {
+            console.warn("Bootstrap modal instance not found. Forcing cleanup.");
+            cleanupModal();
+        }
     })
     .catch(error => console.error('Error adding account:', error));
 });
+
+// Handle Modal Hidden Event
+document.getElementById('addChartModal').addEventListener('hidden.bs.modal', () => {
+    console.log("Modal hidden event triggered.");
+    cleanupModal();
+});
+
+// Utility Function to Clean Up Modal
+function cleanupModal() {
+    // Ensure the modal is hidden
+    addChartModal.classList.remove('show');
+    addChartModal.style.display = 'none';
+    document.body.classList.remove('modal-open');
+
+    // Remove any lingering backdrops
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(backdrop => backdrop.remove());
+    console.log("Forced modal cleanup completed.");
+}
+
 
 // Handle Edit Account modal opening
 function openEditModal(id, code, desc, typeFK) {
@@ -181,8 +210,9 @@ function openEditModal(id, code, desc, typeFK) {
         });
     });
 
-    // Display the edit modal
-    editChartModal.style.display = 'block';
+    // Initialize and show the modal using Bootstrap's Modal class
+    const bootstrapModal = new bootstrap.Modal(document.getElementById('editChartModal'));
+    bootstrapModal.show();
 }
 
 // Handle Edit Account form submission
@@ -209,10 +239,14 @@ editChartForm.addEventListener('submit', event => {
     .then(updatedData => {
         console.log("Account updated successfully:", updatedData);
         loadChartOfAccounts(); // Refresh the table
-        editChartModal.style.display = 'none';
+
+        // Hide the modal using Bootstrap's Modal class
+        const bootstrapModal = bootstrap.Modal.getInstance(document.getElementById('editChartModal'));
+        bootstrapModal.hide();
     })
     .catch(error => console.error('Error updating account:', error));
 });
+
 
 // Handle Account Deletion
 function deleteAccount(button) {
