@@ -29,7 +29,7 @@ class ChartOfAccountsView(views.APIView):
 
         chart_of_accs = ChartOfAccs.objects.all()
         serializer = ChartOfAccsSerializer(chart_of_accs, many=True)
-        return render(request, "chartofacc.html", {"ChartOfAccounts": serializer.data})
+        return render(request, "System_Setup/chartofacc.html", {"ChartOfAccounts": serializer.data})
 
     def post(self, request):
         # try:

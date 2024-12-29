@@ -34,7 +34,7 @@ class JournalTemplateView(views.APIView):
         serializer = TRTemplateSerializer(templates, many=True)
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-        return render(request, 'journaltemp.html', {'JournalTemplate': serializer.data})
+        return render(request, 'System_Setup/journaltemp.html', {'JournalTemplate': serializer.data})
 
     def post(self, request):
         serializer = TRTemplateSerializer(data=request.data)

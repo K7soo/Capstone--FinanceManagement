@@ -17,7 +17,7 @@ class TransactionTypeView(views.APIView):
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
         transaction_type = TransactionType.objects.all()
         serializer = TransactionTypeSerializer(transaction_type, many=True)
-        return render(request, "trtype.html", {"TransactionType": serializer.data})
+        return render(request, "System_Setup/trtype.html", {"TransactionType": serializer.data})
 
     def post(self, request):
         serializer = TransactionTypeSerializer(data=request.data)
