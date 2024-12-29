@@ -14,14 +14,9 @@ function getCsrfToken() {
 
 // Define Constant Elements
 const csrfToken = getCsrfToken();
-const addAccountBtn = document.querySelector('.add-account-btn');
-const addAccountModal = document.getElementById('addAccountModal');
-const editAccountModal = document.getElementById('editAccountModal'); // New Edit modal
-const closeModalBtns = document.querySelectorAll('.close-btn');
-const cancelModalBtns = document.querySelectorAll('.modal-cancel-btn');
 const addAccountForm = document.getElementById('addAccountForm');
-const editAccountForm = document.getElementById('editAccountForm'); // New form for editing
-const tableBody = document.querySelector('.table-acc tbody');
+const editAccountForm = document.getElementById('editAccountForm');
+const tableBody = document.querySelector('tbody');
 
 console.log("JavaScript loaded successfully"); // Check if JS file is loaded
 
@@ -45,16 +40,16 @@ document.addEventListener("DOMContentLoaded", () => {
         tableBody.innerHTML = ""; // Clear existing rows to avoid duplicates
         accounts.forEach(account => {
             console.log("Adding row for account:", account);
-            
+
             // Create new rows
             const newRow = document.createElement('tr');
             newRow.setAttribute('data-id', account.id);
             newRow.innerHTML = `
                 <td>${account.AccountCode}</td>
                 <td>${account.AccountTypeDesc}</td>
-                <td>
-                    <button class="btn-edit" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')">EDIT</button>
-                    <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
+                <td class="text-center">
+                    <button class="btn btn-warning btn-sm" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')">EDIT</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteAccount(this)">DELETE</button>
                 </td>
             `;
             tableBody.appendChild(newRow);
@@ -63,92 +58,17 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch(error => console.error('Error fetching accounts:', error));
 });
 
-// Show Add Account modal when 'Add Account' button is clicked
-addAccountBtn.addEventListener('click', () => {
-    console.log("Add Account button clicked, opening add modal.");
-    addAccountModal.style.display = 'flex';
-    addAccountModal.classList.add('show');
-    document.body.classList.add('modal-open'); // Prevent scrolling of the body
-});
-
-// Close any modal when 'X' button or 'Cancel' button is clicked
-closeModalBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        closeModal();
-    });
-});
-
-cancelModalBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        closeModal();
-        clearValidationErrors();
-    });
-});
-
-// Close the modal when clicking outside the modal content
-window.addEventListener('click', (event) => {
-    if (event.target === addAccountModal || event.target === editAccountModal) {
-        closeModal();
-        clearValidationErrors();
-    }
-});
-
-// Function to close modals and reset body state
-function closeModal() {
-    addAccountModal.style.display = 'none';
-    editAccountModal.style.display = 'none';
-    addAccountModal.classList.remove('show');
-    editAccountModal.classList.remove('show');
-    document.body.classList.remove('modal-open'); // Allow scrolling of the body
-}
-
-// Function to clear validation error messages
-function clearValidationErrors() {
-    document.getElementById('accountCodeError').textContent = '';
-    document.getElementById('accountCodeError').classList.remove('visible');
-    document.getElementById('accountDescError').textContent = '';
-    document.getElementById('accountDescError').classList.remove('visible');
-}
-
 // ADD NEW ACCOUNT with validation
 addAccountForm.addEventListener('submit', (event) => {
     event.preventDefault(); // Prevent page refresh
     console.log("Form submission event triggered for adding a new account");
 
-    const accountCode = document.querySelector('input[name="AccountCode"]').value.trim();
-    const accountTypeDesc = document.querySelector('input[name="AccountTypeDesc"]').value.trim();
-
-    const accountCodeError = document.getElementById('accountCodeError');
-    const accountDescError = document.getElementById('accountDescError');
+    const accountCode = document.getElementById('AccountCode').value.trim();
+    const accountTypeDesc = document.getElementById('AccountTypeDesc').value.trim();
 
     // Form validation
-    let valid = true;
-
-    const accountCodePattern = /^\d{1,10}$/;
-    if (!accountCodePattern.test(accountCode)) {
-        accountCodeError.textContent = 'Account Code must be a number with up to 10 digits.';
-        accountCodeError.classList.add('visible');
-        valid = false;
-    } else {
-        accountCodeError.textContent = '';
-        accountCodeError.classList.remove('visible');
-    }
-
-    const accountTypeDescPattern = /^[a-zA-Z.,\s]+$/;
-    if (!accountTypeDescPattern.test(accountTypeDesc)) {
-        accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
-        accountDescError.classList.add('visible');
-        valid = false;
-    } else if (accountTypeDesc.length <= 5 || accountTypeDesc.length > 50) {
-        accountDescError.textContent = 'Account Description must be between 5 and 50 characters long.';
-        accountDescError.classList.add('visible');
-        valid = false;
-    } else {
-        accountDescError.textContent = '';
-        accountDescError.classList.remove('visible');
-    }
-
-    if (!valid) {
+    if (accountCode === '' || accountTypeDesc === '') {
+        alert('Both fields are required.');
         return;
     }
 
@@ -159,7 +79,7 @@ addAccountForm.addEventListener('submit', (event) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken, 
+            'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify(newAccount),
     })
@@ -176,53 +96,16 @@ addAccountForm.addEventListener('submit', (event) => {
         newRow.innerHTML = `
             <td>${createdAccount.AccountCode}</td>
             <td>${createdAccount.AccountTypeDesc}</td>
-            <td>
-                <button class="btn-edit" onclick="openEditModal('${createdAccount.id}', '${createdAccount.AccountCode}', '${createdAccount.AccountTypeDesc}')">EDIT</button>
-                <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
+            <td class="text-center">
+                <button class="btn btn-warning btn-sm" onclick="openEditModal('${createdAccount.id}', '${createdAccount.AccountCode}', '${createdAccount.AccountTypeDesc}')">EDIT</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteAccount(this)">DELETE</button>
             </td>
         `;
         tableBody.appendChild(newRow);
         addAccountForm.reset();
-        clearValidationErrors();
-        closeModal();
+        bootstrap.Modal.getInstance(document.getElementById('addAccountModal')).hide();
     })
     .catch(error => console.error('Failed to add account:', error));
-});
-
-// Real-time validation for inputs
-document.querySelectorAll('input').forEach(input => {
-    input.addEventListener('blur', (event) => {
-        const target = event.target;
-        const accountCodeError = document.getElementById('accountCodeError');
-        const accountDescError = document.getElementById('accountDescError');
-
-        if (target.name === 'AccountCode') {
-            const accountCode = target.value.trim();
-            const accountCodePattern = /^\d{1,10}$/;
-            if (!accountCodePattern.test(accountCode)) {
-                accountCodeError.textContent = 'Account Code must be a number with up to 10 digits.';
-                accountCodeError.classList.add('visible');
-            } else {
-                accountCodeError.textContent = '';
-                accountCodeError.classList.remove('visible');
-            }
-        }
-
-        if (target.name === 'AccountTypeDesc') {
-            const accountTypeDesc = target.value.trim();
-            const accountTypeDescPattern = /^[a-zA-Z.,\s]+$/;
-            if (!accountTypeDescPattern.test(accountTypeDesc)) {
-                accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
-                accountDescError.classList.add('visible');
-            } else if (accountTypeDesc.length <= 5 || accountTypeDesc.length > 50) {
-                accountDescError.textContent = 'Account Description must be between 5 and 50 characters long.';
-                accountDescError.classList.add('visible');
-            } else {
-                accountDescError.textContent = '';
-                accountDescError.classList.remove('visible');
-            }
-        }
-    });
 });
 
 // Function to open the Edit Account modal with account details populated
@@ -230,9 +113,8 @@ function openEditModal(id, code, description) {
     document.getElementById('EditAccountId').value = id;
     document.getElementById('EditAccountCode').value = code;
     document.getElementById('EditAccountTypeDesc').value = description;
-    editAccountModal.style.display = 'flex';
-    editAccountModal.classList.add('show');
-    document.body.classList.add('modal-open'); // Prevent scrolling of the body
+    const editModal = new bootstrap.Modal(document.getElementById('editAccountModal'));
+    editModal.show();
 }
 
 // UPDATE with validation
@@ -243,37 +125,8 @@ editAccountForm.addEventListener('submit', function(event) {
     const accountCode = document.getElementById('EditAccountCode').value.trim();
     const accountTypeDesc = document.getElementById('EditAccountTypeDesc').value.trim();
 
-    const accountCodeError = document.getElementById('accountCodeError');
-    const accountDescError = document.getElementById('accountDescError');
-
-    // Form validation
-    let valid = true;
-
-    const accountCodePattern = /^\d{1,10}$/;
-    if (!accountCodePattern.test(accountCode)) {
-        accountCodeError.textContent = 'Account Code must be a number with up to 10 digits.';
-        accountCodeError.classList.add('visible');
-        valid = false;
-    } else {
-        accountCodeError.textContent = '';
-        accountCodeError.classList.remove('visible');
-    }
-
-    const accountTypeDescPattern = /^[a-zA-Z.,\s]+$/;
-    if (!accountTypeDescPattern.test(accountTypeDesc)) {
-        accountDescError.textContent = 'Account Description can only contain letters, commas, dots, and spaces.';
-        accountDescError.classList.add('visible');
-        valid = false;
-    } else if (accountTypeDesc.length <= 5 || accountTypeDesc.length > 50) {
-        accountDescError.textContent = 'Account Description must be between 5 and 50 characters long.';
-        accountDescError.classList.add('visible');
-        valid = false;
-    } else {
-        accountDescError.textContent = '';
-        accountDescError.classList.remove('visible');
-    }
-
-    if (!valid) {
+    if (accountCode === '' || accountTypeDesc === '') {
+        alert('Both fields are required.');
         return;
     }
 
@@ -301,7 +154,7 @@ editAccountForm.addEventListener('submit', function(event) {
             row.cells[1].textContent = updatedData.AccountTypeDesc;
         }
         editAccountForm.reset();
-        closeModal();
+        bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
     })
     .catch(error => console.error('Failed to update account:', error));
 });
@@ -326,9 +179,4 @@ function deleteAccount(button) {
         }
     })
     .catch(error => console.error('Error deleting account:', error));
-}
-
-// Function to handle the "View" button click
-function viewAccount(accountCode, accountTypeDesc) {
-    alert(`Account Code: ${accountCode}\nDescription: ${accountTypeDesc}`);
 }

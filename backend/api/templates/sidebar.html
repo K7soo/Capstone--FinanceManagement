@@ -1,3 +1,5 @@
+{% load static %}
+
 <nav>
     <!-- Logo -->
     <div class="logo-name">
@@ -24,9 +26,12 @@
                 </a>
                 <ul class="submenu">
                     <li><a href="{% url 'listofacc' %}">Accounts Setup</a></li>
-                    <li><a href="{% url 'chartofacc' %}">Chart of Accounts</a></li>
-                    <li><a href="{% url 'transactiontype' %}">Transaction Type</a></li>
-                    <li><a href="{% url 'journaltemplate' %}">Entry Templates</a></li>
+                    <li><a href="{% url 'chartofacc' %}">Chart of
+                            Accounts</a></li>
+                    <li><a href="{% url 'transactiontype' %}">Transaction
+                            Type</a></li>
+                    <li><a href="{% url 'journaltemplate' %}">Entry
+                            Templates</a></li>
                 </ul>
             </li>
 
@@ -83,32 +88,33 @@
                     </div>
                 </li>
             </ul>
-    </div>
-</nav>
-
-<section class="dashboard">
-    <!-- Top Section -->
-    <div class="top">
-        <i class="uil uil-bars sidebar-toggle"></i>
-
-        <!-- Breadcrumbs -->
-        <div class="breadcrumbs">
-            <a href="#" class="breadcrumb-link">Dashboard</a>
-            <span class="breadcrumb-divider">/</span>
-            <a href="#" class="breadcrumb-link current">Current Page</a>
         </div>
+    </nav>
 
-        <!-- Profile Section -->
-        <div class="profile-section">
-            <img src="#" alt="Profile" class="profile-img">
-            <div class="profile-dropdown">
-                <span class="profile-name">John Doe</span>
-                <ul>
-                    <li><a href="#">View Profile</a></li>
-                    <li><a href="#">Account Settings</a></li>
-                    <li><a href="#">Activity Logs</a></li>
-                </ul>
+    <section class="dashboard">
+        <!-- Top Section -->
+        <div class="top">
+            <i class="uil uil-bars sidebar-toggle"></i>
+
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="#" class="breadcrumb-link">Dashboard</a>
+                <span class="breadcrumb-divider">/</span>
+                <a href="#" class="breadcrumb-link current">Current Page</a>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <img src="{% static 'images/profile.png' %}" alt="Profile"
+                    class="profile-img">
+                <div class="profile-dropdown">
+                    <span class="profile-name">John Doe</span>
+                    <ul>
+                        <li><a href="#">View Profile</a></li>
+                        <li><a href="#">Account Settings</a></li>
+                        <li><a href="#">Activity Logs</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
