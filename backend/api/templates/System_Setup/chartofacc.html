@@ -51,8 +51,20 @@ Chart of Accounts
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Dynamic rows will be inserted here -->
+                                {% for account in accounts %}
+                                <tr>
+                                    <td>{{ account.AccountCode }}</td>
+                                    <td>{{ account.AccountTypeDesc }}</td>
+                                    <td>{{ account.AccountType }}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-warning btn-sm custom-btn-edit">EDIT</button>
+                                        <button class="btn btn-info btn-sm custom-btn-view">VIEW</button>
+                                        <button class="btn btn-danger btn-sm custom-btn-delete">DELETE</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>

@@ -75,8 +75,8 @@ function addRowToTable(account) {
         <td>${account.AccountDesc}</td>
         <td>${accountTypeName}</td>
         <td>
-            <button class="btn-edit" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountDesc}', '${account.AccountType_FK}')">EDIT</button>
-            <button class="btn-delete" onclick="deleteAccount(this)">DELETE</button>
+            <button class="btn btn-warning btn-sm btn-edit" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountDesc}', '${account.AccountType_FK}')">EDIT</button>
+            <button class="btn btn-danger btn-sm btn-delete" onclick="deleteAccount(this)">DELETE</button>
         </td>
     `;
     // make it add eventListener, fetch class find nearest table row
