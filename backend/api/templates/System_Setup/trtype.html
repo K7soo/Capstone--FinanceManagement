@@ -8,157 +8,151 @@ Transaction Type
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/trtype.css' %}">
+<style>
+    body {
+        background-color: #f1f1f1;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-
-<h1 class="title">Transaction Type Page</h1>
-
-<div class="transaction-type-dashboard">
-    <!-- Left Section - Tree Structure -->
-    <div class="tree-container">
-        <h3>File Tree</h3>
-        <div class="outer">
-            <ul id="fileTree">
-                <li>
-                    <span class="caret">List of Transaction Types</span>
-                    <ul class="nested">
-                        <li data-category="Reservations">Reservations</li>
-                        <li data-category="Item Procurement">Item Procurement</li>
-                        <li data-category="Order Transactions">Order Transactions</li>
+<div class="container mt-5">
+    <h1 class="text" style="color: #6f42c1;">Transaction Type</h1>
+    <p>Test</p>
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header text-white"
+                    style="background-color: #6f42c1;">
+                    <h5 class="mb-0">File Tree</h5>
+                </div>
+                <div class="card-body">
+                    <ul id="fileTree" class="list-group p-1">
+                        <!-- Dynamic file tree content will be inserted here -->
+                        <li>Test</li>
                     </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-    
-    <!-- Right Section - Table and Filter -->
-    <div class="table-container">
-        <div class="filter-container">
-            <label for="records-per-page">Records Per Page:</label>
-            <select id="records-per-page" name="records-per-page" class="filter-select">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-        </div>
-        
-        <!-- Button to open the Add Transaction Type modal -->
-        <button id="openTransactionTypeModalButton" class="btn-add">ADD TRANSACTION TYPE</button>
-
-        <!-- Add Transaction Type Modal -->
-        <div id="addTransactionTypeModal" class="modal">
-            <div class="modal-content">
-                <h2>Add New Transaction Type</h2>
-                <form id="addTransactionTypeForm" class="form-grid">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                    <div class="form-group">
-                        <label for="TransactionTypeName">Transaction Type Name:</label>
-                        <input type="text" id="TransactionTypeName" name="TransactionTypeName" placeholder="Enter Transaction Name" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="TransactionCode">Transaction Code:</label>
-                        <input type="text" id="TransactionCode" name="TransactionCode" placeholder="Enter Transaction Code" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="TypeDescription">Type Description:</label>
-                        <input type="text" id="TransactionTypeDesc" name="TransactionTypeDesc" placeholder="Enter Description" required />
-                    </div>
-                    <!-- Button group -->
-                    <div class="button-group">
-                        <button type="button" class="btn-cancel" id="cancelTransactionTypeButton">Cancel</button>
-                        <button type="submit" class="btn-add-template-modal">Add Transaction Type</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
-
-        <!-- Edit Transaction Type Modal -->
-        <div id="editTransactionTypeModal" class="modal">
-            <div class="modal-content">
-                <h2>Edit Transaction Type</h2>
-                <form id="editTransactionTypeForm" class="form-grid">
-                    <input type="hidden" id="EditTransactionId">
-                    <div class="form-group">
-                        <label for="EditTransactionCode">Transaction Code:</label>
-                        <input type="text" id="EditTransactionCode" name="EditTransactionCode" required />
+        <!-- Main Content -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="mb-3 row g-0 ps-3 pt-2">
+                    <label for="records-per-page" class="col-sm-4 col-form-label">Records Per Page:</label>
+                    <div class="col-sm-2 ">
+                        <select id="records-per-page" name="records-per-page" class="form-select">
+                            <option value="10">5</option>
+                            <option value="25">10</option>
+                            <option value="50">20</option>
+                            <option value="100">50</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <label for="EditTransactionTypeName">Transaction Type Name:</label>
-                        <input type="text" id="EditTransactionTypeName" name="EditTransactionTypeName" required />
+                </div>
+                <div
+                    class="text-white d-flex justify-content-between align-items-center ps-3"
+                    style="color: #6f42c1;">
+                    <button id="openTransactionTypeModalButton"
+                        class="btn btn-primary text-white btn-add"
+                        style="background-color: #6f42c1; border-color: #6f42c1;">
+                        ADD TRANSACTION TYPE
+                    </button>
+                </div>
+                <!-- Transaction Table -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table
+                            class="table table-bordered table-hover text-center transaction-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Transaction Type Name</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-group">
-                        <label for="EditTransactionDescription">Type Description:</label>
-                        <input type="text" id="EditTransactionDescription" name="EditTransactionDescription" required />
-                    </div>
-                    <!-- Button group -->
-                    <div class="button-group">
-                        <button type="button" class="btn-cancel" id="cancelEditTransactionTypeButton">Cancel</button>
-                        <button type="submit" class="btn-add-template-modal">Save Changes</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
-
-        <!-- Transaction Table -->
-        <table class="transaction-table">
-            <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Transaction Type Name</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>ADJ</td>
-                    <td>Adjustments and Closing Entries</td>
-                    <td>Description of Adjustments</td>
-                    <td>
-                        <button class="btn-edit" onclick="openEditModal('1', 'ADJ', 'Adjustments and Closing Entries', 'Description of Adjustments')">Edit</button>
-                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>CAS</td>
-                    <td>Cash Transactions</td>
-                    <td>Description of Cash Transactions</td>
-                    <td>
-                        <button class="btn-edit" onclick="openEditModal('2', 'CAS', 'Cash Transactions', 'Description of Cash Transactions')">Edit</button>
-                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>NCAS</td>
-                    <td>Non-Cash Transactions</td>
-                    <td>Description of Non-Cash Transactions</td>
-                    <td>
-                        <button class="btn-edit" onclick="openEditModal('3', 'NCAS', 'Non-Cash Transactions', 'Description of Non-Cash Transactions')">Edit</button>
-                        <button class="btn-delete" onclick="deleteTransactionType(this)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     </div>
-</div>
+    <!-- Add Transaction Type Modal -->
+    <div id="addTransactionTypeModal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Transaction Type</h2>
+            <form id="addTransactionTypeForm" class="form-grid">
+                <input type="hidden" name="csrfmiddlewaretoken"
+                    value="{{ csrf_token }}">
+                <div class="form-group">
+                    <label for="TransactionTypeName">Transaction Type
+                        Name:</label>
+                    <input type="text" id="TransactionTypeName"
+                        name="TransactionTypeName"
+                        placeholder="Enter Transaction Name" required />
+                </div>
+                <div class="form-group">
+                    <label for="TransactionCode">Transaction Code:</label>
+                    <input type="text" id="TransactionCode"
+                        name="TransactionCode"
+                        placeholder="Enter Transaction Code" required />
+                </div>
+                <div class="form-group">
+                    <label for="TypeDescription">Type Description:</label>
+                    <input type="text" id="TransactionTypeDesc"
+                        name="TransactionTypeDesc"
+                        placeholder="Enter Description" required />
+                </div>
+                <!-- Button group -->
+                <div class="button-group">
+                    <button type="button" class="btn-cancel"
+                        id="cancelTransactionTypeButton">Cancel</button>
+                    <button type="submit" class="btn-add-template-modal">Add
+                        Transaction Type</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-{% endblock %}
+    <!-- Edit Transaction Type Modal -->
+    <div id="editTransactionTypeModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Transaction Type</h2>
+            <form id="editTransactionTypeForm" class="form-grid">
+                <input type="hidden" id="EditTransactionId">
+                <div class="form-group">
+                    <label for="EditTransactionCode">Transaction Code:</label>
+                    <input type="text" id="EditTransactionCode"
+                        name="EditTransactionCode" required />
+                </div>
+                <div class="form-group">
+                    <label for="EditTransactionTypeName">Transaction Type
+                        Name:</label>
+                    <input type="text" id="EditTransactionTypeName"
+                        name="EditTransactionTypeName" required />
+                </div>
+                <div class="form-group">
+                    <label for="EditTransactionDescription">Type
+                        Description:</label>
+                    <input type="text" id="EditTransactionDescription"
+                        name="EditTransactionDescription" required />
+                </div>
+                <!-- Button group -->
+                <div class="button-group">
+                    <button type="button" class="btn-cancel"
+                        id="cancelEditTransactionTypeButton">Cancel</button>
+                    <button type="submit" class="btn-add-template-modal">Save
+                        Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-{% block extra_js %}
-<script src="{% static 'js/trtype.js' %}"></script>
-<script>
-    // File Tree Toggle Logic
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggler = document.getElementsByClassName("caret");
-        for (let i = 0; i < toggler.length; i++) {
-            toggler[i].addEventListener("click", function () {
-                this.parentElement.querySelector(".nested").classList.toggle("active");
-                this.classList.toggle("caret-down");
-            });
-        }
-    });
-</script>
-{% endblock %}
+    {% endblock %}
+
+    {% block extra_js %}
+    <script src="{% static 'js/System_Setup/trtype.js' %}"></script>
+    {% endblock %}
