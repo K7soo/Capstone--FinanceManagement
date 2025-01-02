@@ -25,16 +25,24 @@ def transaction_type_view(request):
 
 # Transaction inbox sidebar button
 def transaction_inbox_view(request):
-    return render(request, 'trinbox.html')
+    return render(request, 'Transaction/trinbox.html')
 
 def journal_entries_view(request):
-    return render(request, 'journalentries.html')
+    return render(request, 'Transaction/journalentries.html')
 
 def jev_approval_view(request):
-    return render(request, 'jevapproval.html')
+    return render(request, 'Transaction/jevapproval.html')
 
 def trial_balance_view(request):
     return render(request, 'trialbalance.html')
+
+
+def general_journal_view(request):
+    return render(request, 'Transaction/general_journal.html')
+
+def general_ledger_view(request):
+    return render(request, 'Transaction/general_ledger.html')
+
 # End of dropdown 
 
 def payment_view(request):
@@ -53,10 +61,3 @@ def menubar_view(request):
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
 
-#general journal
-def general_journal_view(request):
-    return render(request, 'general_journal.html')
-
-#general ledger
-def general_ledger_view(request):
-    return render(request, 'general_ledger.html')
