@@ -39,9 +39,12 @@ Transaction Type
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="mb-3 row g-0 ps-3 pt-2">
-                    <label for="records-per-page" class="col-sm-4 col-form-label">Records Per Page:</label>
+                    <label for="records-per-page"
+                        class="col-sm-4 col-form-label">Records Per
+                        Page:</label>
                     <div class="col-sm-2 ">
-                        <select id="records-per-page" name="records-per-page" class="form-select">
+                        <select id="records-per-page" name="records-per-page"
+                            class="form-select">
                             <option value="10">5</option>
                             <option value="25">10</option>
                             <option value="50">20</option>
@@ -49,8 +52,14 @@ Transaction Type
                         </select>
                     </div>
                 </div>
-                <div class="text-white d-flex justify-content-between align-items-center ps-3"style="color: #6f42c1;">
-                    <button id="openTransactionTypeModalButton" class="btn btn-primary text-white btn-add" style="background-color: #6f42c1; border-color: #6f42c1;" data-bs-toggle="modal" data-bs-target="#addTransactionTypeModal">>
+                <div
+                    class="text-white d-flex justify-content-between align-items-center ps-3"
+                    style="color: #6f42c1;">
+                    <button id="openTransactionTypeModalButton"
+                        class="btn btn-primary text-white btn-add"
+                        style="background-color: #6f42c1; border-color: #6f42c1;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addTransactionTypeModal">
                         ADD TRANSACTION TYPE
                     </button>
                 </div>
@@ -68,7 +77,18 @@ Transaction Type
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Dynamic Rows -->
+                                {% for transaction_type in transaction_types %}
+                                <tr>
+                                    <td>{{ transaction_type.code }}</td>
+                                    <td>{{ transaction_type.name }}</td>
+                                    <td>{{ transaction_type.description }}</td>
+                                    <td>
+                                        <!-- Add any action buttons here, e.g., Edit, Delete -->
+                                        <button class="btn btn-sm btn-primary">Edit</button>
+                                        <button class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -77,78 +97,107 @@ Transaction Type
         </div>
     </div>
     <!-- Add Transaction Type Modal -->
-    <div class="modal modal fade" id="addTransactionTypeModal" tabindex="-1" aria-labelledby="addTransactionTypeModalLabel" aria-hidden="true">
+    <div class="modal modal fade" id="addTransactionTypeModal" tabindex="-1"
+        aria-labelledby="addTransactionTypeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addTransactionTypeModalLabel">Add New Transaction Type</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">   
-                        <form id="addTransactionTypeForm">
-                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                                <div class="mb-3">
-                                    <label for="TransactionTypeName" class="form-label">Transaction Type Name:</label>
-                                    <input type="text" class="form-control" id="TransactionTypeName" name="TransactionTypeName" placeholder="Enter Transaction Name" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="TransactionCode" class="form-label">Transaction Code:</label>
-                                    <input type="text" class="form-control" id="TransactionCode" name="TransactionCode" placeholder="Enter Transaction Code" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="TypeDescription" class="form-label">Type Description:</label>
-                                    <input type="text" class="form-control" id="TransactionTypeDesc" name="TransactionTypeDesc" placeholder="Enter Description" required />
-                                </div>
-                                <!-- Button group -->
-                                <div class="modal-footer">
-                                    <div class="button-group">
-                                        <button type="button" class="btn btn-secondary btn-cancel" id="cancelTransactionTypeButton" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary btn-add-template-modal">Add Transaction Type</button>
-                                    </div>
-                                </div>
-                        </form>
-                    </div>
-                </div> 
+                    <h5 class="modal-title"
+                        id="addTransactionTypeModalLabel">Add New Transaction
+                        Type</h5>
+                    <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTransactionTypeForm">
+                        <input type="hidden" name="csrfmiddlewaretoken"
+                            value="{{ csrf_token }}">
+                        <div class="mb-3">
+                            <label for="TransactionTypeName"
+                                class="form-label">Transaction Type
+                                Name:</label>
+                            <input type="text" class="form-control"
+                                id="TransactionTypeName"
+                                name="TransactionTypeName"
+                                placeholder="Enter Transaction Name" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="TransactionCode"
+                                class="form-label">Transaction Code:</label>
+                            <input type="text" class="form-control"
+                                id="TransactionCode" name="TransactionCode"
+                                placeholder="Enter Transaction Code" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="TypeDescription" class="form-label">Type
+                                Description:</label>
+                            <input type="text" class="form-control"
+                                id="TransactionTypeDesc"
+                                name="TransactionTypeDesc"
+                                placeholder="Enter Description" required />
+                        </div>
+                        <!-- Button group -->
+                        <div class="modal-footer">
+                            <div class="button-group">
+                                <button type="button"
+                                    class="btn btn-secondary btn-cancel"
+                                    id="cancelTransactionTypeButton"
+                                    data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit"
+                                    class="btn btn-primary btn-add-template-modal">Add
+                                    Transaction Type</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Edit Transaction Type Modal -->
-    <div id="editTransactionTypeModal" class="modal">
+<!-- Edit Transaction Type Modal -->
+<div id="editTransactionTypeModal" class="modal fade" tabindex="-1" aria-labelledby="editTransactionTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <h2>Edit Transaction Type</h2>
-            <form id="editTransactionTypeForm" class="form-grid">
-                <input type="hidden" id="EditTransactionId">
-                <div class="form-group">
-                    <label for="EditTransactionCode">Transaction Code:</label>
-                    <input type="text" id="EditTransactionCode"
-                        name="EditTransactionCode" required />
-                </div>
-                <div class="form-group">
-                    <label for="EditTransactionTypeName">Transaction Type
-                        Name:</label>
-                    <input type="text" id="EditTransactionTypeName"
-                        name="EditTransactionTypeName" required />
-                </div>
-                <div class="form-group">
-                    <label for="EditTransactionDescription">Type
-                        Description:</label>
-                    <input type="text" id="EditTransactionDescription"
-                        name="EditTransactionDescription" required />
-                </div>
-                <!-- Button group -->
-                <div class="button-group">
-                    <button type="button" class="btn-cancel"
-                        id="cancelEditTransactionTypeButton">Cancel</button>
-                    <button type="submit" class="btn-add-template-modal">Save
-                        Changes</button>
-                </div>
-            </form>
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTransactionTypeModalLabel">Edit Transaction Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="editTransactionTypeForm">
+                    <input type="hidden" id="EditTransactionId">
+
+                    <div class="mb-3">
+                        <label for="EditTransactionCode" class="form-label">Transaction Code:</label>
+                        <input type="text" id="EditTransactionCode" name="EditTransactionCode" class="form-control" placeholder="Enter Transaction Code" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="EditTransactionTypeName" class="form-label">Transaction Type Name:</label>
+                        <input type="text" id="EditTransactionTypeName" name="EditTransactionTypeName" class="form-control" placeholder="Enter Transaction Type Name" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="EditTransactionDescription" class="form-label">Type Description:</label>
+                        <input type="text" id="EditTransactionDescription" name="EditTransactionDescription" class="form-control" placeholder="Enter Type Description" required />
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelEditTransactionTypeButton">Cancel</button>
+                <button type="submit" class="btn btn-primary" form="editTransactionTypeForm">Save Changes</button>
+            </div>
         </div>
     </div>
+</div>
 
-    {% endblock %}
+{% endblock %}
 
-    {% block extra_js %}
-    <script src="{% static 'js/System_Setup/trtype.js' %}"></script>
-    {% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/System_Setup/trtype.js' %}"></script>
+{% endblock %}
