@@ -15,7 +15,7 @@ def admin_login_view(request):
 
 # Dashboard view
 def dashboard_view(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'Dashboard/dashboard.html')
 
 def journal_temp_view(request):
     pass
