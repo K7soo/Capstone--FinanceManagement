@@ -7,43 +7,64 @@ General Ledger
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/general_ledger.css' %}">
+<style>
+	body {
+		background-color: #f1f1f1; /* Light gray background */
+	}
+</style>
 {% endblock %}
 
 {% block content %}
-<h1 class="title">General Ledger</h1>
-<div class="general-ledger-container">
-    <form id="generalLedgerForm">
-        <div class="form-grid">
-            <!-- Specific Account Dropdown -->
-            <label for="specificAccount">Specific Account:</label>
-            <select id="specificAccount" class="dropdown" name="specificAccount" required>
-                <option value="">Select an option</option>
-                <option value="asset">Asset</option>
-                <option value="expense">Expense</option>
-                <!-- Add more options as needed -->
-            </select>
+<div class="container mt-5">
+    <h1 class="text" style="color: #6f42c1">General Ledger</h1>
+    <p>Review and manage your general ledger entries efficiently.</p>
 
-            <!-- As of Date -->
-            <label for="asOfDate">As of:</label>
-            <input type="date" id="asOfDate" name="asOfDate" class="textbox" required>
+    <div class="card shadow-sm mb-4 p-4">
+        <form id="generalLedgerForm">
+            <div class="row g-3">
+                <!-- Specific Account Dropdown -->
+                <div class="col-md-4">
+                    <label for="specificAccount" class="form-label">Account Type:</label>
+                    <select id="specificAccount" class="form-select" name="specificAccount" required>
+                        <option value="" selected>Select an option</option>
+                        <option value="asset">Asset</option>
+                        <option value="liability">Liability</option>
+                        <option value="equity">Equity</option>
+                        <option value="revenue">Revenue</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
 
-            <!-- Duration Date -->
-            <label for="durationDateStart">Duration Date:</label>
-            <div class="duration-date">
-                <input type="date" id="durationDateStart" name="durationDateStart" class="textbox" required>
-                <span class="to-label">to</span>
-                <input type="date" id="durationDateEnd" name="durationDateEnd" class="textbox" required>
+                <!-- As of Date -->
+                <div class="col-md-4">
+                    <label for="asOfDate" class="form-label">As of:</label>
+                    <input type="date" id="asOfDate" name="asOfDate" class="form-control" required>
+                </div>
+
+                <!-- Duration Date -->
+                <div class="col-md-4">
+                    <label for="durationDateStart" class="form-label">Duration Date:</label>
+                    <div class="input-group">
+                        <input type="date" id="durationDateStart" name="durationDateStart" class="form-control" required>
+                        <span class="input-group-text">to</span>
+                        <input type="date" id="durationDateEnd" name="durationDateEnd" class="form-control" required>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Buttons -->
-        <div class="button-container">
-            <button type="button" class="btn-print">Print</button>
-            <button type="button" class="btn-export">Export to Excel</button>
-        </div>
-    </form>
+            <!-- Buttons -->
+            <div class="mt-4 d-flex justify-content-end gap-3">
+                <button type="button" class="btn btn-primary">
+                    <i class="bi bi-printer me-2"></i> Print
+                </button>
+                <button type="button" class="btn btn-success">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i> Export to Excel
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
