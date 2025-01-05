@@ -1,197 +1,130 @@
 {% extends 'base.html' %}
 
-<!-- Always do a load static  -->
-{% load static %}
+<!-- Always do a load static -->
+{% load static %} {% block title %} Statement of Account {% endblock %} {% block extra_css %}
+<style>
+	body {
+		background-color: #f1f1f1;
+		/* Light gray background */
+	}
+</style>
+{% endblock %} {% block content %}
+<div class="container mt-5">
+	<h1 class="text" style="color: #6f42c1">Journal Entries</h1>
+	<p>Setup page for the creation of basic ledger accounts.</p>
 
-{% block title %}
-Statement of Account
-{% endblock %}
+	<div class="card shadow-sm">
+		<div class="card-body">
+			<div class="d-flex justify-content-between mb-3">
+				<div class="filter-container">
+					<label for="records-per-page">Records Per Page:</label>
+					<select id="records-per-page" name="records-per-page" class="filter-select">
+						<option value="10">10</option>
+						<option value="25">25</option>
+						<option value="50">50</option>
+						<option value="100">100</option>
+					</select>
+				</div>
+				<!-- Add Journal Entries Button -->
+				<button class="btn btn-primary" id="openAddJournalEntriesModal" data-bs-toggle="modal" data-bs-target="#addJournalEntriesModal">Add Journal Entries</button>
 
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/journalentries.css' %}">
-{% endblock %}
+				<!-- Add Journal Template Modal -->
+				<div id="addJournalEntriesModal" class="modal fade" tabindex="-1" aria-labelledby="addJournalEntriesModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="addJournalEntriesModalLabel">Add Journal Entries</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<!-- Tab Navigation -->
+								<ul class="nav nav-tabs" id="journalTabs" role="tablist">
+									<li class="nav-item" role="presentation">
+										<a class="nav-link active" id="particulars-tab" data-bs-toggle="tab" href="#particulars" role="tab" aria-controls="particulars" aria-selected="true">Particulars</a>
+									</li>
+									<li class="nav-item" role="presentation">
+										<a class="nav-link" id="accounting-entries-tab" data-bs-toggle="tab" href="#accounting-entries" role="tab" aria-controls="accounting-entries" aria-selected="false">Accounting Entries</a>
+									</li>
+								</ul>
 
-{% block content %}
-<div class="container mt-5 ">
-    <h1 class="text" style="color: #6f42c1;">Journal Entries</h1>
-    <p>Setup page for the creation of basic ledger accounts.</p>
+								<!-- Tab Content -->
+								<div class="tab-content mt-3" id="journalTabsContent">
+									<!-- Particulars Form -->
+									<div class="tab-pane fade show active" id="particulars" role="tabpanel" aria-labelledby="particulars-tab">
+										<div class="mb-3">
+											<label for="entryCode" class="form-label">Entry Code:</label>
+											<input type="text" class="form-control" id="entryCode" name="entryCode" placeholder="Enter Entry Code" required />
+										</div>
+										<div class="mb-3">
+											<label for="entryDate" class="form-label">Date:</label>
+											<input type="date" class="form-control" id="entryDate" />
+										</div>
+										<div class="mb-3">
+											<label for="entryDescription" class="form-label">Particulars:</label>
+											<textarea id="entryDescription" class="form-control" placeholder="Enter Description"></textarea>
+										</div>
+									</div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="d-flex justify-content-between mb-3">
+									<!-- Accounting Entries Form -->
+									<div class="tab-pane fade" id="accounting-entries" role="tabpanel" aria-labelledby="accounting-entries-tab">
+										<div class="mb-3">
+											<label for="addTemplate" class="form-label">Template:</label>
+											<select id="addTemplate" name="addTemplate" class="form-select">
+												<option value>Select Template</option>
+												<!-- Add other options here -->
+											</select>
+										</div>
+										<div class="mb-3">
+											<label for="transactionType" class="form-label">Transaction Type:</label>
+											<select id="transactionType" name="transactionType" class="form-select">
+												<option value>Select Transaction Type</option>
+												<!-- Add other options here -->
+											</select>
+										</div>
 
-
-        <div class="filter-container">
-            <label for="records-per-page">Records Per Page:</label>
-            <select id="records-per-page" name="records-per-page" class="filter-select">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-        </div>
-        <button class="btn-add-template" id="openAddJournalEntriesModal">Add Journal Entries</button>
-
-
-<!-- Add Journal Template Modal -->
-<div id="addJournalEntriesModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <h2>Add Journal Entries</h2>
-
-        <!-- Tab Navigation -->
-        <div class="tab-nav">
-            <button class="tab-link active" data-tab="particulars">Particulars</button>
-            <button class="tab-link" data-tab="accounting-entries">Accounting Entries</button>
-        </div>
-
-        <!-- Tab Content -->
-        <div class="tab-content">
-            <!-- Particulars Form -->
-            <div id="particulars" class="tab-panel active">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="entryCode">Entry Code:</label>
-                        <input type="text" id="entryCode" name="entryCode" placeholder="Enter Entry Code" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="entryDate">Date:</label>
-                        <input type="date" id="entryDate" />
-                    </div>
-                </div>
-                
-                    <div class="form-group full-width">
-                        <label for="entryDescription">Particulars:</label>
-                        <textarea id="entryDescription" placeholder="Enter Description"></textarea>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Accounting Entries Form -->
-            <div id="accounting-entries" class="tab-panel">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="addTemplate">Template:</label>
-                        <select id="addTemplate" name="addTemplate">
-                            <option value="">Select Template</option>
-                            <!-- Add other options here -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="transactionType">Transaction Type:</label>
-                        <select id="transactionType" name="transactionType">
-                            <option value="">Select Transaction Type</option>
-                            <!-- Add other options here -->
-                        </select>
-                    </div>
-                </div>
-                
-
-
-                    <!-- Accounts Table -->
-                    <div class="accounts-section">
-                        <table class="accounts-table">
-                            <thead>
-                                <tr>
-                                    <th>Accounts</th>
-                                    <th>Debit</th>
-                                    <th>Credit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <select class="account-dropdown">
-                                            <option value="inventory">Inventory for Consumption</option>
-                                            <option value="cash">Cash</option>
-                                        </select>
-                                    </td>
-                                    <td><input type="text" placeholder="1000.00" class="debit-input" /></td>
-                                    <td><input type="text" placeholder="0.00" class="credit-input" /></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- Modal Actions -->
-        <div class="button-group">
-            <button type="button" class="btn-cancel" id="cancelJournalEntriesButton">Cancel</button>
-            <button type="submit" class="btn-add-journalEntry-modal">Add Journal Entry</button>
-        </div>
-    </div>
+										<!-- Accounts Table -->
+										<div class="mt-3">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th>Accounts</th>
+														<th>Debit</th>
+														<th>Credit</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>
+															<select class="form-select account-dropdown">
+																<option value="inventory">Inventory for Consumption</option>
+																<option value="cash">Cash</option>
+															</select>
+														</td>
+														<td>
+															<input type="text" placeholder="1000.00" class="form-control debit-input" />
+														</td>
+														<td>
+															<input type="text" placeholder="0.00" class="form-control credit-input" />
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Modal Footer Actions -->
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+								<button type="submit" class="btn btn-primary">Add Journal Entry</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endblock %} {% block extra_js %}
+	<script src="{% static 'js/Transaction/journalentries.js' %}"></script>
+	{% endblock %}
 </div>
-
-
-
-
-        
-        <div class="journal-entries-table-container" style="display: none;">
-            <table class="journal-entries-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Accounts</th>
-                        <th>Debit</th>
-                        <th>Credit</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="journalEntriesBody">
-                    <!-- Rows will be dynamically added here -->
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- View Journal Entry Modal -->
-<div id="viewJournalEntryModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <h2>View Journal Entry</h2>
-        <form id="viewJournalEntryForm">
-            <div>
-                <label>Entry Code:</label>
-                <span id="viewEntryCode"></span>
-            </div>
-            <div>
-                <label>Transaction Type:</label>
-                <span id="viewTransactionType"></span>
-            </div>
-            <div>
-                <label>Template:</label>
-                <span id="viewTemplate"></span>
-            </div>
-            <div>
-                <label>Description:</label>
-                <span id="viewDescription"></span>
-            </div>
-            <button type="button" id="closeViewJournalEntryModal" class="btn-cancel">Close</button>
-        </form>
-    </div>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const tabLinks = document.querySelectorAll('.tab-link');
-        const tabPanels = document.querySelectorAll('.tab-panel');
-    
-        tabLinks.forEach((link) => {
-            link.addEventListener('click', function () {
-                // Remove active class from all links and panels
-                tabLinks.forEach((link) => link.classList.remove('active'));
-                tabPanels.forEach((panel) => panel.classList.remove('active'));
-    
-                // Add active class to clicked link and corresponding panel
-                this.classList.add('active');
-                const targetPanel = document.getElementById(this.getAttribute('data-tab'));
-                targetPanel.classList.add('active');
-            });
-        });
-    });
-    </script>
-
-
-{% endblock %}
-
-
-{% block extra_js %}
-    <script src="{% static 'js/Transaction/journalentries.js' %}"></script>
-{% endblock %}
