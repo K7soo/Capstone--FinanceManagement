@@ -12,12 +12,15 @@ Statement of Account
 {% endblock %}
 
 {% block content %}
-<h1 class="title">Journal Entries</h1>
+<div class="container mt-5 ">
+    <h1 class="text" style="color: #6f42c1;">Journal Entries</h1>
+    <p>Setup page for the creation of basic ledger accounts.</p>
 
-<div class="journal-entries-dashboard">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-3">
 
-    <!-- Right Section - Table and Filter -->
-    <div class="table-container">
+
         <div class="filter-container">
             <label for="records-per-page">Records Per Page:</label>
             <select id="records-per-page" name="records-per-page" class="filter-select">
@@ -120,25 +123,7 @@ Statement of Account
 </div>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const tabLinks = document.querySelectorAll('.tab-link');
-    const tabPanels = document.querySelectorAll('.tab-panel');
 
-    tabLinks.forEach((link) => {
-        link.addEventListener('click', function () {
-            // Remove active class from all links and panels
-            tabLinks.forEach((link) => link.classList.remove('active'));
-            tabPanels.forEach((panel) => panel.classList.remove('active'));
-
-            // Add active class to clicked link and corresponding panel
-            this.classList.add('active');
-            const targetPanel = document.getElementById(this.getAttribute('data-tab'));
-            targetPanel.classList.add('active');
-        });
-    });
-});
-</script>
 
         
         <div class="journal-entries-table-container" style="display: none;">
@@ -183,7 +168,25 @@ document.addEventListener('DOMContentLoaded', () => {
         </form>
     </div>
 </div>
-        
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabLinks = document.querySelectorAll('.tab-link');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+    
+        tabLinks.forEach((link) => {
+            link.addEventListener('click', function () {
+                // Remove active class from all links and panels
+                tabLinks.forEach((link) => link.classList.remove('active'));
+                tabPanels.forEach((panel) => panel.classList.remove('active'));
+    
+                // Add active class to clicked link and corresponding panel
+                this.classList.add('active');
+                const targetPanel = document.getElementById(this.getAttribute('data-tab'));
+                targetPanel.classList.add('active');
+            });
+        });
+    });
+    </script>
 
 
 {% endblock %}
