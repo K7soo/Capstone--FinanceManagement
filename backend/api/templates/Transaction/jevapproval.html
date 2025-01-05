@@ -1,75 +1,152 @@
 {% extends 'base.html' %}
 
 <!-- Always do a load static  -->
-{% load static %}
+{% load static %} {% block title %} JEV Approval {% endblock %} {% block extra_css %}
+<style>
+	body {
+		background-color: #f1f1f1; /* Light gray background */
+	}
+	.hover-zoom-text {
+		display: inline-block; /* Ensures only the text itself is scaled */
+		transition: transform 0.3s ease-in-out; /* Smooth zoom effect */
+	}
 
-{% block title %}
-JEV Approval
-{% endblock %}
+	.hover-zoom-text:hover {
+		transform: scale(1.2); /* Only scale the text */
+	}
+	.dropdown-item:hover,
+	.dropdown-item:focus {
+		background-color: transparent; /* Remove hover background */
+		color: inherit; /* Keep text color consistent */
+	}
+</style>
+{% endblock %} {% block content %}
+<div class="container mt-5">
+	<h1 class="text" style="color: #6f42c1">JEV Approval</h1>
+	<p>JEV Review/Approval and Posting to General Ledger.</p>
 
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/jevapproval.css' %}">
-{% endblock %}
-
-{% block content %}
-<h1 class="title">JEV Approval</h1>
-<p>JEV Review/Approval and Posting to General Ledger.</p>
-<div>
-<div class="table-frame">
-    <!-- Transaction Table -->
-    <table class="transaction-table">
-        <thead>
-            <tr>
-                <th>Transaction Date</th>
-                <th>JEV No.</th>
-                <th>Particulars</th>
-                <th>Prepared By</th>
-                <th>Remarks</th>
-                <th>Last Remarks From</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <!-- Example Row - Use Django's loop to iterate through transactions -->
-            <tr>
-                <td>Dec 01, 2024</td>
-                <td>JEV 2024-12-01</td>
-                <td>Payments of customers on orders through Dine-in Reservations and Events. </td>
-                <td>Maui Mark Lopez</td>
-                <td></td>
-                <td></td>
-                <td>
-                    <div class="btn-list">
-                        <button class="btn-edit">VIEW</button>
-                        <button class="btn-view">EDIT JEV</button>
-                        <button class="btn-notes">NOTES/REMARKS</button>
-                        <button class="btn-external">PRINT</button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>Dec 07, 2024</td>
-                <td>JEV 2024-12-07</td>
-                <td>Payments for procurement of items from suppliers. </td>
-                <td>John Loyd Cabral</td>
-                <td></td>
-                <td></td>
-                <td>
-                    <div class="btn-list">
-                        <button class="btn-edit">VIEW</button>
-                        <button class="btn-view">EDIT JEV</button>
-                        <button class="btn-notes">NOTES/REMARKS</button>
-                        <button class="btn-external">PRINT</button>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card shadow-sm mb-4" style="padding: 40px; width: 100%; max-width: 100%;">
+        <div class="table-responsive">
+			<table class="table table-bordered table-hover text-center">
+				<thead class="table-light">
+					<tr>
+						<th>Transaction Date</th>
+						<th>JEV No.</th>
+						<th>Particulars</th>
+						<th>Prepared By</th>
+						<th>Remarks</th>
+						<th>Last Remarks From</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- Example Row -->
+					<tr>
+						<td>Dec 01, 2024</td>
+						<td>JEV 2024-12-01</td>
+						<td>Payments of customers on orders through Dine-in Reservations and Events.</td>
+						<td>Maui Mark Lopez</td>
+						<td></td>
+						<td></td>
+						<td>
+							<!-- Dropdown Menu -->
+							<div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+									<span>Menu</span>
+									<i class="bi bi-caret-down ms-1"></i>
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+									<li>
+										<button class="dropdown-item text-warning" type="button">
+											<span class="hover-zoom-text small">
+												<i class="bi bi-eye me-2"></i>
+												View
+											</span>
+										</button>
+									</li>
+									<li>
+										<button class="dropdown-item text-info" type="button">
+											<span class="hover-zoom-text small">
+												<i class="bi bi-pencil me-2"></i>
+												EDIT JEV
+											</span>
+										</button>
+									</li>
+									<li>
+										<button class="dropdown-item text-dark" type="button">
+											<span class="hover-zoom-text small">
+												<i class="bi bi-journal-text me-2"></i>
+												Notes/Remarks
+											</span>
+										</button>
+									</li>
+									<li>
+										<button class="dropdown-item text-success" type="button">
+											<span class="hover-zoom-text small">
+												<i class="bi bi-printer me-2"></i>
+												PRINT
+											</span>
+										</button>
+									</li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>Dec 07, 2024</td>
+						<td>JEV 2024-12-07</td>
+						<td>Payments for procurement of items from suppliers.</td>
+						<td>John Loyd Cabral</td>
+						<td></td>
+						<td></td>
+						<td>
+							<!-- Dropdown Menu -->
+							<div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+									<span>Menu</span>
+									<i class="bi bi-caret-down ms-1"></i>
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+									<li>
+										<button class="dropdown-item text-warning" type="button">
+											<span class="hover-zoom-text small">
+												<i class="bi bi-eye me-2"></i>
+												View
+											</span>
+										</button>
+									</li>
+									<li>
+										<button class="dropdown-item text-info" type="button">
+											<span class="hover-zoom-text small">
+												<i class="bi bi-pencil me-2"></i>
+												EDIT JEV
+											</span>
+										</button>
+									</li>
+									<li>
+										<button class="dropdown-item text-dark" type="button">
+											<span class="hover-zoom-text small">
+												<i class="bi bi-journal-text me-2"></i>
+												Notes/Remarks
+											</span>
+										</button>
+									</li>
+									<li>
+										<button class="dropdown-item text-success" type="button">
+											<span class="hover-zoom-text small">
+												<i class="bi bi-printer me-2"></i>
+												PRINT
+											</span>
+										</button>
+									</li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
-</div>
-{% endblock %}
 
-
-{% block extra_js %}
-    <script src="{% static 'js/jevapproval.js' %}"></script>
-{% endblock %}
+{% endblock %} {% block extra_js %} {% endblock %}
