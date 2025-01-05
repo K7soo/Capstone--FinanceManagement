@@ -41,8 +41,8 @@ Journal Templates
                     <button class="btn btn-primary mb-3" onclick="openAddTemplateModal()">ADD JOURNAL TEMPLATE</button>
 
                     <!-- Journal Templates Table -->
-                    <table class="table table-bordered">
-                        <thead>
+                    <table class="table table-bordered table-hover text-center transaction-table">
+                        <thead class="table-light">
                             <tr>
                                 <th>Template Code</th>
                                 <th>Transaction Type</th>
@@ -58,7 +58,7 @@ Journal Templates
 
             <!-- Modal for Adding Templates -->
             <div id="addTemplateModal" class="modal fade" tabindex="-1" aria-labelledby="addTemplateModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <form id="addTemplateForm">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -66,16 +66,18 @@ Journal Templates
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="templateCode" class="form-label">Template Code:</label>
-                                    <input type="text" id="templateCode" placeholder="Enter Template Code" class="form-control" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="transactionType" class="form-label">Transaction Type:</label>
-                                    <select id="transactionType" class="form-select" required>
-                                        <option value="">Choose Transaction Type</option>
-                                        <!-- Transaction Types will be populated dynamically -->
-                                    </select>
+                                <div class="row mb-3">
+                                    <div id="templateHeaderSection" class="col-md-6">
+                                        <label for="templateCode" class="form-label">Template Code:</label>
+                                        <input type="text" id="templateCode" placeholder="Enter Template Code" class="form-control" required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="transactionType" class="form-label">Transaction Type:</label>
+                                        <select id="transactionType" class="form-select" required>
+                                            <option value="">Choose Transaction Type</option>
+                                            <!-- Transaction Types will be populated dynamically -->
+                                        </select>
+                                    </div>
                                 </div>
                                 <hr class="line">
                                 <h5>Attach Accounts to Template</h5>
@@ -94,10 +96,10 @@ Journal Templates
                                         </tbody>
                                     </table>
                                 </div>
-                                <button type="button" class="btn btn-outline-secondary mb-3" onclick="addTemplateRow()">Add Row</button>
+                                <button type="button" class="btn btn-outline-secondary mb-3 btn-add-row" onclick="addTemplateRow()">Add Row</button>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Save Template</button>
+                                <button type="submit" class="btn btn-primary btn-save-template">Save Template</button>
                             </div>
                         </div>
                     </form>
@@ -106,7 +108,7 @@ Journal Templates
 
             <!-- Modal for Editing Templates -->
             <div id="editTemplateModal" class="modal fade" tabindex="-1" aria-labelledby="editTemplateModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <form id="editTemplateForm">
                         <div class="modal-content">
                             <div class="modal-header">

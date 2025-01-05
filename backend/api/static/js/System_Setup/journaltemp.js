@@ -16,7 +16,7 @@ function getCsrfToken() {
 const csrfToken = getCsrfToken();
 const addTemplateBtn = document.querySelector('.btn-add');
 const addTemplateModal = document.getElementById('addTemplateModal');
-const closeModalBtns = document.querySelectorAll('.close'); 
+const closeModalBtns = document.querySelectorAll('.close');
 const addTemplateForm = document.getElementById('addTemplateForm');
 const templateTableBody = document.getElementById('journalTemplateTable');
 const templateRowsContainer = document.getElementById('templateRows');
@@ -35,28 +35,28 @@ function loadTransactionTypes() {
             'X-Requested-With': 'XMLHttpRequest',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to load transaction types');
-        }
-        return response.json();
-    })
-    .then(transactionTypes => {
-        console.log("Fetched transaction types:", transactionTypes);
-        const transactionTypeSelect = document.getElementById('transactionType');
-        transactionTypeSelect.innerHTML = "<option value=''>Choose Transaction Type</option>"; // Add placeholder option
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load transaction types');
+            }
+            return response.json();
+        })
+        .then(transactionTypes => {
+            console.log("Fetched transaction types:", transactionTypes);
+            const transactionTypeSelect = document.getElementById('transactionType');
+            transactionTypeSelect.innerHTML = "<option value=''>Choose Transaction Type</option>"; // Add placeholder option
 
-        transactionTypes.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type.id;  // Use ID as the value
-            option.textContent = type.TransactionTypeName;  // Display name in the dropdown
-            transactionTypeSelect.appendChild(option);
+            transactionTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type.id;  // Use ID as the value
+                option.textContent = type.TransactionTypeName;  // Display name in the dropdown
+                transactionTypeSelect.appendChild(option);
 
-            // Add to global transactionTypeMap
-            window.transactionTypeMap[type.id] = type.TransactionTypeName;
-        });
-    })
-    .catch(error => console.error('Error fetching transaction types:', error));
+                // Add to global transactionTypeMap
+                window.transactionTypeMap[type.id] = type.TransactionTypeName;
+            });
+        })
+        .catch(error => console.error('Error fetching transaction types:', error));
 }
 
 function loadChartOfAccounts() {
@@ -66,20 +66,20 @@ function loadChartOfAccounts() {
             'X-Requested-With': 'XMLHttpRequest',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to load chart of accounts');
-        }
-        return response.json();
-    })
-    .then(accounts => {
-        console.log("Fetched chart of accounts:", accounts);
-        accounts.forEach(account => {
-            window.accountMap[account.id] = account.AccountDesc; // Add to global accountMap
-        });
-        window.chartOfAccounts = accounts;
-    })
-    .catch(error => console.error('Error fetching chart of accounts:', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load chart of accounts');
+            }
+            return response.json();
+        })
+        .then(accounts => {
+            console.log("Fetched chart of accounts:", accounts);
+            accounts.forEach(account => {
+                window.accountMap[account.id] = account.AccountDesc; // Add to global accountMap
+            });
+            window.chartOfAccounts = accounts;
+        })
+        .catch(error => console.error('Error fetching chart of accounts:', error));
 }
 
 // Load and display the journal templates
@@ -90,18 +90,18 @@ function loadJournalTemplates() {
             'X-Requested-With': 'XMLHttpRequest',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to load journal templates');
-        }
-        return response.json();
-    })
-    .then(templates => {
-        console.log("Fetched journal templates:", templates);
-        templateTableBody.innerHTML = ""; // Clear the table body
-        templates.forEach(template => addRowToTable(template));
-    })
-    .catch(error => console.error('Error fetching journal templates:', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load journal templates');
+            }
+            return response.json();
+        })
+        .then(templates => {
+            console.log("Fetched journal templates:", templates);
+            templateTableBody.innerHTML = ""; // Clear the table body
+            templates.forEach(template => addRowToTable(template));
+        })
+        .catch(error => console.error('Error fetching journal templates:', error));
 }
 
 function loadTransactionTypeMap() {
@@ -111,19 +111,19 @@ function loadTransactionTypeMap() {
             'X-Requested-With': 'XMLHttpRequest',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to load transaction types');
-        }
-        return response.json();
-    })
-    .then(transactionTypes => {
-        transactionTypes.forEach(type => {
-            transactionTypeMap[type.id] = type.TransactionTypeName; // Map ID to TransactionTypeName
-        });
-        console.log("TransactionType map loaded:", transactionTypeMap);
-    })
-    .catch(error => console.error('Error fetching transaction types:', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load transaction types');
+            }
+            return response.json();
+        })
+        .then(transactionTypes => {
+            transactionTypes.forEach(type => {
+                transactionTypeMap[type.id] = type.TransactionTypeName; // Map ID to TransactionTypeName
+            });
+            console.log("TransactionType map loaded:", transactionTypeMap);
+        })
+        .catch(error => console.error('Error fetching transaction types:', error));
 }
 
 // Add a row to the journal template table
@@ -137,9 +137,9 @@ function addRowToTable(template) {
         <td>${template.TRTemplateCode}</td>
         <td>${transactionTypeName}</td>
         <td>
-            <button class="btn-view" onclick="viewTemplate(${template.id})">VIEW</button>
-            <button class="btn-edit" onclick="editTemplate(${template.id})">EDIT</button>
-            <button class="btn-delete" onclick="deleteTemplate(${template.id})">DELETE</button>
+            <button class="btn btn-primary btn-sm btn-view" onclick="viewTemplate(${template.id})">VIEW</button>
+            <button class="btn btn-warning btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editTemplateModal" onclick="editTemplate(${template.id})">EDIT</button>
+            <button class="btn btn-danger btn-sm btn-delete" onclick="deleteTemplate(${template.id})">DELETE</button>
         </td>
     `;
     templateTableBody.appendChild(newRow);
@@ -184,59 +184,59 @@ addTemplateForm.addEventListener('submit', event => {
         },
         body: JSON.stringify(newTemplate),
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(errorData => {
-                console.error('Backend validation errors:', errorData);
-                throw new Error('Failed to add template');
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Backend validation errors:', errorData);
+                    throw new Error('Failed to add template');
+                });
+            }
+            return response.json();
+        })
+        .then(createdTemplate => {
+            console.log("Template header added successfully:", createdTemplate);
+            addRowToTable(createdTemplate);
+
+            // After creating the template header, create the template body
+            const templateRows = document.querySelectorAll('#templateRows tr');
+            templateRows.forEach(row => {
+                const accountCode = row.querySelector('.account-code').value;
+                const debitChecked = row.querySelector('.debit-checkbox').checked;
+                const creditChecked = row.querySelector('.credit-checkbox').checked;
+
+                const newTemplateDetail = {
+                    Template_FK: createdTemplate.id,
+                    Account_FK: accountCode,
+                    Debit: debitChecked ? 1 : 0,
+                    Credit: creditChecked ? 1 : 0
+                };
+
+                console.log("Submitting template body:", newTemplateDetail);
+
+                fetch('/journaltemplatedetails/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify(newTemplateDetail),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to add template detail');
+                        }
+                        return response.json();
+                    })
+                    .then(createdDetail => {
+                        console.log("Template detail added successfully:", createdDetail);
+                    })
+                    .catch(error => console.error('Error adding template detail:', error));
             });
-        }
-        return response.json();
-    })
-    .then(createdTemplate => {
-        console.log("Template header added successfully:", createdTemplate);
-        addRowToTable(createdTemplate);
 
-        // After creating the template header, create the template body
-        const templateRows = document.querySelectorAll('#templateRows tr');
-        templateRows.forEach(row => {
-            const accountCode = row.querySelector('.account-code').value;
-            const debitChecked = row.querySelector('.debit-checkbox').checked;
-            const creditChecked = row.querySelector('.credit-checkbox').checked;
-
-            const newTemplateDetail = {
-                Template_FK: createdTemplate.id,
-                Account_FK: accountCode,
-                Debit: debitChecked ? 1 : 0,
-                Credit: creditChecked ? 1 : 0
-            };
-
-            console.log("Submitting template body:", newTemplateDetail);
-
-            fetch('/journaltemplatedetails/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify(newTemplateDetail),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to add template detail');
-                }
-                return response.json();
-            })
-            .then(createdDetail => {
-                console.log("Template detail added successfully:", createdDetail);
-            })
-            .catch(error => console.error('Error adding template detail:', error));
-        });
-
-        addTemplateForm.reset();
-        closeAddTemplateModal();
-    })
-    .catch(error => console.error('Error adding template:', error));
+            addTemplateForm.reset();
+            closeAddTemplateModal();
+        })
+        .catch(error => console.error('Error adding template:', error));
 });
 
 // Add a row to the template (modal)
@@ -252,9 +252,33 @@ function addTemplateRow() {
                 `).join('')}
             </select>
         </td>
-        <td><input type="checkbox" class="debit-checkbox" onchange="toggleDebitCredit(this, 'debit')"></td>
-        <td><input type="checkbox" class="credit-checkbox" onchange="toggleDebitCredit(this, 'credit')"></td>
-        <td><button class="btn-remove" onclick="removeRow(this)"> REMOVE </button></td>
+            <td>
+                <div class="form-check">
+                    <input 
+                        type="checkbox" 
+                        class="form-check-input debit-checkbox" 
+                        onchange="toggleDebitCredit(this, 'debit')" 
+                        id="debitCheckbox">
+                    <label class="form-check-label" for="debitCheckbox">Debit</label>
+                </div>
+            </td>
+            <td>
+                <div class="form-check">
+                    <input 
+                        type="checkbox" 
+                        class="form-check-input credit-checkbox" 
+                        onchange="toggleDebitCredit(this, 'credit')" 
+                        id="creditCheckbox">
+                    <label class="form-check-label" for="creditCheckbox">Credit</label>
+                </div>
+            </td>
+            <td>
+                <button 
+                    class="btn btn-danger btn-sm btn-remove" 
+                    onclick="removeRow(this)">
+                    REMOVE
+                </button>
+            </td>
     `;
     templateRowsContainer.appendChild(newRow);
 }
@@ -279,53 +303,53 @@ function viewTemplate(templateId) {
             'X-Requested-With': 'XMLHttpRequest',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch template and details');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Fetched template details:", data);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch template and details');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fetched template details:", data);
 
-        const template = data.template;
-        const details = data.details;
+            const template = data.template;
+            const details = data.details;
 
-        // Update modal header with template information
-        document.getElementById('viewTemplateCode').textContent = template.TRTemplateCode;
-        document.getElementById('viewTransactionType').textContent =
-            window.transactionTypeMap[template.TransactionType_FK] || 'Unknown';
+            // Update modal header with template information
+            document.getElementById('viewTemplateCode').textContent = template.TRTemplateCode;
+            document.getElementById('viewTransactionType').textContent =
+                window.transactionTypeMap[template.TransactionType_FK] || 'Unknown';
 
-        // Clear and populate the modal table
-        const viewTemplateRows = document.getElementById('viewTemplateRows');
-        viewTemplateRows.innerHTML = ''; // Clear existing rows
+            // Clear and populate the modal table
+            const viewTemplateRows = document.getElementById('viewTemplateRows');
+            viewTemplateRows.innerHTML = ''; // Clear existing rows
 
-        if (details && details.length > 0) {
-            details.forEach(detail => {
-                const debit = parseFloat(detail.Debit) || 0; // Ensure Debit is a number
-                const credit = parseFloat(detail.Credit) || 0; // Ensure Credit is a number
+            if (details && details.length > 0) {
+                details.forEach(detail => {
+                    const debit = parseFloat(detail.Debit) || 0; // Ensure Debit is a number
+                    const credit = parseFloat(detail.Credit) || 0; // Ensure Credit is a number
 
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
                     <td>${detail.Account_FK}</td>
                     <td>${window.accountMap[detail.Account_FK] || 'Unknown'}</td>
                     <td>${debit.toFixed(2)}</td>
                     <td>${credit.toFixed(2)}</td>
                 `;
-                viewTemplateRows.appendChild(newRow);
-            });
-        } else {
-            const emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = `
+                    viewTemplateRows.appendChild(newRow);
+                });
+            } else {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = `
                 <td colspan="4">No details available.</td>
             `;
-            viewTemplateRows.appendChild(emptyRow);
-        }
+                viewTemplateRows.appendChild(emptyRow);
+            }
 
-        // Show the modal
-        document.getElementById('viewTemplateModal').style.display = 'block';
-    })
-    .catch(error => console.error('Error viewing template:', error));
+            // Show the modal
+            document.getElementById('viewTemplateModal').style.display = 'block';
+        })
+        .catch(error => console.error('Error viewing template:', error));
 }
 document.addEventListener('DOMContentLoaded', () => {
     const closeModalButton = document.getElementById('closeViewTemplateModal');
@@ -358,50 +382,50 @@ function editTemplate(templateId) {
             'X-Requested-With': 'XMLHttpRequest',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch template for editing');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const template = data.template;
-        const details = data.details;
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch template for editing');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const template = data.template;
+            const details = data.details;
 
-        // Set the hidden input value for templateId
-        document.getElementById('editTemplateId').value = templateId;
+            // Set the hidden input value for templateId
+            document.getElementById('editTemplateId').value = templateId;
 
-        // Ensure transaction types are loaded
-        loadTransactionTypes().then(() => {
-            const editTransactionTypeDropdown = document.getElementById('editTransactionType');
-            editTransactionTypeDropdown.innerHTML = ''; // Clear existing options
+            // Ensure transaction types are loaded
+            loadTransactionTypes().then(() => {
+                const editTransactionTypeDropdown = document.getElementById('editTransactionType');
+                editTransactionTypeDropdown.innerHTML = ''; // Clear existing options
 
-            Object.keys(window.transactionTypeMap).forEach(transactionTypeId => {
-                const option = document.createElement('option');
-                option.value = transactionTypeId;
-                option.textContent = window.transactionTypeMap[transactionTypeId];
+                Object.keys(window.transactionTypeMap).forEach(transactionTypeId => {
+                    const option = document.createElement('option');
+                    option.value = transactionTypeId;
+                    option.textContent = window.transactionTypeMap[transactionTypeId];
 
-                // Pre-select the current Transaction Type
-                if (parseInt(transactionTypeId) === template.TransactionType_FK) {
-                    option.selected = true;
-                }
+                    // Pre-select the current Transaction Type
+                    if (parseInt(transactionTypeId) === template.TransactionType_FK) {
+                        option.selected = true;
+                    }
 
-                editTransactionTypeDropdown.appendChild(option);
+                    editTransactionTypeDropdown.appendChild(option);
+                });
             });
-        });
 
-        // Populate the edit modal fields
-        document.getElementById('editTemplateCode').value = template.TRTemplateCode;
+            // Populate the edit modal fields
+            document.getElementById('editTemplateCode').value = template.TRTemplateCode;
 
-        // Clear and populate the template details section
-        const editTemplateRowsContainer = document.getElementById('editTemplateRows');
-        editTemplateRowsContainer.innerHTML = ''; // Clear existing rows
+            // Clear and populate the template details section
+            const editTemplateRowsContainer = document.getElementById('editTemplateRows');
+            editTemplateRowsContainer.innerHTML = ''; // Clear existing rows
 
-        if (details && details.length > 0) {
-            details.forEach(detail => {
-                const newRow = document.createElement('tr');
-                newRow.setAttribute('data-id', detail.id);
-                newRow.innerHTML = `
+            if (details && details.length > 0) {
+                details.forEach(detail => {
+                    const newRow = document.createElement('tr');
+                    newRow.setAttribute('data-id', detail.id);
+                    newRow.innerHTML = `
                     <td>
                         <select class="account-code">
                             <option value="">Select Account</option>
@@ -416,16 +440,17 @@ function editTemplate(templateId) {
                     <td><input type="checkbox" class="credit-checkbox" ${detail.Credit > 0 ? 'checked' : ''}></td>
                     <td><button class="btn-remove" onclick="removeRow(this)"> REMOVE </button></td>
                 `;
-                editTemplateRowsContainer.appendChild(newRow);
-            });
-        } else {
-            console.warn("No details found for this template.");
-        }
+                    editTemplateRowsContainer.appendChild(newRow);
+                });
+            } else {
+                console.warn("No details found for this template.");
+            }
 
-        // Show the edit modal
-        document.getElementById('editTemplateModal').style.display = 'block';
-    })
-    .catch(error => console.error('Error fetching template for editing:', error));
+            // Show the edit modal
+            const editModal = new bootstrap.Modal(document.getElementById('editTemplateModal'));
+            editModal.show();
+            })
+        .catch(error => console.error('Error fetching template for editing:', error));
 }
 
 
@@ -498,21 +523,21 @@ function saveEditedTemplate() {
         },
         body: JSON.stringify(payload),
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(errorData => {
-                console.error('Server-side validation errors:', errorData);
-                throw new Error('Failed to update template');
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Template updated successfully:", data);
-        document.getElementById('editTemplateModal').style.display = 'none';
-        loadJournalTemplates(); // Reload the table with updated data
-    })
-    .catch(error => console.error('Error updating template:', error));
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    console.error('Server-side validation errors:', errorData);
+                    throw new Error('Failed to update template');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Template updated successfully:", data);
+            document.getElementById('editTemplateModal').style.display = 'none';
+            loadJournalTemplates(); // Reload the table with updated data
+        })
+        .catch(error => console.error('Error updating template:', error));
 }
 window.saveEditedTemplate = saveEditedTemplate;
 
@@ -533,20 +558,20 @@ function deleteTemplate(templateId) {
             'X-Requested-With': 'XMLHttpRequest',
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to delete template');
-        }
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete template');
+            }
 
-        console.log("Template deleted successfully:", templateId);
+            console.log("Template deleted successfully:", templateId);
 
-        // Remove the deleted template's row from the table
-        const rowToDelete = document.querySelector(`tr[data-id='${templateId}']`);
-        if (rowToDelete) {
-            rowToDelete.remove();
-        }
-    })
-    .catch(error => console.error('Error deleting template:', error));
+            // Remove the deleted template's row from the table
+            const rowToDelete = document.querySelector(`tr[data-id='${templateId}']`);
+            if (rowToDelete) {
+                rowToDelete.remove();
+            }
+        })
+        .catch(error => console.error('Error deleting template:', error));
 }
 
 // Expose the functions globally to make them accessible from the HTML
