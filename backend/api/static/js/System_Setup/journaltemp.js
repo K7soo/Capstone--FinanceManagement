@@ -138,13 +138,76 @@ function addRowToTable(template) {
     newRow.innerHTML = `
         <td>${template.TRTemplateCode}</td>
         <td>${transactionTypeName}</td>
-        <td>
-            <button class="btn btn-primary btn-sm btn-view" onclick="viewTemplate(${template.id})">VIEW</button>
-            <button class="btn btn-warning btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editTemplateModal" onclick="editTemplate(${template.id})">EDIT</button>
-            <button class="btn btn-danger btn-sm btn-delete" onclick="deleteTemplate(${template.id})">DELETE</button>
+        <td class="text-center align-middle">
+            <div class="dropdown d-inline-block ">
+                <button
+                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+                    type="button"
+                    id="dropdownMenuButton${template.id}"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <span>Actions</span>
+                    <i class="bi bi-caret-down ms-1"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${template.id}">
+                    <li>
+                        <button
+                            class="dropdown-item text-info"
+                            type="button"
+                            onclick="viewTemplate(${template.id})"
+                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
+                            <span
+                                class="hover-zoom-text small"
+                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i class="bi bi-eye me-2"></i>View
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            class="dropdown-item text-warning"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editTemplateModal"
+                            onclick="editTemplate(${template.id})"
+                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
+                            <span
+                                class="hover-zoom-text small"
+                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i class="bi bi-pencil-square me-2"></i>Edit
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            class="dropdown-item text-danger"
+                            type="button"
+                            onclick="deleteTemplate(${template.id})"
+                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
+                            <span
+                                class="hover-zoom-text small"
+                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i class="bi bi-trash-fill me-2"></i>Delete
+                            </span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </td>
     `;
     templateTableBody.appendChild(newRow);
+
+    // Reinitialize the dropdown for dynamically added elements
+    const dropdownToggle = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+    dropdownToggle.forEach((dropdown) => {
+        new bootstrap.Dropdown(dropdown);
+    });
 }
 
 // Show the Add Template modal
@@ -235,8 +298,20 @@ addTemplateForm.addEventListener("submit", (event) => {
                     .catch((error) => console.error("Error adding template detail:", error));
             });
 
+            // Reset the form
             addTemplateForm.reset();
-            closeAddTemplateModal();
+
+            // Hide the modal using Bootstrap's modal instance
+            const modalInstance = bootstrap.Modal.getInstance(
+                document.getElementById("addTemplateModal")
+            );
+
+            if (modalInstance) {
+                modalInstance.hide();
+            } else {
+                console.warn("Modal instance not found. Closing manually.");
+                document.getElementById("addTemplateModal").style.display = "none";
+            }
         })
         .catch((error) => console.error("Error adding template:", error));
 });
@@ -424,14 +499,14 @@ function editTemplate(templateId) {
                             <select class="form-select account-code">
                                 <option value="">Select Account</option>
                                 ${window.chartOfAccounts
-                                    .map(
-                                        (account) => `
+                            .map(
+                                (account) => `
                                     <option value="${account.id}" ${account.id === detail.Account_FK ? "selected" : ""}>
                                         ${account.AccountDesc}
                                     </option>
                                 `
-                                    )
-                                    .join("")}
+                            )
+                            .join("")}
                             </select>
                         </td>
                         <td>
@@ -461,7 +536,7 @@ function editTemplate(templateId) {
             // Show the edit modal
             const editModal = new bootstrap.Modal(document.getElementById("editTemplateModal"));
             editModal.show();
-            
+
             const backdrop = document.querySelector(".modal-backdrop");
             if (backdrop) {
                 backdrop.remove(); // Force removal of lingering backdrops
