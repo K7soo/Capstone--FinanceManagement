@@ -97,6 +97,7 @@
 								<button type="button" class="btn btn-outline-secondary mb-3 btn-add-row" onclick="addTemplateRow()">Add Row</button>
 							</div>
 							<div class="modal-footer">
+								<input type="hidden" id="csrfToken" value="{{ csrf_token }}">
 								<button type="button" class="btn btn-secondary btn-cancel" data-bs-dismiss="modal">Cancel</button>
 								<button type="submit" class="btn btn-primary btn-save-template">Save Template</button>
 							</div>
@@ -148,8 +149,8 @@
 							<button type="button" class="btn btn-outline-secondary mb-3" onclick="addEditTemplateRow()">Add Row</button>
 						</div>
 						<div class="modal-footer">
+							<input type="hidden" id="csrfToken" value="{{ csrf_token }}">
 							<button type="button" class="btn btn-secondary btn-cancel" data-bs-dismiss="modal">Cancel</button>
-
 							<button type="button" class="btn btn-primary" onclick="saveEditedTemplate()">Save Changes</button>
 						</div>
 					</div>
