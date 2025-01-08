@@ -87,6 +87,72 @@ window.addEventListener("click", (event) => {
     }
 });
 
+// Function to add a new row to the transaction table
+function addRowToTransactionTable(transactionType) {
+    console.log("Adding row for transaction type:", transactionType);
+    const newRow = document.createElement("tr");
+    newRow.setAttribute("data-id", transactionType.id);
+    newRow.innerHTML = `
+        <td>${transactionType.TransactionCode}</td>
+        <td>${transactionType.TransactionTypeName}</td>
+        <td>${transactionType.TransactionTypeDesc}</td>
+        <td class="text-center align-middle">
+            <div class="dropdown">
+                <button
+                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+                    type="button"
+                    id="dropdownMenuButton${transactionType.id}"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <span>Actions</span>
+                    <i class="bi bi-caret-down ms-1"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${transactionType.id}">
+                    <li>
+                        <button
+                            class="dropdown-item text-warning"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editTransactionTypeModal"
+                            onclick="openEditModal('${transactionType.id}', '${transactionType.TransactionCode}', '${transactionType.TransactionTypeName}', '${transactionType.TransactionTypeDesc}')"
+                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
+                            <span
+                                class="hover-zoom-text small"
+                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i class="bi bi-pencil-square me-2"></i>Edit
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            class="dropdown-item text-danger"
+                            type="button"
+                            onclick="deleteTransactionType(this)"
+                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
+                            <span
+                                class="hover-zoom-text small"
+                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
+                                onmouseover="this.style.transform='scale(1.2)'"
+                                onmouseout="this.style.transform='scale(1)'">
+                                <i class="bi bi-trash-fill me-2"></i>Delete
+                            </span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    `;
+    transactionTableBody.appendChild(newRow);
+
+    // Reinitialize the dropdown for the newly added element
+    const dropdownToggle = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+    dropdownToggle.forEach((dropdown) => {
+        new bootstrap.Dropdown(dropdown);
+    });
+}
+
 // Handle Add Transaction Type form submission
 addTransactionTypeForm.addEventListener("submit", (event) => {
     event.preventDefault(); // Prevent page refresh
@@ -153,19 +219,15 @@ addTransactionTypeForm.addEventListener("submit", (event) => {
             );
             addRowToTransactionTable(createdTransactionType);
             addTransactionTypeForm.reset();
-            addTransactionTypeModal.style.display = "none";
 
-            // Get the modal instance
+            // Hide the modal
             const bootstrapModal = bootstrap.Modal.getInstance(
-                addTransactionTypeModal
+                document.getElementById("addTransactionTypeModal")
             );
-
-            // Check if the modal instance is valid
             if (bootstrapModal) {
-                bootstrapModal.hide(); // Hide the modal using Bootstrap's built-in method
+                bootstrapModal.hide();
             } else {
-                console.warn("Bootstrap modal instance not found. Forcing cleanup.");
-                cleanupModal(); // If the modal instance isn't found, perform manual cleanup
+                console.warn("Bootstrap modal instance not found.");
             }
         })
         .catch((error) => {
@@ -174,22 +236,6 @@ addTransactionTypeForm.addEventListener("submit", (event) => {
         });
 });
 
-// Function to add a new row to the transaction table
-function addRowToTransactionTable(transactionType) {
-    console.log("Adding row for transaction type:", transactionType);
-    const newRow = document.createElement("tr");
-    newRow.setAttribute("data-id", transactionType.id);
-    newRow.innerHTML = `
-        <td>${transactionType.TransactionCode}</td>
-        <td>${transactionType.TransactionTypeName}</td>
-        <td>${transactionType.TransactionTypeDesc}</td>
-        <td class="text-nowrap">
-            <button class="btn btn-warning btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editTransactionTypeModal" onclick="openEditModal('${transactionType.id}', '${transactionType.TransactionCode}', '${transactionType.TransactionTypeName}', '${transactionType.TransactionTypeDesc}')">EDIT</button>
-            <button class="btn btn-danger btn-sm btn-delete" onclick="deleteTransactionType(this)">DELETE</button>
-        </td>
-    `;
-    transactionTableBody.appendChild(newRow);
-}
 
 // Handle Transaction Type Deletion
 function deleteTransactionType(button) {
