@@ -51,7 +51,7 @@
 		</div>
 		<!-- Modal for Adding Templates -->
 		<div id="addTemplateModal" class="modal modal fade" tabindex="-1" aria-labelledby="addTemplateModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl mw-650">
+			<div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
 				<form id="addTemplateForm">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -108,8 +108,8 @@
 
 		<!-- Modal for Editing Templates -->
 		<div id="editTemplateModal" class="modal fade" tabindex="-1" aria-labelledby="editTemplateModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
-					<div class="modal-content">
+			<div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered 	">
+				<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="editTemplateModalLabel">Edit Journal Template</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -148,6 +148,8 @@
 							<button type="button" class="btn btn-outline-secondary mb-3" onclick="addEditTemplateRow()">Add Row</button>
 						</div>
 						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary btn-cancel" data-bs-dismiss="modal">Cancel</button>
+
 							<button type="button" class="btn btn-primary" onclick="saveEditedTemplate()">Save Changes</button>
 						</div>
 					</div>
@@ -157,11 +159,10 @@
 
 		<!-- Begin::View Template Modal -->
 		<div id="viewTemplateModal" class="modal fade" tabindex="-1" aria-labelledby="viewTemplateModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg	">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="viewTemplateModalLabel">View Journal Template</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<p>

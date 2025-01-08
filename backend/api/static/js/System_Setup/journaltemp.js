@@ -353,6 +353,7 @@ function viewTemplate(templateId) {
             // Use Bootstrap modal API to show the modal
             const viewModal = new bootstrap.Modal(document.getElementById("viewTemplateModal"));
             viewModal.show();
+            viewModal.hide(); // This hides the modal and removes the backdrop.
         })
         .catch((error) => console.error("Error viewing template:", error));
 }
@@ -460,6 +461,11 @@ function editTemplate(templateId) {
             // Show the edit modal
             const editModal = new bootstrap.Modal(document.getElementById("editTemplateModal"));
             editModal.show();
+            
+            const backdrop = document.querySelector(".modal-backdrop");
+            if (backdrop) {
+                backdrop.remove(); // Force removal of lingering backdrops
+            }
         })
         .catch((error) => console.error("Error fetching template for editing:", error));
 }
