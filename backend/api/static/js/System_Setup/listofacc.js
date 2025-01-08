@@ -58,37 +58,32 @@ function addAccountRow(account) {
     newRow.innerHTML = `
         <td>${account.AccountCode}</td>
         <td>${account.AccountTypeDesc}</td>
-        <td class="text-center">
-            <div class="dropdown">
-                <button
-                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
-                    type="button"
-                    id="dropdownMenuButton${account.id}"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    <span>Actions</span>
-                    <i class="bi bi-caret-down ms-1"></i>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${account.id}">
-                    <li>
-                        <button
-                            class="dropdown-item text-warning"
-                            type="button"
-                            onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')">
-                            <i class="bi bi-pencil-square me-2"></i>Edit
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            class="dropdown-item text-danger"
-                            type="button"
-                            onclick="deleteAccount(this)">
-                            <i class="bi bi-trash-fill me-2"></i>Delete
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        </td>
+		<td class="text-center align-middle">
+			<div class="dropdown d-inline-block">
+				<button class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between" type="button" id="dropdownMenuButton${account.id}" data-bs-toggle="dropdown" aria-expanded="false">
+					<span>Actions</span>
+					<i class="bi bi-caret-down ms-1"></i>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${account.id}">
+					<li>
+						<button class="dropdown-item text-warning" type="button" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')" style="display: inline-block; transition: transform 0.3s ease-in-out">
+							<span class="hover-zoom-text small" style="display: inline-block; transition: transform 0.3s ease-in-out" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+								<i class="bi bi-pencil-square me-2"></i>
+								Edit
+							</span>
+						</button>
+					</li>
+					<li>
+						<button class="dropdown-item text-danger" type="button" onclick="deleteAccount(this)" style="display: inline-block; transition: transform 0.3s ease-in-out">
+							<span class="hover-zoom-text small" style="display: inline-block; transition: transform 0.3s ease-in-out" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+								<i class="bi bi-trash-fill me-2"></i>
+								Delete
+							</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</td>
     `;
     tableBody.appendChild(newRow); // Append the new row to the table
 }
