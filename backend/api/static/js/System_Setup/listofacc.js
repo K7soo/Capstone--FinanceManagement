@@ -58,32 +58,49 @@ function addAccountRow(account) {
     newRow.innerHTML = `
         <td>${account.AccountCode}</td>
         <td>${account.AccountTypeDesc}</td>
-		<td class="text-center align-middle">
-			<div class="dropdown d-inline-block">
-				<button class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between" type="button" id="dropdownMenuButton${account.id}" data-bs-toggle="dropdown" aria-expanded="false">
-					<span>Actions</span>
-					<i class="bi bi-caret-down ms-1"></i>
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${account.id}">
-					<li>
-						<button class="dropdown-item text-warning" type="button" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')" style="display: inline-block; transition: transform 0.3s ease-in-out">
-							<span class="hover-zoom-text small" style="display: inline-block; transition: transform 0.3s ease-in-out" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-								<i class="bi bi-pencil-square me-2"></i>
-								Edit
-							</span>
-						</button>
-					</li>
-					<li>
-						<button class="dropdown-item text-danger" type="button" onclick="deleteAccount(this)" style="display: inline-block; transition: transform 0.3s ease-in-out">
-							<span class="hover-zoom-text small" style="display: inline-block; transition: transform 0.3s ease-in-out" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-								<i class="bi bi-trash-fill me-2"></i>
-								Delete
-							</span>
-						</button>
-					</li>
-				</ul>
-			</div>
-		</td>
+        <td class="text-center align-middle">
+            <div class="dropdown d-inline-block">
+                <button class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+                        type="button" 
+                        id="dropdownMenuButton${account.id}" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false">
+                    <span>Menu</span>
+                    <i class="bi bi-caret-down ms-1"></i>
+                </button>
+                <ul class="dropdown-menu p-1" aria-labelledby="dropdownMenuButton${account.id}">
+                    <li>
+                        <button class="dropdown-item d-flex align-items-center gap-1 py-2 px-3 rounded " 
+                                type="button" 
+                                onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')" 
+                                style="transition: background-color 0.3s ease-in-out;">
+                            <span class="hover-zoom-text small" style="display: inline-flex; align-items: center; transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;" 
+                                    onmouseover="this.querySelector('.bi').style.color='#ffc107'; this.style.color='#ffc107'; this.style.transform='scale(1.1)'" 
+                                    onmouseout="this.querySelector('.bi').style.color='#ffc107'; this.style.color='#6c757d'; this.style.transform='scale(1)'">
+                                <i class="bi bi-pencil-square text-warning" 
+                                    style="transition: color 0.3s ease-in-out; margin-right: 0.5rem;"></i>
+                                Edit
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item d-flex align-items-center gap-2 py-2 px-3 rounded" 
+                                type="button" 
+                                onclick="deleteAccount(this)" 
+                                style="transition: background-color 0.3s ease-in-out;">
+                            <span class="hover-zoom-text small" style="display: inline-flex; align-items: center; transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;" 
+                                    onmouseover="this.querySelector('.bi').style.color='#dc3545'; this.style.color='#dc3545'; this.style.transform='scale(1.1)'" 
+                                    onmouseout="this.querySelector('.bi').style.color='#dc3545'; this.style.color='#6c757d'; this.style.transform='scale(1)'">
+                                <i class="bi bi-trash-fill text-danger" 
+                                    style="transition: color 0.3s ease-in-out; margin-right: 0.5rem;"></i>
+                                Delete
+                            </span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </td>
+
     `;
     tableBody.appendChild(newRow); // Append the new row to the table
 }
@@ -130,7 +147,7 @@ addAccountForm.addEventListener('submit', (event) => {
         })
         .then(createdAccount => {
             console.log("Account successfully added:", createdAccount);
-            
+
             // Add the new row using the reusable function
             addAccountRow(createdAccount);
 
