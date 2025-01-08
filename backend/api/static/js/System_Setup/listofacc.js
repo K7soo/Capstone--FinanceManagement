@@ -29,34 +29,78 @@ document.addEventListener("DOMContentLoaded", () => {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to load accounts: ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(accounts => {
-        console.log("Fetched accounts data:", accounts);
-        tableBody.innerHTML = ""; // Clear existing rows to avoid duplicates
-        accounts.forEach(account => {
-            console.log("Adding row for account:", account);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load accounts: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(accounts => {
+            console.log("Fetched accounts data:", accounts);
+            tableBody.innerHTML = ""; // Clear existing rows to avoid duplicates
+            accounts.forEach(account => {
+                console.log("Adding row for account:", account);
 
-            // Create new rows
-            const newRow = document.createElement('tr');
-            newRow.setAttribute('data-id', account.id);
-            newRow.innerHTML = `
-                <td>${account.AccountCode}</td>
-                <td>${account.AccountTypeDesc}</td>
-                <td class="text-center">
-                    <button class="btn btn-warning btn-sm" onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')">EDIT</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteAccount(this)">DELETE</button>
-                </td>
-            `;
-            tableBody.appendChild(newRow);
-        });
-    })
-    .catch(error => console.error('Error fetching accounts:', error));
+                // Create new rows
+                addAccountRow(account); // Use the reusable function
+            });
+
+            // Reinitialize dropdowns for all rows
+            initializeDropdowns();
+        })
+        .catch(error => console.error('Error fetching accounts:', error));
 });
+
+// Function to add a new row for an account
+function addAccountRow(account) {
+    const newRow = document.createElement('tr');
+    newRow.setAttribute('data-id', account.id);
+    newRow.innerHTML = `
+        <td>${account.AccountCode}</td>
+        <td>${account.AccountTypeDesc}</td>
+        <td class="text-center">
+            <div class="dropdown">
+                <button
+                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+                    type="button"
+                    id="dropdownMenuButton${account.id}"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <span>Actions</span>
+                    <i class="bi bi-caret-down ms-1"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${account.id}">
+                    <li>
+                        <button
+                            class="dropdown-item text-warning"
+                            type="button"
+                            onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')">
+                            <i class="bi bi-pencil-square me-2"></i>Edit
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            class="dropdown-item text-danger"
+                            type="button"
+                            onclick="deleteAccount(this)">
+                            <i class="bi bi-trash-fill me-2"></i>Delete
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    `;
+    tableBody.appendChild(newRow); // Append the new row to the table
+}
+
+// Function to initialize all Bootstrap dropdowns
+function initializeDropdowns() {
+    console.log("Reinitializing Bootstrap dropdowns...");
+    const dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+    dropdownElements.forEach(dropdown => {
+        new bootstrap.Dropdown(dropdown); // Initialize each dropdown
+    });
+}
 
 // ADD NEW ACCOUNT with validation
 addAccountForm.addEventListener('submit', (event) => {
@@ -83,30 +127,28 @@ addAccountForm.addEventListener('submit', (event) => {
         },
         body: JSON.stringify(newAccount),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to add account: ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(createdAccount => {
-        console.log("Account successfully added:", createdAccount);
-        const newRow = document.createElement('tr');
-        newRow.setAttribute('data-id', createdAccount.id);
-        newRow.innerHTML = `
-            <td>${createdAccount.AccountCode}</td>
-            <td>${createdAccount.AccountTypeDesc}</td>
-            <td class="text-center">
-                <button class="btn btn-warning btn-sm" onclick="openEditModal('${createdAccount.id}', '${createdAccount.AccountCode}', '${createdAccount.AccountTypeDesc}')">EDIT</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteAccount(this)">DELETE</button>
-            </td>
-        `;
-        tableBody.appendChild(newRow);
-        addAccountForm.reset();
-        bootstrap.Modal.getInstance(document.getElementById('addAccountModal')).hide();
-    })
-    .catch(error => console.error('Failed to add account:', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add account: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(createdAccount => {
+            console.log("Account successfully added:", createdAccount);
+            
+            // Add the new row using the reusable function
+            addAccountRow(createdAccount);
+
+            // Reinitialize dropdowns after adding the new row
+            initializeDropdowns();
+
+            // Reset the form and close the modal
+            addAccountForm.reset();
+            bootstrap.Modal.getInstance(document.getElementById('addAccountModal')).hide();
+        })
+        .catch(error => console.error('Failed to add account:', error));
 });
+
 
 // Function to open the Edit Account modal with account details populated
 function openEditModal(id, code, description) {
@@ -118,7 +160,7 @@ function openEditModal(id, code, description) {
 }
 
 // UPDATE with validation
-editAccountForm.addEventListener('submit', function(event) {
+editAccountForm.addEventListener('submit', function (event) {
     event.preventDefault();
 
     const accountId = document.getElementById('EditAccountId').value;
@@ -140,23 +182,23 @@ editAccountForm.addEventListener('submit', function(event) {
         },
         body: JSON.stringify(updatedAccount),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to update account: ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(updatedData => {
-        console.log("Account successfully updated:", updatedData);
-        const row = document.querySelector(`tr[data-id="${accountId}"]`);
-        if (row) {
-            row.cells[0].textContent = updatedData.AccountCode;
-            row.cells[1].textContent = updatedData.AccountTypeDesc;
-        }
-        editAccountForm.reset();
-        bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
-    })
-    .catch(error => console.error('Failed to update account:', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update account: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(updatedData => {
+            console.log("Account successfully updated:", updatedData);
+            const row = document.querySelector(`tr[data-id="${accountId}"]`);
+            if (row) {
+                row.cells[0].textContent = updatedData.AccountCode;
+                row.cells[1].textContent = updatedData.AccountTypeDesc;
+            }
+            editAccountForm.reset();
+            bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
+        })
+        .catch(error => console.error('Failed to update account:', error));
 });
 
 // DELETE
@@ -170,13 +212,13 @@ function deleteAccount(button) {
             'X-CSRFToken': csrfToken,
         },
     })
-    .then(response => {
-        if (response.status === 204) {
-            console.log("Account successfully deleted.");
-            row.remove();
-        } else {
-            console.error('Failed to delete account:', response.statusText);
-        }
-    })
-    .catch(error => console.error('Error deleting account:', error));
+        .then(response => {
+            if (response.status === 204) {
+                console.log("Account successfully deleted.");
+                row.remove();
+            } else {
+                console.error('Failed to delete account:', response.statusText);
+            }
+        })
+        .catch(error => console.error('Error deleting account:', error));
 }
