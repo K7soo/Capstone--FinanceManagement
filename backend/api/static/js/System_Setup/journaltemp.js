@@ -321,39 +321,41 @@ function addTemplateRow() {
     console.log("Adding row to template");
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
-        <td>
-            <select class="form-select account-code">
-                <option value="">Select Account</option>
-                ${window.chartOfAccounts
-            .map(
-                (account) => `
-                    <option value="${account.id}">${account.AccountDesc}</option>
-                `
-            )
-            .join("")}
-            </select>
-        </td>
             <td>
-                <div class="form-check">
+                <select class="form-select account-code">
+                    <option value="">Select Account</option>
+                    ${window.chartOfAccounts
+                .map(
+                    (account) => `
+                        <option value="${account.id}">${account.AccountDesc}</option>
+                    `
+                )
+                .join("")}
+                </select>
+            </td>
+            <td>
+                <div class="form-check d-flex justify-content-center align-items-center">
                     <input 
                         type="checkbox" 
-                        class="form-check-input debit-checkbox" 
+                        class="form-check-input"
+                        style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                         onchange="toggleDebitCredit(this, 'debit')" 
                         id="debitCheckbox">
-                    <label class="form-check-label" for="debitCheckbox">Debit</label>
+                    <label class="form-check-label" for="debitCheckbox"></label>
                 </div>
             </td>
             <td>
-                <div class="form-check">
+                <div class="form-check d-flex justify-content-center align-items-center">
                     <input 
                         type="checkbox" 
-                        class="form-check-input credit-checkbox" 
+                        class="form-check-input"
+                        style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                         onchange="toggleDebitCredit(this, 'credit')" 
                         id="creditCheckbox">
-                    <label class="form-check-label" for="creditCheckbox">Credit</label>
+                    <label class="form-check-label" for="creditCheckbox"></label>
                 </div>
             </td>
-            <td>
+            <td class="text-center align-middle">
                 <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
                     <i class="bi bi-trash"></i> Remove
                 </button>
