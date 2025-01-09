@@ -352,6 +352,8 @@ function addTemplateRow(containerId = "templateRows") {
                 <input 
                     type="checkbox" 
                     class="form-check-input debit-checkbox" 
+                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+
                     onchange="toggleDebitCredit(this, 'debit')" 
                 />
             </div>
@@ -361,6 +363,7 @@ function addTemplateRow(containerId = "templateRows") {
                 <input 
                     type="checkbox" 
                     class="form-check-input credit-checkbox" 
+                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                     onchange="toggleDebitCredit(this, 'credit')" 
                 />
             </div>
