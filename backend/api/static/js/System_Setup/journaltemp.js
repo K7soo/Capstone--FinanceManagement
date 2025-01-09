@@ -517,7 +517,6 @@ function editTemplate(templateId) {
             // Clear and populate the template details section
             const editTemplateRowsContainer = document.getElementById("editTemplateRows");
             editTemplateRowsContainer.innerHTML = ""; // Clear existing rows
-
             if (details && details.length > 0) {
                 details.forEach((detail) => {
                     const newRow = document.createElement("tr");
@@ -527,39 +526,50 @@ function editTemplate(templateId) {
                             <select class="form-select account-code">
                                 <option value="">Select Account</option>
                                 ${window.chartOfAccounts
-                            .map(
-                                (account) => `
-                                    <option value="${account.id}" ${account.id === detail.Account_FK ? "selected" : ""}>
-                                        ${account.AccountDesc}
-                                    </option>
-                                `
-                            )
-                            .join("")}
+                                    .map(
+                                        (account) => `
+                                            <option value="${account.id}" ${account.id === detail.Account_FK ? "selected" : ""}>
+                                                ${account.AccountDesc}
+                                            </option>
+                                        `
+                                    )
+                                    .join("")}
                             </select>
                         </td>
                         <td>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input debit-checkbox" id="debit-${detail.Account_FK}" ${detail.Debit > 0 ? "checked" : ""}>
-                                <label class="form-check-label" for="debit-${detail.Account_FK}"></label>
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input debit-checkbox" 
+                                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                                    id="debit-${detail.Account_FK}" 
+                                    ${detail.Debit > 0 ? "checked" : ""}
+                                />
                             </div>
                         </td>
                         <td>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input credit-checkbox" id="credit-${detail.Account_FK}" ${detail.Credit > 0 ? "checked" : ""}>
-                                <label class="form-check-label" for="credit-${detail.Account_FK}"></label>
+                            <div class="form-check d-flex justify-content-center align-items-center">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input credit-checkbox" 
+                                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                                    id="credit-${detail.Account_FK}" 
+                                    ${detail.Credit > 0 ? "checked" : ""}
+                                />
                             </div>
                         </td>
-                        <td>
+                        <td class="text-center align-middle">
                             <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
                                 <i class="bi bi-trash"></i> Remove
                             </button>
                         </td>
-                `;
+                    `;
                     editTemplateRowsContainer.appendChild(newRow);
                 });
             } else {
                 console.warn("No details found for this template.");
             }
+            
 
             // Show the edit modal
             const editModal = new bootstrap.Modal(document.getElementById("editTemplateModal"));
