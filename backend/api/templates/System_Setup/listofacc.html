@@ -17,7 +17,8 @@
 	<div class="card shadow-sm">
 		<div class="card-body">
 			<div class="d-flex justify-content-between mb-3">
-				<button class="btn btn-primary" style="background-color: #6f42c1; border-color: #6f42c1" data-bs-toggle="modal" data-bs-target="#addAccountModal">ADD ACCOUNT</button>
+				<button class="btn btn-primary" style="background-color: #6f42c1; border-color: #6f42c1"
+					data-bs-toggle="modal" data-bs-target="#addAccountModal">ADD ACCOUNT</button>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-bordered table-hover text-center">
@@ -59,13 +60,24 @@
 					</div>
 					<div class="mb-3">
 						<label for="AccountTypeDesc" class="form-label">Account Description:</label>
-						<textarea id="AccountTypeDesc" class="form-control" name="AccountTypeDesc" rows="3" required></textarea>
+						<textarea id="AccountTypeDesc" class="form-control" name="AccountTypeDesc" rows="3"
+							required></textarea>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-					<button type="submit" class="btn btn-primary">Add Account</button>
-				</div>
+					<button type="reset" class="btn" data-bs-dismiss="modal"
+						style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;"
+						onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+						onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+						Cancel
+					</button>
+
+					<button type="submit" class="btn"
+						style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;"
+						onmouseover="this.style.backgroundColor='#5a3795';"
+						onmouseout="this.style.backgroundColor='#6f42c1';">
+						Add Account
+					</button>
 			</form>
 		</div>
 	</div>
@@ -87,7 +99,8 @@
 					</div>
 					<div class="mb-3">
 						<label for="EditAccountTypeDesc" class="form-label">Account Description:</label>
-						<textarea id="EditAccountTypeDesc" class="form-control" name="EditAccountTypeDesc" rows="3" required></textarea>
+						<textarea id="EditAccountTypeDesc" class="form-control" name="EditAccountTypeDesc" rows="3"
+							required></textarea>
 					</div>
 					<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
 					<input type="hidden" id="EditAccountId" name="EditAccountId" />
