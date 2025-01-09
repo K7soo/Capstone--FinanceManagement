@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelButton = document.querySelector('[data-bs-dismiss="modal"]');
     const accountsTableBody = document.querySelector('#accounting-entries table tbody');
     const addTemplateSelect = document.getElementById('addTemplate');
-    const transactionTypeSelect = document.getElementById('transactionType');
 
     const transactionTypeMap = {}; // Map for TransactionType IDs to names
 
@@ -104,29 +103,31 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         ])
             .then(([chartOfAccounts, templateData]) => {
+                const transactionTypeSelect = document.getElementById('transactionType');
+                const accountsTableBody = document.querySelector('#accounting-entries table tbody');
+
                 if (!transactionTypeSelect || !accountsTableBody) {
-                    console.error('Transaction Type Select or Accounts Table Body element not found');
+                    console.error('Transaction Type or Accounts Table Body element not found');
                     return;
                 }
-                transactionTypeSelect.innerHTML = `<option value="${templateData.template.TransactionType_FK}">${transactionTypeMap[templateData.template.TransactionType_FK] || 'Unknown'}</option>`;
+
+                // Convert transaction type dropdown to a readonly, greyed-out textbox without cursor
+                const transactionTypeName = transactionTypeMap[templateData.template.TransactionType_FK] || 'Unknown';
+                transactionTypeSelect.outerHTML = `<input type="text" id="transactionType" class="form-control text-muted"; background-color: #e9ecef;" value="${transactionTypeName}" disabled />`;
 
                 accountsTableBody.innerHTML = ''; // Clear existing rows
 
                 const detailAccounts = templateData.details || [];
                 detailAccounts.forEach(detail => {
-                    const accountOptions = chartOfAccounts.map(account => `
-                        <option value="${account.id}" ${account.id === detail.Account_FK ? 'selected' : ''}>${account.AccountDesc}</option>
-                    `).join('');
+                    const accountDesc = chartOfAccounts.find(account => account.id === detail.Account_FK)?.AccountDesc || 'Unknown';
 
                     const newRow = document.createElement('tr');
                     newRow.innerHTML = `
                         <td>
-                            <select class="form-select account-dropdown">
-                                ${accountOptions}
-                            </select>
+                            <input type="text" class="form-control text-muted"; background-color: #e9ecef;" value="${accountDesc}" disabled />
                         </td>
-                        <td><input type="text" class="form-control debit-input" value="${detail.Debit}" ${detail.Debit > 0 ? '' : 'disabled'} /></td>
-                        <td><input type="text" class="form-control credit-input" value="${detail.Credit}" ${detail.Credit > 0 ? '' : 'disabled'} /></td>
+                        <td><input type="text" class="form-control debit-input" value="${detail.Debit > 0 ? '' : ''}" ${detail.Debit > 0 ? '' : 'disabled'} /></td>
+                        <td><input type="text" class="form-control credit-input" value="${detail.Credit > 0 ? '' : ''}" ${detail.Credit > 0 ? '' : 'disabled'} /></td>
                     `;
                     accountsTableBody.appendChild(newRow);
                 });
@@ -140,7 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
             loadTemplateDetails(selectedTemplateId);
         } else {
             if (accountsTableBody) accountsTableBody.innerHTML = '';
-            if (transactionTypeSelect) transactionTypeSelect.innerHTML = '<option value="">Select Transaction Type</option>';
+            const transactionTypeTextbox = document.getElementById('transactionType');
+            if (transactionTypeTextbox) transactionTypeTextbox.outerHTML = '<input type="text" id="transactionType" class="form-control text-muted" style="cursor: not-allowed; background-color: #e9ecef;" value="" readonly />';
         }
     });
 
