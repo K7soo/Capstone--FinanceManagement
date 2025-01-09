@@ -266,8 +266,16 @@ addTemplateForm.addEventListener("submit", (event) => {
             const templateRows = document.querySelectorAll("#templateRows tr");
             templateRows.forEach((row) => {
                 const accountCode = row.querySelector(".account-code").value;
-                const debitChecked = row.querySelector(".debit-checkbox").checked;
-                const creditChecked = row.querySelector(".credit-checkbox").checked;
+                const debitCheckbox = row.querySelector(".debit-checkbox");
+                const creditCheckbox = row.querySelector(".credit-checkbox");
+
+                if (!accountCode || (!debitCheckbox && !creditCheckbox)) {
+                    console.warn("Row contains invalid or incomplete data.");
+                    return;
+                }
+
+                const debitChecked = debitCheckbox.checked;
+                const creditChecked = creditCheckbox.checked;
 
                 const newTemplateDetail = {
                     Template_FK: createdTemplate.id,
@@ -317,63 +325,76 @@ addTemplateForm.addEventListener("submit", (event) => {
 });
 
 // Add a row to the template (modal)
-function addTemplateRow() {
+function addTemplateRow(containerId = "templateRows") {
     console.log("Adding row to template");
+    const templateRowsContainer = document.getElementById(containerId);
+    if (!templateRowsContainer) {
+        console.error(`Container ${containerId} not found.`);
+        return;
+    }
+
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
-            <td>
-                <select class="form-select account-code">
-                    <option value="">Select Account</option>
-                    ${window.chartOfAccounts
-                .map(
-                    (account) => `
-                        <option value="${account.id}">${account.AccountDesc}</option>
-                    `
-                )
-                .join("")}
-                </select>
-            </td>
-            <td>
-                <div class="form-check d-flex justify-content-center align-items-center">
-                    <input 
-                        type="checkbox" 
-                        class="form-check-input"
-                        style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
-                        onchange="toggleDebitCredit(this, 'debit')" 
-                        id="debitCheckbox">
-                    <label class="form-check-label" for="debitCheckbox"></label>
-                </div>
-            </td>
-            <td>
-                <div class="form-check d-flex justify-content-center align-items-center">
-                    <input 
-                        type="checkbox" 
-                        class="form-check-input"
-                        style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
-                        onchange="toggleDebitCredit(this, 'credit')" 
-                        id="creditCheckbox">
-                    <label class="form-check-label" for="creditCheckbox"></label>
-                </div>
-            </td>
-            <td class="text-center align-middle">
-                <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
-                    <i class="bi bi-trash"></i> Remove
-                </button>
-            </td>
+        <td>
+            <select class="form-select account-code">
+                <option value="">Select Account</option>
+                ${window.chartOfAccounts
+                    .map(
+                        (account) => `
+                            <option value="${account.id}">${account.AccountDesc}</option>
+                        `
+                    )
+                    .join("")}
+            </select>
+        </td>
+        <td>
+            <div class="form-check d-flex justify-content-center align-items-center">
+                <input 
+                    type="checkbox" 
+                    class="form-check-input debit-checkbox" 
+                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                    onchange="toggleDebitCredit(this, 'debit')" 
+                />
+            </div>
+        </td>
+        <td>
+            <div class="form-check d-flex justify-content-center align-items-center">
+                <input 
+                    type="checkbox" 
+                    class="form-check-input credit-checkbox" 
+                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                    onchange="toggleDebitCredit(this, 'credit')" 
+                />
+            </div>
+        </td>
+        <td class="text-center align-middle">
+            <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
+                <i class="bi bi-trash"></i> Remove
+            </button>
+        </td>
     `;
     templateRowsContainer.appendChild(newRow);
 }
-window.addTemplateRow = addTemplateRow;
 
-// Ensure only one of Debit or Credit can be checked
 function toggleDebitCredit(checkbox, type) {
     const row = checkbox.closest("tr");
-    if (type === "debit") {
-        row.querySelector(".credit-checkbox").checked = !checkbox.checked;
-    } else if (type === "credit") {
-        row.querySelector(".debit-checkbox").checked = !checkbox.checked;
+    if (!row) {
+        console.error("Row not found for the checkbox");
+        return;
+    }
+
+    const debitCheckbox = row.querySelector(".debit-checkbox");
+    const creditCheckbox = row.querySelector(".credit-checkbox");
+
+    if (type === "debit" && creditCheckbox) {
+        creditCheckbox.checked = !checkbox.checked;
+    } else if (type === "credit" && debitCheckbox) {
+        debitCheckbox.checked = !checkbox.checked;
+    } else {
+        console.error("Checkbox elements are missing in the row.");
     }
 }
+
 
 function viewTemplate(templateId) {
     console.log("Viewing template:", templateId);
@@ -407,15 +428,20 @@ function viewTemplate(templateId) {
 
             if (details && details.length > 0) {
                 details.forEach((detail) => {
-                    const debit = parseFloat(detail.Debit) || 0; // Ensure Debit is a number
-                    const credit = parseFloat(detail.Credit) || 0; // Ensure Credit is a number
+                    const account = window.chartOfAccounts.find(acc => acc.id === detail.Account_FK);
+                    const accountCode = account ? account.AccountCode : "Unknown";
+                    const accountDesc = account ? account.AccountDesc : "Unknown";
 
                     const newRow = document.createElement("tr");
                     newRow.innerHTML = `
-                        <td>${detail.Account_FK}</td>
-                        <td>${window.accountMap[detail.Account_FK] || "Unknown"}</td>
-                        <td>${debit.toFixed(2)}</td>
-                        <td>${credit.toFixed(2)}</td>
+                        <td>${accountCode}</td>
+                        <td>${accountDesc}</td>
+                        <td>
+                            <input type="checkbox" ${detail.Debit > 0 ? "checked" : ""} disabled />
+                        </td>
+                        <td>
+                            <input type="checkbox" ${detail.Credit > 0 ? "checked" : ""} disabled />
+                        </td>
                     `;
                     viewTemplateRows.appendChild(newRow);
                 });
@@ -430,10 +456,10 @@ function viewTemplate(templateId) {
             // Use Bootstrap modal API to show the modal
             const viewModal = new bootstrap.Modal(document.getElementById("viewTemplateModal"));
             viewModal.show();
-            viewModal.hide(); // This hides the modal and removes the backdrop.
         })
         .catch((error) => console.error("Error viewing template:", error));
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
     // Close modal logic is handled by Bootstrap automatically
@@ -514,13 +540,13 @@ function editTemplate(templateId) {
                         <td>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input debit-checkbox" id="debit-${detail.Account_FK}" ${detail.Debit > 0 ? "checked" : ""}>
-                                <label class="form-check-label" for="debit-${detail.Account_FK}">Debit</label>
+                                <label class="form-check-label" for="debit-${detail.Account_FK}"></label>
                             </div>
                         </td>
                         <td>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input credit-checkbox" id="credit-${detail.Account_FK}" ${detail.Credit > 0 ? "checked" : ""}>
-                                <label class="form-check-label" for="credit-${detail.Account_FK}">Credit</label>
+                                <label class="form-check-label" for="credit-${detail.Account_FK}"></label>
                             </div>
                         </td>
                         <td>
