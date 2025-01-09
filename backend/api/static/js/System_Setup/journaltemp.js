@@ -325,11 +325,11 @@ addTemplateForm.addEventListener("submit", (event) => {
 });
 
 // Add a row to the template (modal)
-function addTemplateRow() {
+function addTemplateRow(containerId = "templateRows") {
     console.log("Adding row to template");
-    const templateRowsContainer = document.getElementById("templateRows");
+    const templateRowsContainer = document.getElementById(containerId);
     if (!templateRowsContainer) {
-        console.error("templateRowsContainer element not found.");
+        console.error(`Container ${containerId} not found.`);
         return;
     }
 
@@ -540,13 +540,13 @@ function editTemplate(templateId) {
                         <td>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input debit-checkbox" id="debit-${detail.Account_FK}" ${detail.Debit > 0 ? "checked" : ""}>
-                                <label class="form-check-label" for="debit-${detail.Account_FK}">Debit</label>
+                                <label class="form-check-label" for="debit-${detail.Account_FK}"></label>
                             </div>
                         </td>
                         <td>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input credit-checkbox" id="credit-${detail.Account_FK}" ${detail.Credit > 0 ? "checked" : ""}>
-                                <label class="form-check-label" for="credit-${detail.Account_FK}">Credit</label>
+                                <label class="form-check-label" for="credit-${detail.Account_FK}"></label>
                             </div>
                         </td>
                         <td>
