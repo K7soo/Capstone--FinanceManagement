@@ -326,10 +326,10 @@ addTemplateForm.addEventListener("submit", (event) => {
 
 // Add a row to the template (modal)
 function addTemplateRow(containerId = "templateRows") {
-    console.log("Adding row to template");
+    console.log(`Adding row to container: ${containerId}`);
     const templateRowsContainer = document.getElementById(containerId);
     if (!templateRowsContainer) {
-        console.error(`Container ${containerId} not found.`);
+        console.error(`Container with ID '${containerId}' not found.`);
         return;
     }
 
@@ -352,7 +352,6 @@ function addTemplateRow(containerId = "templateRows") {
                 <input 
                     type="checkbox" 
                     class="form-check-input debit-checkbox" 
-                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                     onchange="toggleDebitCredit(this, 'debit')" 
                 />
             </div>
@@ -362,7 +361,6 @@ function addTemplateRow(containerId = "templateRows") {
                 <input 
                     type="checkbox" 
                     class="form-check-input credit-checkbox" 
-                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                     onchange="toggleDebitCredit(this, 'credit')" 
                 />
             </div>
@@ -383,12 +381,15 @@ function toggleDebitCredit(checkbox, type) {
         return;
     }
 
+    // Locate debit and credit checkboxes within the same row
     const debitCheckbox = row.querySelector(".debit-checkbox");
     const creditCheckbox = row.querySelector(".credit-checkbox");
 
     if (type === "debit" && creditCheckbox) {
+        // Toggle credit checkbox based on debit checkbox
         creditCheckbox.checked = !checkbox.checked;
     } else if (type === "credit" && debitCheckbox) {
+        // Toggle debit checkbox based on credit checkbox
         debitCheckbox.checked = !checkbox.checked;
     } else {
         console.error("Checkbox elements are missing in the row.");
@@ -516,6 +517,7 @@ function editTemplate(templateId) {
 
             // Clear and populate the template details section
             const editTemplateRowsContainer = document.getElementById("editTemplateRows");
+            
             editTemplateRowsContainer.innerHTML = ""; // Clear existing rows
             if (details && details.length > 0) {
                 details.forEach((detail) => {
@@ -619,6 +621,7 @@ function saveEditedTemplate() {
         }
 
         const detail = {
+            Template_FK: parseInt(templateId), // Add Template_FK here
             Account_FK: accountCode,
             Debit: debitChecked ? 1.0 : 0.0,
             Credit: creditChecked ? 1.0 : 0.0,

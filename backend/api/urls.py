@@ -2,14 +2,16 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    # Authentication #
-    path('', views_.admin_login_view, name='home'),
-    path('admin_login/', views_.admin_login_view, name='admin_login'),
+    # Authentication Prototype URL #
+        path('admin_login/', views_.admin_login_view, name='authentication_api'),
     # Exposed API's
-        # RRBS -- Sample URL
+        # RRBS Prototype URL
         path('reservations-view/', views_api.ReservationsView.as_view(), name='reservations_api'),
+        # LogMS Prototype URL
+        path('orders-view/', views_api.OrderManagementView.as_view(), name='logistics_api'),
+        
     # Dashboard #
-    path('dashboard/', views_.dashboard_view, name='dashboard'),
+    path('', views_.dashboard_view, name='dashboard'),
     # List of Accounts
     path('listofacc/', views_listacc.ListOfAccountsView.as_view(), name='listofacc'),
     path('listofacc-change/<int:pk>/', views_listacc.ListOfAccountsChangeView.as_view(), name='list_accounts_change_id'),
@@ -29,7 +31,7 @@ urlpatterns = [
     path('transactiontype/', views_trtype.TransactionTypeView.as_view(), name='transactiontype'),
     path('transactiontype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
     # Transaction Inbox 
-    path('trinbox/', views_.transaction_inbox_view, name='trinbox'),
+        path('trinbox/', views_.transaction_inbox_view, name='trinbox'),
     # Journal Entries 
     path('journalentries/', views_.journal_entries_view, name='journalentries'),
     # JEV Approval 
