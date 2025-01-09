@@ -7,37 +7,127 @@ Dashboard
 {% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+    body {
+        background-color: #f1f1f1;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<h1 class="title">Dashboard</h1>
+    <div class="container mt-5">
+        <h1 class="text" style="color: #6f42c1;">Dashboard</h1>
+        <p>Analytics Overview</p>
 
-<!-- Chart Container -->
-<div class="chart-container">
-    <div id="chart1" class="chart"></div>
-    <div id="chart2" class="chart"></div>
-    <div id="chart3" class="chart"></div>
-</div>
+        <!-- Card 1 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">$69,700 <span class="text-success">↑ 2.2%</span></h5>
+                <p class="card-text">Projects Earnings in April</p>
+                <canvas id="earningsChart" width="400" height="200"></canvas>
+            </div>
+        </div>
 
-<div class="chart-container">
-    <div id="chart1" class="chart"></div>
-    <div id="chart2" class="chart"></div>
-    <div id="chart3" class="chart"></div>
-</div>
+        <!-- Card 2 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">$3,274.94 <span class="text-success">↑ 9.2%</span></h5>
+                <p class="card-text">Avg. Agent Earnings</p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary btn-sm">1d</button>
+                    <button class="btn btn-primary btn-sm">5d</button>
+                    <button class="btn btn-outline-primary btn-sm">1m</button>
+                    <button class="btn btn-outline-primary btn-sm">6m</button>
+                    <button class="btn btn-outline-primary btn-sm">1y</button>
+                </div>
+                <canvas id="agentEarningsChart" width="400" height="200"></canvas>
+            </div>
+        </div>
 
-<div class="chart-container">
-    <div id="chart1" class="chart"></div>
-    <div id="chart2" class="chart"></div>
-    <div id="chart3" class="chart"></div>
-</div>
+        <!-- Card 3 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">$2,420 <span class="text-success">↑ 2.6%</span></h5>
+                <p class="card-text">Average Daily Sales</p>
+                <canvas id="dailySalesChart" width="400" height="200"></canvas>
+            </div>
+        </div>
 
+        <!-- Card 4 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">$3,706 <span class="text-success">↑ 4.5%</span></h5>
+                <p class="card-text">Total Discounted Sales This Month</p>
+                <canvas id="discountedSalesChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
 {% block extra_js %}
-    <!-- Google Charts loader -->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <!-- Link to the external dashboard JavaScript file -->
+
     <script type="text/javascript" src="{% static 'js/Dashboard/dashboard.js' %}"></script>
+    <script>
+        // Earnings Chart
+        const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+        new Chart(earningsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Leaf CRM', 'Mivy App', 'Others'],
+                datasets: [{
+                    data: [7660, 2820, 45257],
+                    backgroundColor: ['#28a745', '#007bff', '#6c757d'],
+                }]
+            },
+        });
+
+        // Avg Agent Earnings Chart
+        const agentEarningsCtx = document.getElementById('agentEarningsChart').getContext('2d');
+        new Chart(agentEarningsCtx, {
+            type: 'line',
+            data: {
+                labels: ['4:30 PM', '11:35 AM', '3:30 PM'],
+                datasets: [{
+                    label: 'Earnings',
+                    data: [2345.45, 756.26, 1756.26],
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderColor: '#007bff',
+                    fill: true,
+                    tension: 0.4,
+                }]
+            }
+        });
+
+        // Daily Sales Chart
+        const dailySalesCtx = document.getElementById('dailySalesChart').getContext('2d');
+        new Chart(dailySalesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [240, 480, 300, 500, 420, 600, 700],
+                    backgroundColor: '#007bff',
+                }]
+            }
+        });
+
+        // Discounted Product Sales Chart
+        const discountedSalesCtx = document.getElementById('discountedSalesChart').getContext('2d');
+        new Chart(discountedSalesCtx, {
+            type: 'line',
+            data: {
+                labels: ['Apr 04', 'Apr 07', 'Apr 10', 'Apr 13', 'Apr 18'],
+                datasets: [{
+                    label: 'Discounted Sales',
+                    data: [330, 340, 350, 360, 370],
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderColor: '#007bff',
+                    fill: true,
+                    tension: 0.4,
+                }]
+            }
+        });
+    </script>
 {% endblock %}
