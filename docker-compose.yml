@@ -1,0 +1,15 @@
+version: "3.10"
+
+services:
+  capstonefinancemanagement:
+    build: ./backend
+    container_name: FinanceManagement
+    volumes:
+      - ./backend:/django
+    ports:
+      - "8000:8000"
+    environment: 
+      - DJANGO_SETTINGS_MODULE=backend.settings
+      - DEBUG=True
+    
+
