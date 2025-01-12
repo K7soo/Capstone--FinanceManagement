@@ -53,24 +53,32 @@ class JournalEntry(models.Model):
 
     # Entry_Status
     EntryStatus_FK = models.ForeignKey(
-        "EntryStatus", on_delete=models.CASCADE, null=False, blank=False, default=1
+        "EntryStatus", on_delete=models.CASCADE, null=True, blank=True
     )
 
     Entry_Date = models.DateField(null=False, blank=False)
     EntryParticulars = models.TextField(null=False, blank=False)
 
-    DebitAmount = models.DecimalField(
-        max_digits=10, decimal_places=2, null=False, blank=False
-    )
-    CreditAmount = models.DecimalField(
-        max_digits=10, decimal_places=2, null=False, blank=False
-    )
-
-    Created_By = models.CharField(max_length=100, null=False, blank=False)
+    Created_By = models.CharField(max_length=100, null=True, blank=True)
     Reviewed_By = models.CharField(max_length=100, null=True, blank=True)
     Review_Remarks = models.CharField(max_length=100, null=True, blank=True)
     Date_Reviewed = models.DateField(null=True, blank=True)
     Date_Cancelled = models.DateField(null=True, blank=True)
+
+
+class JournalEntryDetails(models.Model):
+    JournalEntry_FK = models.ForeignKey(
+        "JournalEntry", on_delete=models.CASCADE, null=False, blank=False
+    )
+    Account_FK = models.ForeignKey(
+        "ChartOfAccs", on_delete=models.CASCADE, null=False, blank=False
+    )
+    DebitAmount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=False, blank=False, default=0.00
+    )
+    CreditAmount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=False, blank=False, default=0.00
+    )
 
 class EntryStatus(models.Model):
     Status_Name = models.TextField(null=False, blank=False)
