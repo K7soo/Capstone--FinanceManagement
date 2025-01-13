@@ -473,6 +473,30 @@ document.addEventListener("DOMContentLoaded", () => {
 // Function to edit a template //
 
 // Open the Edit Template Modal and Load Data
+// Function to toggle Debit and Credit checkboxes
+function toggleDebitCredit(checkbox, type) {
+    const row = checkbox.closest("tr");
+    if (!row) {
+        console.error("Row not found for the checkbox");
+        return;
+    }
+
+    // Locate debit and credit checkboxes within the same row
+    const debitCheckbox = row.querySelector(".debit-checkbox");
+    const creditCheckbox = row.querySelector(".credit-checkbox");
+
+    if (type === "debit" && creditCheckbox) {
+        // Toggle credit checkbox based on debit checkbox
+        creditCheckbox.checked = !checkbox.checked;
+    } else if (type === "credit" && debitCheckbox) {
+        // Toggle debit checkbox based on credit checkbox
+        debitCheckbox.checked = !checkbox.checked;
+    } else {
+        console.error("Checkbox elements are missing in the row.");
+    }
+}
+
+// Open the Edit Template Modal and Load Data
 function editTemplate(templateId) {
     console.log("Editing template:", templateId);
 
@@ -549,6 +573,7 @@ function editTemplate(templateId) {
                                     style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                                     id="debit-${detail.Account_FK}" 
                                     ${detail.Debit > 0 ? "checked" : ""}
+                                    onchange="toggleDebitCredit(this, 'debit')"
                                 />
                             </div>
                         </td>
@@ -560,6 +585,7 @@ function editTemplate(templateId) {
                                     style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                                     id="credit-${detail.Account_FK}" 
                                     ${detail.Credit > 0 ? "checked" : ""}
+                                    onchange="toggleDebitCredit(this, 'credit')"
                                 />
                             </div>
                         </td>
@@ -591,6 +617,11 @@ function editTemplate(templateId) {
         })
         .catch((error) => console.error("Error fetching template for editing:", error));
 }
+
+// Ensure both functions are globally accessible
+window.editTemplate = editTemplate;
+window.toggleDebitCredit = toggleDebitCredit;
+
 
 
 // Ensure this function is globally accessible
