@@ -7,6 +7,11 @@ class JournalEntrySerializer(serializers.ModelSerializer):
         model = JournalEntry
         fields = '__all__'
 
+class JournalEntryDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JournalEntry
+        fields = '__all__'
+
 class EntryStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = EntryStatus

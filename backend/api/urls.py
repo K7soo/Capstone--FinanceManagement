@@ -27,6 +27,9 @@ urlpatterns = [
     path('journaltemplate/<int:pk>/', views_journtemp.JournalTemplateDetailView.as_view(), name='journaltemplatedetail'),
     path('journaltemplatedetails/', views_journtemp.TemplateBodyView.as_view(), name='journaltemplatebody'),
     path('journaltemplatedetails/<int:pk>/', views_journtemp.TemplateBodyDetailView.as_view(), name='journaltemplatebodydetail'),
+    
+    path("entrystatuses/", views_status.EntryStatusListView.as_view(), name="entry_status_list"),
+    path("entry-statuses/<int:pk>/", views_status.EntryStatusDetailView.as_view(), name="entry_status_detail"),
     # Transaction Type
     path('transactiontype/', views_trtype.TransactionTypeView.as_view(), name='transactiontype'),
     path('transactiontype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
