@@ -1,15 +1,20 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import TRTemplate, TRTemplateDetails, TransactionDetails, Transactions, TransactionType, ChartOfAccs, AccountType, Discounts, PaymentGateway, Payments
+from .models import *
 
-class TransactionDetailsSerializer(serializers.ModelSerializer):
+class JournalEntrySerializer(serializers.ModelSerializer):
     class Meta:
-        model = TransactionDetails
+        model = JournalEntry
         fields = '__all__'
 
-class TransactionsSerializer(serializers.ModelSerializer):
+class JournalEntryDetailsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Transactions
+        model = JournalEntry
+        fields = '__all__'
+
+class EntryStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EntryStatus
         fields = '__all__'
 
 class TRTemplateSerializer(serializers.ModelSerializer):
@@ -66,20 +71,6 @@ class AccountTypeSerializer(serializers.ModelSerializer):
             "AccountTypeDesc",
         ]
 
-class DiscountsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Discounts
-        fields = '__all__'
-
-class PaymentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payments
-        fields = '__all__'
-
-class PaymentGatewaySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PaymentGateway
-        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

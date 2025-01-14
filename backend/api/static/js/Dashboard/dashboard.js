@@ -1,60 +1,94 @@
-        // Earnings Chart
-        const earningsCtx = document.getElementById('earningsChart').getContext('2d');
-        new Chart(earningsCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Leaf CRM', 'Mivy App', 'Others'],
-                datasets: [{
-                    data: [7660, 2820, 45257],
-                    backgroundColor: ['#28a745', '#007bff', '#6c757d'],
-                }]
-            },
-        });
-
-        // Avg Agent Earnings Chart
-        const agentEarningsCtx = document.getElementById('agentEarningsChart').getContext('2d');
-        new Chart(agentEarningsCtx, {
-            type: 'line',
-            data: {
-                labels: ['4:30 PM', '11:35 AM', '3:30 PM'],
-                datasets: [{
-                    label: 'Earnings',
-                    data: [2345.45, 756.26, 1756.26],
-                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                    borderColor: '#007bff',
-                    fill: true,
-                    tension: 0.4,
-                }]
+document.addEventListener('DOMContentLoaded', function () {
+    // Income vs Expenses Chart
+    const incomeExpensesCtx = document.getElementById('incomeExpensesChart').getContext('2d');
+    new Chart(incomeExpensesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [
+                {
+                    label: 'Income (₱)',
+                    data: [120000, 130000, 125000, 140000, 150000],
+                    backgroundColor: '#28a745',
+                },
+                {
+                    label: 'Expenses (₱)',
+                    data: [80000, 85000, 90000, 95000, 100000],
+                    backgroundColor: '#dc3545',
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `₱${context.raw.toLocaleString()}`;
+                        }
+                    }
+                }
             }
-        });
+        }
+    });
 
-        // Daily Sales Chart
-        const dailySalesCtx = document.getElementById('dailySalesChart').getContext('2d');
-        new Chart(dailySalesCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                datasets: [{
-                    label: 'Sales',
-                    data: [240, 480, 300, 500, 420, 600, 700],
-                    backgroundColor: '#007bff',
-                }]
-            }
-        });
+    // Outstanding Invoices Chart
+    const outstandingInvoicesCtx = document.getElementById('outstandingInvoicesChart').getContext('2d');
+    new Chart(outstandingInvoicesCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Paid', 'Unpaid', 'Overdue'],
+            datasets: [{
+                data: [70, 20, 10],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+            }]
+        }
+    });
 
-        // Discounted Product Sales Chart
-        const discountedSalesCtx = document.getElementById('discountedSalesChart').getContext('2d');
-        new Chart(discountedSalesCtx, {
-            type: 'line',
-            data: {
-                labels: ['Apr 04', 'Apr 07', 'Apr 10', 'Apr 13', 'Apr 18'],
-                datasets: [{
-                    label: 'Discounted Sales',
-                    data: [330, 340, 350, 360, 370],
-                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                    borderColor: '#007bff',
-                    fill: true,
-                    tension: 0.4,
-                }]
-            }
-        });
+    // Account Balances Chart
+    const accountBalancesCtx = document.getElementById('accountBalancesChart').getContext('2d');
+    new Chart(accountBalancesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Checking', 'Savings', 'Credit'],
+            datasets: [{
+                label: 'Balance (₱)',
+                data: [150000, 100000, 50000],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+            }]
+        }
+    });
+
+    // Cash Flow Chart
+    const cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
+    new Chart(cashFlowCtx, {
+        type: 'line',
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+                label: 'Cash Flow (₱)',
+                data: [20000, 25000, 30000, 40000],
+                borderColor: '#6f42c1',
+                backgroundColor: 'rgba(111, 66, 193, 0.2)',
+                tension: 0.4,
+                fill: true,
+            }]
+        }
+    });
+
+    // Monthly Trends Chart
+    const monthlyTrendsCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
+    new Chart(monthlyTrendsCtx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [{
+                label: 'Revenue (₱)',
+                data: [400000, 420000, 450000, 480000, 500000],
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                tension: 0.4,
+                fill: true,
+            }]
+        }
+    });
+});

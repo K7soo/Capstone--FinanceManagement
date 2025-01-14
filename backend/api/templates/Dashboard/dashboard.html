@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block title %}
-Dashboard
+Bookkeeping Dashboard
 {% endblock %}
 
 {% block extra_css %}
@@ -11,72 +11,96 @@ Dashboard
     body {
         background-color: #f1f1f1;
     }
+
+    .card-title {
+        font-size: 1.5rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+    }
+
+    .chart-container {
+        min-height: 300px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h1 style="color: #6f42c1;">Dashboard</h1>
-    <p>Analytics Overview</p>
+    <h1 style="color: #6f42c1;">Bookkeeping Dashboard</h1>
+    <p>Overview of Financial Data</p>
 
     <div class="row g-4">
-        <!-- Card 1 -->
-        <div class="col-md-6">
+        <!-- Income vs. Expenses (Wide) -->
+        <div class="col-md-8">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <h5 class="card-title">$69,700 <span class="text-success">↑ 2.2%</span></h5>
-                    <p class="card-text">Projects Earnings in April</p>
-                    <canvas id="earningsChart" class="img-fluid"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">$3,274.94 <span class="text-success">↑ 9.2%</span></h5>
-                    <p class="card-text">Avg. Agent Earnings</p>
-                    <div class="d-flex gap-2 mb-3">
-                        <button class="btn btn-outline-primary btn-sm">1d</button>
-                        <button class="btn btn-primary btn-sm">5d</button>
-                        <button class="btn btn-outline-primary btn-sm">1m</button>
-                        <button class="btn btn-outline-primary btn-sm">6m</button>
-                        <button class="btn btn-outline-primary btn-sm">1y</button>
+                    <h5 class="card-title">₱120,000 <span class="text-success">↑ 8.2%</span></h5>
+                    <p class="card-text">Income vs Expenses</p>
+                    <div class="chart-container">
+                        <canvas id="incomeExpensesChart" class="img-fluid"></canvas>
                     </div>
-                    <canvas id="agentEarningsChart" class="img-fluid"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Card 3 -->
-        <div class="col-md-6">
+        <!-- Outstanding Invoices -->
+        <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <h5 class="card-title">$2,420 <span class="text-success">↑ 2.6%</span></h5>
-                    <p class="card-text">Average Daily Sales</p>
-                    <canvas id="dailySalesChart" class="img-fluid"></canvas>
+                    <h5 class="card-title">₱25,000 <span class="text-danger">↓ 2.3%</span></h5>
+                    <p class="card-text">Outstanding Invoices</p>
+                    <div class="chart-container">
+                        <canvas id="outstandingInvoicesChart" class="img-fluid"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Card 4 -->
+        <!-- Account Balances -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <h5 class="card-title">$3,706 <span class="text-success">↑ 4.5%</span></h5>
-                    <p class="card-text">Total Discounted Sales This Month</p>
-                    <canvas id="discountedSalesChart" class="img-fluid"></canvas>
+                    <h5 class="card-title">₱300,000 <span class="text-success">↑ 5.7%</span></h5>
+                    <p class="card-text">Account Balances</p>
+                    <div class="chart-container">
+                        <canvas id="accountBalancesChart" class="img-fluid"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cash Flow -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">₱75,000 <span class="text-success">↑ 3.5%</span></h5>
+                    <p class="card-text">Cash Flow</p>
+                    <div class="chart-container">
+                        <canvas id="cashFlowChart" class="img-fluid"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trends -->
+        <div class="col-md-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">₱500,000 <span class="text-success">↑ 10.3%</span></h5>
+                    <p class="card-text">Monthly Trends</p>
+                    <div class="chart-container">
+                        <canvas id="monthlyTrendsChart" class="img-fluid"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 {% endblock %}
 
 {% block extra_js %}
-
-    <script type="text/javascript" src="{% static 'js/Dashboard/dashboard.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/javascript" src="{% static 'js/Dashboard/dashboard.js' %}"></script>
 {% endblock %}
