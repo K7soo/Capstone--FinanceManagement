@@ -1,25 +1,23 @@
-{% extends 'base.html' %}
-
-{% load static %}
-
-{% block title %}
-Chart of Accounts
-{% endblock %}
-
-{% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% block title %} Chart of Accounts {% endblock %} {% block extra_css %}
 <style>
-    body {
-        background-color: #f1f1f1;
-    }
-</style>
-{% endblock %}
+	body {
+		background-color: #f1f1f1;
+	}
+	.dropdown-menu {
+		z-index: 1060 !important; /* Higher z-index to ensure overlap */
+		position: absolute !important; /* Position the dropdown correctly */
+	}
 
-{% block content %}
+	.table-container {
+		position: relative; /* Ensure relative positioning of the table */
+		overflow: visible !important; /* Prevent dropdown clipping */
+	}
+</style>
+{% endblock %} {% block content %}
 <div class="container mt-5">
-    <h1 class="text" style="color: #6f42c1;">Chart of Accounts</h1>
-    <p>Setup page of charting ledger accounts.</p>
-    <div class="row">
-        <!-- Sidebar -->
+	<h1 class="text" style="color: #6f42c1">Chart of Accounts</h1>
+	<p>Setup page of charting ledger accounts.</p>
+	<!-- <div class="row">
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header text-white"
@@ -28,157 +26,129 @@ Chart of Accounts
                 </div>
                 <div class="card-body">
                     <ul id="fileTree" class="list-group">
-                        <!-- Dynamic file tree content will be inserted here -->
                     </ul>
                 </div>
             </div>
-        </div>
-        <!-- Main Content Section -->
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class=" text-white d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1;">
-                    <button class="btn btn-primary add-chart-btn text-white" data-bs-toggle="modal" data-bs-target="#addChartModal" style="background-color: #6f42c1;  border-color: #6f42c1;">
-                        ADD ACCOUNT
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class=" table table-bordered table-hover text-center table-acc">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Account Code</th>
-                                    <th>Account Description</th>
-                                    <th>Account Type</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for account in accounts %}
-                                <tr>
-                                    <td>{{ account.AccountCode }}</td>
-                                    <td>{{ account.AccountTypeDesc }}</td>
-                                    <td>{{ account.AccountType }}</td>
-                                    <td class="text-center">
-                                        <button class="btn btn-warning btn-sm custom-btn-edit">EDIT</button>
-                                        <button class="btn btn-info btn-sm custom-btn-view">VIEW</button>
-                                        <button class="btn btn-danger btn-sm custom-btn-delete">DELETE</button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </div> -->
+	<!-- Main Content Section -->
+	<!-- <div class="col-md-8"> -->
+	<div class="card shadow-sm">
+		<div class="text-white d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
+			<button class="btn btn-primary add-chart-btn text-white" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 600; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addChartModal">
+				<i class="bi bi-plus"></i>
+				ADD ACCOUNT
+			</button>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover text-center table-acc">
+					<thead class="table-light">
+						<tr>
+							<th>Account Code</th>
+							<th>Account Description</th>
+							<th>Account Type</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for account in accounts %}
+						<tr>
+							<td>{{ account.AccountCode }}</td>
+							<td>{{ account.AccountTypeDesc }}</td>
+							<td>{{ account.AccountType }}</td>
+							<td class="text-center">
+								<button class="btn btn-warning btn-sm custom-btn-edit">EDIT</button>
+								<button class="btn btn-info btn-sm custom-btn-view">VIEW</button>
+								<button class="btn btn-danger btn-sm custom-btn-delete">DELETE</button>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- </div>
+    </div> -->
 </div>
 
 <!-- Add Account Modal -->
 <div class="modal fade" id="addChartModal" tabindex="-1" aria-labelledby="addChartModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addChartModalLabel">Add New Account</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="addChartForm">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="AccountCode" class="form-label">Account Code</label>
-                        <input type="text" id="AccountCode" name="AccountCode" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="AccountDesc" class="form-label">Account Description</label>
-                        <input type="text" id="AccountDesc" name="AccountDesc" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="AccountType" class="form-label">Account Type</label>
-                        <select id="accountType" name="AccountType" class="form-select" required>
-                            <option value="">Select Account Type</option>
-                            <!-- Options will be dynamically populated -->
-                        </select>
-                    </div>
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                </div>
-                <div class="modal-footer">
-					<button type="reset" class="btn" data-bs-dismiss="modal"
-						style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;"
-						onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
-						onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
-						Cancel
-					</button>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addChartModalLabel">Add New Account</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form id="addChartForm">
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="AccountCode" class="form-label">Account Code</label>
+						<input type="text" id="AccountCode" name="AccountCode" class="form-control" required />
+					</div>
+					<div class="mb-3">
+						<label for="AccountDesc" class="form-label">Account Description</label>
+						<input type="text" id="AccountDesc" name="AccountDesc" class="form-control" required />
+					</div>
+					<div class="mb-3">
+						<label for="AccountType" class="form-label">Account Type</label>
+						<select id="accountType" name="AccountType" class="form-select" required>
+							<option value="">Select Account Type</option>
+							<!-- Options will be dynamically populated -->
+						</select>
+					</div>
+					<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+				</div>
+				<div class="modal-footer">
+					<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
 
-					<button type="submit" class="btn"
-						style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;"
-						onmouseover="this.style.backgroundColor='#5a3795';"
-						onmouseout="this.style.backgroundColor='#6f42c1';">
-						Add Account
-					</button>
-                </div>
-            </form>
-        </div>
-    </div>
+					<button type="submit" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Account</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 <!-- Edit Account Modal -->
 <div id="editChartModal" class="modal fade" tabindex="-1" aria-labelledby="editChartModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="editChartModalLabel">Edit Account</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <!-- Modal Body -->
-            <div class="modal-body">
-                <form id="editChartForm">
-                    <div class="mb-3">
-                        <label for="EditAccountCode" class="form-label">Account Code:</label>
-                        <input type="text" id="EditAccountCode" name="AccountCode" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="EditAccountDesc" class="form-label">Account Description:</label>
-                        <input type="text" id="EditAccountDesc" name="AccountDesc" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="EditAccountType" class="form-label">Account Type:</label>
-                        <select id="EditAccountType" class="form-select" name="AccountType" required>
-                            <option value="">Select Account Type</option>
-                            <!-- Options will be dynamically populated -->
-                        </select>
-                    </div>
-                    <input type="hidden" id="EditAccountId" name="id" />
-                </form>
-            </div>
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button type="button" 
-                class="btn" 
-                data-bs-dismiss="modal" 
-                style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;"
-                onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
-                onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
-            Cancel
-        </button>
-        
-        <button type="submit" 
-                form="editChartForm" 
-                class="btn" 
-                style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;"
-                onmouseover="this.style.backgroundColor='#5a3795';"
-                onmouseout="this.style.backgroundColor='#6f42c1';">
-            Save Changes
-        </button>
-        
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h5 class="modal-title" id="editChartModalLabel">Edit Account</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<!-- Modal Body -->
+			<div class="modal-body">
+				<form id="editChartForm">
+					<div class="mb-3">
+						<label for="EditAccountCode" class="form-label">Account Code:</label>
+						<input type="text" id="EditAccountCode" name="AccountCode" class="form-control" required />
+					</div>
+					<div class="mb-3">
+						<label for="EditAccountDesc" class="form-label">Account Description:</label>
+						<input type="text" id="EditAccountDesc" name="AccountDesc" class="form-control" required />
+					</div>
+					<div class="mb-3">
+						<label for="EditAccountType" class="form-label">Account Type:</label>
+						<select id="EditAccountType" class="form-select" name="AccountType" required>
+							<option value="">Select Account Type</option>
+							<!-- Options will be dynamically populated -->
+						</select>
+					</div>
+					<input type="hidden" id="EditAccountId" name="id" />
+				</form>
+			</div>
+			<!-- Modal Footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+
+				<button type="submit" form="editChartForm" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Save Changes</button>
+			</div>
+		</div>
+	</div>
 </div>
 
-
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{% static 'js/System_Setup/chartofacc.js' %}"></script>
 {% endblock %}

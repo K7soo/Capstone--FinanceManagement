@@ -66,7 +66,7 @@ function addAccountRow(account) {
         <td class="text-center align-middle">
             <div class="dropdown d-inline-block">
                 <button 
-                    class="btn btn-secondary btn-sm dropdown-toggle"
+                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
                     type="button"
                     id="dropdownMenuButton${account.id}" 
                     data-bs-toggle="dropdown" 

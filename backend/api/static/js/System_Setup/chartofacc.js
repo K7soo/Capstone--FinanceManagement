@@ -75,50 +75,43 @@ function addRowToTable(account) {
         <td>${account.AccountDesc}</td>
         <td>${accountTypeName}</td>
         <td class="text-center align-middle">
-            <div class="dropdown d-inline-block">
+    <div class="dropdown d-inline-block">
+        <button
+            class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+            type="button"
+            id="dropdownMenuButton${account.id}"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+            <span>MENU</span>
+            <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
+        </button>
+        <ul
+            class="dropdown-menu"
+            aria-labelledby="dropdownMenuButton${account.id}"
+            style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
+            <li>
                 <button
-                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+                    class="dropdown-item text-warning"
                     type="button"
-                    id="dropdownMenuButton${account.id}"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    <span>Actions</span>
-                    <i class="bi bi-caret-down ms-1"></i>
+                    onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountDesc}', '${account.AccountType_FK}')"
+                    style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                    <i class="bi bi-pencil-square me-2"></i>Edit
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${account.id}">
-                    <li>
-                        <button
-                            class="dropdown-item text-warning"
-                            type="button"
-                            onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountDesc}', '${account.AccountType_FK}')"
-                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
-                            <span
-                                class="hover-zoom-text small"
-                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
-                                onmouseover="this.style.transform='scale(1.2)'"
-                                onmouseout="this.style.transform='scale(1)'">
-                                <i class="bi bi-pencil-square me-2"></i>Edit
-                            </span>
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            class="dropdown-item text-danger"
-                            type="button"
-                            onclick="deleteAccount(this)"
-                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
-                            <span
-                                class="hover-zoom-text small"
-                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
-                                onmouseover="this.style.transform='scale(1.2)'"
-                                onmouseout="this.style.transform='scale(1)'">
-                                <i class="bi bi-trash-fill me-2"></i>Delete
-                            </span>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        </td>
+            </li>
+            <li>
+                <button
+                    class="dropdown-item text-danger"
+                    type="button"
+                    onclick="deleteAccount(this)"
+                    style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                    <i class="bi bi-trash-fill me-2"></i>Delete
+                </button>
+            </li>
+        </ul>
+    </div>
+</td>
+
     `;
     // Append the new row to the table body
     tableBody.appendChild(newRow);
@@ -339,101 +332,101 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // remove this if theres a bug
-    document.addEventListener('DOMContentLoaded', function () {
-        const fileTree = document.getElementById('fileTree');
-        // Fetch and populate the file tree with account data
-        function loadFileTree() {
-            fetch('/get-account-types/', {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to load file tree data');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('Fetched data:', data); // Inspect the API response
-                const fileTree = document.getElementById('fileTree');
-                fileTree.innerHTML = ''; // Clear existing tree content
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     const fileTree = document.getElementById('fileTree');
+    //     // Fetch and populate the file tree with account data
+    //     function loadFileTree() {
+    //         fetch('/get-account-types/', {
+    //             method: 'GET',
+    //             headers: {
+    //                 'X-Requested-With': 'XMLHttpRequest',
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         })
+    //         .then((response) => {
+    //             if (!response.ok) {
+    //                 throw new Error('Failed to load file tree data');
+    //             }
+    //             return response.json();
+    //         })
+    //         .then((data) => {
+    //             console.log('Fetched data:', data); // Inspect the API response
+    //             const fileTree = document.getElementById('fileTree');
+    //             fileTree.innerHTML = ''; // Clear existing tree content
 
-                // Create the root node
-                const rootNode = document.createElement('li');
-                rootNode.innerHTML = `<span class="caret">List of Accounts</span>`;
-                const rootNested = document.createElement('ul');
-                rootNested.classList.add('nested');
+    //             // Create the root node
+    //             const rootNode = document.createElement('li');
+    //             rootNode.innerHTML = `<span class="caret">List of Accounts</span>`;
+    //             const rootNested = document.createElement('ul');
+    //             rootNested.classList.add('nested');
 
-                // Populate accounts grouped by AccountName
-                data.forEach((category) => {
-                    if (category.AccountName && Array.isArray(category.Accounts)) {
-                        const categoryNode = document.createElement('li');
-                        categoryNode.innerHTML = `<span class="caret">${category.AccountName}</span>`;
-                        const categoryNested = document.createElement('ul');
-                        categoryNested.classList.add('nested');
+    //             // Populate accounts grouped by AccountName
+    //             data.forEach((category) => {
+    //                 if (category.AccountName && Array.isArray(category.Accounts)) {
+    //                     const categoryNode = document.createElement('li');
+    //                     categoryNode.innerHTML = `<span class="caret">${category.AccountName}</span>`;
+    //                     const categoryNested = document.createElement('ul');
+    //                     categoryNested.classList.add('nested');
 
-                        // Add accounts under each category
-                        category.Accounts.forEach((account) => {
-                            const accountNode = document.createElement('li');
-                            accountNode.innerHTML = `<span>${account.AccountCode} - ${account.AccountDesc}</span>`;
-                            accountNode.classList.add('account-item');
-                            accountNode.dataset.accountId = account.id; // Optional: Use data attributes for future actions
-                            categoryNested.appendChild(accountNode);
-                        });
+    //                     // Add accounts under each category
+    //                     category.Accounts.forEach((account) => {
+    //                         const accountNode = document.createElement('li');
+    //                         accountNode.innerHTML = `<span>${account.AccountCode} - ${account.AccountDesc}</span>`;
+    //                         accountNode.classList.add('account-item');
+    //                         accountNode.dataset.accountId = account.id; // Optional: Use data attributes for future actions
+    //                         categoryNested.appendChild(accountNode);
+    //                     });
 
-                        categoryNode.appendChild(categoryNested);
-                        rootNested.appendChild(categoryNode);
-                    } else {
-                        console.warn('Category has no accounts or is malformed:', category);
-                    }
-                });
+    //                     categoryNode.appendChild(categoryNested);
+    //                     rootNested.appendChild(categoryNode);
+    //                 } else {
+    //                     console.warn('Category has no accounts or is malformed:', category);
+    //                 }
+    //             });
 
-                rootNode.appendChild(rootNested);
-                fileTree.appendChild(rootNode);
+    //             rootNode.appendChild(rootNested);
+    //             fileTree.appendChild(rootNode);
 
-                // Add toggle functionality
-                addToggleFunctionality();
-            })
-            .catch((error) => console.error('Error loading file tree:', error));
-        }
+    //             // Add toggle functionality
+    //             addToggleFunctionality();
+    //         })
+    //         .catch((error) => console.error('Error loading file tree:', error));
+    //     }
 
-        // Add toggle functionality to the file tree
-        function addToggleFunctionality() {
-            const toggler = document.getElementsByClassName('caret');
-            for (let i = 0; i < toggler.length; i++) {
-                toggler[i].addEventListener('click', function () {
-                    const nestedList = this.parentElement.querySelector('.nested');
-                    if (nestedList) {
-                        nestedList.classList.toggle('active');
-                        this.classList.toggle('caret-down');
-                    }
-                });
-            }
-        }
+    //     // Add toggle functionality to the file tree
+    //     function addToggleFunctionality() {
+    //         const toggler = document.getElementsByClassName('caret');
+    //         for (let i = 0; i < toggler.length; i++) {
+    //             toggler[i].addEventListener('click', function () {
+    //                 const nestedList = this.parentElement.querySelector('.nested');
+    //                 if (nestedList) {
+    //                     nestedList.classList.toggle('active');
+    //                     this.classList.toggle('caret-down');
+    //                 }
+    //             });
+    //         }
+    //     }
 
-        // Optional: Add click event to handle account clicks
-        function handleAccountClick(event) {
-            const accountId = event.target.dataset.accountId;
-            if (accountId) {
-                console.log('Account clicked:', accountId);
-                // You can use this to display details, load data, etc.
-                alert(`Account Selected: ${accountId}`);
-            }
-        }
+    //     // Optional: Add click event to handle account clicks
+    //     function handleAccountClick(event) {
+    //         const accountId = event.target.dataset.accountId;
+    //         if (accountId) {
+    //             console.log('Account clicked:', accountId);
+    //             // You can use this to display details, load data, etc.
+    //             alert(`Account Selected: ${accountId}`);
+    //         }
+    //     }
 
-        // Call the function to load the file tree on page load
-        loadFileTree();
+    //     // Call the function to load the file tree on page load
+    //     loadFileTree();
 
-        // Add a global event listener for account clicks
-        const fileTreeContainer = document.getElementById('fileTree');
-        if (fileTreeContainer) {
-            fileTreeContainer.addEventListener('click', event => {
-                if (event.target && event.target.classList.contains('account-item')) {
-                    handleAccountClick(event);
-                }
-            });
-        }
-    });
+    //     // Add a global event listener for account clicks
+    //     const fileTreeContainer = document.getElementById('fileTree');
+    //     if (fileTreeContainer) {
+    //         fileTreeContainer.addEventListener('click', event => {
+    //             if (event.target && event.target.classList.contains('account-item')) {
+    //                 handleAccountClick(event);
+    //             }
+    //         });
+    //     }
+    // });
