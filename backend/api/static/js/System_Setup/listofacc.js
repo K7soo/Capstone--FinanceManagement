@@ -199,33 +199,60 @@ editAccountForm.addEventListener('submit', function (event) {
         return;
     }
 
-    const updatedAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to save the changes?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#6f42c1',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, save it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const updatedAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
 
-    fetch(`/listofacc-change/${accountId}/`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-        },
-        body: JSON.stringify(updatedAccount),
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to update account: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(updatedData => {
-            console.log("Account successfully updated:", updatedData);
-            const row = document.querySelector(`tr[data-id="${accountId}"]`);
-            if (row) {
-                row.cells[0].textContent = updatedData.AccountCode;
-                row.cells[1].textContent = updatedData.AccountTypeDesc;
-            }
-            editAccountForm.reset();
-            bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
-        })
-        .catch(error => console.error('Failed to update account:', error));
+            fetch(`/listofacc-change/${accountId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify(updatedAccount),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update account: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(updatedData => {
+                    console.log("Account successfully updated:", updatedData);
+                    const row = document.querySelector(`tr[data-id="${accountId}"]`);
+                    if (row) {
+                        row.cells[0].textContent = updatedData.AccountCode;
+                        row.cells[1].textContent = updatedData.AccountTypeDesc;
+                    }
+                    editAccountForm.reset();
+                    bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
+
+                    Swal.fire({
+                        title: 'Saved!',
+                        text: 'The changes have been saved.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                })
+                .catch(error => {
+                    console.error('Failed to update account:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to save the changes. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        }
+    });
 });
 
 // DELETE
