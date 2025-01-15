@@ -7,6 +7,16 @@
 		background-color: #f1f1f1;
 		/* Light gray background */
 	}
+	.dropdown-menu {
+    z-index: 1060 !important; /* Higher z-index to ensure overlap */
+    position: absolute !important; /* Position the dropdown correctly */
+}
+
+.table-container {
+    position: relative; /* Ensure relative positioning of the table */
+    overflow: visible !important; /* Prevent dropdown clipping */
+}
+
 </style>
 {% endblock %} {% block content %}
 
@@ -17,8 +27,11 @@
 	<div class="card shadow-sm">
 		<div class="card-body">
 			<div class="d-flex justify-content-between mb-3">
-				<button class="btn btn-primary" style="background-color: #6f42c1; border-color: #6f42c1"
-					data-bs-toggle="modal" data-bs-target="#addAccountModal">ADD ACCOUNT</button>
+				<button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 600; padding: 0.5rem 1rem  0.5rem  0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+					<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
+					<i class="bi bi-plus"></i>
+					ADD ACCOUNT
+				</button>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-bordered table-hover text-center">
@@ -34,8 +47,9 @@
 						<tr>
 							<td>{{ account.AccountCode }}</td>
 							<td>{{ account.AccountTypeDesc }}</td>
-							<td class="text-center">
+							<td class="text-center"></td>
 						</tr>
+
 						{% endfor %}
 					</tbody>
 				</table>
@@ -46,11 +60,11 @@
 
 <!-- Add Account Modal -->
 <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="addAccountModalLabel">Add New Account</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
 			</div>
 			<form id="addAccountForm">
 				<div class="modal-body">
@@ -60,24 +74,13 @@
 					</div>
 					<div class="mb-3">
 						<label for="AccountTypeDesc" class="form-label">Account Description:</label>
-						<textarea id="AccountTypeDesc" class="form-control" name="AccountTypeDesc" rows="3"
-							required></textarea>
+						<textarea id="AccountTypeDesc" class="form-control" name="AccountTypeDesc" rows="3" required></textarea>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="reset" class="btn" data-bs-dismiss="modal"
-						style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;"
-						onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
-						onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
-						Cancel
-					</button>
+					<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
 
-					<button type="submit" class="btn"
-						style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;"
-						onmouseover="this.style.backgroundColor='#5a3795';"
-						onmouseout="this.style.backgroundColor='#6f42c1';">
-						Add Account
-					</button>
+					<button type="submit" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Account</button>
 				</div>
 			</form>
 		</div>
@@ -86,7 +89,7 @@
 
 <!-- Edit Account Modal -->
 <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="editAccountModalLabel">Edit Account</h5>
@@ -100,30 +103,14 @@
 					</div>
 					<div class="mb-3">
 						<label for="EditAccountTypeDesc" class="form-label">Account Description:</label>
-						<textarea id="EditAccountTypeDesc" class="form-control" name="EditAccountTypeDesc" rows="3"
-							required></textarea>
+						<textarea id="EditAccountTypeDesc" class="form-control" name="EditAccountTypeDesc" rows="3" required></textarea>
 					</div>
 					<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
 					<input type="hidden" id="EditAccountId" name="EditAccountId" />
 				</div>
 				<div class="modal-footer">
-					<button type="reset"
-					class="btn btn-secondary"
-					data-bs-dismiss="modal"
-					style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;" 
-					onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" 
-					onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
-				Cancel
-			</button>
-			
-			<button type="submit"
-					class="btn btn-primary"
-					style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease;" 
-					onmouseover="this.style.backgroundColor='#5a3795';" 
-					onmouseout="this.style.backgroundColor='#6f42c1';">
-				Save Changes
-			</button>
-			
+					<button type="reset" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+					<button type="submit" class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Save Changes</button>
 				</div>
 			</form>
 		</div>
