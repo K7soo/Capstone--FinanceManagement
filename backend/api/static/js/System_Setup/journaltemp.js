@@ -357,7 +357,7 @@ function addTemplateRow(containerId = "templateRows") {
         </td>
         <td class="text-center align-middle">
             <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
-                <i class="bi bi-trash"></i> Remove
+                <i class="bi bi-trash"></i>
             </button>
         </td>
     `;
@@ -578,7 +578,7 @@ function editTemplate(templateId) {
                         </td>
                         <td class="text-center align-middle">
                             <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
-                                <i class="bi bi-trash"></i> Remove
+                                <i class="bi bi-trash"></i>
                             </button>
                         </td>
                     `;
