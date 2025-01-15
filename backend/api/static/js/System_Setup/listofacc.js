@@ -53,6 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Function to add a new row for an account
 function addAccountRow(account) {
+    // Check if the row already exists to prevent duplicates
+    if (document.querySelector(`tr[data-id="${account.id}"]`)) {
+        return; // Exit if the row already exists
+    }
+
     const newRow = document.createElement('tr');
     newRow.setAttribute('data-id', account.id);
     newRow.innerHTML = `
@@ -60,28 +65,27 @@ function addAccountRow(account) {
         <td>${account.AccountTypeDesc}</td>
         <td class="text-center align-middle">
             <div class="dropdown d-inline-block">
-                <button class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
-                        type="button" 
-                        id="dropdownMenuButton${account.id}" 
-                        data-bs-toggle="dropdown" 
-                        aria-expanded="false">
-                    <span>Menu</span>
-                    <i class="bi bi-caret-down ms-1"></i>
+                <button 
+                    class="btn btn-secondary btn-sm dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton${account.id}" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                    style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+                    <span>MENU</span>
+                    <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
                 </button>
-                <ul class="dropdown-menu p-1" aria-labelledby="dropdownMenuButton${account.id}">
+                <ul 
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton${account.id}"
+                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
                     <li>
                         <button
                             class="dropdown-item text-warning"
                             type="button"
-                                onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')" 
-                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
-                            <span
-                                class="hover-zoom-text small"
-                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
-                                onmouseover="this.style.transform='scale(1.2)'"
-                                onmouseout="this.style.transform='scale(1)'">
-                                <i class="bi bi-pencil-square me-2"></i>Edit
-                            </span>
+                            onclick="openEditModal('${account.id}', '${account.AccountCode}', '${account.AccountTypeDesc}')"
+                            style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                            <i class="bi bi-pencil-square me-2"></i>Edit
                         </button>
                     </li>
                     <li>
@@ -89,22 +93,15 @@ function addAccountRow(account) {
                             class="dropdown-item text-danger"
                             type="button"
                             onclick="deleteAccount(this)"
-                            style="display: inline-block; transition: transform 0.3s ease-in-out;">
-                            <span
-                                class="hover-zoom-text small"
-                                style="display: inline-block; transition: transform 0.3s ease-in-out;"
-                                onmouseover="this.style.transform='scale(1.2)'"
-                                onmouseout="this.style.transform='scale(1)'">
-                                <i class="bi bi-trash-fill me-2"></i>Delete
-                            </span>
+                            style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                            <i class="bi bi-trash-fill me-2"></i>Delete
                         </button>
                     </li>
                 </ul>
             </div>
         </td>
-
     `;
-    tableBody.appendChild(newRow); // Append the new row to the table
+    tableBody.appendChild(newRow); // Add the new row to the table
 }
 
 // Function to initialize all Bootstrap dropdowns
@@ -236,3 +233,4 @@ function deleteAccount(button) {
         })
         .catch(error => console.error('Error deleting account:', error));
 }
+
