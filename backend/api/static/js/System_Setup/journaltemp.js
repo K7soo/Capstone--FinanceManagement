@@ -146,7 +146,7 @@ function addRowToTable(template) {
             id="dropdownMenuButton${template.id}"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+            style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
             <span>MENU</span>
             <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
         </button>
@@ -159,7 +159,7 @@ function addRowToTable(template) {
                     class="dropdown-item text-info"
                     type="button"
                     onclick="viewTemplate(${template.id})"
-                    style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                    style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
                     <i class="bi bi-eye me-2"></i>View
                 </button>
             </li>
@@ -170,7 +170,7 @@ function addRowToTable(template) {
                     data-bs-toggle="modal"
                     data-bs-target="#editTemplateModal"
                     onclick="editTemplate(${template.id})"
-                    style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                    style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
                     <i class="bi bi-pencil-square me-2"></i>Edit
                 </button>
             </li>
@@ -179,7 +179,7 @@ function addRowToTable(template) {
                     class="dropdown-item text-danger"
                     type="button"
                     onclick="deleteTemplate(${template.id})"
-                    style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                    style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
                     <i class="bi bi-trash-fill me-2"></i>Delete
                 </button>
             </li>

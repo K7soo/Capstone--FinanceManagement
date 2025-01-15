@@ -34,7 +34,7 @@ def jev_approval_view(request):
     return render(request, 'Transaction/jevapproval.html')
 
 def trial_balance_view(request):
-    return render(request, 'trialbalance.html')
+    return render(request, 'Reports/trialbalance.html')
 
 
 def general_journal_view(request):
@@ -60,4 +60,3 @@ def menubar_view(request):
 #bookkeeping sidebar button
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
-

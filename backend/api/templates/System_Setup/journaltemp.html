@@ -40,7 +40,11 @@
 			<div class="card shadow-sm">
 				<div class="card-body">
 					<div class="pb-3">
-						<button class="btn btn-primary text-white btn-add" style="background-color: #6f42c1; border-color: #6f42c1" onclick="openAddTemplateModal()" data-bs-toggle="modal" data-bs-target="#addTemplateModal">ADD JOURNAL TEMPLATE</button>
+						<button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
+							<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
+							<i class="bi bi-plus"></i>
+							ADD JOURNAL ENTRIES
+						</button>
 					</div>
 					<!-- Journal Templates Table -->
 					<table class="table table-bordered table-hover text-center transaction-table">
@@ -65,9 +69,9 @@
 					<form id="addTemplateForm">
 						<div class="modal-header">
 							<h5 class="modal-title" id="addTemplateModalLabel">Add New Journal Template</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
 						</div>
-						<div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+						<div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto">
 							<!-- Template Header Information -->
 							<div class="row mb-3">
 								<div id="templateHeaderSection" class="col-md-6">
@@ -82,7 +86,7 @@
 									</select>
 								</div>
 							</div>
-		
+
 							<hr class="line" />
 							<h5>Attach Accounts to Template</h5>
 							<div class="table-responsive">
@@ -105,16 +109,14 @@
 							<button type="button" class="btn btn-outline-secondary mb-3 btn-add-row" onclick="addTemplateRow()">Add Row</button>
 						</div>
 						<div class="modal-footer">
-							<input type="hidden" id="csrfToken" value="{{ csrf_token }}">
-							<button type="button" class="btn btn-secondary btn-cancel" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary btn-save-template">Save Template</button>
+							<input type="hidden" id="csrfToken" value="{{ csrf_token }}" />
+							<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+							<button  type="submit" class="btn btn-primary btn-save-template" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Journal Entry</button>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
-			
-		
 
 		<!-- Modal for Editing Templates -->
 		<div id="editTemplateModal" class="modal fade" tabindex="-1" aria-labelledby="editTemplateModalLabel" aria-hidden="true">
@@ -123,7 +125,7 @@
 					<form id="editTemplate">
 						<div class="modal-header">
 							<h5 class="modal-title" id="editTemplateModalLabel">Edit Journal Template</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
 						</div>
 						<div class="modal-body">
 							<div class="row mb-3">
@@ -139,7 +141,7 @@
 									</select>
 								</div>
 							</div>
-							
+
 							<h5>Edit Attached Accounts</h5>
 							<div class="table-responsive">
 								<table class="table table-bordered table-hover text-center table-acc">
@@ -159,9 +161,9 @@
 							<button type="button" class="btn btn-outline-secondary mb-3" onclick="addTemplateRow('editTemplateRows')">Add Row</button>
 						</div>
 						<div class="modal-footer">
-							<input type="hidden" id="csrfToken" value="{{ csrf_token }}">
-							<button type="button" class="btn btn-secondary btn-cancel" data-bs-dismiss="modal">Cancel</button>
-							<button type="submit" class="btn btn-primary" onclick="saveEditedTemplate()">Save Changes</button>
+							<input type="hidden" id="csrfToken" value="{{ csrf_token }}" />
+							<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+							<button  type="submit" onclick="saveEditedTemplate()" class="btn btn-primary btn-save-template" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Save Changes</button>
 						</div>
 					</form>
 				</div>
@@ -170,7 +172,7 @@
 
 		<!-- Begin::View Template Modal -->
 		<div id="viewTemplateModal" class="modal fade" tabindex="-1" aria-labelledby="viewTemplateModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg	">
+			<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="viewTemplateModalLabel">View Journal Template</h5>
@@ -201,7 +203,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Close</button>
 					</div>
 				</div>
 			</div>

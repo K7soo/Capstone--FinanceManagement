@@ -1,73 +1,61 @@
-{% extends 'base.html' %}
-
-{% load static %}
-
-{% block title %}
-General Journal
-{% endblock %}
-
-{% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% block title %} General Journal {% endblock %} {% block extra_css %}
 <style>
 	body {
 		background-color: #f1f1f1; /* Light gray background */
-    }
+	}
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="container mt-5">
-    <h1 class="text" style="color: #6f42c1">General Journal</h1>
-    <p>Manage your transactions and journal entries efficiently.</p>
+	<h1 class="text" style="color: #6f42c1">General Journal</h1>
+	<p>Manage your transactions and journal entries efficiently.</p>
 
-    <div class="card shadow-sm mb-4 p-4">
-        <form id="generalLedgerForm">
-            <div class="row g-3">
-                <!-- Specific Account Dropdown -->
-                <div class="col-md-4">
-                    <label for="specificAccount" class="form-label">Transaction Type:</label>
-                    <select id="specificAccount" class="form-select" name="specificAccount" required>
-                        <option value="" selected>Select an option</option>
-                        <option value="asset">Asset</option>
-                        <option value="expense">Expense</option>
-                        <!-- Add more options as needed -->
-                    </select>
-                </div>
+	<div class="card shadow-sm mb-4 p-4">
+		<form id="generalLedgerForm">
+			<div class="row g-3">
+				<!-- Specific Account Dropdown -->
+				<div class="col-md-4">
+					<label for="specificAccount" class="form-label">Transaction Type:</label>
+					<select id="specificAccount" class="form-select" name="specificAccount" required>
+						<option value="" selected>Select an option</option>
+						<option value="asset">Asset</option>
+						<option value="expense">Expense</option>
+						<!-- Add more options as needed -->
+					</select>
+				</div>
 
-                <!-- As of Date -->
-                <div class="col-md-4">
-                    <label for="asOfDate" class="form-label">As of:</label>
-                    <input type="date" id="asOfDate" name="asOfDate" class="form-control" required>
-                </div>
+				<!-- As of Date -->
+				<div class="col-md-4">
+					<label for="asOfDate" class="form-label">As of:</label>
+					<input type="date" id="asOfDate" name="asOfDate" class="form-control" required />
+				</div>
 
-                <!-- Duration Date -->
-                <div class="col-md-4">
-                    <label for="durationDateStart" class="form-label">Duration Date:</label>
-                    <div class="input-group">
-                        <input type="date" id="durationDateStart" name="durationDateStart" class="form-control" required>
-                        <span class="input-group-text">to</span>
-                        <input type="date" id="durationDateEnd" name="durationDateEnd" class="form-control" required>
-                    </div>
-                </div>
-            </div>
+				<!-- Duration Date -->
+				<div class="col-md-4">
+					<label for="durationDateStart" class="form-label">Duration Date:</label>
+					<div class="input-group">
+						<input type="date" id="durationDateStart" name="durationDateStart" class="form-control" required />
+						<span class="input-group-text">to</span>
+						<input type="date" id="durationDateEnd" name="durationDateEnd" class="form-control" required />
+					</div>
+				</div>
+			</div>
 
-            <!-- Buttons -->
-            <div class="mt-4 d-flex justify-content-end gap-3">
-				<button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 600; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#">
+			<!-- Buttons -->
+			<div class="mt-4 d-flex justify-content-end gap-3">
+				<button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#">
 					<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
-					<i class="bi bi-printer"></i>
+					<i class="bi bi-printer me-2"></i>
 					Print
 				</button>
-                <button class="btn btn-success" style="color: white; border: none; border-radius: 8px; font-weight: 600; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease;" data-bs-toggle="modal" data-bs-target="#">
-                    <i class="bi bi-file-earmark-spreadsheet me-2"></i> Export to Excel
+				<button class="btn btn-success" style="color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" data-bs-toggle="modal" data-bs-target="#">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i> 
+                    Export to Excel
                 </button>
-            </div>
-        </form>
-    </div>
+			</div>
+		</form>
+	</div>
 </div>
 
-
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{% static 'js/general_journal.js' %}"></script>
 {% endblock %}

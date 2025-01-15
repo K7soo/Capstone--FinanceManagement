@@ -104,7 +104,7 @@ function addRowToTransactionTable(transactionType) {
                     id="dropdownMenuButton${transactionType.id}"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
-                    style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
                     <span>MENU</span>
                     <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
                 </button>
@@ -119,7 +119,7 @@ function addRowToTransactionTable(transactionType) {
                             data-bs-toggle="modal"
                             data-bs-target="#editTransactionTypeModal"
                             onclick="openEditModal('${transactionType.id}', '${transactionType.TransactionCode}', '${transactionType.TransactionTypeName}', '${transactionType.TransactionTypeDesc}')"
-                            style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
                             <i class="bi bi-pencil-square me-2"></i>Edit
                         </button>
                     </li>
@@ -128,7 +128,7 @@ function addRowToTransactionTable(transactionType) {
                             class="dropdown-item text-danger"
                             type="button"
                             onclick="deleteTransactionType(this)"
-                            style="font-weight: 600; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
                             <i class="bi bi-trash-fill me-2"></i>Delete
                         </button>
                     </li>
