@@ -204,7 +204,7 @@ editAccountForm.addEventListener('submit', function (event) {
         text: 'Do you want to save the changes?',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
+        // confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, save it!'
     }).then((result) => {
