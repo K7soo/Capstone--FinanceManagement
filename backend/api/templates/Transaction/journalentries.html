@@ -27,15 +27,19 @@
 				</div>
 				
 				<!-- Add Journal Entries Button -->
-				<button class="btn btn-primary" id="openAddJournalEntriesModal" data-bs-toggle="modal" data-bs-target="#addJournalEntriesModal">Add Journal Entries</button>
-
+				<!-- <button class="btn btn-primary" id="openAddJournalEntriesModal" data-bs-toggle="modal" data-bs-target="#addJournalEntriesModal">Add Journal Entries</button> -->
+				<button id="openAddJournalEntriesModal" class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addJournalEntriesModal">
+					<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
+					<i class="bi bi-plus"></i>
+					ADD JOURNAL ENTRIES
+				</button>
 				<!-- Add Journal Template Modal -->
 				<div id="addJournalEntriesModal" class="modal fade" tabindex="-1" aria-labelledby="addJournalEntriesModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 						<div class="modal-content">
 							<div class="modal-header">
 								<h5 class="modal-title" id="addJournalEntriesModalLabel">Add Journal Entries</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
 							</div>
 							<div class="modal-body">
 								<!-- Tab Navigation -->
@@ -102,8 +106,8 @@
 							</div>
 							<!-- Modal Footer Actions -->
 							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-								<button id="addEntryBtn" type="submit" class="btn btn-primary" >Add Journal Entry</button>
+								<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+								<button id="addEntryBtn" type="submit" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Journal Entry</button>
 							</div>
 						</div>
 					</div>
