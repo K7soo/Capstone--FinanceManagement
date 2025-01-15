@@ -156,8 +156,24 @@ addAccountForm.addEventListener('submit', (event) => {
             // Reset the form and close the modal
             addAccountForm.reset();
             bootstrap.Modal.getInstance(document.getElementById('addAccountModal')).hide();
+
+            // Show success alert
+            Swal.fire({
+                title: 'Success!',
+                text: 'Account has been successfully added.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
         })
-        .catch(error => console.error('Failed to add account:', error));
+        .catch(error => {
+            console.error('Failed to add account:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to add the account. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
 });
 
 
@@ -233,4 +249,3 @@ function deleteAccount(button) {
         })
         .catch(error => console.error('Error deleting account:', error));
 }
-
