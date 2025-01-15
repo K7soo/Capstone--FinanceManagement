@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import *
 
 class JournalEntrySerializer(serializers.ModelSerializer):
+    TransactionType_FK = serializers.PrimaryKeyRelatedField(queryset = TransactionType.objects.all())
     class Meta:
         model = JournalEntry
         fields = [

@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Convert transaction type dropdown to a readonly, greyed-out textbox without cursor
                 const transactionTypeName = transactionTypeMap[templateData.template.TransactionType_FK] || 'Unknown';
-                transactionTypeSelect.outerHTML = `<input type="text" id="transactionType" class="form-control text-muted"; background-color: #e9ecef;" value="${transactionTypeName}" disabled />`;
+                transactionTypeSelect.outerHTML = `<input type="text" id="transactionType" class="form-control text-muted" style="background-color: #e9ecef;" value="${transactionTypeName}" disabled />`;
 
                 accountsTableBody.innerHTML = ''; // Clear existing rows
 
@@ -124,11 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const newRow = document.createElement('tr');
                     newRow.innerHTML = `
                         <td>
-                            <input type="text" class="form-control text-muted"; background-color: #e9ecef;" value="${accountDesc}" disabled />
+                            <input type="hidden" class="account-id" value="${detail.Account_FK}" />
+                            <input type="text" class="form-control text-muted" style="background-color: #e9ecef;" value="${accountDesc}" disabled />
                         </td>
-                        <td><input type="text" class="form-control debit-input" value="${detail.Debit > 0 ? '' : ''}" ${detail.Debit > 0 ? '' : 'disabled'} /></td>
-                        <td><input type="text" class="form-control credit-input" value="${detail.Credit > 0 ? '' : ''}" ${detail.Credit > 0 ? '' : 'disabled'} /></td>
-                    `;
+                        <td>
+                            <input type="text" class="form-control debit-input" placeholder="" ${detail.Debit > 0 ? '' : 'disabled'} />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control credit-input" placeholder="" ${detail.Credit > 0 ? '' : 'disabled'} />
+                        </td>
+                        `;
                     accountsTableBody.appendChild(newRow);
                 });
             })
@@ -189,5 +194,106 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    function fetchTransactionTypeFromTemplate(templateId) {
+        if (!templateId) {
+            console.error('Template ID is invalid.');
+            return null;
+        }
+
+        // Simulate fetching transaction type from a backend API or dataset
+        const templateDropdown = document.getElementById('addTemplate');
+        const selectedOption = templateDropdown.options[templateDropdown.selectedIndex];
+
+        if (selectedOption?.dataset.transactionType) {
+            const transactionType = parseInt(selectedOption.dataset.transactionType, 10);
+            console.log('TransactionType_FK fetched from template:', transactionType);
+            return transactionType;
+        }
+
+        console.error('TransactionType_FK not found for the selected template.');
+        return null;
+    }
+
+    function addJournalEntry() {
+        const entryCode = document.getElementById('entryCode')?.value || '';
+        const entryDate = document.getElementById('entryDate')?.value || '';
+        const entryDescription = document.getElementById('entryDescription')?.value || '';
+        const selectedTemplate = document.getElementById('addTemplate')?.value || '';
     
+        // Fetch TransactionType_FK from the dynamically updated textbox
+        const transactionTypeFk = fetchTransactionTypeFromTemplate(selectedTemplate);
+    
+        if (!transactionTypeFk) {
+            console.error('TransactionType_FK is required and missing.');
+            alert('Please select a valid template to set the transaction type.');
+            return;
+        }
+    
+        const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
+        const journalDetails = Array.from(accountRows).map(row => {
+            const accountId = row.querySelector('.account-id')?.value || '';
+            const debitInput = row.querySelector('.debit-input')?.value || '0';
+            const creditInput = row.querySelector('.credit-input')?.value || '0';
+
+            return {
+                Account_FK: accountId, // Use the Account ID here
+                DebitAmount: parseFloat(debitInput),
+                CreditAmount: parseFloat(creditInput),
+            };
+        });
+    
+        const data = {
+            journal_entry: {
+                Entry_No: entryCode,
+                Entry_Date: entryDate,
+                EntryParticulars: entryDescription,
+                TRTemplate_FK: selectedTemplate,
+                TransactionType_FK: parseInt(transactionTypeFk, 10), // Ensure it's an integer
+                EntryStatus_FK: 1, // Default to 1
+                Created_By: null, // Nullable for now
+            },
+            journal_details: journalDetails,
+        };
+    
+        console.log('Submitting journal entry:', data); // Debugging log
+    
+        fetch('/journalentries/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        console.error('Error saving journal entry:', err);
+                        throw new Error('Failed to save journal entry');
+                    });
+                }
+                return response.json();
+            })
+            .then(savedEntry => {
+                console.log('Journal entry saved successfully:', savedEntry);
+                alert('Journal entry saved successfully!');
+                document.getElementById('addJournalEntriesModal').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error during fetch operation:', error);
+                alert('An error occurred while saving the journal entry. Please try again.');
+            });
+    }
+
+    document.getElementById('addTemplate').addEventListener('change', function () {
+        const selectedTemplate = this.value;
+        const transactionType = fetchTransactionTypeFromTemplate(selectedTemplate);
+        console.log('TransactionType_FK fetched from template:', transactionType);
+    });
+
+    const addEntryButton = document.getElementById('addEntryBtn');
+    if (addEntryButton) {
+        addEntryButton.addEventListener('click', addJournalEntry);
+    }
 });
