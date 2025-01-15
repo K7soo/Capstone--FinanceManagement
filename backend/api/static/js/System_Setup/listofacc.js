@@ -204,7 +204,7 @@ editAccountForm.addEventListener('submit', function (event) {
         text: 'Do you want to save the changes?',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#6f42c1',
+        confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, save it!'
     }).then((result) => {
@@ -260,19 +260,52 @@ function deleteAccount(button) {
     const row = button.closest('tr');
     const accountId = row.dataset.id;
 
-    fetch(`/listofacc-change/${accountId}/`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRFToken': csrfToken,
-        },
-    })
-        .then(response => {
-            if (response.status === 204) {
-                console.log("Account successfully deleted.");
-                row.remove();
-            } else {
-                console.error('Failed to delete account:', response.statusText);
-            }
-        })
-        .catch(error => console.error('Error deleting account:', error));
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This action cannot be undone!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/listofacc-change/${accountId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+            })
+                .then(response => {
+                    if (response.status === 204) {
+                        console.log("Account successfully deleted.");
+                        row.remove();
+
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'The account has been deleted.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        console.error('Failed to delete account:', response.statusText);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to delete the account. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting account:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while deleting the account.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        }
+    });
 }
