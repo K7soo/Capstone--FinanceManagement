@@ -220,16 +220,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const entryDate = document.getElementById('entryDate')?.value || '';
         const entryDescription = document.getElementById('entryDescription')?.value || '';
         const selectedTemplate = document.getElementById('addTemplate')?.value || '';
-    
+
         // Fetch TransactionType_FK from the dynamically updated textbox
         const transactionTypeFk = fetchTransactionTypeFromTemplate(selectedTemplate);
-    
+
         if (!transactionTypeFk) {
             console.error('TransactionType_FK is required and missing.');
             alert('Please select a valid template to set the transaction type.');
             return;
         }
-    
+
         const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
         const journalDetails = Array.from(accountRows).map(row => {
             const accountId = row.querySelector('.account-id')?.value || '';
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 CreditAmount: parseFloat(creditInput),
             };
         });
-    
+
         const data = {
             journal_entry: {
                 Entry_No: entryCode,
@@ -255,9 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             journal_details: journalDetails,
         };
-    
+
         console.log('Submitting journal entry:', data); // Debugging log
-    
+
         fetch('/journalentries/', {
             method: 'POST',
             headers: {
@@ -284,6 +284,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error during fetch operation:', error);
                 alert('An error occurred while saving the journal entry. Please try again.');
             });
+        const modal = document.getElementById('addJournalEntriesModal');
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+
+        if (bootstrapModal) {
+            bootstrapModal.hide();
+        }
+
     }
 
     document.getElementById('addTemplate').addEventListener('change', function () {
