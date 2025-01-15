@@ -53,7 +53,7 @@ class JournalEntry(models.Model):
 
     # Entry_Status
     EntryStatus_FK = models.ForeignKey(
-        "EntryStatus", on_delete=models.CASCADE, null=True, blank=True
+        "EntryStatus", on_delete=models.CASCADE, null=True, blank=True, default=1
     )
 
     Entry_Date = models.DateField(null=False, blank=False)
