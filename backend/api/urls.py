@@ -38,9 +38,7 @@ urlpatterns = [
     # Journal Entries 
     # path('journalentries/', views_.journal_entries_view, name='journalentries'),
     path("journalentries/", views_journentries.JournalEntryView.as_view(), name="journalentries"),
-    path("journal-entries/<int:pk>/", views_journentries.JournalEntryDetailView.as_view(), name="journal_entry_detail"),
-    path("journal-entry-details/", views_journentries.JournalEntryDetailsView.as_view(), name="journal_entry_detail_list"),
-    path("journal-entry-details/<int:pk>/", views_journentries.JournalEntryDetailsView.as_view(), name="journal_entry_detail_detail"),
+    path("journalentries/<int:pk>/", views_journentries.JournalEntryDetailView.as_view(), name="journal_entry_detail"),
     # JEV Approval 
     path('jevapproval/', views_.jev_approval_view, name='jevapproval'),
     # Reports 

@@ -5,12 +5,26 @@ from .models import *
 class JournalEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = JournalEntry
-        fields = '__all__'
+        fields = [
+            "id",
+            "TransactionType_FK",
+            "TRTemplate_FK",
+            "Entry_No",
+            "EntryStatus_FK",
+            "Entry_Date",
+            "EntryParticulars",
+            "Created_By",
+        ]
 
 class JournalEntryDetailsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = JournalEntry
-        fields = '__all__'
+        model = JournalEntryDetails
+        fields = [
+            "JournalEntry_FK",
+            "Account_FK",
+            "DebitAmount",
+            "CreditAmount",
+        ]
 
 class EntryStatusSerializer(serializers.ModelSerializer):
     class Meta:
