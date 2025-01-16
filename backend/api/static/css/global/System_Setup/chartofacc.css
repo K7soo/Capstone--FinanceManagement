@@ -408,3 +408,37 @@ tr:nth-child(even) {
     font-family: 'Poppins', sans-serif;
     margin-bottom: 10px;
 }
+
+th.sort-asc::after {
+    content: " ▲";
+    font-size: 0.8em;
+}
+
+th.sort-desc::after {
+    content: " ▼";
+    font-size: 0.8em;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.pagination-button {
+    padding: 5px 10px;
+    margin: 0 2px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.pagination-button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination-button:hover {
+    background-color: #ddd;
+}

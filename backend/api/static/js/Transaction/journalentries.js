@@ -299,8 +299,172 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('TransactionType_FK fetched from template:', transactionType);
     });
 
+    function sortTableByColumn(columnIndex) {
+        const table = document.querySelector('.journal-entries-table tbody');
+        const rows = Array.from(table.querySelectorAll('tr'));
+    
+        const sortedRows = rows.sort((a, b) => {
+            const aValue = a.children[columnIndex].textContent;
+            const bValue = b.children[columnIndex].textContent;
+    
+            return columnIndex === 0 // If sorting by date
+                ? new Date(aValue) - new Date(bValue)
+                : aValue.localeCompare(bValue);
+        });
+    
+        // Reattach sorted rows
+        table.innerHTML = '';
+        sortedRows.forEach(row => table.appendChild(row));
+    }
+
+    function loadJournalEntries() {
+        Promise.all([
+            fetch('/journalentries/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load journal entries");
+                return response.json();
+            }),
+            fetch('/entrystatuses/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load entry statuses");
+                return response.json();
+            }),
+            fetch('/journaltemplate/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load journal templates");
+                return response.json();
+            }),
+        ])
+            .then(([entries, statuses, templates]) => {
+                const statusMap = {};
+                statuses.forEach(status => {
+                    statusMap[status.id] = status.Status_Name;
+                });
+    
+                const templateMap = {};
+                templates.forEach(template => {
+                    templateMap[template.id] = template.TRTemplateCode;
+                });
+    
+                const tableBody = document.querySelector("#journalEntriesTable tbody");
+                if (!tableBody) {
+                    console.error("Table body not found.");
+                    return;
+                }
+                tableBody.innerHTML = ""; // Clear existing rows
+    
+                entries.forEach(entry => {
+                    const journalEntry = entry.journal_entry;
+                    const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
+                    const templateCode = templateMap[journalEntry.TRTemplate_FK] || "N/A";
+    
+                    // Add a row for the journal entry
+                    const entryRow = document.createElement("tr");
+                    entryRow.innerHTML = `
+                        <td>${journalEntry.Entry_Date}</td>
+                        <td>${journalEntry.Entry_No}</td>
+                        <td>${journalEntry.EntryParticulars}</td>
+                        <td>${entryStatus}</td>
+                        <td>${templateCode}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Menu
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><button class="dropdown-item view-entry" data-entry-id="${journalEntry.id}">View</button></li>
+                                    <li><button class="dropdown-item edit-entry" data-entry-id="${journalEntry.id}">Edit</button></li>
+                                    <li><button class="dropdown-item delete-entry text-danger" data-entry-id="${journalEntry.id}">Delete</button></li>
+                                </ul>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(entryRow);
+                });
+    
+                attachActionListeners(); // Attach event listeners to action buttons
+            })
+            .catch(error => console.error("Error loading journal entries:", error));
+    }
+    
+    function attachActionListeners() {
+        const viewButtons = document.querySelectorAll(".view-entry");
+        const editButtons = document.querySelectorAll(".edit-entry");
+        const deleteButtons = document.querySelectorAll(".delete-entry");
+    
+        viewButtons.forEach(button => {
+            button.addEventListener("click", event => {
+                const entryId = event.target.dataset.entryId;
+                console.log(`Viewing entry with ID: ${entryId}`);
+                // Logic for viewing the entry (modal or page redirection)
+            });
+        });
+    
+        editButtons.forEach(button => {
+            button.addEventListener("click", event => {
+                const entryId = event.target.dataset.entryId;
+                console.log(`Editing entry with ID: ${entryId}`);
+                // Logic for editing the entry
+            });
+        });
+    
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", event => {
+                const entryId = event.target.dataset.entryId;
+                console.log(`Deleting entry with ID: ${entryId}`);
+                // Logic for deleting the entry
+            });
+        });
+    }
+
+    function sortTable(tableId, ascending = true) {
+        const table = document.getElementById(tableId);
+    
+        if (!table) {
+            console.error(`Table with id '${tableId}' not found.`);
+            return;
+        }
+    
+        const tbody = table.querySelector("tbody");
+    
+        if (!tbody) {
+            console.error(`Table body not found for table with id '${tableId}'.`);
+            return;
+        }
+    
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+    
+        rows.sort((a, b) => {
+            const aDate = new Date(a.cells[0]?.innerText.trim()); // Assuming date is in the first column
+            const bDate = new Date(b.cells[0]?.innerText.trim());
+    
+            if (aDate < bDate) return ascending ? -1 : 1;
+            if (aDate > bDate) return ascending ? 1 : -1;
+            return 0;
+        });
+    
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+    // Call the function on page load
+    document.addEventListener('DOMContentLoaded', loadJournalEntries);
+
     const addEntryButton = document.getElementById('addEntryBtn');
     if (addEntryButton) {
         addEntryButton.addEventListener('click', addJournalEntry);
     }
+
+    loadJournalEntries();
 });

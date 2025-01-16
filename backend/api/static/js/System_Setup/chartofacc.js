@@ -65,6 +65,93 @@ function populateAccountTypeDropdown(dropdown, accountTypes) {
     });
 }
 
+function sortTable(columnIndex) {
+    const table = document.getElementById("chartOfAccTable");
+    if (!table) {
+        console.error("Table with ID 'chartOfAccTable' not found");
+        return;
+    }
+
+    const tbody = table.querySelector("tbody");
+    if (!tbody) {
+        console.error("Tbody element not found in the table");
+        return;
+    }
+
+    // Clear previous sort indicators
+    const headers = table.querySelectorAll("th");
+    headers.forEach(header => {
+        header.classList.remove("sort-asc", "sort-desc");
+    });
+
+    const rows = Array.from(tbody.rows);
+    let ascending = table.dataset.sortOrder !== "asc"; // Toggle sort order
+    table.dataset.sortOrder = ascending ? "asc" : "desc";
+
+    // Add sort indicator
+    const currentHeader = headers[columnIndex];
+    currentHeader.classList.add(ascending ? "sort-asc" : "sort-desc");
+
+    rows.sort((a, b) => {
+        const aText = a.cells[columnIndex].textContent.trim();
+        const bText = b.cells[columnIndex].textContent.trim();
+
+        if (!isNaN(aText) && !isNaN(bText)) {
+            return ascending ? aText - bText : bText - aText;
+        }
+
+        return ascending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+function paginateTable(tableId, rowsPerPage) {
+    const table = document.getElementById(tableId);
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.rows);
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+    let currentPage = 1;
+
+    function renderPage() {
+        tbody.innerHTML = ""; // Clear the table
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        rows.slice(start, end).forEach(row => tbody.appendChild(row));
+    }
+
+    function createPaginationControls() {
+        const paginationControls = document.getElementById("paginationControls");
+        paginationControls.innerHTML = ""; // Clear existing controls
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.textContent = i;
+            button.className = "pagination-button";
+            button.onclick = () => {
+                currentPage = i;
+                renderPage();
+                updateActiveButton();
+            };
+            paginationControls.appendChild(button);
+        }
+    }
+
+    function updateActiveButton() {
+        const buttons = document.querySelectorAll("#paginationControls .pagination-button");
+        buttons.forEach((button, index) => {
+            button.classList.toggle("active", index === currentPage - 1);
+        });
+    }
+
+    renderPage();
+    createPaginationControls();
+    updateActiveButton();
+}
+
+// Call paginateTable with your table ID and desired rows per page
+paginateTable("chartOfAccTable", 10);
+
 // Add a row to the table
 function addRowToTable(account) {
     const accountTypeName = accountTypeMap[account.AccountType_FK] || 'Unknown';

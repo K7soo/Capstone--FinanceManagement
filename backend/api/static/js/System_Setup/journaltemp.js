@@ -609,7 +609,19 @@ function editTemplate(templateId) {
 window.editTemplate = editTemplate;
 window.toggleDebitCredit = toggleDebitCredit;
 
+let removedRows = [];
 
+function removeRow(button) {
+    const row = button.closest("tr");
+    const existingDetailId = row.getAttribute("data-id");
+
+    if (existingDetailId) {
+        removedRows.push(parseInt(existingDetailId)); // Track removed row IDs
+    }
+
+    row.remove();
+}
+window.removeRow = removeRow;
 
 // Ensure this function is globally accessible
 window.editTemplate = editTemplate;
@@ -661,14 +673,10 @@ function saveEditedTemplate() {
         updatedDetails.push(detail);
     });
 
-    if (updatedDetails.length === 0) {
-        alert("Please add at least one valid account detail.");
-        return;
-    }
-
     const payload = {
         template: updatedTemplate,
         details: updatedDetails,
+        deletedDetails: removedRows, // Include the removed rows in the payload
     };
 
     console.log("Payload being sent:", JSON.stringify(payload));
@@ -694,6 +702,7 @@ function saveEditedTemplate() {
             console.log("Template updated successfully:", data);
             document.getElementById("editTemplateModal").style.display = "none";
             loadJournalTemplates(); // Reload the table with updated data
+            removedRows = []; // Clear removed rows array
         })
         .catch((error) => console.error("Error updating template:", error));
 }

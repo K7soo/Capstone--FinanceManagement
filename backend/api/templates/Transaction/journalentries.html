@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 <!-- Always do a load static -->
-{% load static %} {% block title %} Statement of Account {% endblock %} {% block extra_css %}
+{% load static %} {% block title %} Journal Entries {% endblock %} {% block extra_css %}
 <style>
 	body {
 		background-color: #f1f1f1;
@@ -33,6 +33,7 @@
 					<i class="bi bi-plus"></i>
 					ADD JOURNAL ENTRIES
 				</button>
+				
 				<!-- Add Journal Template Modal -->
 				<div id="addJournalEntriesModal" class="modal fade" tabindex="-1" aria-labelledby="addJournalEntriesModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -113,6 +114,24 @@
 					</div>
 				</div>
 			</div>
+			<div class="table-responsive">
+				<table id="journalEntriesTable" class="table table-bordered table-hover text-center table-acc">
+					<thead>
+						<tr>
+							<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+            				<th>Entry No.</th>
+							<th>Particulars</th>
+							<th>Status</th>
+							<th>Template</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="journalEntriesTable">
+						<!-- Rows will be dynamically populated -->
+					</tbody>
+				</table>
+			</div>
+			
 		</div>
 	</div>
 </div>
