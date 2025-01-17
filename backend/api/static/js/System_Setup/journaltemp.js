@@ -138,55 +138,54 @@ function addRowToTable(template) {
     newRow.innerHTML = `
         <td>${template.TRTemplateCode}</td>
         <td>${transactionTypeName}</td>
-<td class="text-center align-middle">
-    <div class="dropdown d-inline-block">
-        <button
-            class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
-            type="button"
-            id="dropdownMenuButton${template.id}"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
-            <span>MENU</span>
-            <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
-        </button>
-        <ul
-            class="dropdown-menu"
-            aria-labelledby="dropdownMenuButton${template.id}"
-            style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
-            <li>
+        <td class="text-center align-middle">
+            <div class="dropdown d-inline-block">
                 <button
-                    class="dropdown-item text-info"
+                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
                     type="button"
-                    onclick="viewTemplate(${template.id})"
-                    style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                    <i class="bi bi-eye me-2"></i>View
+                    id="dropdownMenuButton${template.id}"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+                    <span>MENU</span>
+                    <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
                 </button>
-            </li>
-            <li>
-                <button
-                    class="dropdown-item text-warning"
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editTemplateModal"
-                    onclick="editTemplate(${template.id})"
-                    style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                    <i class="bi bi-pencil-square me-2"></i>Edit
-                </button>
-            </li>
-            <li>
-                <button
-                    class="dropdown-item text-danger"
-                    type="button"
-                    onclick="deleteTemplate(${template.id})"
-                    style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                    <i class="bi bi-trash-fill me-2"></i>Delete
-                </button>
-            </li>
-        </ul>
-    </div>
-</td>
-
+                <ul
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton${template.id}"
+                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
+                    <li>
+                        <button
+                            class="dropdown-item text-info"
+                            type="button"
+                            onclick="viewTemplate(${template.id})"
+                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                            <i class="bi bi-eye me-2"></i>View
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            class="dropdown-item text-warning"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editTemplateModal"
+                            onclick="editTemplate(${template.id})"
+                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                            <i class="bi bi-pencil-square me-2"></i>Edit
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            class="dropdown-item text-danger"
+                            type="button"
+                            onclick="deleteTemplate(${template.id})"
+                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                            <i class="bi bi-trash-fill me-2"></i>Delete
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </td>
     `;
     templateTableBody.appendChild(newRow);
 
