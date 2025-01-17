@@ -72,6 +72,22 @@ class JournalEntryView(views.APIView):
             journal_entry_serializer.data,
             status=status.HTTP_201_CREATED
         )
+
+
+class JournalRetrieveView(views.APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, pk):
+        journal_entry = get_object_or_404(JournalEntry, pk=pk)
+        journal_details = JournalEntryDetails.objects.filter(JournalEntry_FK=journal_entry.id)
+
+        journal_entry_serializer = JournalEntrySerializer(journal_entry)
+        journal_details_serializer = JournalEntryDetailsSerializer(journal_details, many=True)
+
+        response_data = {
+            "journal_entry": journal_entry_serializer.data,
+            "journal_details": journal_details_serializer.data,
+        }
+        return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
     
 
 class JournalEntryDetailView(views.APIView):
