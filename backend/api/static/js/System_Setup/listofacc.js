@@ -176,12 +176,16 @@ addAccountForm.addEventListener('submit', (event) => {
         });
 });
 
-
 // Function to open the Edit Account modal with account details populated
 function openEditModal(id, code, description) {
     document.getElementById('EditAccountId').value = id;
     document.getElementById('EditAccountCode').value = code;
     document.getElementById('EditAccountTypeDesc').value = description;
+
+    // Store original values in the form for comparison
+    editAccountForm.dataset.originalAccountCode = code;
+    editAccountForm.dataset.originalAccountTypeDesc = description;
+
     const editModal = new bootstrap.Modal(document.getElementById('editAccountModal'));
     editModal.show();
 }
@@ -194,8 +198,17 @@ editAccountForm.addEventListener('submit', function (event) {
     const accountCode = document.getElementById('EditAccountCode').value.trim();
     const accountTypeDesc = document.getElementById('EditAccountTypeDesc').value.trim();
 
-    if (accountCode === '' || accountTypeDesc === '') {
-        alert('Both fields are required.');
+    const originalAccountCode = editAccountForm.dataset.originalAccountCode;
+    const originalAccountTypeDesc = editAccountForm.dataset.originalAccountTypeDesc;
+
+    // Check for changes
+    if (accountCode === originalAccountCode && accountTypeDesc === originalAccountTypeDesc) {
+        Swal.fire({
+            title: 'No Changes Made',
+            text: 'You have not made any changes to the account.',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
         return;
     }
 
@@ -204,9 +217,9 @@ editAccountForm.addEventListener('submit', function (event) {
         text: 'Do you want to save the changes?',
         icon: 'warning',
         showCancelButton: true,
-        // confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, save it!'
+        confirmButtonText: 'Yes, save it!',
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#d33'
     }).then((result) => {
         if (result.isConfirmed) {
             const updatedAccount = { AccountCode: accountCode, AccountTypeDesc: accountTypeDesc };
@@ -254,58 +267,3 @@ editAccountForm.addEventListener('submit', function (event) {
         }
     });
 });
-
-// DELETE
-function deleteAccount(button) {
-    const row = button.closest('tr');
-    const accountId = row.dataset.id;
-
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'This action cannot be undone!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/listofacc-change/${accountId}/`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                },
-            })
-                .then(response => {
-                    if (response.status === 204) {
-                        console.log("Account successfully deleted.");
-                        row.remove();
-
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: 'The account has been deleted.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        console.error('Failed to delete account:', response.statusText);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to delete the account. Please try again.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error deleting account:', error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'An error occurred while deleting the account.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                });
-        }
-    });
-}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% load static %} {% block title %} Configuration {% endblock %} {% block extra_css %}
+<style>
+    body {
+        background-color: #f1f1f1; /* Light gray background */
+    }
+</style>
+{% endblock %} {% block content %}
+<div class="container mt-5">
+    <h1 class="text" style="color: #6f42c1">Configuration</h1>
+    <p>Configuration Settings.</p>
+
+    <div class="card shadow-sm mb-4 p-4">
+        <!-- Form to add a new status -->
+        <form id="statusForm" class="d-flex align-items-center mb-4">
+            <input type="text" class="form-control me-3" id="statusNameInput" placeholder="Enter status name" required style="max-width: 300px" />
+            <button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                <!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
+                <i class="bi bi-plus"></i>
+                ADD
+            </button>
+        </form>
+
+        <!-- Table for statuses -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-light text-muted">
+                    <tr class="text-muted">
+                        <th>Status Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="statusTableBody">
+                    <!-- Dynamic rows will be added here -->
+                    <tr>
+                        <td>PENDING</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="removeStatus(this)" style="font-weight: bold; padding: 0.3rem 1rem">REMOVE</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/configuration.js' %}"></script>
+{% endblock %}

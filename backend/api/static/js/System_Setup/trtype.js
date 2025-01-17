@@ -14,25 +14,13 @@ function getCsrfToken() {
 
 // Define Constant Elements
 const csrfToken = getCsrfToken();
-const addTransactionTypeBtn = document.getElementById(
-    "openTransactionTypeModalButton"
-);
-const addTransactionTypeModal = document.getElementById(
-    "addTransactionTypeModal"
-);
-const cancelTransactionTypeModalBtn = document.getElementById(
-    "cancelTransactionTypeButton"
-);
-const addTransactionTypeForm = document.getElementById(
-    "addTransactionTypeForm"
-);
+const addTransactionTypeBtn = document.getElementById("openTransactionTypeModalButton");
+const addTransactionTypeModal = document.getElementById("addTransactionTypeModal");
+const cancelTransactionTypeModalBtn = document.getElementById("cancelTransactionTypeButton");
+const addTransactionTypeForm = document.getElementById("addTransactionTypeForm");
 const transactionTableBody = document.querySelector(".transaction-table tbody");
-const editTransactionTypeModal = document.getElementById(
-    "editTransactionTypeModal"
-);
-const editTransactionTypeForm = document.getElementById(
-    "editTransactionTypeForm"
-);
+const editTransactionTypeModal = document.getElementById("editTransactionTypeModal");
+const editTransactionTypeForm = document.getElementById("editTransactionTypeForm");
 
 console.log("JavaScript loaded successfully");
 
@@ -47,22 +35,16 @@ function loadTransactionTypes() {
     })
         .then((response) => {
             if (!response.ok) {
-                throw new Error(
-                    `Failed to load transaction types: ${response.statusText}`
-                );
+                throw new Error(`Failed to load transaction types: ${response.statusText}`);
             }
             return response.json();
         })
         .then((transactionTypes) => {
             console.log("Fetched transaction types:", transactionTypes);
             transactionTableBody.innerHTML = ""; // Clear the table body
-            transactionTypes.forEach((transactionType) =>
-                addRowToTransactionTable(transactionType)
-            );
+            transactionTypes.forEach((transactionType) => addRowToTransactionTable(transactionType));
         })
-        .catch((error) =>
-            console.error("Error fetching transaction types:", error)
-        );
+        .catch((error) => console.error("Error fetching transaction types:", error));
 }
 
 // Show the Add Transaction Type modal
@@ -148,44 +130,29 @@ function addRowToTransactionTable(transactionType) {
 // Handle Add Transaction Type form submission
 addTransactionTypeForm.addEventListener("submit", (event) => {
     event.preventDefault(); // Prevent page refresh
-    console.log(
-        "Form submission event triggered for adding a new transaction type"
-    );
+    console.log("Form submission event triggered for adding a new transaction type");
 
-    const transactionTypeName = document.querySelector(
-        'input[name="TransactionTypeName"]'
-    );
-    const transactionCode = document.querySelector(
-        'input[name="TransactionCode"]'
-    );
-    const TransactionTypeDesc = document.querySelector(
-        'input[name="TransactionTypeDesc"]'
-    );
+    const transactionTypeName = document.querySelector('input[name="TransactionTypeName"]');
+    const transactionCode = document.querySelector('input[name="TransactionCode"]');
+    const transactionTypeDesc = document.querySelector('input[name="TransactionTypeDesc"]');
 
-    if (!transactionTypeName || !transactionCode || !TransactionTypeDesc) {
-        console.error("One or more form fields are missing.");
-        alert("Please make sure all fields are present in the form.");
-        return;
-    }
-
-    const transactionTypeNameValue = transactionTypeName.value;
-    const transactionCodeValue = transactionCode.value;
-    const TransactionTypeDescValue = TransactionTypeDesc.value;
-
-    if (
-        !transactionTypeNameValue ||
-        !transactionCodeValue ||
-        !TransactionTypeDescValue
-    ) {
-        alert("Please fill in all fields before submitting.");
-        return;
+    // Validation
+    if (!transactionTypeName.value || !transactionCode.value || !transactionTypeDesc.value) {
+        Swal.fire({
+            title: 'Validation Error!',
+            text: 'Please fill in all fields before submitting.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return; // Exit if validation fails
     }
 
     const newTransactionType = {
-        TransactionTypeName: transactionTypeNameValue,
-        TransactionCode: transactionCodeValue,
-        TransactionTypeDesc: TransactionTypeDescValue,
+        TransactionTypeName: transactionTypeName.value,
+        TransactionCode: transactionCode.value,
+        TransactionTypeDesc: transactionTypeDesc.value,
     };
+
     console.log("Data to be submitted:", newTransactionType);
 
     fetch("/transactiontype/", {
@@ -198,24 +165,25 @@ addTransactionTypeForm.addEventListener("submit", (event) => {
     })
         .then((response) => {
             if (!response.ok) {
-                throw new Error(
-                    "Failed to add transaction type: " + response.statusText
-                );
+                throw new Error("Failed to add transaction type: " + response.statusText);
             }
             return response.json();
         })
         .then((createdTransactionType) => {
-            console.log(
-                "Transaction Type successfully added:",
-                createdTransactionType
-            );
+            console.log("Transaction Type successfully added:", createdTransactionType);
             addRowToTransactionTable(createdTransactionType);
             addTransactionTypeForm.reset();
 
+            // Sweet Alert for success
+            Swal.fire({
+                title: 'Success!',
+                text: 'Transaction type added successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+
             // Hide the modal
-            const bootstrapModal = bootstrap.Modal.getInstance(
-                document.getElementById("addTransactionTypeModal")
-            );
+            const bootstrapModal = bootstrap.Modal.getInstance(document.getElementById("addTransactionTypeModal"));
             if (bootstrapModal) {
                 bootstrapModal.hide();
             } else {
@@ -224,7 +192,12 @@ addTransactionTypeForm.addEventListener("submit", (event) => {
         })
         .catch((error) => {
             console.error("Error adding transaction type:", error);
-            alert("Error adding transaction type: " + error.message);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to add transaction type. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         });
 });
 
@@ -234,26 +207,54 @@ function deleteTransactionType(button) {
     const row = button.closest("tr");
     const transactionId = row.dataset.id.trim();
 
-    fetch(`/transactiontype/${transactionId}`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRFToken": csrfToken,
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    `Failed to delete transaction type: ${response.statusText}`
-                );
-            }
-            row.remove();
-            console.log("Transaction Type deleted successfully.");
-        })
-        .catch((error) => {
-            console.error("Error deleting transaction type:", error);
-            alert("Error deleting transaction type: " + error.message);
-        });
+    // Show confirmation alert before deleting
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to delete this transaction type? This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#d33',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with deletion
+            fetch(`/transactiontype/${transactionId}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to delete transaction type: ${response.statusText}`);
+                    }
+                    row.remove(); // Remove the row from the table
+                    console.log("Transaction Type deleted successfully.");
+
+                    // Show success alert
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Transaction type deleted successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error deleting transaction type:", error);
+
+                    // Show error alert
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete transaction type. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                });
+        }
+    });
 }
+
 
 // Handle Edit Transaction Type modal opening
 function openEditModal(id, code, name, description) {
@@ -270,34 +271,58 @@ function openEditModal(id, code, name, description) {
     document.getElementById("EditTransactionTypeName").value = name;
     document.getElementById("EditTransactionDescription").value = description;
 
+    // Set original values in dataset attributes for comparison later
+    editTransactionTypeForm.dataset.originalTransactionCode = code.trim();
+    editTransactionTypeForm.dataset.originalTransactionTypeName = name.trim();
+    editTransactionTypeForm.dataset.originalTransactionTypeDesc = description.trim();
     // Display the edit modal
     editTransactionTypeModal.style.display = "block";
-}
+        // Display the edit modal
+        const bootstrapModal = new bootstrap.Modal(document.getElementById("editTransactionTypeModal"));
+        bootstrapModal.show();
+    }
 
-// Handle Edit Transaction Type form submission
+
+/// Handle Edit Transaction Type form submission
 editTransactionTypeForm.addEventListener("submit", (event) => {
     event.preventDefault(); // Prevent page refresh
     console.log("Form submission event triggered for editing a transaction type");
 
-    const transactionId = document
-        .getElementById("EditTransactionId")
-        .value.trim();
-    const transactionCode = document.getElementById("EditTransactionCode").value;
-    const transactionTypeName = document.getElementById(
-        "EditTransactionTypeName"
-    ).value;
-    const transactionTypeDesc = document.getElementById(
-        "EditTransactionDescription"
-    ).value;
+    // Retrieve current form values
+    const transactionId = document.getElementById("EditTransactionId").value.trim();
+    const transactionCode = document.getElementById("EditTransactionCode").value.trim();
+    const transactionTypeName = document.getElementById("EditTransactionTypeName").value.trim();
+    const transactionTypeDesc = document.getElementById("EditTransactionDescription").value.trim();
 
+    // Retrieve original values from data attributes
+    const originalCode = editTransactionTypeForm.dataset.originalTransactionCode;
+    const originalName = editTransactionTypeForm.dataset.originalTransactionTypeName;
+    const originalDesc = editTransactionTypeForm.dataset.originalTransactionTypeDesc;
+
+    // Check for no changes
     if (
-        !transactionId ||
-        !transactionCode ||
-        !transactionTypeName ||
-        !transactionTypeDesc
+        transactionCode === originalCode &&
+        transactionTypeName === originalName &&
+        transactionTypeDesc === originalDesc
     ) {
-        alert("Please fill in all fields before submitting.");
-        return;
+        Swal.fire({
+            title: 'No Changes Made',
+            text: 'You have not made any changes to the transaction type.',
+            icon: 'info',
+            confirmButtonText: 'OK',
+        });
+        return; // Exit without submitting
+    }
+
+    // Validation
+    if (!transactionId || !transactionCode || !transactionTypeName || !transactionTypeDesc) {
+        Swal.fire({
+            title: 'Validation Error!',
+            text: 'Please fill in all fields before submitting.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+        return; // Exit if validation fails
     }
 
     const updatedTransactionType = {
@@ -308,43 +333,73 @@ editTransactionTypeForm.addEventListener("submit", (event) => {
 
     console.log("Data to be submitted for update:", updatedTransactionType);
 
-    fetch(`/transactiontype/${transactionId}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-        },
-        body: JSON.stringify(updatedTransactionType),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(
-                    "Failed to update transaction type: " + response.statusText
-                );
-            }
-            return response.json();
-        })
-        .then((updatedTransaction) => {
-            console.log("Transaction Type successfully updated:", updatedTransaction);
-            loadTransactionTypes();
-            editTransactionTypeModal.style.display = "none";
+    // Show confirmation alert before proceeding
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to save changes to this transaction type?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, save it!',
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#d33',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/transactiontype/${transactionId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,
+                },
+                body: JSON.stringify(updatedTransactionType),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to update transaction type: " + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then((updatedTransaction) => {
+                    console.log("Transaction Type successfully updated:", updatedTransaction);
 
-            // Get the modal instance
-            const bootstrapModal = bootstrap.Modal.getInstance(editTransactionTypeModal);
+                    // Reload transaction types in the table
+                    loadTransactionTypes();
 
-            // Check if the modal instance is valid
-            if (bootstrapModal) {
-                bootstrapModal.hide(); // Hide the modal using Bootstrap's built-in method
-            } else {
-                console.warn("Bootstrap modal instance not found. Forcing cleanup.");
-                cleanupModal(); // If the modal instance isn't found, perform manual cleanup
-            }
-        })
+                    // Show success alert
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Transaction type updated successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                    });
 
-        .catch((error) => {
-            console.error("Error updating transaction type:", error);
-            alert("Error updating transaction type: " + error.message);
-        });
+                    // Hide the modal
+                    const bootstrapModal = bootstrap.Modal.getInstance(editTransactionTypeModal);
+                    if (bootstrapModal) {
+                        bootstrapModal.hide(); // Hide the modal using Bootstrap's built-in method
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error updating transaction type:", error);
+
+                    // Show error alert
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to update transaction type. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                });
+        }
+    });
+});
+
+// Ensure backdrops are cleaned up when the modal is hidden
+editTransactionTypeModal.addEventListener("hidden.bs.modal", () => {
+    const backdrops = document.querySelectorAll(".modal-backdrop");
+    backdrops.forEach((backdrop) => backdrop.remove());
+    document.body.classList.remove("modal-open");
+    document.body.style.removeProperty("overflow");
+    document.body.style.removeProperty("padding-right");
 });
 
 // Load transaction types when the page loads

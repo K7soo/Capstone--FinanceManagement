@@ -76,10 +76,14 @@
 										<button
 											class="dropdown-item text-warning"
 											type="button"
+											data-bs-toggle="modal"
+											data-bs-target="#jevApprovalModal"
+											onclick="populateJevApprovalModalFromAPI('123')"
 											style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
 											<i class="bi bi-eye me-2"></i>View
 										</button>
 									</li>
+									
 									<li>
 										<button
 											class="dropdown-item text-dark"
@@ -254,5 +258,64 @@
 		</div>
 	</div>
 </div>
+
+<!-- JEV Approval Modal -->
+<div class="modal fade" id="jevApprovalModal" tabindex="-1" aria-labelledby="jevApprovalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="jevApprovalModalLabel">View JEV Details</h5>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Date:</label>
+                    <p id="jevDate" class="mb-0">2023-12-01</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">JEV Number:</label>
+                    <p id="jevNumber" class="mb-0">JEV-12345</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Particulars:</label>
+                    <p id="particulars" class="mb-0">Payment for services rendered.</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Status:</label>
+                    <p id="status" class="mb-0">Approved</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Template:</label>
+                    <p id="template" class="mb-0">Template A</p>
+                </div>
+
+                <!-- Table for Account, Debit, and Credit -->
+                <div class="table-responsive mt-4">
+					<table class="table table-bordered table-hover text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Account</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jevAccountTableBody">
+                            <!-- Dynamic rows will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+				<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 {% endblock %} {% block extra_js %} {% endblock %}
