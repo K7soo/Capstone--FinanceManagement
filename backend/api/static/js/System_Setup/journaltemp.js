@@ -219,13 +219,55 @@ addTemplateForm.addEventListener("submit", (event) => {
     const transactionType = document.getElementById("transactionType").value;
 
     if (!templateCode || !transactionType) {
-        alert("Please fill in all fields.");
+        Swal.fire({
+            title: "Validation Error",
+            text: "Please fill in all fields before submitting.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return;
+    }
+    // Validate that at least one account is added
+    const templateRows = document.querySelectorAll("#templateRows tr");
+    if (templateRows.length === 0) {
+        Swal.fire({
+            title: "Validation Error",
+            text: "You need to attach at least one account to the template.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return;
+    }
+    // Validation for at least two account rows
+    if (templateRows.length < 2) {
+        Swal.fire({
+            title: "Error",
+            text: "You must add at least two accounts to create a template.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
         return;
     }
 
-    const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
+    // Validate Select Account in each row
+    let allRowsValid = true;
+    templateRows.forEach((row) => {
+        const accountCode = row.querySelector(".account-code").value;
+        if (!accountCode) {
+            allRowsValid = false;
+        }
+    });
 
-    console.log("Submitting template header:", newTemplate);
+    if (!allRowsValid) {
+        Swal.fire({
+            title: "Error",
+            text: "Please select an account for each row.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return;
+    }
+    const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
 
     // Create template header first
     fetch("/journaltemplate/", {
@@ -247,69 +289,115 @@ addTemplateForm.addEventListener("submit", (event) => {
         })
         .then((createdTemplate) => {
             console.log("Template header added successfully:", createdTemplate);
-            addRowToTable(createdTemplate);
 
-            // After creating the template header, create the template body
-            const templateRows = document.querySelectorAll("#templateRows tr");
+            // Add template details for each row
+            const promises = [];
             templateRows.forEach((row) => {
                 const accountCode = row.querySelector(".account-code").value;
-                const debitCheckbox = row.querySelector(".debit-checkbox");
-                const creditCheckbox = row.querySelector(".credit-checkbox");
-
-                if (!accountCode || (!debitCheckbox && !creditCheckbox)) {
-                    console.warn("Row contains invalid or incomplete data.");
-                    return;
-                }
-
-                const debitChecked = debitCheckbox.checked;
-                const creditChecked = creditCheckbox.checked;
+                const debitCheckbox = row.querySelector(".debit-checkbox").checked;
+                const creditCheckbox = row.querySelector(".credit-checkbox").checked;
 
                 const newTemplateDetail = {
                     Template_FK: createdTemplate.id,
                     Account_FK: accountCode,
-                    Debit: debitChecked ? 1 : 0,
-                    Credit: creditChecked ? 1 : 0,
+                    Debit: debitCheckbox ? 1 : 0,
+                    Credit: creditCheckbox ? 1 : 0,
                 };
 
-                console.log("Submitting template body:", newTemplateDetail);
-
-                fetch("/journaltemplatedetails/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken,
-                    },
-                    body: JSON.stringify(newTemplateDetail),
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error("Failed to add template detail");
-                        }
-                        return response.json();
+                promises.push(
+                    fetch("/journaltemplatedetails/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": csrfToken,
+                        },
+                        body: JSON.stringify(newTemplateDetail),
                     })
-                    .then((createdDetail) => {
-                        console.log("Template detail added successfully:", createdDetail);
-                    })
-                    .catch((error) => console.error("Error adding template detail:", error));
+                );
             });
 
-            // Reset the form
-            addTemplateForm.reset();
+            Promise.all(promises)
+                .then(() => {
+                    console.log("All template details added successfully.");
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Journal template added successfully.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    }).then(() => {
+                        location.reload(); // Refresh the page
+                    });
 
-            // Hide the modal using Bootstrap's modal instance
-            const modalInstance = bootstrap.Modal.getInstance(
-                document.getElementById("addTemplateModal")
-            );
+                    // Reset the form and hide the modal
+                    addTemplateForm.reset();
+                    const modalInstance = bootstrap.Modal.getInstance(
+                        document.getElementById("addTemplateModal")
+                    );
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
 
-            if (modalInstance) {
-                modalInstance.hide();
-            } else {
-                console.warn("Modal instance not found. Closing manually.");
-                document.getElementById("addTemplateModal").style.display = "none";
-            }
+                    // Fetch and render the updated table
+                    fetchAndRenderTemplates();
+                })
+                .catch((error) => {
+                    console.error("Error adding template details:", error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Failed to add all template details. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                });
         })
-        .catch((error) => console.error("Error adding template:", error));
+        .catch((error) => {
+            console.error("Error adding template:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to add the journal template. Please try again.",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+        });
 });
+
+function fetchAndRenderTemplates() {
+    fetch("/journaltemplate/")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch templates.");
+            }
+            return response.text();
+        })
+        .then((templates) => {
+            const tableBody = document.getElementById("templateRows");
+            if (!tableBody) {
+                console.error("Table body element not found!");
+                return;
+            }
+
+            // Clear existing rows
+            tableBody.innerHTML = "";
+
+            // Append all templates to the table
+            templates.forEach((template) => {
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td>${template.TRTemplateCode}</td>
+                    <td>${template.TransactionType_FK}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm">Edit</button>
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(newRow);
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching templates:", error);
+        });
+}
+
 
 // Add a row to the template (modal)
 function addTemplateRow(containerId = "templateRows") {
@@ -326,12 +414,12 @@ function addTemplateRow(containerId = "templateRows") {
             <select class="form-select account-code">
                 <option value="">Select Account</option>
                 ${window.chartOfAccounts
-                    .map(
-                        (account) => `
+            .map(
+                (account) => `
                             <option value="${account.id}">${account.AccountDesc}</option>
                         `
-                    )
-                    .join("")}
+            )
+            .join("")}
             </select>
         </td>
         <td>
@@ -542,14 +630,14 @@ function editTemplate(templateId) {
                             <select class="form-select account-code">
                                 <option value="">Select Account</option>
                                 ${window.chartOfAccounts
-                                    .map(
-                                        (account) => `
+                            .map(
+                                (account) => `
                                             <option value="${account.id}" ${account.id === detail.Account_FK ? "selected" : ""}>
                                                 ${account.AccountDesc}
                                             </option>
                                         `
-                                    )
-                                    .join("")}
+                            )
+                            .join("")}
                             </select>
                         </td>
                         <td>
@@ -708,11 +796,11 @@ function saveEditedTemplate() {
             Debit: parseFloat(detail.Debit), // Use parseFloat if the backend expects a float
             Credit: parseFloat(detail.Credit),
         };
-    
+
         console.log("New Detail Payload:", JSON.stringify(formattedDetail));
         console.log("Updated Template Payload:", updatedTemplate);
         console.log("New Details Payload:", newDetails);
-    
+
         return fetch(`/journaltemplatedetails/`, {
             method: "POST",
             headers: {
@@ -813,7 +901,7 @@ window.editTemplate = editTemplate;
 window.deleteTemplate = deleteTemplate;
 
 // Remove a row from the template (modal) // Global variable to track removed rows
- // Global variable to track removed rows
+// Global variable to track removed rows
 
 function removeRow(button) {
     const row = button.closest("tr");
