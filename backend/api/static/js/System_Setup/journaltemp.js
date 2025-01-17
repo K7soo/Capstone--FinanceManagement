@@ -238,6 +238,16 @@ addTemplateForm.addEventListener("submit", (event) => {
         });
         return;
     }
+    // Validation for at least two account rows
+    if (templateRows.length < 2) {
+        Swal.fire({
+            title: "Error",
+            text: "You must add at least two accounts to create a template.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return;
+    }
 
     // Validate Select Account in each row
     let allRowsValid = true;
@@ -250,7 +260,7 @@ addTemplateForm.addEventListener("submit", (event) => {
 
     if (!allRowsValid) {
         Swal.fire({
-            title: "Validation Error",
+            title: "Error",
             text: "Please select an account for each row.",
             icon: "error",
             confirmButtonText: "OK",
