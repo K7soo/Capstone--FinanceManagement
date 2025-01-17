@@ -875,6 +875,7 @@ function deleteTemplate(templateId) {
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Yes, delete it!",
+        cancelButtonColor: '#fffff',
         cancelButtonText: "Cancel",
     }).then((result) => {
         if (result.isConfirmed) {
