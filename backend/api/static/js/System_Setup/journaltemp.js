@@ -25,6 +25,7 @@ const templateRowsContainer = document.getElementById("templateRows");
 window.journalTemplates = [];
 window.transactionTypeMap = {}; // Map for TransactionType IDs to names
 window.accountMap = {}; // Map for Account IDs to descriptions
+window.removedRows = [];
 
 console.log("JavaScript loaded successfully");
 
@@ -645,8 +646,10 @@ function saveEditedTemplate() {
     }
 
     const updatedDetails = [];
+    const newDetails = [];
     const editTemplateRows = document.querySelectorAll("#editTemplateRows tr");
 
+    // Process each row in the table
     editTemplateRows.forEach((row) => {
         const accountCode = parseInt(row.querySelector(".account-code").value);
         const debitChecked = row.querySelector(".debit-checkbox").checked;
@@ -658,7 +661,7 @@ function saveEditedTemplate() {
         }
 
         const detail = {
-            Template_FK: parseInt(templateId), // Add Template_FK here
+            Template_FK: parseInt(templateId),
             Account_FK: accountCode,
             Debit: debitChecked ? 1.0 : 0.0,
             Credit: creditChecked ? 1.0 : 0.0,
@@ -666,28 +669,92 @@ function saveEditedTemplate() {
 
         const existingDetailId = row.getAttribute("data-id");
         if (existingDetailId) {
-            detail.id = parseInt(existingDetailId);
+            detail.id = parseInt(existingDetailId); // For updated rows
+            updatedDetails.push(detail);
+        } else {
+            newDetails.push(detail); // For new rows
         }
-
-        updatedDetails.push(detail);
     });
 
-    const payload = {
-        template: updatedTemplate,
-        details: updatedDetails,
-        deletedDetails: removedRows, // Include the removed rows in the payload
-    };
+    console.log("Updated Details:", updatedDetails);
+    console.log("New Rows:", newDetails);
+    console.log("Removed Rows:", removedRows);
 
-    console.log("Payload being sent:", JSON.stringify(payload));
+    // Process deletions first
+    const deletionPromises = removedRows.map((detailId) => {
+        return fetch(`/journaltemplatedetails/${detailId}/`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRFToken": csrfToken,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Failed to delete detail with ID ${detailId}`);
+                }
+                console.log(`Detail with ID ${detailId} deleted successfully.`);
+            })
+            .catch((error) => {
+                console.error("Error deleting detail:", error);
+                alert("Failed to delete some rows. Please try again.");
+            });
+    });
 
-    fetch(`/journaltemplate/${templateId}/`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-        },
-        body: JSON.stringify(payload),
-    })
+    // Process new row additions
+    const additionPromises = newDetails.map((detail) => {
+        const formattedDetail = {
+            Template_FK: parseInt(detail.Template_FK), // Ensure proper formatting
+            Account_FK: parseInt(detail.Account_FK),
+            Debit: parseFloat(detail.Debit), // Use parseFloat if the backend expects a float
+            Credit: parseFloat(detail.Credit),
+        };
+    
+        console.log("New Detail Payload:", JSON.stringify(formattedDetail));
+        console.log("Updated Template Payload:", updatedTemplate);
+        console.log("New Details Payload:", newDetails);
+    
+        return fetch(`/journaltemplatedetails/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify(formattedDetail),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to add new detail");
+                }
+                return response.json();
+            })
+            .then((createdDetail) => {
+                console.log("New detail added successfully:", createdDetail);
+            })
+            .catch((error) => {
+                console.error("Error adding new detail:", error);
+                alert("Failed to add some rows. Please try again.");
+            });
+    });
+
+    // Once deletions and additions are processed, update the template
+    Promise.all([...deletionPromises, ...additionPromises])
+        .then(() => {
+            const payload = {
+                template: updatedTemplate,
+                details: updatedDetails, // Include only updated rows
+            };
+
+            console.log("Payload being sent:", JSON.stringify(payload));
+
+            return fetch(`/journaltemplate/${templateId}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,
+                },
+                body: JSON.stringify(payload),
+            });
+        })
         .then((response) => {
             if (!response.ok) {
                 return response.json().then((errorData) => {
@@ -706,6 +773,8 @@ function saveEditedTemplate() {
         .catch((error) => console.error("Error updating template:", error));
 }
 window.saveEditedTemplate = saveEditedTemplate;
+
+
 
 // Function to delete a template
 function deleteTemplate(templateId) {
@@ -743,12 +812,47 @@ window.viewTemplate = viewTemplate;
 window.editTemplate = editTemplate;
 window.deleteTemplate = deleteTemplate;
 
-// Remove a row from the template (modal)
+// Remove a row from the template (modal) // Global variable to track removed rows
+ // Global variable to track removed rows
+
 function removeRow(button) {
     const row = button.closest("tr");
-    row.remove();
+    const existingDetailId = row.getAttribute("data-id");
+
+    if (existingDetailId) {
+        if (!removedRows.includes(parseInt(existingDetailId))) {
+            removedRows.push(parseInt(existingDetailId)); // Track removed row IDs
+            console.log(`Row with ID ${existingDetailId} marked for deletion.`);
+        }
+    }
+
+    row.remove(); // Remove the row from the DOM
 }
 window.removeRow = removeRow;
+
+function addRow(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error("Container not found for adding row:", containerId);
+        return;
+    }
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>
+            <select class="account-code">
+                <option value="">Select Account</option>
+                <!-- Populate dynamically with account options -->
+            </select>
+        </td>
+        <td><input type="checkbox" class="debit-checkbox" /></td>
+        <td><input type="checkbox" class="credit-checkbox" /></td>
+        <td><button type="button" class="remove-row-btn">Remove</button></td>
+    `;
+    container.appendChild(row);
+
+    console.log("Adding row to container:", containerId);
+}
 
 // Close modals on clicking the close button or outside modal
 closeModalBtns.forEach((btn) => {
