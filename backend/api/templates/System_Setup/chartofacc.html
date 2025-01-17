@@ -200,14 +200,40 @@ function showEditConfirmationAlert(message, confirmCallback) {
         }
     });
 }
-// Handle Edit Account form submission
 editChartForm.addEventListener('submit', event => {
     event.preventDefault();
+
     const accountId = document.getElementById('EditAccountId').value;
+    const accountCode = document.getElementById('EditAccountCode').value.trim();
+    const accountDesc = document.getElementById('EditAccountDesc').value.trim();
+    const accountTypeFK = parseInt(editAccountTypeDropdown.value);
+
+    // Retrieve original values from data attributes
+    const originalAccountCode = editChartForm.dataset.originalAccountCode; // Original AccountCode
+    const originalAccountDesc = editChartForm.dataset.originalAccountDesc; // Original AccountDesc
+    const originalAccountTypeFK = parseInt(editChartForm.dataset.originalAccountTypeFK); // Original AccountType_FK
+
+    // Check if any changes were made
+    if (
+        accountCode === originalAccountCode &&
+        accountDesc === originalAccountDesc &&
+        accountTypeFK === originalAccountTypeFK
+    ) {
+        // Show Sweet Alert if no changes are made
+        Swal.fire({
+            title: 'No Changes Made',
+            text: 'You have not made any changes to the account.',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+        return; // Exit without submitting
+    }
+
+    // Proceed with submitting the changes
     const updatedAccount = {
-        AccountCode: document.getElementById('EditAccountCode').value,
-        AccountDesc: document.getElementById('EditAccountDesc').value,
-        AccountType_FK: parseInt(editAccountTypeDropdown.value),
+        AccountCode: accountCode,
+        AccountDesc: accountDesc,
+        AccountType_FK: accountTypeFK,
     };
 
     Swal.fire({
@@ -217,7 +243,7 @@ editChartForm.addEventListener('submit', event => {
         showCancelButton: true,
         confirmButtonText: 'Yes, save it!',
         cancelButtonText: 'Cancel',
-        cancelButtonColor: '#d33'
+        cancelButtonColor: '#d33',
     }).then((result) => {
         if (result.isConfirmed) {
             fetch(`/chartofacc/${accountId}/`, {
@@ -258,7 +284,6 @@ editChartForm.addEventListener('submit', event => {
         }
     });
 });
-
 
 // Handle Account Deletion
 function deleteAccountConfirmation(button) {

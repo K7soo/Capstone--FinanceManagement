@@ -25,6 +25,92 @@ const tableBody = document.querySelector('.table-acc tbody');
 const accountTypeDropdown = document.querySelector("select[name='AccountType']");
 const editAccountTypeDropdown = document.getElementById('EditAccountType');
 
+editChartForm.addEventListener('submit', event => {
+    event.preventDefault();
+
+    const accountId = document.getElementById('EditAccountId').value;
+    const accountCode = document.getElementById('EditAccountCode').value.trim();
+    const accountDesc = document.getElementById('EditAccountDesc').value.trim();
+    const accountTypeFK = parseInt(editAccountTypeDropdown.value);
+
+    // Retrieve original values from data attributes
+    const originalAccountCode = editChartForm.dataset.originalAccountCode; // Original AccountCode
+    const originalAccountDesc = editChartForm.dataset.originalAccountDesc; // Original AccountDesc
+    const originalAccountTypeFK = parseInt(editChartForm.dataset.originalAccountTypeFK); // Original AccountType_FK
+
+    // Check if any changes were made
+    if (
+        accountCode === originalAccountCode &&
+        accountDesc === originalAccountDesc &&
+        accountTypeFK === originalAccountTypeFK
+    ) {
+        // Show Sweet Alert if no changes are made
+        Swal.fire({
+            title: 'No Changes Made',
+            text: 'You have not made any changes to the account.',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+        return; // Exit without submitting
+    }
+  // Proceed with submitting the changes
+  const updatedAccount = {
+    AccountCode: accountCode,
+    AccountDesc: accountDesc,
+    AccountType_FK: accountTypeFK,
+};
+
+Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to save changes to this account?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, save it!',
+    cancelButtonText: 'Cancel',
+    cancelButtonColor: '#d33',
+}).then((result) => {
+    if (result.isConfirmed) {
+        fetch(`/chartofacc/${accountId}/`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+            body: JSON.stringify(updatedAccount),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update account');
+            }
+            return response.json();
+        })
+        .then(updatedData => {
+            console.log("Account updated successfully:", updatedData);
+            loadChartOfAccounts(); // Refresh the table
+
+            // Hide the modal using Bootstrap's Modal class
+            const bootstrapModal = bootstrap.Modal.getInstance(document.getElementById('editChartModal'));
+            bootstrapModal.hide();
+
+            Swal.fire({
+                title: 'Updated!',
+                text: 'Account updated successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        })
+        .catch(error => {
+            console.error('Error updating account:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to update the account.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
+});
+// Proceed with submitting the changes
+    // (Retain your existing logic here for saving changes)
+});
+
 // Global variable to store the mapping of AccountType_FK to AccountTypeDesc
 let accountTypeMap = {};
 
