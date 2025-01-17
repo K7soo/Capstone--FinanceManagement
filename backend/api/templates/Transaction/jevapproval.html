@@ -260,40 +260,38 @@
 </div>
 
 <!-- JEV Approval Modal -->
+<!-- JEV Approval Modal -->
 <div class="modal fade" id="jevApprovalModal" tabindex="-1" aria-labelledby="jevApprovalModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
                 <h5 class="modal-title" id="jevApprovalModalLabel">View JEV Details</h5>
                 <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
+
             <!-- Modal Body -->
             <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Date:</label>
-                    <p id="jevDate" class="mb-0">2023-12-01</p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">JEV Number:</label>
-                    <p id="jevNumber" class="mb-0">JEV-12345</p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Particulars:</label>
-                    <p id="particulars" class="mb-0">Payment for services rendered.</p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Status:</label>
-                    <p id="status" class="mb-0">Approved</p>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Template:</label>
-                    <p id="template" class="mb-0">Template A</p>
+                <!-- Header Section -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="mb-2"><strong>Date:</strong> <span id="jevDate">2023-12-01</span></div>
+                        <div class="mb-2"><strong>Status:</strong> <span id="status">Approved</span></div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="mb-2"><strong>JEV Number:</strong> <span id="jevNumber">JEV-12345</span></div>
+                        <div class="mb-2"><strong>Template:</strong> <span id="template">Template A</span></div>
+                    </div>
                 </div>
 
-                <!-- Table for Account, Debit, and Credit -->
-                <div class="table-responsive mt-4">
-					<table class="table table-bordered table-hover text-center">
+                <div class="mb-4">
+                    <strong>Particulars:</strong>
+                    <p id="particulars" class="mb-0">Payment for services rendered.</p>
+                </div>
+
+                <!-- Table Section -->
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered text-center">
                         <thead class="table-light">
                             <tr>
                                 <th>Account</th>
@@ -303,13 +301,37 @@
                         </thead>
                         <tbody id="jevAccountTableBody">
                             <!-- Dynamic rows will be populated here -->
+                            <tr>
+                                <td class="text-start">A/C: 1000 Petty Cash<br>Ref:</td>
+                                <td>1,000.00</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">A/C: 1000 Petty Cash<br>Ref:</td>
+                                <td></td>
+                                <td>1,000.00</td>
+                            </tr>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="text-start"><strong>Total</strong></td>
+                                <td><strong>1,000.00</strong></td>
+                                <td><strong>1,000.00</strong></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
+
+                <!-- Remarks Section -->
+                <div class="mt-4">
+                    <label for="remarks" class="form-label fw-bold">Remarks:</label>
+                    <textarea id="remarks" class="form-control" rows="3" placeholder="Add remarks here..."></textarea>
+                </div>
             </div>
+
             <!-- Modal Footer -->
             <div class="modal-footer">
-				<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Close</button>
+				<button type="reset" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
             </div>
         </div>
     </div>
