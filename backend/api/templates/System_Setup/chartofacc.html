@@ -272,7 +272,8 @@ function deleteAccountConfirmation(button) {
         showCancelButton: true,
         confirmButtonText: 'Yes, delete it!',
         cancelButtonText: 'Cancel',
-        cancelButtonColor: '#d33'
+		confirmButtonColor: '#d33',
+        cancelButtonColor: '#fffff',
     }).then((result) => {
         if (result.isConfirmed) {
             fetch(`/chartofacc/${accountId}/`, {
@@ -306,6 +307,16 @@ function deleteAccountConfirmation(button) {
         }
     });
 }
+// Show no changes alert using Sweet Alert
+function showNoChangesAlert() {
+    Swal.fire({
+        title: 'No Changes Made',
+        text: 'You have not made any changes to the account.',
+        icon: 'info',
+        confirmButtonText: 'OK'
+    });
+}
+
 
 </script>
 {% endblock %}
