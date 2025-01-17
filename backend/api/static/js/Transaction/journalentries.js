@@ -172,24 +172,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     accountsTableBody?.addEventListener('input', event => {
         const target = event.target;
+    
         if (target.classList.contains('debit-input')) {
             const creditInput = target.closest('tr').querySelector('.credit-input');
             if (creditInput) {
-                if (target.value) {
-                    creditInput.value = '';
-                    creditInput.disabled = true;
+                if (target.value.trim() !== '') {
+                    creditInput.value = ''; // Clear the value
+                    creditInput.disabled = true; // Keep it disabled
                 } else {
-                    creditInput.disabled = false;
+                    creditInput.disabled = true; // Ensure it stays disabled
                 }
             }
         } else if (target.classList.contains('credit-input')) {
             const debitInput = target.closest('tr').querySelector('.debit-input');
             if (debitInput) {
-                if (target.value) {
-                    debitInput.value = '';
-                    debitInput.disabled = true;
+                if (target.value.trim() !== '') {
+                    debitInput.value = ''; // Clear the value
+                    debitInput.disabled = true; // Keep it disabled
                 } else {
-                    debitInput.disabled = false;
+                    debitInput.disabled = true; // Ensure it stays disabled
                 }
             }
         }
