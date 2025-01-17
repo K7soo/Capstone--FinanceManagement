@@ -203,56 +203,6 @@ function addRowToTable(account) {
     // Append the new row to the table body
     tableBody.appendChild(newRow);
 }
-
-// Show success alert using Sweet Alert
-function showSuccessAlert(message) {
-    Swal.fire({
-        title: 'Success!',
-        text: message,
-        icon: 'success',
-        confirmButtonText: 'OK'
-    });
-}
-
-// Show confirmation alert using Sweet Alert
-function showDeleteConfirmationAlert(message, confirmCallback) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: message,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel',
-        cancelButtonColor: '#d33'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            confirmCallback();
-        }
-    });
-}
-
-function showEditConfirmationAlert(message, confirmCallback) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: message,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, save it!',
-        cancelButtonText: 'Cancel',
-        cancelButtonColor: '#d33'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            confirmCallback();
-        }
-    });
-    then((result) => {
-        if (result.isConfirmed) {
-            confirmCallback();
-        }
-    });
-}
-
-
 // Load and display the chart of accounts
 function loadChartOfAccounts() {
     fetch('/chartofacc/?t=' + new Date().getTime(), {
@@ -393,62 +343,7 @@ function openEditModal(id, code, desc, typeFK) {
     bootstrapModal.show();
 }
 
-// Handle Edit Account form submission
-editChartForm.addEventListener('submit', event => {
-    event.preventDefault();
-    const accountId = document.getElementById('EditAccountId').value;
-    const updatedAccount = {
-        AccountCode: document.getElementById('EditAccountCode').value,
-        AccountDesc: document.getElementById('EditAccountDesc').value,
-        AccountType_FK: parseInt(editAccountTypeDropdown.value),
-    };
 
-    showConfirmationAlert('Do you want to save changes to this account?', () => {
-        fetch(`/chartofacc/${accountId}/`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-            body: JSON.stringify(updatedAccount),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to update account');
-            }
-            return response.json();
-        })
-        .then(updatedData => {
-            console.log("Account updated successfully:", updatedData);
-            loadChartOfAccounts(); // Refresh the table
-
-            // Hide the modal using Bootstrap's Modal class
-            const bootstrapModal = bootstrap.Modal.getInstance(document.getElementById('editChartModal'));
-            bootstrapModal.hide();
-        })
-        .catch(error => console.error('Error updating account:', error));
-    });
-});
-
-
-// Handle Account Deletion
-function deleteAccountConfirmation(button) {
-    const row = button.closest('tr');
-    const accountId = row.dataset.id;
-
-    showConfirmationAlert('Are you sure you want to delete this account? This action cannot be undone.', () => {
-        fetch(`/chartofacc/${accountId}/`, {
-            method: 'DELETE',
-            headers: { 'X-CSRFToken': csrfToken },
-        })
-        .then(response => {
-            if (response.ok) {
-                row.remove();
-                console.log("Account deleted successfully.");
-            } else {
-                throw new Error('Failed to delete account');
-            }
-        })
-        .catch(error => console.error('Error deleting account:', error));
-    });
-}
 
 // View account details in an alert
 function viewAccount(accountCode, accountDesc, accountType) {
