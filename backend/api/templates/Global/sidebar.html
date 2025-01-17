@@ -15,6 +15,10 @@
                     <i class="uil uil-estate"></i>
                     <span class="link-name">Dashboard</span>
                 </a>
+                <a href="{% url 'configuration' %} ">
+                    <i class="uil uil-cog"></i>
+                    <span class="link-name">Configuration</span>
+                </a>
             </li>
 
             <!-- System Setup -->
@@ -47,6 +51,7 @@
                     <li><a href="{% url 'journalentries' %}">Journal
                             Entries</a></li>
                     <li><a href="{% url 'jevapproval' %}">JEV Approval</a></li>
+
                     <li><a href="{% url 'general_journal' %}">General
                             Journal</a></li>
                     <li><a href="{% url 'general_ledger' %}">General

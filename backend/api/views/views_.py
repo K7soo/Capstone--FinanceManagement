@@ -33,6 +33,9 @@ def journal_entries_view(request):
 def jev_approval_view(request):
     return render(request, 'Transaction/jevapproval.html')
 
+def configuration_view(request):
+    return render(request, 'Transaction/configuration.html')
+
 def trial_balance_view(request):
     return render(request, 'Reports/trialbalance.html')
 
