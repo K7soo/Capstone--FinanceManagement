@@ -711,12 +711,11 @@ function removeRow(button) {
 }
 window.removeRow = removeRow;
 
-// Ensure this function is globally accessible
-window.editTemplate = editTemplate;
-
-/// Save Edited Template
+// Save Edited Template
 function saveEditedTemplate(event) {
-    event.preventDefault(); // Prevent default form submission behavior
+    if (event) {
+        event.preventDefault(); // Prevent default form submission behavior
+    }
 
     const templateId = document.getElementById("editTemplateId").value; // Fetch template ID
     if (!templateId) {
@@ -746,23 +745,21 @@ function saveEditedTemplate(event) {
         return; // Exit on validation error
     }
 
-    const updatedDetails = []; // Updated rows
-    const newDetails = []; // New rows
-    const editTemplateRows = document.querySelectorAll("#editTemplateRows tr");
-
+    const rows = document.querySelectorAll("#editTemplateRows tr"); // Get table rows
+    const details = []; // Collect all rows' data
     let hasInvalidRow = false;
 
     // Process each row in the table
-    editTemplateRows.forEach((row) => {
+    rows.forEach((row) => {
         const accountCode = parseInt(row.querySelector(".account-code").value); // Fetch Account Code
         const debitChecked = row.querySelector(".debit-checkbox").checked; // Debit selected
         const creditChecked = row.querySelector(".credit-checkbox").checked; // Credit selected
 
-        // Validate rows
+        // Validate row
         if (!accountCode || debitChecked === creditChecked) {
-            hasInvalidRow = true;
+            hasInvalidRow = true; // Mark row as invalid
             console.warn("Invalid row data:", { accountCode, debitChecked, creditChecked }); // Log invalid row
-            return; // Skip invalid rows
+            return; // Skip this row
         }
 
         const detail = {
@@ -774,11 +771,10 @@ function saveEditedTemplate(event) {
 
         const existingDetailId = row.getAttribute("data-id"); // Check if existing or new
         if (existingDetailId) {
-            detail.id = parseInt(existingDetailId); // Add to updated details
-            updatedDetails.push(detail);
-        } else {
-            newDetails.push(detail); // Add to new details
+            detail.id = parseInt(existingDetailId); // Add existing ID for updates
         }
+
+        details.push(detail); // Add row to the details array
     });
 
     // Validation: Check for invalid rows
@@ -793,7 +789,7 @@ function saveEditedTemplate(event) {
     }
 
     // Validation: Ensure at least two accounts are included
-    if (updatedDetails.length + newDetails.length < 2) {
+    if (details.length < 2) {
         Swal.fire({
             title: "Validation Error",
             text: "You must include at least two accounts in the template.",
@@ -803,6 +799,7 @@ function saveEditedTemplate(event) {
         return; // Exit if fewer than two accounts
     }
 
+    // Confirm Save Changes
     Swal.fire({
         title: "Are you sure?",
         text: "Do you want to save these changes?",
@@ -813,83 +810,18 @@ function saveEditedTemplate(event) {
         cancelButtonColor: "#d33",
     }).then((result) => {
         if (result.isConfirmed) {
-            // Process deletions first
-            const deletionPromises = removedRows.map((detailId) => {
-                return fetch(`/journaltemplatedetails/${detailId}/`, {
-                    method: "DELETE",
-                    headers: {
-                        "X-CSRFToken": csrfToken,
-                    },
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(`Failed to delete detail with ID ${detailId}`);
-                        }
-                        console.log(`Detail with ID ${detailId} deleted successfully.`);
-                    })
-                    .catch((error) => {
-                        console.error("Error deleting detail:", error);
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Failed to delete some rows. Please try again.",
-                            icon: "error",
-                            confirmButtonText: "OK",
-                        });
-                    });
-            });
-
-            // Process new row additions
-            const additionPromises = newDetails.map((detail) => {
-                const formattedDetail = {
-                    Template_FK: parseInt(detail.Template_FK),
-                    Account_FK: parseInt(detail.Account_FK),
-                    Debit: parseFloat(detail.Debit),
-                    Credit: parseFloat(detail.Credit),
-                };
-
-                return fetch(`/journaltemplatedetails/`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken,
-                    },
-                    body: JSON.stringify(formattedDetail),
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error("Failed to add new detail");
-                        }
-                        return response.json();
-                    })
-                    .then((createdDetail) => {
-                        console.log("New detail added successfully:", createdDetail);
-                    })
-                    .catch((error) => {
-                        console.error("Error adding new detail:", error);
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Failed to add some rows. Please try again.",
-                            icon: "error",
-                            confirmButtonText: "OK",
-                        });
-                    });
-            });
-
-            // Execute all promises
-            Promise.all([...deletionPromises, ...additionPromises])
-                .then(() => {
-                    return fetch(`/journaltemplate/${templateId}/`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRFToken": csrfToken,
-                        },
-                        body: JSON.stringify({
-                            template: updatedTemplate,
-                            details: updatedDetails,
-                        }),
-                    });
-                })
+            // Send the update request
+            fetch(`/journaltemplate/${templateId}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,
+                },
+                body: JSON.stringify({
+                    template: updatedTemplate,
+                    details: details, // Pass collected details
+                }),
+            })
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Failed to update template");
@@ -903,22 +835,9 @@ function saveEditedTemplate(event) {
                         text: "Template updated successfully.",
                         icon: "success",
                         confirmButtonText: "OK",
+                    }).then(function () {
+                        window.location.reload(); // Reload the page after success
                     });
-
-                    // Close modal and reload table
-                    const modalElement = document.getElementById("editTemplateModal");
-                    const editModal = bootstrap.Modal.getInstance(modalElement);
-                    editModal.hide();
-
-                    modalElement.addEventListener("hidden.bs.modal", () => {
-                        const backdrop = document.querySelector(".modal-backdrop");
-                        if (backdrop) {
-                            backdrop.remove();
-                        }
-                    });
-
-                    loadJournalTemplates(); // Reload the table
-                    removedRows = []; // Clear removed rows
                 })
                 .catch((error) => {
                     console.error("Error updating template:", error);
@@ -934,6 +853,7 @@ function saveEditedTemplate(event) {
 }
 
 window.saveEditedTemplate = saveEditedTemplate;
+
 
 
 
@@ -1083,3 +1003,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch((error) => console.error("Error loading transaction types:", error));
 });
+console.log("Payload being sent:", JSON.stringify({
+    template: updatedTemplate,
+    details: details,
+}));
