@@ -15,6 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return csrfToken;
     }
+
+    function fetchChartOfAccounts() {
+        return fetch("/chartofacc/", {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch chart of accounts");
+            }
+            return response.json();
+        })
+        .then((accounts) => {
+            // Map accounts by their IDs for easier lookups
+            const accountMap = accounts.reduce((map, account) => {
+                map[account.id] = {
+                    AccountCode: account.AccountCode || "N/A",
+                    AccountDesc: account.AccountDesc || "N/A",
+                };
+                return map;
+            }, {});
+            console.log("Mapped Chart of Accounts:", accountMap);
+            return accountMap;
+        })
+        .catch((error) => {
+            console.error("Error fetching chart of accounts:", error);
+            return {}; // Return an empty object on failure
+        });
+    }
     
     function loadJournalEntries() {
         Promise.all([
@@ -148,85 +179,186 @@ document.addEventListener('DOMContentLoaded', () => {
             },
         })
         .then(response => {
-            if (!response.ok) throw new Error("Failed to fetch JEV details");
+            if (!response.ok) {
+                throw new Error("Failed to fetch journal entry details");
+            }
             return response.json();
         })
         .then(data => {
-            document.getElementById("jevDate").innerText = data.Entry_Date || "N/A";
-            document.getElementById("status").innerText = data.Status_Name || "N/A";
-            document.getElementById("jevNumber").innerText = data.Entry_No || "N/A";
-            document.getElementById("template").innerText = data.TemplateCode || "N/A";
-            document.getElementById("particulars").innerText = data.Entry_Particulars || "N/A";
-
+            // Populate the modal fields with the journal entry details
+            document.getElementById("jevDate").innerText = data.journal_entry.Entry_Date || "N/A";
+            document.getElementById("jevNumber").innerText = data.journal_entry.Entry_No || "N/A";
+            document.getElementById("template").innerText = data.journal_entry.TRTemplate_FK || "N/A";
+            document.getElementById("particulars").innerText = data.journal_entry.EntryParticulars || "N/A";
+            document.getElementById("status").innerText = data.journal_entry.EntryStatus_FK || "N/A";
+    
+            // Populate the accounts table in the modal
             const accountTableBody = document.getElementById("jevAccountTableBody");
-            accountTableBody.innerHTML = "";
-            data.Accounts.forEach(account => {
+            accountTableBody.innerHTML = ""; // Clear existing rows
+            data.journal_details.forEach(detail => {
                 const row = `
                     <tr>
-                        <td>${account.Account || ""}</td>
-                        <td>${account.Debit || ""}</td>
-                        <td>${account.Credit || ""}</td>
+                        <td>${detail.Account_FK || ""}</td>
+                        <td>${detail.DebitAmount || ""}</td>
+                        <td>${detail.CreditAmount || ""}</td>
                     </tr>
                 `;
                 accountTableBody.insertAdjacentHTML("beforeend", row);
             });
-
-            new bootstrap.Modal(document.getElementById("jevApprovalModal")).show();
+    
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById("jevApprovalModal"));
+            modal.show();
         })
-        .catch(error => console.error("Error fetching JEV details:", error));
+        .catch(error => console.error("Error fetching journal entry details:", error));
     }
 
     function printEntry(entryId) {
-        fetch(`/journalentries/${entryId}/`, {
-            method: "GET",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        })
-        .then(response => {
-            if (!response.ok) throw new Error("Failed to fetch JEV details for printing");
-            return response.json();
-        })
-        .then(data => {
-            const printWindow = window.open("", "_blank");
-            printWindow.document.write(`
-                <html>
-                    <head>
-                        <title>Print JEV</title>
-                    </head>
-                    <body>
-                        <h1>JEV Details</h1>
-                        <p><strong>Date:</strong> ${data.Entry_Date || "N/A"}</p>
-                        <p><strong>Status:</strong> ${data.Status_Name || "N/A"}</p>
-                        <p><strong>JEV Number:</strong> ${data.Entry_No || "N/A"}</p>
-                        <p><strong>Template:</strong> ${data.Template || "N/A"}</p>
-                        <p><strong>Particulars:</strong> ${data.Entry_Particulars || "N/A"}</p>
-                        <table border="1" cellpadding="5" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Account</th>
-                                    <th>Debit</th>
-                                    <th>Credit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${data.Accounts.map(account => `
+        // Fetch chart of accounts first
+        fetchChartOfAccounts().then((accountMap) => {
+            fetch(`/journalentries/${entryId}/`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch journal entry details for printing");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Map journal details with account data
+                const mappedDetails = data.journal_details.map((detail) => {
+                    const account = accountMap[detail.Account_FK] || {
+                        AccountCode: "N/A",
+                        AccountDesc: "N/A",
+                    };
+                    return {
+                        accountDesc: account.AccountDesc,
+                        accountCode: account.AccountCode,
+                        debitAmount: parseFloat(detail.DebitAmount || 0).toFixed(2),
+                        creditAmount: parseFloat(detail.CreditAmount || 0).toFixed(2),
+                    };
+                });
+    
+                const rows = 10; // Total number of rows to display
+                const particulars = data.journal_entry.EntryParticulars || "N/A";
+    
+                // Add empty rows to make up the difference if there are fewer than 10 rows
+                const emptyRowCount = Math.max(rows - mappedDetails.length - 2, 0); // Reserve 2 rows for particulars and totals
+                for (let i = 0; i < emptyRowCount; i++) {
+                    mappedDetails.push({
+                        accountDesc: "",
+                        accountCode: "",
+                        debitAmount: "",
+                        creditAmount: "",
+                    });
+                }
+    
+                const printWindow = window.open("", "_blank");
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Print Journal Entry Voucher</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    margin: 20px;
+                                    padding: 0;
+                                    box-sizing: border-box;
+                                }
+                                table {
+                                    width: 90%; /* Adjusted width */
+                                    border-collapse: collapse;
+                                    margin: 20px auto; /* Center table */
+                                    font-size: 14px;
+                                }
+                                th, td {
+                                    border: 1px solid #000;
+                                    padding: 8px;
+                                    text-align: left;
+                                    height: 30px; /* Ensures uniform row height */
+                                }
+                                th {
+                                    font-weight: bold;
+                                    background-color: #f2f2f2;
+                                }
+                                .totals {
+                                    font-weight: bold;
+                                }
+                                .header, .footer {
+                                    margin-bottom: 20px;
+                                    text-align: center;
+                                }
+                                .header h1 {
+                                    margin: 5px 0;
+                                    font-size: 18px; /* Adjusted title font size */
+                                }
+                                .header p {
+                                    margin: 2px 0;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="header">
+                                <h1>JOURNAL ENTRY VOUCHER</h1>
+                                <p>Company: Tikme Dine</p>
+                                <p>Date: ${data.journal_entry.Entry_Date || "N/A"}</p>
+                                <p>JEV No.: ${data.journal_entry.Entry_No || "N/A"}</p>
+                            </div>
+                            <table>
+                                <thead>
                                     <tr>
-                                        <td>${account.Account || ""}</td>
-                                        <td>${account.Debit || ""}</td>
-                                        <td>${account.Credit || ""}</td>
+                                        <th>Accounts</th>
+                                        <th>Account Code</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
                                     </tr>
-                                `).join("")}
-                            </tbody>
-                        </table>
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.print();
-        })
-        .catch(error => console.error("Error preparing print data:", error));
+                                </thead>
+                                <tbody>
+                                    ${mappedDetails
+                                        .slice(0, rows - 2) // Limit to 8 rows; 2 reserved for particulars and totals
+                                        .map((detail) => `
+                                            <tr>
+                                                <td>${detail.accountDesc}</td>
+                                                <td>${detail.accountCode}</td>
+                                                <td>${detail.debitAmount}</td>
+                                                <td>${detail.creditAmount}</td>
+                                            </tr>
+                                        `)
+                                        .join("")}
+                                    <tr>
+                                        <td colspan="4">Particulars: ${particulars}</td>
+                                    </tr>
+                                    <tr class="totals">
+                                        <td colspan="2">TOTAL</td>
+                                        <td>${mappedDetails
+                                            .reduce((sum, detail) => sum + parseFloat(detail.debitAmount || 0), 0)
+                                            .toFixed(2)}</td>
+                                        <td>${mappedDetails
+                                            .reduce((sum, detail) => sum + parseFloat(detail.creditAmount || 0), 0)
+                                            .toFixed(2)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer">
+                                <p><strong>Prepared By:</strong> ${data.journal_entry.Created_By || "N/A"}</p>
+                                <p><strong>Approved By:</strong> ______________________</p>
+                            </div>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            })
+            .catch((error) => console.error("Error preparing print data:", error));
+        });
     }
+    
+    
+    
 
     loadJournalEntries();
 });
