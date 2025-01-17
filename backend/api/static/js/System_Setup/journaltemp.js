@@ -868,31 +868,57 @@ window.saveEditedTemplate = saveEditedTemplate;
 function deleteTemplate(templateId) {
     console.log("Deleting template:", templateId);
 
-    if (!confirm("Are you sure you want to delete this template?")) {
-        return;
-    }
+    // SweetAlert confirmation dialog
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to delete this template? This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/journaltemplate/${templateId}/`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to delete template");
+                    }
 
-    fetch(`/journaltemplate/${templateId}/`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRFToken": csrfToken,
-            "X-Requested-With": "XMLHttpRequest",
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Failed to delete template");
-            }
+                    console.log("Template deleted successfully:", templateId);
 
-            console.log("Template deleted successfully:", templateId);
+                    // Remove the deleted template's row from the table
+                    const rowToDelete = document.querySelector(`tr[data-id='${templateId}']`);
+                    if (rowToDelete) {
+                        rowToDelete.remove();
+                    }
 
-            // Remove the deleted template's row from the table
-            const rowToDelete = document.querySelector(`tr[data-id='${templateId}']`);
-            if (rowToDelete) {
-                rowToDelete.remove();
-            }
-        })
-        .catch((error) => console.error("Error deleting template:", error));
+                    // SweetAlert success message
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "The template has been deleted successfully.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error deleting template:", error);
+
+                    // SweetAlert error message
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Failed to delete the template. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                });
+        }
+    });
 }
 
 // Expose the functions globally to make them accessible from the HTML
