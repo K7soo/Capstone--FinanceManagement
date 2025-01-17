@@ -267,3 +267,57 @@ editAccountForm.addEventListener('submit', function (event) {
         }
     });
 });
+// DELETE
+function deleteAccount(button) {
+    const row = button.closest('tr');
+    const accountId = row.dataset.id;
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This action cannot be undone!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#fffff',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/listofacc-change/${accountId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+            })
+                .then(response => {
+                    if (response.status === 204) {
+                        console.log("Account successfully deleted.");
+                        row.remove();
+
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'The account has been deleted.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        console.error('Failed to delete account:', response.statusText);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to delete the account. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting account:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while deleting the account.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        }
+    });
+}
