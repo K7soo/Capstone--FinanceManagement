@@ -502,6 +502,34 @@ document.addEventListener('DOMContentLoaded', () => {
         rows.forEach(row => tbody.appendChild(row));
     }
 
+    const modalElement = document.getElementById('addJournalEntriesModal');
+
+    // Add an event listener to clear the modal when it's hidden
+    modalElement.addEventListener('hidden.bs.modal', () => {
+        // Clear all input fields in the modal
+        modalElement.querySelectorAll('input, textarea, select').forEach((field) => {
+            field.value = '';
+        });
+
+        // Clear the accounts table body
+        const accountsTableBody = modalElement.querySelector('#accounting-entries table tbody');
+        if (accountsTableBody) {
+            accountsTableBody.innerHTML = '';
+        }
+
+        // Reset the transaction type textbox to its default state
+        const transactionTypeTextbox = document.getElementById('transactionType');
+        if (transactionTypeTextbox) {
+            transactionTypeTextbox.outerHTML = '<input type="text" id="transactionType" class="form-control text-muted" style="cursor: not-allowed; background-color: #e9ecef;" value="" readonly />';
+        }
+
+        // Reset the template dropdown
+        const addTemplateSelect = document.getElementById('addTemplate');
+        if (addTemplateSelect) {
+            addTemplateSelect.value = '';
+        }
+    });
+
     // Call the function on page load
     document.addEventListener('DOMContentLoaded', loadJournalEntries);
 
