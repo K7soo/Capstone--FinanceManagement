@@ -46,6 +46,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return {}; // Return an empty object on failure
         });
     }
+
+
+    // Fetch all statuses
+    function fetchStatuses() {
+        return fetch('/entrystatuses/', {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch statuses");
+                }
+                return response.json();
+            })
+            .catch(error => console.error("Error fetching statuses:", error));
+    }
+
     
     function loadJournalEntries() {
         Promise.all([
@@ -130,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                             class="dropdown-item text-info view-entry"
                                             data-entry-id="${journalEntry.id}"
                                             style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-eye me-2"></i>Notes and Remarks
+                                            <i class="bi bi-clipboard-check"></i> Review
                                         </button>
                                     </li>
                                     <li>
@@ -171,47 +190,174 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function viewEntry(entryId) {
-        fetch(`/journalentries/${entryId}/`, {
-            method: "GET",
+    function saveApproval(entryId) {
+        if (!entryId) {
+            console.error("Entry ID is missing or undefined!");
+            alert("Unable to save. Entry ID is missing.");
+            return;
+        }
+    
+        const selectedStatus = document.getElementById("statusDropdown").value;
+        const remarks = document.getElementById("remarks").value;
+    
+        if (!selectedStatus) {
+            alert("Please select a status.");
+            return;
+        }
+    
+        const payload = {
+            status: selectedStatus,
+            remarks: remarks,
+        };
+    
+        fetch(`/journalentries/${entryId}/`, {  // Ensure correct route here
+            method: "PATCH",
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCsrfToken(),
             },
+            body: JSON.stringify(payload),
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Failed to fetch journal entry details");
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Populate the modal fields with the journal entry details
-            document.getElementById("jevDate").innerText = data.journal_entry.Entry_Date || "N/A";
-            document.getElementById("jevNumber").innerText = data.journal_entry.Entry_No || "N/A";
-            document.getElementById("template").innerText = data.journal_entry.TRTemplate_FK || "N/A";
-            document.getElementById("particulars").innerText = data.journal_entry.EntryParticulars || "N/A";
-            document.getElementById("status").innerText = data.journal_entry.EntryStatus_FK || "N/A";
-    
-            // Populate the accounts table in the modal
-            const accountTableBody = document.getElementById("jevAccountTableBody");
-            accountTableBody.innerHTML = ""; // Clear existing rows
-            data.journal_details.forEach(detail => {
-                const row = `
-                    <tr>
-                        <td>${detail.Account_FK || ""}</td>
-                        <td>${detail.DebitAmount || ""}</td>
-                        <td>${detail.CreditAmount || ""}</td>
-                    </tr>
-                `;
-                accountTableBody.insertAdjacentHTML("beforeend", row);
-            });
-    
-            // Show the modal
-            const modal = new bootstrap.Modal(document.getElementById("jevApprovalModal"));
-            modal.show();
-        })
-        .catch(error => console.error("Error fetching journal entry details:", error));
+            .then((response) => {
+                if (!response.ok) {
+                    return response.json().then((errorData) => {
+                        console.error("Server-side validation errors:", errorData);
+                        throw new Error("Failed to update journal entry");
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Journal entry updated successfully:", data);
+                const modal = bootstrap.Modal.getInstance(
+                    document.getElementById("jevApprovalModal")
+                );
+                modal.hide();
+                loadJournalEntries(); // Reload the table
+            })
+            .catch((error) =>
+                console.error("Error updating journal entry status and remarks:", error)
+            );
     }
+
+    function viewEntry(entryId) {
+        document.getElementById("saveApprovalButton").onclick = () => saveApproval(entryId);
+        fetchChartOfAccounts().then((accountMap) => {
+            fetch(`/journalentries/${entryId}/`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch journal entry details");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+
+                    // Populate particulars and remarks
+                    const dropdown = document.getElementById("statusDropdown");
+                    fetchStatuses()
+                        .then((statuses) => {
+                            dropdown.innerHTML = "";
+                            statuses.forEach((status) => {
+                                const option = document.createElement("option");
+                                option.value = status.id;
+                                option.textContent = status.Status_Name;
+                                if (status.id === data.journal_entry.EntryStatus_FK) {
+                                    option.selected = true;
+                                }
+                                dropdown.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching statuses for dropdown:", error)
+                        );
+
+                    document.getElementById("jevDate").textContent =
+                        data.journal_entry.Entry_Date || "N/A";
+                    document.getElementById("jevNumber").textContent =
+                        data.journal_entry.Entry_No || "N/A";
+    
+                    // Populate other modal fields
+                    document.getElementById("remarks").value =
+                        data.journal_entry.Review_Remarks || "";
+    
+                    // Render accounts table and particulars (already implemented)
+                    const mappedDetails = data.journal_details.map((detail) => {
+                        const account = accountMap[detail.Account_FK] || {
+                            AccountCode: "N/A",
+                            AccountDesc: "N/A",
+                        };
+                        return {
+                            accountDesc: account.AccountDesc,
+                            accountCode: account.AccountCode,
+                            debitAmount: parseFloat(detail.DebitAmount || 0).toFixed(2),
+                            creditAmount: parseFloat(detail.CreditAmount || 0).toFixed(2),
+                        };
+                    });
+    
+                    const accountTableBody = document.getElementById(
+                        "jevAccountTableBody"
+                    );
+                    accountTableBody.innerHTML = mappedDetails
+                        .map(
+                            (detail) => `
+                        <tr>
+                            <td>${detail.accountDesc}</td>
+                            <td>${detail.accountCode}</td>
+                            <td>${detail.debitAmount}</td>
+                            <td>${detail.creditAmount}</td>
+                        </tr>
+                    `
+                        )
+                        .join("");
+    
+                    // Add totals and particulars row
+                    accountTableBody.insertAdjacentHTML(
+                        "beforeend",
+                        `
+                        <tr>
+                            <td colspan="4">Particulars: ${
+                                data.journal_entry.EntryParticulars || "N/A"
+                            }</td>
+                        </tr>
+                        <tr class="totals">
+                            <td colspan="2">TOTAL</td>
+                            <td>${mappedDetails
+                                .reduce(
+                                    (sum, detail) =>
+                                        sum + parseFloat(detail.debitAmount || 0),
+                                    0
+                                )
+                                .toFixed(2)}</td>
+                            <td>${mappedDetails
+                                .reduce(
+                                    (sum, detail) =>
+                                        sum + parseFloat(detail.creditAmount || 0),
+                                    0
+                                )
+                                .toFixed(2)}</td>
+                        </tr>
+                        `
+                    );
+                    document.getElementById("saveApprovalButton").onclick = () =>
+                        saveApproval(entryId);
+    
+                    // Show the modal
+                    const modal = new bootstrap.Modal(
+                        document.getElementById("jevApprovalModal")
+                    );
+                    modal.show();
+                })
+                .catch((error) =>
+                    console.error("Error fetching journal entry details:", error)
+                );
+        });
+    }
+
 
     function printEntry(entryId) {
         // Fetch chart of accounts first
@@ -356,8 +502,13 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch((error) => console.error("Error preparing print data:", error));
         });
     }
-    
-    
+
+    document.addEventListener("click", event => {
+        if (event.target.classList.contains("view-entry")) {
+            const entryId = event.target.dataset.entryId;
+            viewEntry(entryId);
+        }
+    });
     
 
     loadJournalEntries();
