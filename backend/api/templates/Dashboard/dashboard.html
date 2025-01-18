@@ -28,16 +28,15 @@ Bookkeeping Dashboard
 
 {% block content %}
 <div class="container mt-5">
-
+    <ol class="breadcrumb mt-2 mb-1">
+		<li class="breadcrumb-item d-flex align-items-center">
+			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
+			<span class="text-muted">Dashboard</span>
+		</li>
+	</ol>
     <h1 style="color: #6f42c1;">Bookkeeping Dashboard</h1>
             <!-- Breadcrumbs -->
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <!-- <i class="bi bi-caret-right-fill me-1"></i> Bootstrap caret icon before text -->
-                    <a href="{% url 'dashboard' %}">Dashboard</a>
-                </li>
-                <!-- <li class="breadcrumb-item active" aria-current="page">{{ current_page }}</li> -->
-            </ol>
+
     <p>Overview of Financial Data</p>
 
     <div class="row g-4">
