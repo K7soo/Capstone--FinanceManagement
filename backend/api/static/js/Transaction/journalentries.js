@@ -286,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Journal entry saved successfully:', savedEntry);
                 alert('Journal entry saved successfully!');
                 document.getElementById('addJournalEntriesModal').style.display = 'none';
+                loadJournalEntries();
             })
             .catch(error => {
                 console.error('Error during fetch operation:', error);
