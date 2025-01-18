@@ -23,28 +23,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 "X-Requested-With": "XMLHttpRequest",
             },
         })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Failed to fetch chart of accounts");
-            }
-            return response.json();
-        })
-        .then((accounts) => {
-            // Map accounts by their IDs for easier lookups
-            const accountMap = accounts.reduce((map, account) => {
-                map[account.id] = {
-                    AccountCode: account.AccountCode || "N/A",
-                    AccountDesc: account.AccountDesc || "N/A",
-                };
-                return map;
-            }, {});
-            console.log("Mapped Chart of Accounts:", accountMap);
-            return accountMap;
-        })
-        .catch((error) => {
-            console.error("Error fetching chart of accounts:", error);
-            return {}; // Return an empty object on failure
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch chart of accounts");
+                }
+                return response.json();
+            })
+            .then((accounts) => {
+                // Map accounts by their IDs for easier lookups
+                const accountMap = accounts.reduce((map, account) => {
+                    map[account.id] = {
+                        AccountCode: account.AccountCode || "N/A",
+                        AccountDesc: account.AccountDesc || "N/A",
+                    };
+                    return map;
+                }, {});
+                console.log("Mapped Chart of Accounts:", accountMap);
+                return accountMap;
+            })
+            .catch((error) => {
+                console.error("Error fetching chart of accounts:", error);
+                return {}; // Return an empty object on failure
+            });
     }
 
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error("Error fetching statuses:", error));
     }
 
-    
+
     function loadJournalEntries() {
         Promise.all([
             fetch('/journalentries/', {
@@ -101,23 +101,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 statuses.forEach(status => {
                     statusMap[status.id] = status.Status_Name;
                 });
-    
+
                 const templateMap = {};
                 templates.forEach(template => {
                     templateMap[template.id] = template.TRTemplateCode;
                 });
-    
+
                 const tableBody = document.querySelector("#jevApprovalTable tbody");
                 if (!tableBody) {
                     console.error("Table body not found.");
                     return;
                 }
                 tableBody.innerHTML = ""; // Clear existing rows
-    
+
                 entries.forEach(entry => {
                     const journalEntry = entry.journal_entry;
                     const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
-    
+
                     // Add a row for the journal entry
                     const entryRow = document.createElement("tr");
                     entryRow.setAttribute("data-id", journalEntry.id);
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </td>
                     `;
                     tableBody.appendChild(entryRow);
-                }); 
+                });
                 attachActionListeners();
             })
             .catch(error => console.error("Error loading journal entries:", error));
@@ -196,20 +196,20 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Unable to save. Entry ID is missing.");
             return;
         }
-    
+
         const selectedStatus = document.getElementById("statusDropdown").value;
         const remarks = document.getElementById("remarks").value;
-    
+
         if (!selectedStatus) {
             alert("Please select a status.");
             return;
         }
-    
+
         const payload = {
             status: selectedStatus,
             remarks: remarks,
         };
-    
+
         fetch(`/journalentries/${entryId}/`, {  // Ensure correct route here
             method: "PATCH",
             headers: {
@@ -280,11 +280,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         data.journal_entry.Entry_Date || "N/A";
                     document.getElementById("jevNumber").textContent =
                         data.journal_entry.Entry_No || "N/A";
-    
+
                     // Populate other modal fields
                     document.getElementById("remarks").value =
                         data.journal_entry.Review_Remarks || "";
-    
+
                     // Render accounts table and particulars (already implemented)
                     const mappedDetails = data.journal_details.map((detail) => {
                         const account = accountMap[detail.Account_FK] || {
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             creditAmount: parseFloat(detail.CreditAmount || 0).toFixed(2),
                         };
                     });
-    
+
                     const accountTableBody = document.getElementById(
                         "jevAccountTableBody"
                     );
@@ -314,43 +314,63 @@ document.addEventListener('DOMContentLoaded', () => {
                     `
                         )
                         .join("");
-    
+
                     // Add totals and particulars row
                     accountTableBody.insertAdjacentHTML(
                         "beforeend",
                         `
                         <tr>
-                            <td colspan="4">Particulars: ${
-                                data.journal_entry.EntryParticulars || "N/A"
-                            }</td>
+                            <td colspan="4">Particulars: ${data.journal_entry.EntryParticulars || "N/A"
+                        }</td>
                         </tr>
                         <tr class="totals">
                             <td colspan="2">TOTAL</td>
                             <td>${mappedDetails
-                                .reduce(
-                                    (sum, detail) =>
-                                        sum + parseFloat(detail.debitAmount || 0),
-                                    0
-                                )
-                                .toFixed(2)}</td>
+                            .reduce(
+                                (sum, detail) =>
+                                    sum + parseFloat(detail.debitAmount || 0),
+                                0
+                            )
+                            .toFixed(2)}</td>
                             <td>${mappedDetails
-                                .reduce(
-                                    (sum, detail) =>
-                                        sum + parseFloat(detail.creditAmount || 0),
-                                    0
-                                )
-                                .toFixed(2)}</td>
+                            .reduce(
+                                (sum, detail) =>
+                                    sum + parseFloat(detail.creditAmount || 0),
+                                0
+                            )
+                            .toFixed(2)}</td>
                         </tr>
                         `
                     );
                     document.getElementById("saveApprovalButton").onclick = () =>
                         saveApproval(entryId);
-    
+
                     // Show the modal
-                    const modal = new bootstrap.Modal(
-                        document.getElementById("jevApprovalModal")
-                    );
+                    const modalElement = document.getElementById("jevApprovalModal");
+                    const modal = new bootstrap.Modal(modalElement);
                     modal.show();
+
+                    // Ensure backdrop is removed properly on modal hide
+                    modalElement.addEventListener("hidden.bs.modal", () => {
+                        // Remove lingering modal backdrops
+                        document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+                            backdrop.remove();
+                        });
+                        // Remove modal-specific body classes
+                        document.body.classList.remove("modal-open");
+                        document.body.style.paddingRight = "";
+                    });
+
+                    // Close another modal (addJournalEntriesModal) if open
+                    const addEntriesModalElement = document.getElementById("addJournalEntriesModal");
+                    if (addEntriesModalElement) {
+                        const bootstrapAddEntriesModal = bootstrap.Modal.getInstance(addEntriesModalElement);
+                        if (bootstrapAddEntriesModal) {
+                            bootstrapAddEntriesModal.hide();
+                        }
+                    }
+
+
                 })
                 .catch((error) =>
                     console.error("Error fetching journal entry details:", error)
@@ -368,43 +388,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     "X-Requested-With": "XMLHttpRequest",
                 },
             })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch journal entry details for printing");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                // Map journal details with account data
-                const mappedDetails = data.journal_details.map((detail) => {
-                    const account = accountMap[detail.Account_FK] || {
-                        AccountCode: "N/A",
-                        AccountDesc: "N/A",
-                    };
-                    return {
-                        accountDesc: account.AccountDesc,
-                        accountCode: account.AccountCode,
-                        debitAmount: parseFloat(detail.DebitAmount || 0).toFixed(2),
-                        creditAmount: parseFloat(detail.CreditAmount || 0).toFixed(2),
-                    };
-                });
-    
-                const rows = 10; // Total number of rows to display
-                const particulars = data.journal_entry.EntryParticulars || "N/A";
-    
-                // Add empty rows to make up the difference if there are fewer than 10 rows
-                const emptyRowCount = Math.max(rows - mappedDetails.length - 2, 0); // Reserve 2 rows for particulars and totals
-                for (let i = 0; i < emptyRowCount; i++) {
-                    mappedDetails.push({
-                        accountDesc: "",
-                        accountCode: "",
-                        debitAmount: "",
-                        creditAmount: "",
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch journal entry details for printing");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // Map journal details with account data
+                    const mappedDetails = data.journal_details.map((detail) => {
+                        const account = accountMap[detail.Account_FK] || {
+                            AccountCode: "N/A",
+                            AccountDesc: "N/A",
+                        };
+                        return {
+                            accountDesc: account.AccountDesc,
+                            accountCode: account.AccountCode,
+                            debitAmount: parseFloat(detail.DebitAmount || 0).toFixed(2),
+                            creditAmount: parseFloat(detail.CreditAmount || 0).toFixed(2),
+                        };
                     });
-                }
-    
-                const printWindow = window.open("", "_blank");
-                printWindow.document.write(`
+
+                    const rows = 10; // Total number of rows to display
+                    const particulars = data.journal_entry.EntryParticulars || "N/A";
+
+                    // Add empty rows to make up the difference if there are fewer than 10 rows
+                    const emptyRowCount = Math.max(rows - mappedDetails.length - 2, 0); // Reserve 2 rows for particulars and totals
+                    for (let i = 0; i < emptyRowCount; i++) {
+                        mappedDetails.push({
+                            accountDesc: "",
+                            accountCode: "",
+                            debitAmount: "",
+                            creditAmount: "",
+                        });
+                    }
+
+                    const printWindow = window.open("", "_blank");
+                    printWindow.document.write(`
                     <html>
                         <head>
                             <title>Print Journal Entry Voucher</title>
@@ -465,8 +485,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </thead>
                                 <tbody>
                                     ${mappedDetails
-                                        .slice(0, rows - 2) // Limit to 8 rows; 2 reserved for particulars and totals
-                                        .map((detail) => `
+                            .slice(0, rows - 2) // Limit to 8 rows; 2 reserved for particulars and totals
+                            .map((detail) => `
                                             <tr>
                                                 <td>${detail.accountDesc}</td>
                                                 <td>${detail.accountCode}</td>
@@ -474,18 +494,18 @@ document.addEventListener('DOMContentLoaded', () => {
                                                 <td>${detail.creditAmount}</td>
                                             </tr>
                                         `)
-                                        .join("")}
+                            .join("")}
                                     <tr>
                                         <td colspan="4">Particulars: ${particulars}</td>
                                     </tr>
                                     <tr class="totals">
                                         <td colspan="2">TOTAL</td>
                                         <td>${mappedDetails
-                                            .reduce((sum, detail) => sum + parseFloat(detail.debitAmount || 0), 0)
-                                            .toFixed(2)}</td>
+                            .reduce((sum, detail) => sum + parseFloat(detail.debitAmount || 0), 0)
+                            .toFixed(2)}</td>
                                         <td>${mappedDetails
-                                            .reduce((sum, detail) => sum + parseFloat(detail.creditAmount || 0), 0)
-                                            .toFixed(2)}</td>
+                            .reduce((sum, detail) => sum + parseFloat(detail.creditAmount || 0), 0)
+                            .toFixed(2)}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -496,10 +516,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         </body>
                     </html>
                 `);
-                printWindow.document.close();
-                printWindow.print();
-            })
-            .catch((error) => console.error("Error preparing print data:", error));
+                    printWindow.document.close();
+                    printWindow.print();
+                })
+                .catch((error) => console.error("Error preparing print data:", error));
         });
     }
 
@@ -509,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
             viewEntry(entryId);
         }
     });
-    
+
 
     loadJournalEntries();
 });
