@@ -284,13 +284,29 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(savedEntry => {
                 console.log('Journal entry saved successfully:', savedEntry);
-                alert('Journal entry saved successfully!');
-                document.getElementById('addJournalEntriesModal').style.display = 'none';
-                loadJournalEntries();
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Journal entry saved successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    // Hide modal and reload entries after user confirms success
+                    const modal = document.getElementById('addJournalEntriesModal');
+                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    if (bootstrapModal) {
+                        bootstrapModal.hide();
+                    }
+                    loadJournalEntries();
+                });
             })
             .catch(error => {
                 console.error('Error during fetch operation:', error);
-                alert('An error occurred while saving the journal entry. Please try again.');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while saving the journal entry. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
             });
         const modal = document.getElementById('addJournalEntriesModal');
         const bootstrapModal = bootstrap.Modal.getInstance(modal);
