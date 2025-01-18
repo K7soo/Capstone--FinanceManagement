@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const addTemplateSelect = document.getElementById('addTemplate');
 
     const transactionTypeMap = {}; // Map for TransactionType IDs to names
+    document.addEventListener("DOMContentLoaded", function () {
+        const particularsTab = document.getElementById("particulars-tab");
+        if (particularsTab) {
+            particularsTab.click(); // Programmatically activate the Particulars tab
+        }
+    });
 
     function getCsrfToken() {
         let csrfToken = null;
@@ -172,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     accountsTableBody?.addEventListener('input', event => {
         const target = event.target;
-    
+
         if (target.classList.contains('debit-input')) {
             const creditInput = target.closest('tr').querySelector('.credit-input');
             if (creditInput) {
@@ -303,16 +309,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function sortTableByColumn(columnIndex) {
         const table = document.querySelector('.journal-entries-table tbody');
         const rows = Array.from(table.querySelectorAll('tr'));
-    
+
         const sortedRows = rows.sort((a, b) => {
             const aValue = a.children[columnIndex].textContent;
             const bValue = b.children[columnIndex].textContent;
-    
+
             return columnIndex === 0 // If sorting by date
                 ? new Date(aValue) - new Date(bValue)
                 : aValue.localeCompare(bValue);
         });
-    
+
         // Reattach sorted rows
         table.innerHTML = '';
         sortedRows.forEach(row => table.appendChild(row));
@@ -353,24 +359,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 statuses.forEach(status => {
                     statusMap[status.id] = status.Status_Name;
                 });
-    
+
                 const templateMap = {};
                 templates.forEach(template => {
                     templateMap[template.id] = template.TRTemplateCode;
                 });
-    
+
                 const tableBody = document.querySelector("#journalEntriesTable tbody");
                 if (!tableBody) {
                     console.error("Table body not found.");
                     return;
                 }
                 tableBody.innerHTML = ""; // Clear existing rows
-    
+
                 entries.forEach(entry => {
                     const journalEntry = entry.journal_entry;
                     const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
                     const templateCode = templateMap[journalEntry.TRTemplate_FK] || "N/A";
-    
+
                     // Add a row for the journal entry
                     const entryRow = document.createElement("tr");
                     entryRow.setAttribute("data-id", journalEntry.id);
@@ -431,17 +437,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     tableBody.appendChild(entryRow);
                 });
-    
+
                 attachActionListeners(); // Attach event listeners to action buttons
             })
             .catch(error => console.error("Error loading journal entries:", error));
     }
-    
+
     function attachActionListeners() {
         const viewButtons = document.querySelectorAll(".view-entry");
         const editButtons = document.querySelectorAll(".edit-entry");
         const deleteButtons = document.querySelectorAll(".delete-entry");
-    
+
         viewButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
@@ -449,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Logic for viewing the entry (modal or page redirection)
             });
         });
-    
+
         editButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
@@ -457,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Logic for editing the entry
             });
         });
-    
+
         deleteButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
@@ -469,30 +475,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function sortTable(tableId, ascending = true) {
         const table = document.getElementById(tableId);
-    
+
         if (!table) {
             console.error(`Table with id '${tableId}' not found.`);
             return;
         }
-    
+
         const tbody = table.querySelector("tbody");
-    
+
         if (!tbody) {
             console.error(`Table body not found for table with id '${tableId}'.`);
             return;
         }
-    
+
         const rows = Array.from(tbody.querySelectorAll("tr"));
-    
+
         rows.sort((a, b) => {
             const aDate = new Date(a.cells[0]?.innerText.trim()); // Assuming date is in the first column
             const bDate = new Date(b.cells[0]?.innerText.trim());
-    
+
             if (aDate < bDate) return ascending ? -1 : 1;
             if (aDate > bDate) return ascending ? 1 : -1;
             return 0;
         });
-    
+
         rows.forEach(row => tbody.appendChild(row));
     }
 
