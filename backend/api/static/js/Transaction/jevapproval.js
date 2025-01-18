@@ -205,12 +205,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
     
+        // Prepare the payload
         const payload = {
-            status: selectedStatus,
-            remarks: remarks,
+            EntryStatus_FK: parseInt(selectedStatus), // Ensure status is a number
+            Review_Remarks: remarks,
         };
     
-        fetch(`/journalentries/${entryId}/`, {  // Ensure correct route here
+        fetch(`/journalentries/${entryId}/`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -232,13 +233,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const modal = bootstrap.Modal.getInstance(
                     document.getElementById("jevApprovalModal")
                 );
-                modal.hide();
-                loadJournalEntries(); // Reload the table
+                modal.hide(); // Close the modal after successful save
+                loadJournalEntries(); // Reload the table with updated data
             })
             .catch((error) =>
                 console.error("Error updating journal entry status and remarks:", error)
             );
     }
+    
 
     function viewEntry(entryId) {
         document.getElementById("saveApprovalButton").onclick = () => saveApproval(entryId);
