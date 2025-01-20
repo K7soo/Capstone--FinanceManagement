@@ -5,6 +5,7 @@ from .views_journtemp import *
 from .views_journentries import *
 from .views_api import *
 from .views_status import *
+from .views_query_journal import *
 
 __all__ = [
     "views_",
@@ -15,4 +16,5 @@ __all__ = [
     "views_trtype",
     "views_api",
     "views_status",
+    "views_query_journal",
 ]

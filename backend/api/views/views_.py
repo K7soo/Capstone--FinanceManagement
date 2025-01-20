@@ -41,10 +41,10 @@ def trial_balance_view(request):
 
 
 def general_journal_view(request):
-    return render(request, 'Transaction/general_journal.html')
+    return render(request, 'Reports/general_journal.html')
 
 def general_ledger_view(request):
-    return render(request, 'Transaction/general_ledger.html')
+    return render(request, 'Reports/general_ledger.html')
 
 # End of dropdown 
 
