@@ -360,49 +360,40 @@ document.addEventListener('DOMContentLoaded', () => {
             }).then(response => {
                 if (!response.ok) throw new Error("Failed to load entry statuses");
                 return response.json();
-            }),
-            fetch('/journaltemplate/', {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load journal templates");
-                return response.json();
-            }),
+            })
         ])
-            .then(([entries, statuses, templates]) => {
+            .then(([entries, statuses]) => {
                 const statusMap = {};
                 statuses.forEach(status => {
                     statusMap[status.id] = status.Status_Name;
                 });
-
-                const templateMap = {};
-                templates.forEach(template => {
-                    templateMap[template.id] = template.TRTemplateCode;
-                });
-
+    
                 const tableBody = document.querySelector("#journalEntriesTable tbody");
                 if (!tableBody) {
                     console.error("Table body not found.");
                     return;
                 }
                 tableBody.innerHTML = ""; // Clear existing rows
-
+    
                 entries.forEach(entry => {
                     const journalEntry = entry.journal_entry;
                     const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
-                    const templateCode = templateMap[journalEntry.TRTemplate_FK] || "N/A";
-
+    
+                    // Format date to MM-DD-YYYY
+                    const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "numeric",
+                    });
+    
                     // Add a row for the journal entry
                     const entryRow = document.createElement("tr");
                     entryRow.setAttribute("data-id", journalEntry.id);
                     entryRow.innerHTML = `
-                        <td>${journalEntry.Entry_Date}</td>
+                        <td>${formattedDate}</td>
                         <td>${journalEntry.Entry_No}</td>
                         <td>${journalEntry.EntryParticulars}</td>
                         <td>${entryStatus}</td>
-                        <td>${templateCode}</td>
                         <td class="text-center align-middle">
                             <div class="dropdown d-inline-block">
                                 <button
@@ -454,11 +445,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     tableBody.appendChild(entryRow);
                 });
-
+    
                 attachActionListeners(); // Attach event listeners to action buttons
             })
             .catch(error => console.error("Error loading journal entries:", error));
     }
+    
 
     function attachActionListeners() {
         const viewButtons = document.querySelectorAll(".view-entry");

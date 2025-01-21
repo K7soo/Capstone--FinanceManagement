@@ -101,33 +101,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 statuses.forEach(status => {
                     statusMap[status.id] = status.Status_Name;
                 });
-
+    
                 const templateMap = {};
                 templates.forEach(template => {
                     templateMap[template.id] = template.TRTemplateCode;
                 });
-
+    
                 const tableBody = document.querySelector("#jevApprovalTable tbody");
                 if (!tableBody) {
                     console.error("Table body not found.");
                     return;
                 }
                 tableBody.innerHTML = ""; // Clear existing rows
-
+    
                 entries.forEach(entry => {
                     const journalEntry = entry.journal_entry;
                     const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
-
+    
+                    // Format date to MM-DD-YYYY
+                    const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "numeric",
+                    });
+    
                     // Add a row for the journal entry
                     const entryRow = document.createElement("tr");
                     entryRow.setAttribute("data-id", journalEntry.id);
                     entryRow.innerHTML = `
-                        <td>${journalEntry.Entry_Date}</td>
+                        <td>${formattedDate}</td>
                         <td>${journalEntry.Entry_No}</td>
                         <td>${journalEntry.EntryParticulars}</td>
                         <td>${journalEntry.Created_By || ""}</td>
-                        <td>${entryStatus}</td>
                         <td>${journalEntry.Review_Remarks || ""}</td>
+                        <td>${entryStatus}</td>
                         <td class="text-center align-middle">
                             <div class="dropdown d-inline-block">
                                 <button
@@ -170,6 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => console.error("Error loading journal entries:", error));
     }
+    
+    
 
     function attachActionListeners() {
         const viewButtons = document.querySelectorAll(".view-entry");
@@ -258,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return response.json();
                 })
                 .then((data) => {
-
                     // Populate particulars and remarks
                     const dropdown = document.getElementById("statusDropdown");
                     fetchStatuses()
@@ -277,17 +285,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         .catch((error) =>
                             console.error("Error fetching statuses for dropdown:", error)
                         );
-
-                    document.getElementById("jevDate").textContent =
-                        data.journal_entry.Entry_Date || "N/A";
+    
+                    // Populate modal fields
+                    document.getElementById("jevDate").textContent = new Date(
+                        data.journal_entry.Entry_Date
+                    ).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "numeric",
+                    });
                     document.getElementById("jevNumber").textContent =
                         data.journal_entry.Entry_No || "N/A";
-
-                    // Populate other modal fields
                     document.getElementById("remarks").value =
                         data.journal_entry.Review_Remarks || "";
-
-                    // Render accounts table and particulars (already implemented)
+    
+                    // Map details and format amounts
                     const mappedDetails = data.journal_details.map((detail) => {
                         const account = accountMap[detail.Account_FK] || {
                             AccountCode: "N/A",
@@ -296,62 +308,84 @@ document.addEventListener('DOMContentLoaded', () => {
                         return {
                             accountDesc: account.AccountDesc,
                             accountCode: account.AccountCode,
-                            debitAmount: parseFloat(detail.DebitAmount || 0).toFixed(2),
-                            creditAmount: parseFloat(detail.CreditAmount || 0).toFixed(2),
+                            debitAmount:
+                                detail.DebitAmount > 0
+                                    ? parseFloat(detail.DebitAmount).toLocaleString("en-US", {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })
+                                    : "",
+                            creditAmount:
+                                detail.CreditAmount > 0
+                                    ? parseFloat(detail.CreditAmount).toLocaleString("en-US", {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })
+                                    : "",
                         };
                     });
-
-                    const accountTableBody = document.getElementById(
-                        "jevAccountTableBody"
-                    );
+    
+                    // Render the table
+                    const accountTableBody = document.getElementById("jevAccountTableBody");
                     accountTableBody.innerHTML = mappedDetails
                         .map(
                             (detail) => `
-                        <tr>
-                            <td>${detail.accountDesc}</td>
-                            <td>${detail.accountCode}</td>
-                            <td>${detail.debitAmount}</td>
-                            <td>${detail.creditAmount}</td>
-                        </tr>
-                    `
+                            <tr>
+                                <td>${detail.accountDesc}</td>
+                                <td>${detail.accountCode}</td>
+                                <td>${detail.debitAmount}</td>
+                                <td>${detail.creditAmount}</td>
+                            </tr>
+                        `
                         )
                         .join("");
-
+    
                     // Add totals and particulars row
                     accountTableBody.insertAdjacentHTML(
                         "beforeend",
                         `
                         <tr>
-                            <td colspan="4">Particulars: ${data.journal_entry.EntryParticulars || "N/A"
-                        }</td>
+                            <td colspan="4">Particulars: ${
+                                data.journal_entry.EntryParticulars || "N/A"
+                            }</td>
                         </tr>
                         <tr class="totals">
                             <td colspan="2">TOTAL</td>
                             <td>${mappedDetails
-                            .reduce(
-                                (sum, detail) =>
-                                    sum + parseFloat(detail.debitAmount || 0),
-                                0
-                            )
-                            .toFixed(2)}</td>
+                                .reduce(
+                                    (sum, detail) =>
+                                        sum +
+                                        (detail.debitAmount
+                                            ? parseFloat(detail.debitAmount.replace(/,/g, ""))
+                                            : 0),
+                                    0
+                                )
+                                .toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}</td>
                             <td>${mappedDetails
-                            .reduce(
-                                (sum, detail) =>
-                                    sum + parseFloat(detail.creditAmount || 0),
-                                0
-                            )
-                            .toFixed(2)}</td>
+                                .reduce(
+                                    (sum, detail) =>
+                                        sum +
+                                        (detail.creditAmount
+                                            ? parseFloat(detail.creditAmount.replace(/,/g, ""))
+                                            : 0),
+                                    0
+                                )
+                                .toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}</td>
                         </tr>
                         `
                     );
-                    document.getElementById("saveApprovalButton").onclick = () =>
-                        saveApproval(entryId);
-
+    
                     // Show the modal
                     const modalElement = document.getElementById("jevApprovalModal");
                     const modal = new bootstrap.Modal(modalElement);
                     modal.show();
-
+    
                     // Ensure backdrop is removed properly on modal hide
                     modalElement.addEventListener("hidden.bs.modal", () => {
                         // Remove lingering modal backdrops
@@ -362,23 +396,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.body.classList.remove("modal-open");
                         document.body.style.paddingRight = "";
                     });
-
+    
                     // Close another modal (addJournalEntriesModal) if open
                     const addEntriesModalElement = document.getElementById("addJournalEntriesModal");
                     if (addEntriesModalElement) {
-                        const bootstrapAddEntriesModal = bootstrap.Modal.getInstance(addEntriesModalElement);
+                        const bootstrapAddEntriesModal =
+                            bootstrap.Modal.getInstance(addEntriesModalElement);
                         if (bootstrapAddEntriesModal) {
                             bootstrapAddEntriesModal.hide();
                         }
                     }
-
-
                 })
                 .catch((error) =>
                     console.error("Error fetching journal entry details:", error)
                 );
         });
     }
+    
 
 
     function printEntry(entryId) {
@@ -397,23 +431,39 @@ document.addEventListener('DOMContentLoaded', () => {
                     return response.json();
                 })
                 .then((data) => {
-                    // Map journal details with account data
                     const mappedDetails = data.journal_details.map((detail) => {
                         const account = accountMap[detail.Account_FK] || {
                             AccountCode: "N/A",
                             AccountDesc: "N/A",
                         };
+    
+                        const debitAmount =
+                            detail.DebitAmount > 0
+                                ? parseFloat(detail.DebitAmount).toLocaleString("en-US", {
+                                      minimumFractionDigits: 2,
+                                      maximumFractionDigits: 2,
+                                  })
+                                : ""; // Leave blank if zero
+                        const creditAmount =
+                            detail.CreditAmount > 0
+                                ? parseFloat(detail.CreditAmount).toLocaleString("en-US", {
+                                      minimumFractionDigits: 2,
+                                      maximumFractionDigits: 2,
+                                  })
+                                : ""; // Leave blank if zero
+    
                         return {
                             accountDesc: account.AccountDesc,
                             accountCode: account.AccountCode,
-                            debitAmount: parseFloat(detail.DebitAmount || 0).toFixed(2),
-                            creditAmount: parseFloat(detail.CreditAmount || 0).toFixed(2),
+                            debitAmount: debitAmount,
+                            creditAmount: creditAmount,
+                            isCredit: creditAmount !== "", // Mark credited accounts for indentation
                         };
                     });
-
+    
                     const rows = 10; // Total number of rows to display
                     const particulars = data.journal_entry.EntryParticulars || "N/A";
-
+    
                     // Add empty rows to make up the difference if there are fewer than 10 rows
                     const emptyRowCount = Math.max(rows - mappedDetails.length - 2, 0); // Reserve 2 rows for particulars and totals
                     for (let i = 0; i < emptyRowCount; i++) {
@@ -422,9 +472,27 @@ document.addEventListener('DOMContentLoaded', () => {
                             accountCode: "",
                             debitAmount: "",
                             creditAmount: "",
+                            isCredit: false, // No indentation for empty rows
                         });
                     }
-
+    
+                    // Totals Calculation
+                    const totalDebit = mappedDetails
+                        .reduce(
+                            (sum, detail) =>
+                                sum + (detail.debitAmount ? parseFloat(detail.debitAmount.replace(/,/g, "")) : 0),
+                            0
+                        )
+                        .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+                    const totalCredit = mappedDetails
+                        .reduce(
+                            (sum, detail) =>
+                                sum + (detail.creditAmount ? parseFloat(detail.creditAmount.replace(/,/g, "")) : 0),
+                            0
+                        )
+                        .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
                     const printWindow = window.open("", "_blank");
                     printWindow.document.write(`
                     <html>
@@ -446,7 +514,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 th, td {
                                     border: 1px solid #000;
                                     padding: 8px;
-                                    text-align: left;
                                     height: 30px; /* Ensures uniform row height */
                                 }
                                 th {
@@ -467,6 +534,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 .header p {
                                     margin: 2px 0;
                                 }
+                                .credit-indent {
+                                    text-indent: 20px; /* Indent credited accounts */
+                                }
+                                .right-align {
+                                    text-align: right; /* Right align amounts */
+                                }
                             </style>
                         </head>
                         <body>
@@ -481,33 +554,32 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <tr>
                                         <th>Accounts</th>
                                         <th>Account Code</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
+                                        <th class="right-align">Debit</th>
+                                        <th class="right-align">Credit</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     ${mappedDetails
-                            .slice(0, rows - 2) // Limit to 8 rows; 2 reserved for particulars and totals
-                            .map((detail) => `
-                                            <tr>
-                                                <td>${detail.accountDesc}</td>
-                                                <td>${detail.accountCode}</td>
-                                                <td>${detail.debitAmount}</td>
-                                                <td>${detail.creditAmount}</td>
-                                            </tr>
-                                        `)
-                            .join("")}
+                                        .map(
+                                            (detail) => `
+                                                <tr>
+                                                    <td class="${detail.isCredit ? "credit-indent" : ""}">
+                                                        ${detail.accountDesc}
+                                                    </td>
+                                                    <td>${detail.accountCode}</td>
+                                                    <td class="right-align">${detail.debitAmount}</td>
+                                                    <td class="right-align">${detail.creditAmount}</td>
+                                                </tr>
+                                            `
+                                        )
+                                        .join("")}
                                     <tr>
                                         <td colspan="4">Particulars: ${particulars}</td>
                                     </tr>
                                     <tr class="totals">
                                         <td colspan="2">TOTAL</td>
-                                        <td>${mappedDetails
-                            .reduce((sum, detail) => sum + parseFloat(detail.debitAmount || 0), 0)
-                            .toFixed(2)}</td>
-                                        <td>${mappedDetails
-                            .reduce((sum, detail) => sum + parseFloat(detail.creditAmount || 0), 0)
-                            .toFixed(2)}</td>
+                                        <td class="right-align">${totalDebit}</td>
+                                        <td class="right-align">${totalCredit}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -524,6 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch((error) => console.error("Error preparing print data:", error));
         });
     }
+    
 
     document.addEventListener("click", event => {
         if (event.target.classList.contains("view-entry")) {
