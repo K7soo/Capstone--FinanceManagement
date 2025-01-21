@@ -48,6 +48,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const durationStartDate = durationStartDateInput.value;
         const durationEndDate = durationEndDateInput.value;
 
+        if (!transactionType && !asOfDate && (!durationStartDate || !durationEndDate)) {
+            alert("Please select at least one filter: transaction type or date range.");
+            return Promise.resolve([]);
+        }
+
         if (transactionType) {
             params.append("transaction_type", transactionType); // TransactionType_FK
         }
@@ -78,158 +83,177 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /**
-     * 3. Filter journal entries by transaction type and dates.
-     * @param {Array} data - Fetched journal entry data.
-     * @returns {Array} Filtered journal entries.
+     * 3. Format data for printing and exporting.
+     * @param {Array} data - Filtered journal entries.
+     * @returns {Array} Formatted journal data.
      */
-    function filterJournalEntries(data) {
-        const selectedTypeId = transactionTypeDropdown.value;
-        const asOfDate = asOfDateInput.value ? new Date(asOfDateInput.value) : null;
-        const startDate = durationStartDateInput.value ? new Date(durationStartDateInput.value) : null;
-        const endDate = durationEndDateInput.value ? new Date(durationEndDateInput.value) : null;
-
-        return data.filter((entry) => {
-            const transactionTypeId = entry.journal_entry.TransactionType_FK; // ID from entry
-            const entryDate = new Date(entry.journal_entry.Entry_Date);
-
-            // Check transaction type and date filters
-            const matchesTransactionType = selectedTypeId ? parseInt(transactionTypeId) === parseInt(selectedTypeId) : true;
-            const matchesAsOfDate = asOfDate ? entryDate <= asOfDate : true;
-            const matchesDurationDate =
-                startDate && endDate ? entryDate >= startDate && entryDate <= endDate : true;
-
-            return matchesTransactionType && (matchesAsOfDate || matchesDurationDate);
-        });
+    function formatJournalData(data) {
+        return data.map((entry) => {
+            const particulars = entry.journal_entry.EntryParticulars;
+            return entry.journal_details.map((detail, index) => ({
+                date: entry.journal_entry.Entry_Date,
+                account: detail.Account_FK__AccountDesc || "Undefined",
+                accountCode: detail.Account_FK__AccountCode || "Undefined",
+                debit: detail.DebitAmount,
+                credit: detail.CreditAmount,
+                particulars: index === 0 ? particulars : "", // Display particulars only once
+            }));
+        }).flat();
     }
 
     /**
-     * 4. Export the filtered data to an Excel (CSV) file.
+     * 4. Export to Excel with formatted data.
      */
     function exportToExcel(data) {
-        if (data.length > 0) {
-            const confirmation = confirm("Do you want to download the Excel file?");
-            if (!confirmation) return;
-
-            const csvContent =
-                "data:text/csv;charset=utf-8," +
-                [
-                    ["Entry No", "Date", "Particulars", "Transaction Type", "Account Code", "Account Description", "Debit Amount", "Credit Amount"],
-                    ...data.flatMap((entry) =>
-                        entry.journal_details.map((detail) => [
-                            entry.journal_entry.Entry_No,
-                            entry.journal_entry.Entry_Date,
-                            entry.journal_entry.EntryParticulars,
-                            transactionTypeMap[entry.journal_entry.TransactionType_FK] || "Unknown",
-                            detail.Account_FK__AccountCode,
-                            detail.Account_FK__AccountDesc,
-                            detail.DebitAmount,
-                            detail.CreditAmount,
-                        ])
-                    ),
-                ]
-                    .map((row) => row.join(","))
-                    .join("\n");
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "general_journal.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else {
-            alert("No data available for the selected transaction type and date filters.");
+        if (data.length === 0) {
+            alert("No data available to export.");
+            return;
         }
+
+        const confirmation = confirm("Do you want to download the Excel file?");
+        if (!confirmation) return;
+
+        const formattedData = formatJournalData(data);
+
+        const csvContent =
+            "data:text/csv;charset=utf-8," +
+            [
+                ["Date", "Account", "Account Code", "Debit", "Credit", "Particulars"],
+                ...formattedData.map((row) => [
+                    row.date,
+                    row.account,
+                    row.accountCode,
+                    row.debit,
+                    row.credit,
+                    row.particulars,
+                ]),
+            ]
+                .map((row) => row.join(","))
+                .join("\n");
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "general_journal.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     /**
-     * 5. Print the filtered data in a new window.
+     * 5. Print formatted journal data.
      */
     function printData(data) {
-        if (data.length > 0) {
-            const printWindow = window.open("", "_blank");
-            let content = `
-                <html>
-                <head>
-                    <title>Print General Journal</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #f4f4f4; }
-                    </style>
-                </head>
-                <body>
-                    <h1>General Journal</h1>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Entry No</th>
-                                <th>Date</th>
-                                <th>Particulars</th>
-                                <th>Transaction Type</th>
-                                <th>Account Code</th>
-                                <th>Account Description</th>
-                                <th>Debit Amount</th>
-                                <th>Credit Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            data.forEach((entry) => {
-                entry.journal_details.forEach((detail) => {
-                    content += `
-                        <tr>
-                            <td>${entry.journal_entry.Entry_No}</td>
-                            <td>${entry.journal_entry.Entry_Date}</td>
-                            <td>${entry.journal_entry.EntryParticulars}</td>
-                            <td>${transactionTypeMap[entry.journal_entry.TransactionType_FK] || "Unknown"}</td>
-                            <td>${detail.Account_FK__AccountCode}</td>
-                            <td>${detail.Account_FK__AccountDesc}</td>
-                            <td>${detail.DebitAmount}</td>
-                            <td>${detail.CreditAmount}</td>
-                        </tr>
-                    `;
-                });
-            });
-
-            content += `
-                        </tbody>
-                    </table>
-                </body>
-                </html>
-            `;
-
-            printWindow.document.write(content);
-            printWindow.document.close();
-            printWindow.print();
-        } else {
-            alert("No data available for the selected transaction type and date filters.");
+        if (data.length === 0) {
+            alert("No data available to print.");
+            return;
         }
+
+        const formattedData = formatJournalData(data);
+        const printWindow = window.open("", "_blank");
+
+        let content = `
+            <html>
+            <head>
+                <title>Print General Journal</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    th { background-color: #f4f4f4; }
+                </style>
+            </head>
+            <body>
+                <h1>General Journal</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Account</th>
+                            <th>Account Code</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Particulars</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        formattedData.forEach((row) => {
+            content += `
+                <tr>
+                    <td>${row.date}</td>
+                    <td>${row.account}</td>
+                    <td>${row.accountCode}</td>
+                    <td>${row.debit}</td>
+                    <td>${row.credit}</td>
+                    <td>${row.particulars}</td>
+                </tr>
+            `;
+        });
+
+        content += `
+                    </tbody>
+                </table>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(content);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    function filterParameters() {
+        const transactionType = transactionTypeDropdown.value;
+        const asOfDate = asOfDateInput.value;
+        const durationStartDate = durationStartDateInput.value;
+        const durationEndDate = durationEndDateInput.value;
+    
+        // Validate if a transaction type or date filter is applied
+        if (!transactionType && !asOfDate && (!durationStartDate || !durationEndDate)) {
+            alert("Please select a transaction type or set a valid date range before proceeding.");
+            return false; // Invalid filters
+        }
+        return true; // Valid filters
     }
 
     // Event listeners for buttons
+    // Event listener for the Print button
     printButton.addEventListener("click", function (event) {
         event.preventDefault();
+
+        if (!filterParameters()) return; // Stop execution if filters are invalid
+
+        // Proceed with fetching data and printing
         fetchJournalEntries()
             .then((data) => {
-                const filteredData = filterJournalEntries(data);
-                printData(filteredData);
+                if (data.length === 0) {
+                    alert("No data available to print based on the applied filters.");
+                    return;
+                }
+                printData(data);
             })
             .catch((error) => console.error("Error during print request:", error));
     });
 
+    // Event listener for the Export button
     exportButton.addEventListener("click", function (event) {
         event.preventDefault();
+
+        if (!filterParameters()) return; // Stop execution if filters are invalid
+
+        // Proceed with fetching data and exporting
         fetchJournalEntries()
             .then((data) => {
-                const filteredData = filterJournalEntries(data);
-                exportToExcel(filteredData);
+                if (data.length === 0) {
+                    alert("No data available to export based on the applied filters.");
+                    return;
+                }
+                exportToExcel(data);
             })
             .catch((error) => console.error("Error during export request:", error));
     });
-
     // Initialize transaction types on page load
     loadTransactionTypes();
 });
