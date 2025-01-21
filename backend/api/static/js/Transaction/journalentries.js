@@ -8,12 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEntryButton = document.getElementById('addEntryBtn');
 
     const transactionTypeMap = {}; // Map for TransactionType IDs to names
-    document.addEventListener("DOMContentLoaded", function () {
-        const particularsTab = document.getElementById("particulars-tab");
-        if (particularsTab) {
-            particularsTab.click(); // Programmatically activate the Particulars tab
-        }
-    });
 
     function getCsrfToken() {
         let csrfToken = null;
@@ -323,35 +317,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const transactionType = fetchTransactionTypeFromTemplate(selectedTemplate);
         console.log('TransactionType_FK fetched from template:', transactionType);
     });
-
-    function sortTableByColumn(columnIndex) {
-        const table = document.querySelector('.journal-entries-table tbody');
-        const rows = Array.from(table.querySelectorAll('tr'));
-
-        const sortedRows = rows.sort((a, b) => {
-            const aValue = a.children[columnIndex].textContent;
-            const bValue = b.children[columnIndex].textContent;
-
-            return columnIndex === 0 // If sorting by date
-                ? new Date(aValue) - new Date(bValue)
-                : aValue.localeCompare(bValue);
-        });
-
-        // Reattach sorted rows
-        table.innerHTML = '';
-        sortedRows.forEach(row => table.appendChild(row));
-    }
-
-    function validateDebitCreditTotals(details) {
-        const totalDebit = details.reduce((sum, detail) => sum + (parseFloat(detail.DebitAmount) || 0), 0);
-        const totalCredit = details.reduce((sum, detail) => sum + (parseFloat(detail.CreditAmount) || 0), 0);
-    
-        if (totalDebit !== totalCredit) {
-            alert("The total debit and credit amounts must be equal.");
-            return false;
-        }
-        return true;
-    }
 
     function loadJournalEntries() {
         Promise.all([
