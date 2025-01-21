@@ -5,14 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelButton = document.querySelector('[data-bs-dismiss="modal"]');
     const accountsTableBody = document.querySelector('#accounting-entries table tbody');
     const addTemplateSelect = document.getElementById('addTemplate');
+    const addEntryButton = document.getElementById('addEntryBtn');
 
     const transactionTypeMap = {}; // Map for TransactionType IDs to names
-    document.addEventListener("DOMContentLoaded", function () {
-        const particularsTab = document.getElementById("particulars-tab");
-        if (particularsTab) {
-            particularsTab.click(); // Programmatically activate the Particulars tab
-        }
-    });
 
     function getCsrfToken() {
         let csrfToken = null;
@@ -323,24 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('TransactionType_FK fetched from template:', transactionType);
     });
 
-    function sortTableByColumn(columnIndex) {
-        const table = document.querySelector('.journal-entries-table tbody');
-        const rows = Array.from(table.querySelectorAll('tr'));
-
-        const sortedRows = rows.sort((a, b) => {
-            const aValue = a.children[columnIndex].textContent;
-            const bValue = b.children[columnIndex].textContent;
-
-            return columnIndex === 0 // If sorting by date
-                ? new Date(aValue) - new Date(bValue)
-                : aValue.localeCompare(bValue);
-        });
-
-        // Reattach sorted rows
-        table.innerHTML = '';
-        sortedRows.forEach(row => table.appendChild(row));
-    }
-
     function loadJournalEntries() {
         Promise.all([
             fetch('/journalentries/', {
@@ -360,49 +337,40 @@ document.addEventListener('DOMContentLoaded', () => {
             }).then(response => {
                 if (!response.ok) throw new Error("Failed to load entry statuses");
                 return response.json();
-            }),
-            fetch('/journaltemplate/', {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load journal templates");
-                return response.json();
-            }),
+            })
         ])
-            .then(([entries, statuses, templates]) => {
+            .then(([entries, statuses]) => {
                 const statusMap = {};
                 statuses.forEach(status => {
                     statusMap[status.id] = status.Status_Name;
                 });
-
-                const templateMap = {};
-                templates.forEach(template => {
-                    templateMap[template.id] = template.TRTemplateCode;
-                });
-
+    
                 const tableBody = document.querySelector("#journalEntriesTable tbody");
                 if (!tableBody) {
                     console.error("Table body not found.");
                     return;
                 }
                 tableBody.innerHTML = ""; // Clear existing rows
-
+    
                 entries.forEach(entry => {
                     const journalEntry = entry.journal_entry;
                     const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
-                    const templateCode = templateMap[journalEntry.TRTemplate_FK] || "N/A";
-
+    
+                    // Format date to MM-DD-YYYY
+                    const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "numeric",
+                    });
+    
                     // Add a row for the journal entry
                     const entryRow = document.createElement("tr");
                     entryRow.setAttribute("data-id", journalEntry.id);
                     entryRow.innerHTML = `
-                        <td>${journalEntry.Entry_Date}</td>
+                        <td>${formattedDate}</td>
                         <td>${journalEntry.Entry_No}</td>
                         <td>${journalEntry.EntryParticulars}</td>
                         <td>${entryStatus}</td>
-                        <td>${templateCode}</td>
                         <td class="text-center align-middle">
                             <div class="dropdown d-inline-block">
                                 <button
@@ -454,11 +422,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     tableBody.appendChild(entryRow);
                 });
-
+    
                 attachActionListeners(); // Attach event listeners to action buttons
             })
             .catch(error => console.error("Error loading journal entries:", error));
     }
+    
 
     function attachActionListeners() {
         const viewButtons = document.querySelectorAll(".view-entry");
@@ -488,35 +457,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Logic for deleting the entry
             });
         });
-    }
-
-    function sortTable(tableId, ascending = true) {
-        const table = document.getElementById(tableId);
-
-        if (!table) {
-            console.error(`Table with id '${tableId}' not found.`);
-            return;
-        }
-
-        const tbody = table.querySelector("tbody");
-
-        if (!tbody) {
-            console.error(`Table body not found for table with id '${tableId}'.`);
-            return;
-        }
-
-        const rows = Array.from(tbody.querySelectorAll("tr"));
-
-        rows.sort((a, b) => {
-            const aDate = new Date(a.cells[0]?.innerText.trim()); // Assuming date is in the first column
-            const bDate = new Date(b.cells[0]?.innerText.trim());
-
-            if (aDate < bDate) return ascending ? -1 : 1;
-            if (aDate > bDate) return ascending ? 1 : -1;
-            return 0;
-        });
-
-        rows.forEach(row => tbody.appendChild(row));
     }
 
     const modalElement = document.getElementById('addJournalEntriesModal');
@@ -549,11 +489,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Call the function on page load
     document.addEventListener('DOMContentLoaded', loadJournalEntries);
-
-    const addEntryButton = document.getElementById('addEntryBtn');
-    if (addEntryButton) {
-        addEntryButton.addEventListener('click', addJournalEntry);
-    }
-
     loadJournalEntries();
+
+    if (addEntryButton) {
+        addEntryButton.addEventListener('click', () => {
+            // Gather journal details for validation
+            const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
+            const journalDetails = Array.from(accountRows).map(row => {
+                return {
+                    DebitAmount: parseFloat(row.querySelector('.debit-input')?.value || '0'),
+                    CreditAmount: parseFloat(row.querySelector('.credit-input')?.value || '0'),
+                };
+            });
+    
+            // Validate debit and credit amounts
+            const totalDebit = journalDetails.reduce((sum, detail) => sum + detail.DebitAmount, 0);
+            const totalCredit = journalDetails.reduce((sum, detail) => sum + detail.CreditAmount, 0);
+    
+            if (totalDebit !== totalCredit) {
+                alert('The total debit and credit amounts must be equal.');
+                return; // Stop execution if the totals are not balanced
+            }
+    
+            // Proceed to add journal entry if validation passes
+            addJournalEntry();
+        });
+    }
 });
