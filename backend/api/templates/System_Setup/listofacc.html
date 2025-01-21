@@ -3,129 +3,156 @@
 <!-- prettier-ignore-end -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 <style>
-	body {
-		background-color: #f1f1f1;
-		/* Light gray background */
-	}
-	.dropdown-menu {
-    z-index: 1060 !important; /* Higher z-index to ensure overlap */
-    position: absolute !important; /* Position the dropdown correctly */
-	}
-	
-	.table-container {
-	    position: relative; /* Ensure relative positioning of the table */
-	    overflow: visible !important; /* Prevent dropdown clipping */
-	}
+/* ilagay nyo to */
+    body {
+        background-color: #f1f1f1;
+        /* Light gray background */
+    }
+    .dropdown-menu {
+        z-index: 1060 !important; /* Higher z-index to ensure overlap */
+        position: absolute !important; /* Position the dropdown correctly */
+    }
 
+    .table-container {
+        position: relative; /* Ensure relative positioning of the table */
+        overflow: visible !important; /* Prevent dropdown clipping */
+    }
 </style>
 {% endblock %} {% block content %}
 
+<!-- Begin: Container -->
 <div class="container mt-5">
-	<ol class="breadcrumb mt-2 mb-1">
-		<li class="breadcrumb-item d-flex align-items-center">
-			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
-			<span class="text-muted">System Setup</span>
-		</li>
-		<li class="breadcrumb-item active" aria-current="page">List of Accounts</li>
-	</ol>
-	<h1 class="text" style="color: #6f42c1">List of Accounts</h1>
-	<p>Setup page for the creation of basic ledger accounts.</p>
-
+	<!-- Begin:Title Description-->
+    <h1 class="text" style="color: #6f42c1">List of Accounts</h1>
+    <p>Setup page for the creation of basic ledger accounts.</p>
+	<!-- End:Title Description -->
+	<!-- Begin: Card -->
 	<div class="card shadow-sm">
-		<div class="card-body">
-			<div class="d-flex justify-content-between mb-3">
-				<button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem  0.5rem  0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addAccountModal">
-					<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
-					<i class="bi bi-plus"></i>
-					ADD ACCOUNT
-				</button>
-			</div>
-			<div class="table-responsive">
-				<table class="table table-bordered table-hover text-center">
-					<thead class="table-light">
-						<tr>
-							<th class="text-center">Account Code</th>
-							<th class="text-center">Description</th>
-							<th class="text-center">Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for account in accounts %}
-						<tr>
-							<td>{{ account.AccountCode }}</td>
-							<td>{{ account.AccountTypeDesc }}</td>
-							<td class="text-center"></td>
-						</tr>
-
-						{% endfor %}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+		<!-- Begin: Card Body -->
+        <div class="card-body">
+			<!-- Begin: Header Buttons / Dito nyo ilalagay yung buttons nyo -->
+            <div class="d-flex justify-content-between mb-3">
+				<!-- Begin: Button / Eto yung add button namin -->
+                <button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                    <!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
+                    <i class="bi bi-plus"></i>
+                    ADD ACCOUNT
+                </button>
+				<!-- End: Button -->
+            </div>
+			<!-- End: Header Buttons -->
+			<!-- Begin: Table on card -->
+            <div class="table-responsive">
+				<!-- Begin: Table Design -->
+                <table class="table table-bordered table-hover text-center">
+					<!-- Begin: Table Components -->
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">Account Code</th>
+                            <th class="text-center">Description</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+					<!-- Begin: Table Components -->
+					<!-- Begin: Table Body -->
+                    <tbody>
+                        {% for account in accounts %}
+                        <tr>
+                            <td>{{ account.AccountCode }}</td>
+                            <td>{{ account.AccountTypeDesc }}</td>
+                            <td class="text-center"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+					<!-- Begin: Table Body -->
+                </table>
+				<!-- End: Table Design  -->
+            </div>
+			<!-- End: Table -->
+        </div>
+		<!-- End: Card Body -->
+    </div>
+		<!-- End: Card -->
 </div>
+<!-- End: Container -->
 
-<!-- Add Account Modal -->
+<!-- Begin: Add Modal Structure -->
 <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="addAccountModalLabel">Add New Account</h5>
-				<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-			</div>
-			<form id="addAccountForm">
-				<div class="modal-body">
-					<div class="mb-3">
-						<label for="AccountCode" class="form-label">Account Code:</label>
-						<input type="text" id="AccountCode" class="form-control" name="AccountCode" required />
-					</div>
-					<div class="mb-3">
-						<label for="AccountTypeDesc" class="form-label">Account Description:</label>
-						<textarea id="AccountTypeDesc" class="form-control" name="AccountTypeDesc" rows="3" required></textarea>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
-
-					<button type="submit" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Account</button>
-				</div>
-			</form>
-		</div>
+	<!-- Begin: Modal Design -->
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+		<!-- Begin: Modal Content -->
+        <div class="modal-content">
+			<!-- Begin: Modal Header Title -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAccountModalLabel">Add New Account</h5>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+			<!-- End: Modal Header Title -->
+			<!-- Begin: Modal Form -->
+            <form id="addAccountForm">
+				<!-- Begin: Modal Form Body -->
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="AccountCode" class="form-label">Account Code:</label>
+                        <input type="text" id="AccountCode" class="form-control" name="AccountCode" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="AccountTypeDesc" class="form-label">Account Description:</label>
+                        <textarea id="AccountTypeDesc" class="form-control" name="AccountTypeDesc" rows="3" required></textarea>
+                    </div>
+                </div>
+				<!-- End: Modal Form Body -->
+				<!-- Begin: Modal Footer / Dito nyo ilagay yung action buttons nyo like clos modal / save -->
+                <div class="modal-footer">
+                    <button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+                    <button type="submit" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Account</button>
+                </div>
+				<!-- End: Modal Footer / Dito nyo ilagay yung action buttons nyo like clos modal / save -->
+            </form>
+			<!-- End: Modal Form -->
+        </div>
+		<!-- Begin: Modal Content -->
 	</div>
-</div>
+	<!-- Begin: Modal Dialog -->
 
-<!-- Edit Account Modal -->
+</div>
+<!-- End: Add Modal Structure -->
+
+<!-- Begin: Edit Modal Structure -->
 <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
+    
 	<div class="modal-dialog modal-lg modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="editAccountModalLabel">Edit Account</h5>
-				<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-			</div>
-			<form id="editAccountForm">
-				<div class="modal-body">
-					<div class="mb-3">
-						<label for="EditAccountCode" class="form-label">Account Code:</label>
-						<input type="text" id="EditAccountCode" class="form-control" name="EditAccountCode" required />
-					</div>
-					<div class="mb-3">
-						<label for="EditAccountTypeDesc" class="form-label">Account Description:</label>
-						<textarea id="EditAccountTypeDesc" class="form-control" name="EditAccountTypeDesc" rows="3" required></textarea>
-					</div>
-					<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
-					<input type="hidden" id="EditAccountId" name="EditAccountId" />
-				</div>
-				<div class="modal-footer">
-					<button type="reset" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
-					<button type="submit" class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Save Changes</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-{% endblock %} {% block extra_js %}
-<script src="{% static 'js/System_Setup/listofacc.js' %}"></script>
-<script>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAccountModalLabel">Edit Account</h5>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+            <form id="editAccountForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="EditAccountCode" class="form-label">Account Code:</label>
+                        <input type="text" id="EditAccountCode" class="form-control" name="EditAccountCode" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="EditAccountTypeDesc" class="form-label">Account Description:</label>
+                        <textarea id="EditAccountTypeDesc" class="form-control" name="EditAccountTypeDesc" rows="3" required></textarea>
+                    </div>
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+                    <input type="hidden" id="EditAccountId" name="EditAccountId" />
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
 	
-</script>
+</div>
+<!-- End: Edit Modal Structure -->
+
+{% endblock %} {% block extra_js %}
+<!-- Scripts -->
+<script src="{% static 'js/System_Setup/listofacc.js' %}"></script>
+<script></script>
 {% endblock %}
