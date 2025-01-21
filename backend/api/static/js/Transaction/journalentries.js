@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelButton = document.querySelector('[data-bs-dismiss="modal"]');
     const accountsTableBody = document.querySelector('#accounting-entries table tbody');
     const addTemplateSelect = document.getElementById('addTemplate');
+    const addEntryButton = document.getElementById('addEntryBtn');
 
     const transactionTypeMap = {}; // Map for TransactionType IDs to names
     document.addEventListener("DOMContentLoaded", function () {
@@ -341,6 +342,17 @@ document.addEventListener('DOMContentLoaded', () => {
         sortedRows.forEach(row => table.appendChild(row));
     }
 
+    function validateDebitCreditTotals(details) {
+        const totalDebit = details.reduce((sum, detail) => sum + (parseFloat(detail.DebitAmount) || 0), 0);
+        const totalCredit = details.reduce((sum, detail) => sum + (parseFloat(detail.CreditAmount) || 0), 0);
+    
+        if (totalDebit !== totalCredit) {
+            alert("The total debit and credit amounts must be equal.");
+            return false;
+        }
+        return true;
+    }
+
     function loadJournalEntries() {
         Promise.all([
             fetch('/journalentries/', {
@@ -482,35 +494,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function sortTable(tableId, ascending = true) {
-        const table = document.getElementById(tableId);
-
-        if (!table) {
-            console.error(`Table with id '${tableId}' not found.`);
-            return;
-        }
-
-        const tbody = table.querySelector("tbody");
-
-        if (!tbody) {
-            console.error(`Table body not found for table with id '${tableId}'.`);
-            return;
-        }
-
-        const rows = Array.from(tbody.querySelectorAll("tr"));
-
-        rows.sort((a, b) => {
-            const aDate = new Date(a.cells[0]?.innerText.trim()); // Assuming date is in the first column
-            const bDate = new Date(b.cells[0]?.innerText.trim());
-
-            if (aDate < bDate) return ascending ? -1 : 1;
-            if (aDate > bDate) return ascending ? 1 : -1;
-            return 0;
-        });
-
-        rows.forEach(row => tbody.appendChild(row));
-    }
-
     const modalElement = document.getElementById('addJournalEntriesModal');
 
     // Add an event listener to clear the modal when it's hidden
@@ -541,11 +524,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Call the function on page load
     document.addEventListener('DOMContentLoaded', loadJournalEntries);
-
-    const addEntryButton = document.getElementById('addEntryBtn');
-    if (addEntryButton) {
-        addEntryButton.addEventListener('click', addJournalEntry);
-    }
-
     loadJournalEntries();
+
+    if (addEntryButton) {
+        addEntryButton.addEventListener('click', () => {
+            // Gather journal details for validation
+            const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
+            const journalDetails = Array.from(accountRows).map(row => {
+                return {
+                    DebitAmount: parseFloat(row.querySelector('.debit-input')?.value || '0'),
+                    CreditAmount: parseFloat(row.querySelector('.credit-input')?.value || '0'),
+                };
+            });
+    
+            // Validate debit and credit amounts
+            const totalDebit = journalDetails.reduce((sum, detail) => sum + detail.DebitAmount, 0);
+            const totalCredit = journalDetails.reduce((sum, detail) => sum + detail.CreditAmount, 0);
+    
+            if (totalDebit !== totalCredit) {
+                alert('The total debit and credit amounts must be equal.');
+                return; // Stop execution if the totals are not balanced
+            }
+    
+            // Proceed to add journal entry if validation passes
+            addJournalEntry();
+        });
+    }
 });
