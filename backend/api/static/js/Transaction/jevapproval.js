@@ -412,7 +412,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
         });
     }
-    
 
 
     function printEntry(entryId) {
@@ -596,15 +595,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch((error) => console.error("Error preparing print data:", error));
         });
     }
-    
-
-    document.addEventListener("click", event => {
-        if (event.target.classList.contains("view-entry")) {
-            const entryId = event.target.dataset.entryId;
-            viewEntry(entryId);
-        }
-    });
-
 
     loadJournalEntries();
 });

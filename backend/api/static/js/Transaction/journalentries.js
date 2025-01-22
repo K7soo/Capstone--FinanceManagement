@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return csrfToken;
     }
+    loadJournalEntries();
 
     function loadTransactionTypes() {
         return fetch('/get-transaction-types/', {
@@ -56,6 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return response.json();
             });
+    }
+
+    // Fetch all statuses
+    function fetchStatuses() {
+        return fetch('/entrystatuses/', {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch statuses");
+                }
+                return response.json();
+            })
+            .catch(error => console.error("Error fetching statuses:", error));
     }
 
     function loadTemplates() {
@@ -141,62 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error loading data:', error));
     }
 
-    addTemplateSelect?.addEventListener('change', event => {
-        const selectedTemplateId = event.target.value;
-        if (selectedTemplateId) {
-            loadTemplateDetails(selectedTemplateId);
-        } else {
-            if (accountsTableBody) accountsTableBody.innerHTML = '';
-            const transactionTypeTextbox = document.getElementById('transactionType');
-            if (transactionTypeTextbox) transactionTypeTextbox.outerHTML = '<input type="text" id="transactionType" class="form-control text-muted" style="cursor: not-allowed; background-color: #e9ecef;" value="" readonly />';
-        }
-    });
-
-    openModalButton?.addEventListener('click', () => {
-        if (!modal) {
-            console.error('Modal element not found');
-            return;
-        }
-        modal.style.display = 'block';
-        loadTransactionTypes().then(loadTemplates);
-    });
-
-    cancelButton?.addEventListener('click', () => {
-        if (modal) modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    accountsTableBody?.addEventListener('input', event => {
-        const target = event.target;
-
-        if (target.classList.contains('debit-input')) {
-            const creditInput = target.closest('tr').querySelector('.credit-input');
-            if (creditInput) {
-                if (target.value.trim() !== '') {
-                    creditInput.value = ''; // Clear the value
-                    creditInput.disabled = true; // Keep it disabled
-                } else {
-                    creditInput.disabled = true; // Ensure it stays disabled
-                }
-            }
-        } else if (target.classList.contains('credit-input')) {
-            const debitInput = target.closest('tr').querySelector('.debit-input');
-            if (debitInput) {
-                if (target.value.trim() !== '') {
-                    debitInput.value = ''; // Clear the value
-                    debitInput.disabled = true; // Keep it disabled
-                } else {
-                    debitInput.disabled = true; // Ensure it stays disabled
-                }
-            }
-        }
-    });
-
     function fetchTransactionTypeFromTemplate(templateId) {
         if (!templateId) {
             console.error('Template ID is invalid.');
@@ -215,6 +177,124 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.error('TransactionType_FK not found for the selected template.');
         return null;
+    }
+
+    function loadJournalEntries() {
+        Promise.all([
+            fetch('/journalentries/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load journal entries");
+                return response.json();
+            }),
+            fetch('/entrystatuses/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load entry statuses");
+                return response.json();
+            })
+        ])
+            .then(([entries, statuses]) => {
+                const statusMap = {};
+                statuses.forEach(status => {
+                    statusMap[status.id] = status.Status_Name;
+                });
+    
+                const tableBody = document.querySelector("#journalEntriesTable tbody");
+                if (!tableBody) {
+                    console.error("Table body not found.");
+                    return;
+                }
+                tableBody.innerHTML = ""; // Clear existing rows
+    
+                entries.forEach(entry => {
+                    const journalEntry = entry.journal_entry;
+                    const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
+    
+                    // Format date to MM-DD-YYYY
+                    const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "numeric",
+                    });
+    
+                    // Add a row for the journal entry
+                    const entryRow = document.createElement("tr");
+                    entryRow.setAttribute("data-id", journalEntry.id);
+                    entryRow.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td>${journalEntry.Entry_No}</td>
+                        <td>${journalEntry.EntryParticulars}</td>
+                        <td>${entryStatus}</td>
+                        <td class="text-center align-middle">
+                            <div class="dropdown d-inline-block">
+                                <button
+                                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+                                    type="button"
+                                    id="dropdownMenuButton${journalEntry.id}"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+                                    <span>MENU</span>
+                                    <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
+                                </button>
+                                <ul
+                                    class="dropdown-menu"
+                                    aria-labelledby="dropdownMenuButton"${journalEntry.id}"
+                                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
+                                    <li>
+                                        <button
+                                            class="dropdown-item text-success print-entry"
+                                            type="button"
+                                            data-entry-id="${journalEntry.id}"
+                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                                            <i class="bi bi-printer me-2"></i>Print
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            class="dropdown-item text-primary view-entry"
+                                            type="button"
+                                            data-entry-id="${journalEntry.id}"
+                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                                            <i class="bi bi-eye me-2"></i>View
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            class="dropdown-item text-warning edit-entry"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editTemplateModal"
+                                            data-entry-id="${journalEntry.id}"
+                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                                            <i class="bi bi-pencil-square me-2"></i>Edit
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            class="dropdown-item text-danger delete-entry"
+                                            type="button"
+                                            data-entry-id="${journalEntry.id}"
+                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                                            <i class="bi bi-trash-fill me-2"></i>Delete
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(entryRow);
+                });
+            attachActionListeners();
+            })
+            .catch(error => console.error("Error loading journal entries:", error));
     }
 
     function addJournalEntry() {
@@ -312,152 +392,534 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    document.getElementById('addTemplate').addEventListener('change', function () {
-        const selectedTemplate = this.value;
-        const transactionType = fetchTransactionTypeFromTemplate(selectedTemplate);
-        console.log('TransactionType_FK fetched from template:', transactionType);
-    });
-
-    function loadJournalEntries() {
-        Promise.all([
-            fetch('/journalentries/', {
+    function printEntry(entryId) {
+        // Fetch chart of accounts first
+        loadChartOfAccounts().then((accountMap) => {
+            fetch(`/journalentries/${entryId}/`, {
                 method: "GET",
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                 },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load journal entries");
-                return response.json();
-            }),
-            fetch('/entrystatuses/', {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load entry statuses");
-                return response.json();
             })
-        ])
-            .then(([entries, statuses]) => {
-                const statusMap = {};
-                statuses.forEach(status => {
-                    statusMap[status.id] = status.Status_Name;
-                });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch journal entry details for printing");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    const mappedDetails = data.journal_details.map((detail) => {
+                        const account = accountMap[detail.Account_FK] || {
+                            AccountCode: "N/A",
+                            AccountDesc: "N/A",
+                        };
     
-                const tableBody = document.querySelector("#journalEntriesTable tbody");
-                if (!tableBody) {
-                    console.error("Table body not found.");
-                    return;
-                }
-                tableBody.innerHTML = ""; // Clear existing rows
+                        const debitAmount =
+                            detail.DebitAmount > 0
+                                ? parseFloat(detail.DebitAmount).toLocaleString("en-US", {
+                                      minimumFractionDigits: 2,
+                                      maximumFractionDigits: 2,
+                                  })
+                                : ""; // Leave blank if zero
+                        const creditAmount =
+                            detail.CreditAmount > 0
+                                ? parseFloat(detail.CreditAmount).toLocaleString("en-US", {
+                                      minimumFractionDigits: 2,
+                                      maximumFractionDigits: 2,
+                                  })
+                                : ""; // Leave blank if zero
     
-                entries.forEach(entry => {
-                    const journalEntry = entry.journal_entry;
-                    const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
+                        return {
+                            accountDesc: account.AccountDesc,
+                            accountCode: account.AccountCode,
+                            debitAmount: debitAmount,
+                            creditAmount: creditAmount,
+                            isCredit: creditAmount !== "", // Mark credited accounts for indentation
+                        };
+                    });
     
-                    // Format date to MM-DD-YYYY
-                    const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
+                    const rows = 10; // Total number of rows to display
+                    const particulars = data.journal_entry.EntryParticulars || "N/A";
+    
+                    // Add empty rows to make up the difference if there are fewer than 10 rows
+                    const emptyRowCount = Math.max(rows - mappedDetails.length - 2, 0); // Reserve 2 rows for particulars and totals
+                    for (let i = 0; i < emptyRowCount; i++) {
+                        mappedDetails.push({
+                            accountDesc: "",
+                            accountCode: "",
+                            debitAmount: "",
+                            creditAmount: "",
+                            isCredit: false, // No indentation for empty rows
+                        });
+                    }
+    
+                    // Totals Calculation
+                    const totalDebit = mappedDetails
+                        .reduce(
+                            (sum, detail) =>
+                                sum + (detail.debitAmount ? parseFloat(detail.debitAmount.replace(/,/g, "")) : 0),
+                            0
+                        )
+                        .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+                    const totalCredit = mappedDetails
+                        .reduce(
+                            (sum, detail) =>
+                                sum + (detail.creditAmount ? parseFloat(detail.creditAmount.replace(/,/g, "")) : 0),
+                            0
+                        )
+                        .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+                    const printWindow = window.open("", "_blank");
+                    printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Print Journal Entry Voucher</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    margin: 20px;
+                                    padding: 0;
+                                    box-sizing: border-box;
+                                }
+                                table {
+                                    width: 90%; /* Adjusted width */
+                                    border-collapse: collapse;
+                                    margin: 20px auto; /* Center table */
+                                    font-size: 14px;
+                                }
+                                th, td {
+                                    border: 1px solid #000;
+                                    padding: 8px;
+                                    height: 30px; /* Ensures uniform row height */
+                                }
+                                th {
+                                    font-weight: bold;
+                                    background-color: #f2f2f2;
+                                }
+                                .totals {
+                                    font-weight: bold;
+                                }
+                                .header, .footer {
+                                    margin-bottom: 20px;
+                                    text-align: center;
+                                }
+                                .header h1 {
+                                    margin: 5px 0;
+                                    font-size: 18px; /* Adjusted title font size */
+                                }
+                                .header p {
+                                    margin: 2px 0;
+                                }
+                                .credit-indent {
+                                    text-indent: 20px; /* Indent credited accounts */
+                                }
+                                .right-align {
+                                    text-align: right; /* Right align amounts */
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="header">
+                                <h1>JOURNAL ENTRY VOUCHER</h1>
+                                <p>Company: Tikme Dine</p>
+                                <p>Date: ${data.journal_entry.Entry_Date || "N/A"}</p>
+                                <p>JEV No.: ${data.journal_entry.Entry_No || "N/A"}</p>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Accounts</th>
+                                        <th>Account Code</th>
+                                        <th class="right-align">Debit</th>
+                                        <th class="right-align">Credit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${mappedDetails
+                                        .map(
+                                            (detail) => `
+                                                <tr>
+                                                    <td class="${detail.isCredit ? "credit-indent" : ""}">
+                                                        ${detail.accountDesc}
+                                                    </td>
+                                                    <td>${detail.accountCode}</td>
+                                                    <td class="right-align">${detail.debitAmount}</td>
+                                                    <td class="right-align">${detail.creditAmount}</td>
+                                                </tr>
+                                            `
+                                        )
+                                        .join("")}
+                                    <tr>
+                                        <td colspan="4">Particulars: ${particulars}</td>
+                                    </tr>
+                                    <tr class="totals">
+                                        <td colspan="2">TOTAL</td>
+                                        <td class="right-align">${totalDebit}</td>
+                                        <td class="right-align">${totalCredit}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer">
+                                <p><strong>Prepared By:</strong> ${data.journal_entry.Created_By || "N/A"}</p>
+                                <p><strong>Approved By:</strong> ______________________</p>
+                            </div>
+                        </body>
+                    </html>
+                `);
+                    printWindow.document.close();
+                    printWindow.print();
+                })
+                .catch((error) => console.error("Error preparing print data:", error));
+        });
+    }
+
+    function viewEntry(entryId) {
+        loadChartOfAccounts().then((accountMap) => {
+            fetch(`/journalentries/${entryId}/`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch journal entry details");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // Populate particulars and remarks
+                    const dropdown = document.getElementById("statusDropdown");
+                    fetchStatuses()
+                        .then((statuses) => {
+                            dropdown.innerHTML = "";
+                            statuses.forEach((status) => {
+                                const option = document.createElement("option");
+                                option.value = status.id;
+                                option.textContent = status.Status_Name;
+                                if (status.id === data.journal_entry.EntryStatus_FK) {
+                                    option.selected = true;
+                                }
+                                dropdown.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching statuses for dropdown:", error)
+                        );
+    
+                    // Populate modal fields
+                    document.getElementById("jevDate").textContent = new Date(
+                        data.journal_entry.Entry_Date
+                    ).toLocaleDateString("en-US", {
                         month: "2-digit",
                         day: "2-digit",
                         year: "numeric",
                     });
+                    document.getElementById("jevNumber").textContent =
+                        data.journal_entry.Entry_No || "N/A";
+                    document.getElementById("remarks").value =
+                        data.journal_entry.Review_Remarks || "";
     
-                    // Add a row for the journal entry
-                    const entryRow = document.createElement("tr");
-                    entryRow.setAttribute("data-id", journalEntry.id);
-                    entryRow.innerHTML = `
-                        <td>${formattedDate}</td>
-                        <td>${journalEntry.Entry_No}</td>
-                        <td>${journalEntry.EntryParticulars}</td>
-                        <td>${entryStatus}</td>
-                        <td class="text-center align-middle">
-                            <div class="dropdown d-inline-block">
-                                <button
-                                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
-                                    type="button"
-                                    id="dropdownMenuButton${journalEntry.id}"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
-                                    <span>MENU</span>
-                                    <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
-                                </button>
-                                <ul
-                                    class="dropdown-menu"
-                                    aria-labelledby="dropdownMenuButton${journalEntry.id}"
-                                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
-                                    <li>
-                                        <button
-                                            class="dropdown-item text-info"
-                                            type="button"
-                                            onclick="viewTemplate(${journalEntry.id})"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-eye me-2"></i>View
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="dropdown-item text-warning"
-                                            type="button"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editTemplateModal"
-                                            onclick="editTemplate(${journalEntry.id})"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-pencil-square me-2"></i>Edit
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="dropdown-item text-danger"
-                                            type="button"
-                                            onclick="deleteTemplate(${journalEntry.id})"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-trash-fill me-2"></i>Delete
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
+                    // Map details and format amounts
+                    const mappedDetails = data.journal_details.map((detail) => {
+                        const account = accountMap[detail.Account_FK] || {
+                            AccountCode: "N/A",
+                            AccountDesc: "N/A",
+                        };
+                        return {
+                            accountDesc: account.AccountDesc,
+                            accountCode: account.AccountCode,
+                            debitAmount:
+                                detail.DebitAmount > 0
+                                    ? parseFloat(detail.DebitAmount).toLocaleString("en-US", {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })
+                                    : "",
+                            creditAmount:
+                                detail.CreditAmount > 0
+                                    ? parseFloat(detail.CreditAmount).toLocaleString("en-US", {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })
+                                    : "",
+                        };
+                    });
+    
+                    // Render the table
+                    const accountTableBody = document.getElementById("jevAccountTableBody");
+                    accountTableBody.innerHTML = mappedDetails
+                        .map(
+                            (detail) => `
+                            <tr>
+                                <td>${detail.accountDesc}</td>
+                                <td>${detail.accountCode}</td>
+                                <td>${detail.debitAmount}</td>
+                                <td>${detail.creditAmount}</td>
+                            </tr>
+                        `
+                        )
+                        .join("");
+    
+                    // Add totals and particulars row
+                    accountTableBody.insertAdjacentHTML(
+                        "beforeend",
+                        `
+                        <tr>
+                            <td colspan="4">Particulars: ${
+                                data.journal_entry.EntryParticulars || "N/A"
+                            }</td>
+                        </tr>
+                        <tr class="totals">
+                            <td colspan="2">TOTAL</td>
+                            <td>${mappedDetails
+                                .reduce(
+                                    (sum, detail) =>
+                                        sum +
+                                        (detail.debitAmount
+                                            ? parseFloat(detail.debitAmount.replace(/,/g, ""))
+                                            : 0),
+                                    0
+                                )
+                                .toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}</td>
+                            <td>${mappedDetails
+                                .reduce(
+                                    (sum, detail) =>
+                                        sum +
+                                        (detail.creditAmount
+                                            ? parseFloat(detail.creditAmount.replace(/,/g, ""))
+                                            : 0),
+                                    0
+                                )
+                                .toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}</td>
+                        </tr>
+                        `
+                    );
+    
+                    // Show the modal
+                    const modalElement = document.getElementById("jevApprovalModal");
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+    
+                    // Ensure backdrop is removed properly on modal hide
+                    modalElement.addEventListener("hidden.bs.modal", () => {
+                        // Remove lingering modal backdrops
+                        document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+                            backdrop.remove();
+                        });
+                        // Remove modal-specific body classes
+                        document.body.classList.remove("modal-open");
+                        document.body.style.paddingRight = "";
+                    });
+    
+                    // Close another modal (addJournalEntriesModal) if open
+                    const addEntriesModalElement = document.getElementById("addJournalEntriesModal");
+                    if (addEntriesModalElement) {
+                        const bootstrapAddEntriesModal =
+                            bootstrap.Modal.getInstance(addEntriesModalElement);
+                        if (bootstrapAddEntriesModal) {
+                            bootstrapAddEntriesModal.hide();
+                        }
+                    }
+                })
+                .catch((error) =>
+                    console.error("Error fetching journal entry details:", error)
+                );
+        });
+    }
+    
+    function editEntry(entryId) {
+        fetch(`/journalentries/${entryId}/`, {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch journal entry details for editing");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Populate the modal fields with the fetched data
+                document.getElementById("entryCode").value = data.journal_entry.Entry_No || "";
+                document.getElementById("entryDate").value = data.journal_entry.Entry_Date || "";
+                document.getElementById("entryDescription").value =
+                    data.journal_entry.EntryParticulars || "";
+    
+                // Populate the accounts table
+                const accountsTableBody = document.querySelector(
+                    "#accounting-entries table tbody"
+                );
+                accountsTableBody.innerHTML = ""; // Clear existing rows
+    
+                data.journal_details.forEach((detail) => {
+                    const newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td>
+                            <input type="hidden" class="account-id" value="${detail.Account_FK}" />
+                            <input type="text" class="form-control text-muted" value="${detail.Account_FK__AccountDesc}" disabled />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control debit-input" value="${detail.DebitAmount}" />
+                        </td>
+                        <td>
+                            <input type="number" class="form-control credit-input" value="${detail.CreditAmount}" />
                         </td>
                     `;
-                    tableBody.appendChild(entryRow);
+                    accountsTableBody.appendChild(newRow);
                 });
     
-                attachActionListeners(); // Attach event listeners to action buttons
+                // Open the modal
+                const modal = new bootstrap.Modal(
+                    document.getElementById("addJournalEntriesModal")
+                );
+                modal.show();
             })
-            .catch(error => console.error("Error loading journal entries:", error));
+            .catch((error) => console.error("Error fetching journal entry for editing:", error));
+    }
+
+    function deleteEntry(entryId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action will permanently delete the journal entry.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/journalentriesdetail/${entryId}/`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRFToken": getCsrfToken(), // Ensure CSRF token is passed
+                    },
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Failed to delete journal entry");
+                        }
+                        Swal.fire("Deleted!", "The journal entry has been deleted.", "success");
+                        loadJournalEntries(); // Reload the table after deletion
+                    })
+                    .catch((error) => {
+                        console.error("Error deleting journal entry:", error);
+                        Swal.fire(
+                            "Error!",
+                            "An error occurred while trying to delete the journal entry.",
+                            "error"
+                        );
+                    });
+            }
+        });
     }
     
 
     function attachActionListeners() {
         const viewButtons = document.querySelectorAll(".view-entry");
+        const printButtons = document.querySelectorAll(".print-entry");
         const editButtons = document.querySelectorAll(".edit-entry");
         const deleteButtons = document.querySelectorAll(".delete-entry");
 
         viewButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
-                console.log(`Viewing entry with ID: ${entryId}`);
-                // Logic for viewing the entry (modal or page redirection)
+                viewEntry(entryId);
+            });
+        });
+
+        printButtons.forEach(button => {
+            button.addEventListener("click", event => {
+                const entryId = event.target.dataset.entryId;
+                printEntry(entryId);
             });
         });
 
         editButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
-                console.log(`Editing entry with ID: ${entryId}`);
-                // Logic for editing the entry
+                editEntry(entryId);
             });
         });
-
+    
         deleteButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
-                console.log(`Deleting entry with ID: ${entryId}`);
-                // Logic for deleting the entry
+                deleteEntry(entryId);
             });
         });
     }
+
+    addTemplateSelect?.addEventListener('change', event => {
+        const selectedTemplateId = event.target.value;
+        if (selectedTemplateId) {
+            loadTemplateDetails(selectedTemplateId);
+        } else {
+            if (accountsTableBody) accountsTableBody.innerHTML = '';
+            const transactionTypeTextbox = document.getElementById('transactionType');
+            if (transactionTypeTextbox) transactionTypeTextbox.outerHTML = '<input type="text" id="transactionType" class="form-control text-muted" style="cursor: not-allowed; background-color: #e9ecef;" value="" readonly />';
+        }
+    });
+
+    openModalButton?.addEventListener('click', () => {
+        if (!modal) {
+            console.error('Modal element not found');
+            return;
+        }
+        modal.style.display = 'block';
+        loadTransactionTypes().then(loadTemplates);
+    });
+
+    cancelButton?.addEventListener('click', () => {
+        if (modal) modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    accountsTableBody?.addEventListener('input', event => {
+        const target = event.target;
+
+        if (target.classList.contains('debit-input')) {
+            const creditInput = target.closest('tr').querySelector('.credit-input');
+            if (creditInput) {
+                if (target.value.trim() !== '') {
+                    creditInput.value = ''; // Clear the value
+                    creditInput.disabled = true; // Keep it disabled
+                } else {
+                    creditInput.disabled = true; // Ensure it stays disabled
+                }
+            }
+        } else if (target.classList.contains('credit-input')) {
+            const debitInput = target.closest('tr').querySelector('.debit-input');
+            if (debitInput) {
+                if (target.value.trim() !== '') {
+                    debitInput.value = ''; // Clear the value
+                    debitInput.disabled = true; // Keep it disabled
+                } else {
+                    debitInput.disabled = true; // Ensure it stays disabled
+                }
+            }
+        }
+    });
+
+    document.getElementById('addTemplate').addEventListener('change', function () {
+        const selectedTemplate = this.value;
+        const transactionType = fetchTransactionTypeFromTemplate(selectedTemplate);
+        console.log('TransactionType_FK fetched from template:', transactionType);
+    });
 
     const modalElement = document.getElementById('addJournalEntriesModal');
 
@@ -489,7 +951,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Call the function on page load
     document.addEventListener('DOMContentLoaded', loadJournalEntries);
-    loadJournalEntries();
 
     if (addEntryButton) {
         addEntryButton.addEventListener('click', () => {
