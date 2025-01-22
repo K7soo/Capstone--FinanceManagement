@@ -335,6 +335,43 @@ body.dark .switch:before {
     border-radius: 50%;
 }
 
+/* Top Section Styling */
+.top-right-section {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Push to the right */
+    gap: 20px; /* Adjust spacing between notification and profile */
+}
+
+/* Notification Section */
+.notification-section {
+    position: relative;
+}
+
+.notification-icon {
+    font-size: 28px; /* Make it bigger */
+    color: var(--black-light-color); /* Default color */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.notification-icon:hover {
+    color: var(--primary-color); /* Highlight color */
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 14px; /* Bigger badge */
+    font-weight: bold;
+    padding: 3px 7px;
+    border-radius: 50%;
+}
+
 /* Profile Section */
 .profile-section {
     position: relative;
