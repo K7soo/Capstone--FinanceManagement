@@ -1,6 +1,6 @@
 {% load static %}
 
-<nav>
+<nav class="sidebar">
 	<!-- Logo -->
 	<div class="logo-name">
 		<span class="logo_name">Finance</span>
@@ -12,15 +12,11 @@
 			<!-- Dashboard -->
 			<li class="dropdown">
 				<a href="{% url 'dashboard' %} ">
-                    <i class="uil-presentation-line "></i>
-                    <span class="link-name">Dashboard</span>
+					<i class="uil-presentation-line"></i>
+					<span class="link-name">Dashboard</span>
 				</a>
-				<!-- <a href="{% url 'configuration' %} ">
-                    <i class="uil uil-cog"></i>
-                    <span class="link-name">Configuration</span>
-                </a> -->
 				<a href="{% url 'reports' %} ">
-                    <i class="uil-invoice"></i>
+					<i class="uil-invoice"></i>
 					<span class="link-name">Reports</span>
 				</a>
 			</li>
@@ -28,7 +24,7 @@
 			<!-- System Setup -->
 			<li class="dropdown" data-dropdown-id="system-setup">
 				<a href="#" class="dropdown-toggle">
-                    <i class="uil uil-cog"></i>
+					<i class="uil uil-cog"></i>
 					<span class="link-name">System Setup</span>
 					<i class="uil uil-angle-down dropdown-arrow"></i>
 				</a>
@@ -69,29 +65,27 @@
             </li> -->
 
 			<!-- Logout and Dark Mode -->
-			<div class="sidebar d-inline-block">
-				<!-- Other Sidebar Content -->
-				<ul class="logout-mode mt-auto">
-					<!-- Logout -->
-					<li>
-						<a href="#">
-							<i class="uil uil-signout"></i>
-							<span class="link-name">Logout</span>
-						</a>
-					</li>
+			<!-- Other Sidebar Content -->
+			<ul class="logout-mode mt-auto">
+				<!-- Logout -->
+				<li>
+					<a href="#">
+						<i class="uil uil-signout"></i>
+						<span class="link-name">Logout</span>
+					</a>
+				</li>
 
-					<!-- Dark Mode -->
-					<li class="mode">
-						<a href="#">
-							<i class="uil uil-moon"></i>
-							<span class="link-name">Dark Mode</span>
-						</a>
-						<div class="mode-toggle">
-							<span class="switch"></span>
-						</div>
-					</li>
-				</ul>
-			</div>
+				<!-- Dark Mode -->
+				<li class="mode">
+					<a href="#">
+						<i class="uil uil-moon"></i>
+						<span class="link-name">Dark Mode</span>
+					</a>
+					<div class="mode-toggle">
+						<span class="switch"></span>
+					</div>
+				</li>
+			</ul>
 		</ul>
 	</div>
 </nav>
