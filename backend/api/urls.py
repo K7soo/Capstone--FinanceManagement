@@ -56,5 +56,6 @@ urlpatterns = [
     path('generaljournal/', views_.general_journal_view, name='general_journal'),
     # General Ledger
     path('generalledger/', views_.general_ledger_view, name='general_ledger'),
+	
 ]
     
