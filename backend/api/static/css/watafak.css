@@ -66,7 +66,7 @@ body.dark {
 }
 
 /* === Custom Scroll Bar CSS === */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 8px;
 }
 ::-webkit-scrollbar-track {
@@ -81,7 +81,7 @@ body.dark {
 body.dark::-webkit-scrollbar-thumb:hover,
 body.dark .activity-data::-webkit-scrollbar-thumb:hover{
     background: #3A3B3C;
-}
+} */
 
 .dropdown .submenu {
     display: none;
@@ -172,7 +172,10 @@ nav::-webkit-scrollbar-thumb:hover {
     background-color: #6a1ab9;
 }
 
-
+.menu-items {
+    padding-bottom: 20px;
+    /* Adds space for scrollbar visibility */
+}
 
 nav.close {
     width: 90px;
@@ -404,24 +407,6 @@ body.dark .switch:before {
     background-color: #f7f7f7;
     color: var(--primary-color);
     border-radius: 4px;
-}
-/* Active dropdown styling */
-.dropdown.active > .dropdown-toggle {
-    color: var(--primary-color); /* Make the dropdown link purple */
-}
-
-/* Active submenu link styling */
-.submenu li a.active {
-    color: var(--primary-color); /* Make the active link purple */
-}
-.nav-links a.active {
-    color: #6f42c1;
-}
-
-/* Primary menu active link */
-.menu-items .nav-links .active {
-    color: var(--primary-color);
-
 }
 
 /* Main Content Sections */
