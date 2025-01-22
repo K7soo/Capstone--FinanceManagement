@@ -34,25 +34,34 @@
          Main Content 
         <div class="col-md-8"> -->
             <div class="card shadow-sm">
-                <div class="mb-3 row align-items-center g-1 ps-3 pt-2">
-                    <label for="records-per-page" class="col-auto col-form-label pe-2"> Records Per Page: </label>
+                <!-- <div class="mb-3 row align-items-center g-1 ps-3 pt-2"> -->
+                <div class="d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
+                    <!-- Records Per Page Dropdown -->
+                    <div class="col-auto">
+                        <label for="records-per-page" class="col-form-label pe-2">Records Per Page:</label>
+                    </div>
                     <div class="col-auto">
                         <select id="records-per-page" name="records-per-page" class="form-select form-select-sm">
-                            <option value="10">5</option>
-                            <option value="25">10</option>
-                            <option value="50">20</option>
-                            <option value="100">50</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
                         </select>
                     </div>
+                
+                    <!-- Right-Aligned Button -->
+                    <div class="col-auto ms-auto">
+                        <button id="openTransactionTypeModalButton" class="btn btn-primary"
+                            style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease"
+                            onmouseover="this.style.backgroundColor='#5a3795';"
+                            onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal"
+                            data-bs-target="#addTransactionTypeModal">
+                            <i class="bi bi-plus"></i>
+                            ADD TRANSACTION TYPE
+                        </button>
+                    </div>
                 </div>
-
-                <div class="text-white d-flex justify-content-between align-items-center ps-3" style="color: #6f42c1">
-                    <button id="openTransactionTypeModalButton" class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addTransactionTypeModal">
-                        <!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
-                        <i class="bi bi-plus"></i>
-                        ADD TRANSACTION TYPE
-                    </button>
-                </div>
+                
                 <!-- Transaction Table -->
                 <div class="card-body">
                     <div class="table-responsive">
