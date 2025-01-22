@@ -127,14 +127,18 @@
 
 <!-- Begin: Edit Modal Structure -->
 <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
-    
+    <!-- Begin: Modal Design -->
 	<div class="modal-dialog modal-lg modal-dialog-centered">
+        <!-- Begin: Modal Content -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editAccountModalLabel">Edit Account</h5>
                 <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
+        <!-- End: Modal Header Title -->
+        <!-- Begin: Modal Form -->
             <form id="editAccountForm">
+            <!-- Begin: Modal Form Body -->
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="EditAccountCode" class="form-label">Account Code:</label>
@@ -147,6 +151,8 @@
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
                     <input type="hidden" id="EditAccountId" name="EditAccountId" />
                 </div>
+                <!-- End: Modal Form Body -->
+                <!-- Begin: Modal Footer / Dito nyo ilagay yung action buttons nyo like clos modal / save -->
                 <div class="modal-footer">
                     <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
                     <button type="submit" class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Save Changes</button>

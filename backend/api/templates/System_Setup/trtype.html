@@ -3,160 +3,261 @@
 <!-- Always do a load static -->
 {% load static %} {% block title %} Transaction Type {% endblock %} {% block extra_css %}
 <style>
-    body {
-        background-color: #f1f1f1;
-    }
+	body {
+		background-color: #f1f1f1;
+	}
 </style>
 {% endblock %} {% block content %}
 <div class="container mt-5">
-    <ol class="breadcrumb mt-2 mb-1">
+	<ol class="breadcrumb mt-2 mb-1">
 		<li class="breadcrumb-item d-flex align-items-center">
 			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
 			<span class="text-muted">System Setup</span>
 		</li>
 		<li class="breadcrumb-item active" aria-current="page">Transaction Type</li>
 	</ol>
-    <h1 class="text" style="color: #6f42c1">Transaction Type</h1>
-    <p>Adding Transactions</p>
-    <!-- <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header text-white" style="background-color: #6f42c1">
-                    <h5 class="mb-0">File Tree</h5>
-                </div>
-                <div class="card-body">
-                    <ul id="fileTree" class="list-group p-1">
-                        <li>Test</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-         Main Content 
-        <div class="col-md-8"> -->
-            <div class="card shadow-sm">
-                <div class="mb-3 row align-items-center g-1 ps-3 pt-2">
-                    <label for="records-per-page" class="col-auto col-form-label pe-2"> Records Per Page: </label>
-                    <div class="col-auto">
-                        <select id="records-per-page" name="records-per-page" class="form-select form-select-sm">
-                            <option value="10">5</option>
-                            <option value="25">10</option>
-                            <option value="50">20</option>
-                            <option value="100">50</option>
-                        </select>
-                    </div>
-                </div>
+	<h1 class="text" style="color: #6f42c1">Transaction Type</h1>
+	<p>Adding Transactions</p>
+	<div class="card shadow-sm">
+		<!-- <div class="mb-3 row align-items-center g-1 ps-3 pt-2"> -->
+		<div class="d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
+			<!-- Records Per Page Dropdown -->
+			<div class="col-auto">
+				<label for="records-per-page" class="col-form-label pe-2">Records Per Page:</label>
+			</div>
+			<div class="col-auto">
+				<select id="records-per-page" name="records-per-page" class="form-select form-select-sm">
+					<option value="5">5</option>
+					<option value="10">10</option>
+					<option value="20">20</option>
+					<option value="50">50</option>
+				</select>
+			</div>
 
-                <div class="text-white d-flex justify-content-between align-items-center ps-3" style="color: #6f42c1">
-                    <button id="openTransactionTypeModalButton" class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addTransactionTypeModal">
-                        <!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
-                        <i class="bi bi-plus"></i>
-                        ADD TRANSACTION TYPE
-                    </button>
-                </div>
-                <!-- Transaction Table -->
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover text-center transaction-table">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Code</th>
-                                    <th>Transaction Type Name</th>
-                                    <th>Description</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for transaction_type in transaction_types %}
-                                <tr>
-                                    <td>{{ transaction_type.code }}</td>
-                                    <td>{{ transaction_type.name }}</td>
-                                    <td>{{ transaction_type.description }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+			<!-- Right-Aligned Button -->
+			<div class="col-auto ms-auto">
+				<button
+					id="openTransactionTypeModalButton"
+					class="btn btn-primary"
+					style="
+						background-color: #6f42c1;
+						color: white;
+						border: none;
+						border-radius: 8px;
+						font-weight: 500;
+						padding: 0.5rem 1rem 0.5rem 0.5rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					onmouseover="this.style.backgroundColor='#5a3795';"
+					onmouseout="this.style.backgroundColor='#6f42c1';"
+					data-bs-toggle="modal"
+					data-bs-target="#addTransactionTypeModal">
+					<i class="bi bi-plus"></i>
+					ADD TRANSACTION TYPE
+				</button>
+			</div>
+		</div>
+
+		<!-- Transaction Table -->
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover text-center transaction-table">
+					<thead class="table-light">
+						<tr>
+							<th>Code</th>
+							<th>Transaction Type Name</th>
+							<th>Description</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for transaction_type in transaction_types %}
+						<tr>
+							<td>{{ transaction_type.code }}</td>
+							<td>{{ transaction_type.name }}</td>
+							<td>{{ transaction_type.description }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
 <!-- Add Transaction Type Modal -->
 <div class="modal modal fade" id="addTransactionTypeModal" tabindex="-1" aria-labelledby="addTransactionTypeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTransactionTypeModalLabel">Add New Transaction Type</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addTransactionTypeForm">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
-                    <div class="mb-3">
-                        <label for="TransactionTypeName" class="form-label">Transaction Type Name:</label>
-                        <input type="text" class="form-control" id="TransactionTypeName" name="TransactionTypeName" placeholder="Enter Transaction Name" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="TransactionCode" class="form-label">Transaction Code:</label>
-                        <input type="text" class="form-control" id="TransactionCode" name="TransactionCode" placeholder="Enter Transaction Code" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="TypeDescription" class="form-label">Type Description:</label>
-                        <input type="text" class="form-control" id="TransactionTypeDesc" name="TransactionTypeDesc" placeholder="Enter Description" required />
-                    </div>
-                </form>
-            </div>
-            <!-- Modal Footer -->
-            <div class="modal-footer -4">
-                <button type="button" class="btn btn-cancel" id="cancelTransactionTypeButton" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addTransactionTypeModalLabel">Add New Transaction Type</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="addTransactionTypeForm">
+					<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+					<div class="mb-3">
+						<label for="TransactionTypeName" class="form-label">Transaction Type Name:</label>
+						<input
+							type="text"
+							class="form-control"
+							id="TransactionTypeName"
+							name="TransactionTypeName"
+							placeholder="Enter Transaction Name"
+							required />
+					</div>
+					<div class="mb-3">
+						<label for="TransactionCode" class="form-label">Transaction Code:</label>
+						<input
+							type="text"
+							class="form-control"
+							id="TransactionCode"
+							name="TransactionCode"
+							placeholder="Enter Transaction Code"
+							required />
+					</div>
+					<div class="mb-3">
+						<label for="TypeDescription" class="form-label">Type Description:</label>
+						<input
+							type="text"
+							class="form-control"
+							id="TransactionTypeDesc"
+							name="TransactionTypeDesc"
+							placeholder="Enter Description"
+							required />
+					</div>
+				</form>
+			</div>
+			<!-- Modal Footer -->
+			<div class="modal-footer -4">
+				<button
+					type="button"
+					class="btn btn-cancel"
+					id="cancelTransactionTypeButton"
+					data-bs-dismiss="modal"
+					style="
+						background-color: #e9ecef;
+						color: #6c757d;
+						border: none;
+						border-radius: 4px;
+						padding: 0.5rem 1rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+					onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+					Cancel
+				</button>
 
-                <!-- Associate button with form using `form` attribute -->
-                <button type="submit" class="btn btn-add-template-modal" form="addTransactionTypeForm" style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Transaction Type</button>
-            </div>
-        </div>
-    </div>
+				<!-- Associate button with form using `form` attribute -->
+				<button
+					type="submit"
+					class="btn btn-add-template-modal"
+					form="addTransactionTypeForm"
+					style="
+						background-color: #6f42c1;
+						color: white;
+						border: none;
+						border-radius: 4px;
+						padding: 0.5rem 1rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					onmouseover="this.style.backgroundColor='#5a3795';"
+					onmouseout="this.style.backgroundColor='#6f42c1';">
+					Add Transaction Type
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
-
 
 <!-- Edit Transaction Type Modal -->
 <div id="editTransactionTypeModal" class="modal fade" tabindex="-1" aria-labelledby="editTransactionTypeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="editTransactionTypeModalLabel">Edit Transaction Type</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h5 class="modal-title" id="editTransactionTypeModalLabel">Edit Transaction Type</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
 
-            <!-- Modal Body -->
-            <div class="modal-body">
-                <form id="editTransactionTypeForm">
-                    <input type="hidden" id="EditTransactionId" />
+			<!-- Modal Body -->
+			<div class="modal-body">
+				<form id="editTransactionTypeForm">
+					<input type="hidden" id="EditTransactionId" />
 
-                    <div class="mb-3">
-                        <label for="EditTransactionCode" class="form-label">Transaction Code:</label>
-                        <input type="text" id="EditTransactionCode" name="EditTransactionCode" class="form-control" placeholder="Enter Transaction Code" required />
-                    </div>
+					<div class="mb-3">
+						<label for="EditTransactionCode" class="form-label">Transaction Code:</label>
+						<input
+							type="text"
+							id="EditTransactionCode"
+							name="EditTransactionCode"
+							class="form-control"
+							placeholder="Enter Transaction Code"
+							required />
+					</div>
 
-                    <div class="mb-3">
-                        <label for="EditTransactionTypeName" class="form-label">Transaction Type Name:</label>
-                        <input type="text" id="EditTransactionTypeName" name="EditTransactionTypeName" class="form-control" placeholder="Enter Transaction Type Name" required />
-                    </div>
+					<div class="mb-3">
+						<label for="EditTransactionTypeName" class="form-label">Transaction Type Name:</label>
+						<input
+							type="text"
+							id="EditTransactionTypeName"
+							name="EditTransactionTypeName"
+							class="form-control"
+							placeholder="Enter Transaction Type Name"
+							required />
+					</div>
 
-                    <div class="mb-3">
-                        <label for="EditTransactionDescription" class="form-label">Type Description:</label>
-                        <input type="text" id="EditTransactionDescription" name="EditTransactionDescription" class="form-control" placeholder="Enter Type Description" required />
-                    </div>
-                </form>
-            </div>
+					<div class="mb-3">
+						<label for="EditTransactionDescription" class="form-label">Type Description:</label>
+						<input
+							type="text"
+							id="EditTransactionDescription"
+							name="EditTransactionDescription"
+							class="form-control"
+							placeholder="Enter Type Description"
+							required />
+					</div>
+				</form>
+			</div>
 
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn" data-bs-dismiss="modal" id="cancelEditTransactionTypeButton" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+			<!-- Modal Footer -->
+			<div class="modal-footer">
+				<button
+					type="button"
+					class="btn"
+					data-bs-dismiss="modal"
+					id="cancelEditTransactionTypeButton"
+					style="
+						background-color: #e9ecef;
+						color: #6c757d;
+						border: none;
+						border-radius: 4px;
+						padding: 0.5rem 1rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+					onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+					Cancel
+				</button>
 
-                <button type="submit" class="btn" form="editTransactionTypeForm" style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Save Changes</button>
-            </div>
-        </div>
-    </div>
+				<button
+					type="submit"
+					class="btn"
+					form="editTransactionTypeForm"
+					style="
+						background-color: #6f42c1;
+						color: white;
+						border: none;
+						border-radius: 4px;
+						padding: 0.5rem 1rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					onmouseover="this.style.backgroundColor='#5a3795';"
+					onmouseout="this.style.backgroundColor='#6f42c1';">
+					Save Changes
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 {% endblock %} {% block extra_js %}

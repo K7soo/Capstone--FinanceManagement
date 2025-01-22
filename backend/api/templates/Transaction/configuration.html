@@ -1,67 +1,121 @@
 {% extends 'base.html' %} {% load static %} {% block title %} Configuration {% endblock %} {% block extra_css %}
 <style>
-    body {
-        background-color: #f1f1f1; /* Light gray background */
-    }
+	body {
+		background-color: #f1f1f1; /* Light gray background */
+	}
 </style>
 {% endblock %} {% block content %}
 <div class="container mt-5">
-    <ol class="breadcrumb mt-2 mb-1">
+	<ol class="breadcrumb mt-2 mb-1">
 		<li class="breadcrumb-item d-flex align-items-center">
 			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
 			<span class="text-muted">Configurations</span>
 		</li>
 	</ol>
-    <h1 class="text" style="color: #6f42c1">Configuration</h1>
-    <p>Configuration Settings.</p>
+	<h1 class="text" style="color: #6f42c1">Configuration</h1>
+	<p>Configuration Settings.</p>
 
-    <div class="card shadow-sm mb-4 p-4">
-        <!-- Form to add a new status -->
-        <form id="statusForm" class="d-flex align-items-center mb-4">
-            <input type="text" class="form-control me-3" id="statusNameInput" placeholder="Enter status name" required style="max-width: 300px" />
-            <button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addAccountModal">
-                <!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
-                <i class="bi bi-plus"></i>
-                ADD
-            </button>
-        </form>
+	<div class="row">
+		<!-- Statuses Section -->
+		<div class="col-md-6">
+			<div class="card shadow-sm">
+				<div class="card-header text-white" style="background-color: #6f42c1">
+					<h5 class="mb-0">Statuses</h5>
+				</div>
+				<div class="card-body">
+					<!-- Add Status Form -->
+					<!--begin: Add Status Input and Button -->
+					<form class="d-flex align-items-center mb-3">
+						<!--begin: Input Field -->
+						<input
+							type="text"
+							class="form-control me-3"
+							id="statusNameInput"
+							placeholder="Enter status name"
+							required
+							style="height: 42px; border-radius: 8px" />
+						<!--end: Input Field -->
 
-        <!-- Table for statuses -->
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover text-center">
-                <thead class="table-light text-muted">
-                    <tr class="text-muted">
-                        <th>Status Name</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="statusTableBody">
-                    <!-- Dynamic rows will be added here -->
-                    <tr>
-                        <td>Pending</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="removeStatus(this)" style="font-weight: bold; padding: 0.3rem 1rem">REMOVE</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Approved</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="removeStatus(this)" style="font-weight: bold; padding: 0.3rem 1rem">REMOVE</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Not Approved</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="removeStatus(this)" style="font-weight: bold; padding: 0.3rem 1rem">REMOVE</button>
-                        </td>
-                    </tr>
-                    
-                </tbody>
-            </table>
-        </div>
-    </div>
+						<!--begin: Add Button -->
+						<button
+							class="btn btn-primary add-chart-btn text-white d-flex align-items-center justify-content-center"
+							style="
+								background-color: #6f42c1;
+								color: white;
+								border: none;
+								border-radius: 8px;
+								font-weight: 500;
+								height: 42px;
+								width: 130px;
+								transition: background-color 0.3s ease, color 0.3s ease;
+							"
+							onmouseover="this.style.backgroundColor='#5a3795';"
+							onmouseout="this.style.backgroundColor='#6f42c1';"
+							data-bs-toggle="modal"
+							data-bs-target="#addChartModal">
+							<i class="bi bi-plus me-2"></i> ADD
+						</button>
+						<!--end: Add Button -->
+					</form>
+					<!--end: Add Status Input and Button -->
+
+					<!-- Status Table -->
+					<table class="table table-bordered text-center">
+						<thead>
+							<tr>
+								<th>Status Name</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Pending</td>
+                                <td class="text-center align-middle">
+                                    <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+							</tr>
+							<!-- Additional rows dynamically generated -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- Export Section -->
+		<div class="col-md-6">
+			<div class="card shadow-sm">
+				<div class="card-header text-white" style="background-color: #6f42c1">
+					<h5 class="mb-0">Export</h5>
+				</div>
+				<div class="card-body">
+					<!-- Export Form -->
+					<form class="mb-3">
+						<label for="exportFileType" class="form-label">Files</label>
+						<select id="exportFileType" class="form-select" style="border-radius: 8px">
+							<option value="accountType">Account Type</option>
+							<!-- Other file types -->
+						</select>
+					</form>
+
+					<!-- Export Buttons -->
+                    <div class="mt-4 d-flex justify-content-end gap-3">
+                        <button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#">
+                            <!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
+                            <i class="bi bi-printer me-2"></i>
+                            Print
+                        </button>
+                        <button class="btn btn-success" style="color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" data-bs-toggle="modal" data-bs-target="#">
+                            <i class="bi bi-file-earmark-spreadsheet me-2"></i> 
+                            Export
+                        </button>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
 {% endblock %} {% block extra_js %}
 <script src="{% static 'js/configuration.js' %}"></script>
 {% endblock %}
