@@ -1,20 +1,38 @@
-{% extends 'base.html' %} {% load static %} {% block title %} Chart of Accounts {% endblock %} {% block extra_css %}
+<!-- prettier-ignore -->
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} 
+Chart of Accounts 
+{% endblock %} 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
+
 <style>
-	body {
-		background-color: #f1f1f1;
-	}
-	.dropdown-menu {
-		z-index: 1060 !important; /* Higher z-index to ensure overlap */
-		position: absolute !important; /* Position the dropdown correctly */
+	/* .dropdown-menu {
+		z-index: 1060 !important;
+		position: absolute !important;
 	}
 
 	.table-container {
-		position: relative; /* Ensure relative positioning of the table */
-		overflow: visible !important; /* Prevent dropdown clipping */
-	}
+		position: relative;
+		overflow: visible !important;
+	} */
 </style>
-{% endblock %} {% block content %}
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block content %}
 <div class="container mt-5">
+	<ol class="breadcrumb mt-2 mb-1">
+		<li class="breadcrumb-item d-flex align-items-center">
+			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
+			<span class="text-muted">System Setup</span>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">Chart of Accounts</li>
+	</ol>
 	<h1 class="text" style="color: #6f42c1">Chart of Accounts</h1>
 	<p>Setup page of charting ledger accounts.</p>
 	<!-- <div class="row">
@@ -33,12 +51,52 @@
 	<!-- Main Content Section -->
 	<!-- <div class="col-md-8"> -->
 	<div class="card shadow-sm">
-		<div class="text-white d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
-			<button class="btn btn-primary add-chart-btn text-white" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addChartModal">
+		<!--begin: Search Bar and Add Account Button -->
+		<div class="d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
+			<!--begin: Search Bar -->
+			<div class="search-bar mb-0" style="width: 300px; position: relative">
+				<input id="searchInput" type="text" class="form-control ps-5" placeholder="Search Account..." style="width: 100%; border-radius: 8px" />
+				<svg
+					width="16"
+					height="16"
+					viewBox="0 0 20 20"
+					aria-hidden="true"
+					class="search-icon"
+					style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: #6f42c1">
+					<path
+						d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z"
+						stroke="currentColor"
+						fill="none"
+						fill-rule="evenodd"
+						stroke-linecap="round"
+						stroke-linejoin="round"></path>
+				</svg>
+			</div>
+			<!--end: Search Bar -->
+
+			<!--begin: Add Account Button -->
+			<button
+				class="btn btn-primary add-chart-btn text-white"
+				style="
+					background-color: #6f42c1;
+					color: white;
+					border: none;
+					border-radius: 8px;
+					font-weight: 500;
+					padding: 0.5rem 1.25rem;
+					transition: background-color 0.3s ease, color 0.3s ease;
+				"
+				onmouseover="this.style.backgroundColor='#5a3795';"
+				onmouseout="this.style.backgroundColor='#6f42c1';"
+				data-bs-toggle="modal"
+				data-bs-target="#addChartModal">
 				<i class="bi bi-plus"></i>
 				ADD ACCOUNT
 			</button>
+			<!--end: Add Account Button -->
 		</div>
+		<!--end: Search Bar and Add Account Button -->
+
 		<div class="card-body">
 			<div class="table-responsive">
 				<table id="chartOfAccTable" class="table table-bordered table-hover text-center table-acc">
@@ -100,9 +158,38 @@
 						<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
 					</div>
 					<div class="modal-footer">
-						<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+						<button
+							type="reset"
+							class="btn"
+							data-bs-dismiss="modal"
+							style="
+								background-color: #e9ecef;
+								color: #6c757d;
+								border: none;
+								border-radius: 4px;
+								padding: 0.5rem 1rem;
+								transition: background-color 0.3s ease, color 0.3s ease;
+							"
+							onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+							onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+							Cancel
+						</button>
 
-						<button type="submit" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Account</button>
+						<button
+							type="submit"
+							class="btn"
+							style="
+								background-color: #6f42c1;
+								color: white;
+								border: none;
+								border-radius: 4px;
+								padding: 0.5rem 1rem;
+								transition: background-color 0.3s ease, color 0.3s ease;
+							"
+							onmouseover="this.style.backgroundColor='#5a3795';"
+							onmouseout="this.style.backgroundColor='#6f42c1';">
+							Add Account
+						</button>
 					</div>
 				</form>
 			</div>
@@ -141,207 +228,48 @@
 				</div>
 				<!-- Modal Footer -->
 				<div class="modal-footer">
-					<button type="button" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
+					<button
+						type="button"
+						class="btn"
+						data-bs-dismiss="modal"
+						style="
+							background-color: #e9ecef;
+							color: #6c757d;
+							border: none;
+							border-radius: 4px;
+							padding: 0.5rem 1rem;
+							transition: background-color 0.3s ease, color 0.3s ease;
+						"
+						onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+						onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+						Cancel
+					</button>
 
-					<button type="submit" form="editChartForm" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 4px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Save Changes</button>
+					<button
+						type="submit"
+						form="editChartForm"
+						class="btn"
+						style="
+							background-color: #6f42c1;
+							color: white;
+							border: none;
+							border-radius: 4px;
+							padding: 0.5rem 1rem;
+							transition: background-color 0.3s ease, color 0.3s ease;
+						"
+						onmouseover="this.style.backgroundColor='#5a3795';"
+						onmouseout="this.style.backgroundColor='#6f42c1';">
+						Save Changes
+					</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-{% endblock %} {% block extra_js %}
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block extra_js %}
 <script src="{% static 'js/System_Setup/chartofacc.js' %}"></script>
-<script>
-
-// Show success alert using Sweet Alert
-function showSuccessAlert(message) {
-    Swal.fire({
-        title: 'Success!',
-        text: message,
-        icon: 'success',
-        confirmButtonText: 'OK'
-    });
-}
-
-// Show confirmation alert using Sweet Alert
-function showDeleteConfirmationAlert(message, confirmCallback) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: message,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel',
-        cancelButtonColor: '#d33'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            confirmCallback();
-        }
-    });
-}
-
-function showEditConfirmationAlert(message, confirmCallback) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: message,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, save it!',
-        cancelButtonText: 'Cancel',
-        cancelButtonColor: '#d33'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            confirmCallback();
-        }
-    });
-    then((result) => {
-        if (result.isConfirmed) {
-            confirmCallback();
-        }
-    });
-}
-editChartForm.addEventListener('submit', event => {
-    event.preventDefault();
-
-    const accountId = document.getElementById('EditAccountId').value;
-    const accountCode = document.getElementById('EditAccountCode').value.trim();
-    const accountDesc = document.getElementById('EditAccountDesc').value.trim();
-    const accountTypeFK = parseInt(editAccountTypeDropdown.value);
-
-    // Retrieve original values from data attributes
-    const originalAccountCode = editChartForm.dataset.originalAccountCode; // Original AccountCode
-    const originalAccountDesc = editChartForm.dataset.originalAccountDesc; // Original AccountDesc
-    const originalAccountTypeFK = parseInt(editChartForm.dataset.originalAccountTypeFK); // Original AccountType_FK
-
-    // Check if any changes were made
-    if (
-        accountCode === originalAccountCode &&
-        accountDesc === originalAccountDesc &&
-        accountTypeFK === originalAccountTypeFK
-    ) {
-        // Show Sweet Alert if no changes are made
-        Swal.fire({
-            title: 'No Changes Made',
-            text: 'You have not made any changes to the account.',
-            icon: 'info',
-            confirmButtonText: 'OK'
-        });
-        return; // Exit without submitting
-    }
-
-    // Proceed with submitting the changes
-    const updatedAccount = {
-        AccountCode: accountCode,
-        AccountDesc: accountDesc,
-        AccountType_FK: accountTypeFK,
-    };
-
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'Do you want to save changes to this account?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, save it!',
-        cancelButtonText: 'Cancel',
-        cancelButtonColor: '#d33',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/chartofacc/${accountId}/`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-                body: JSON.stringify(updatedAccount),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to update account');
-                }
-                return response.json();
-            })
-            .then(updatedData => {
-                console.log("Account updated successfully:", updatedData);
-                loadChartOfAccounts(); // Refresh the table
-
-                // Hide the modal using Bootstrap's Modal class
-                const bootstrapModal = bootstrap.Modal.getInstance(document.getElementById('editChartModal'));
-                bootstrapModal.hide();
-
-                Swal.fire({
-                    title: 'Updated!',
-                    text: 'Account updated successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            })
-            .catch(error => {
-                console.error('Error updating account:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to update the account.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-});
-
-// Handle Account Deletion
-function deleteAccountConfirmation(button) {
-    const row = button.closest('tr');
-    const accountId = row.dataset.id;
-
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'Are you sure you want to delete this account? This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel',
-		confirmButtonColor: '#d33',
-        cancelButtonColor: '#fffff',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`/chartofacc/${accountId}/`, {
-                method: 'DELETE',
-                headers: { 'X-CSRFToken': csrfToken },
-            })
-            .then(response => {
-                if (response.ok) {
-                    row.remove();
-                    console.log("Account deleted successfully.");
-
-                    Swal.fire({
-                        title: 'Deleted!',
-                        text: 'Account deleted successfully.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    throw new Error('Failed to delete account');
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting account:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to delete the account.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-}
-// Show no changes alert using Sweet Alert
-function showNoChangesAlert() {
-    Swal.fire({
-        title: 'No Changes Made',
-        text: 'You have not made any changes to the account.',
-        icon: 'info',
-        confirmButtonText: 'OK'
-    });
-}
-
-
-</script>
+<script></script>
 {% endblock %}

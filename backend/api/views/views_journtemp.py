@@ -87,7 +87,15 @@ class JournalTemplateDetailView(views.APIView):
         else:
             return JsonResponse(template_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Update or create details
+        # Validate details data
+        for detail_data in details_data:
+            if detail_data.get('Debit') == detail_data.get('Credit'):
+                return JsonResponse(
+                    {"error": "Debit and Credit cannot both be true or false for a single detail."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        # Handle existing and new details
         detail_errors = []
         for detail_data in details_data:
             detail_id = detail_data.get('id')
@@ -106,6 +114,15 @@ class JournalTemplateDetailView(views.APIView):
                 else:
                     detail_errors.append(detail_serializer.errors)
 
+        # Handle deleted details
+        existing_detail_ids = [detail.id for detail in TRTemplateDetails.objects.filter(Template_FK=template)]
+        incoming_detail_ids = [d.get('id') for d in details_data if d.get('id')]
+
+        # Find IDs to delete
+        deleted_detail_ids = set(existing_detail_ids) - set(incoming_detail_ids)
+        if deleted_detail_ids:
+            TRTemplateDetails.objects.filter(id__in=deleted_detail_ids).delete()
+
         if detail_errors:
             return JsonResponse({"detail_errors": detail_errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -116,8 +133,8 @@ class JournalTemplateDetailView(views.APIView):
                 TRTemplateDetailsSerializer(detail).data for detail in TRTemplateDetails.objects.filter(Template_FK=template)
             ],
         }
-        return JsonResponse(response_data, status=status.HTTP_200_OK)
-
+        return JsonResponse(response_data, status=status.HTTP_200_OK) 
+       
     def patch(self, request, pk):
         template = get_object_or_404(TRTemplate, pk=pk)
         serializer = TRTemplateSerializer(template, data=request.data, partial=True)

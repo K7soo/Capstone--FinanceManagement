@@ -6,6 +6,13 @@
 </style>
 {% endblock %} {% block content %}
 <div class="container mt-5">
+	<ol class="breadcrumb mt-2 mb-1">
+		<li class="breadcrumb-item d-flex align-items-center">
+			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
+			<span class="text-muted">Transaction</span>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">General Journal</li>
+	</ol>
 	<h1 class="text" style="color: #6f42c1">General Journal</h1>
 	<p>Manage your transactions and journal entries efficiently.</p>
 
@@ -42,20 +49,45 @@
 
 			<!-- Buttons -->
 			<div class="mt-4 d-flex justify-content-end gap-3">
-				<button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#">
+				<button
+					class="btn btn-primary"
+					style="
+						background-color: #6f42c1;
+						color: white;
+						border: none;
+						border-radius: 8px;
+						font-weight: 500;
+						padding: 0.5rem 1rem 0.5rem 1rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					onmouseover="this.style.backgroundColor='#5a3795';"
+					onmouseout="this.style.backgroundColor='#6f42c1';"
+					data-bs-toggle="modal"
+					data-bs-target="#">
 					<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
 					<i class="bi bi-printer me-2"></i>
 					Print
 				</button>
-				<button class="btn btn-success" style="color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" data-bs-toggle="modal" data-bs-target="#">
-                    <i class="bi bi-file-earmark-spreadsheet me-2"></i> 
-                    Export to Excel
-                </button>
+				<button
+					class="btn btn-success"
+					style="
+						color: white;
+						border: none;
+						border-radius: 8px;
+						font-weight: 500;
+						padding: 0.5rem 1rem 0.5rem 1rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					data-bs-toggle="modal"
+					data-bs-target="#">
+					<i class="bi bi-file-earmark-spreadsheet me-2"></i>
+					Export to Excel
+				</button>
 			</div>
 		</form>
 	</div>
 </div>
 
 {% endblock %} {% block extra_js %}
-<script src="{% static 'js/general_journal.js' %}"></script>
+<script src="{% static 'js/Reports/general_journal.js' %}"></script>
 {% endblock %}

@@ -1,21 +1,43 @@
+<!-- prettier-ignore -->
 {% extends 'base.html' %}
 
-<!-- Always do a load static -->
-{% load static %} {% block title %} Journal Entries {% endblock %} {% block extra_css %}
+{% load static %} 
+
+{% block title %} 
+Journal Entries 
+{% endblock %} 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
+
 <style>
-	body {
-		background-color: #f1f1f1;
-		/* Light gray background */
+	.nav-tabs .nav-link.active {
+		color: #6f42c1; /* Bootstrap primary color */
+		border-color: #6f42c1 #6f42c1 #fff;
+		background-color: #fff; /* Tab background color */
+	}
+	.nav-tabs .nav-link {
+		color: black; /* Default text color */
 	}
 </style>
-{% endblock %} {% block content %}
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block content %}
 <div class="container mt-5">
+	<ol class="breadcrumb mt-2 mb-1">
+		<li class="breadcrumb-item d-flex align-items-center">
+			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
+			<span class="text-muted">Transaction</span>
+		</li>
+		<li class="breadcrumb-item active" aria-current="page">Journal Entries</li>
+	</ol>
 	<h1 class="text" style="color: #6f42c1">Journal Entries</h1>
-	<p>Setup page for the creation of basic ledger accounts.</p>
+	<p>Create Entries to be posted to the GL/GJ.</p>
 
 	<div class="card shadow-sm">
 		<div class="card-body">
-			<div class="d-flex justify-content-between mb-3">
+			<div class="d-flex justify-content-between align-items-center pb-3" style="color: #6f42c1">
 				<div class="mb-3 d-flex align-items-center">
 					<label for="records-per-page" class="form-label me-2">Records Per Page:</label>
 					<select id="records-per-page" name="records-per-page" class="form-select w-auto">
@@ -25,15 +47,30 @@
 						<option value="100">100</option>
 					</select>
 				</div>
-				
+
 				<!-- Add Journal Entries Button -->
 				<!-- <button class="btn btn-primary" id="openAddJournalEntriesModal" data-bs-toggle="modal" data-bs-target="#addJournalEntriesModal">Add Journal Entries</button> -->
-				<button id="openAddJournalEntriesModal" class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 0.5rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#addJournalEntriesModal">
+				<button
+					id="openAddJournalEntriesModal"
+					class="btn btn-primary"
+					style="
+						background-color: #6f42c1;
+						color: white;
+						border: none;
+						border-radius: 8px;
+						font-weight: 500;
+						padding: 0.5rem 1rem 0.5rem 0.5rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					onmouseover="this.style.backgroundColor='#5a3795';"
+					onmouseout="this.style.backgroundColor='#6f42c1';"
+					data-bs-toggle="modal"
+					data-bs-target="#addJournalEntriesModal">
 					<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
 					<i class="bi bi-plus"></i>
 					ADD JOURNAL ENTRIES
 				</button>
-				
+
 				<!-- Add Journal Template Modal -->
 				<div id="addJournalEntriesModal" class="modal fade" tabindex="-1" aria-labelledby="addJournalEntriesModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -46,10 +83,28 @@
 								<!-- Tab Navigation -->
 								<ul class="nav nav-tabs" id="journalTabs" role="tablist">
 									<li class="nav-item" role="presentation">
-										<a class="nav-link active" id="particulars-tab" data-bs-toggle="tab" href="#particulars" role="tab" aria-controls="particulars" aria-selected="true">Particulars</a>
+										<a
+											class="nav-link active"
+											id="particulars-tab"
+											data-bs-toggle="tab"
+											href="#particulars"
+											role="tab"
+											aria-controls="particulars"
+											aria-selected="true"
+											>Particulars</a
+										>
 									</li>
 									<li class="nav-item" role="presentation">
-										<a class="nav-link" id="accounting-entries-tab" data-bs-toggle="tab" href="#accounting-entries" role="tab" aria-controls="accounting-entries" aria-selected="false">Accounting Entries</a>
+										<a
+											class="nav-link"
+											id="accounting-entries-tab"
+											data-bs-toggle="tab"
+											href="#accounting-entries"
+											role="tab"
+											aria-controls="accounting-entries"
+											aria-selected="false"
+											>Accounting Entries</a
+										>
 									</li>
 								</ul>
 
@@ -59,12 +114,35 @@
 									<div class="tab-pane fade show active" id="particulars" role="tabpanel" aria-labelledby="particulars-tab">
 										<div class="mb-3">
 											<label for="entryCode" class="form-label">Entry Code:</label>
-											<input type="text" class="form-control" id="entryCode" name="entryCode" placeholder="Enter Entry Code" required />
+											<input
+												type="text"
+												class="form-control"
+												id="entryCode"
+												name="entryCode"
+												placeholder="Enter Entry Code"
+												required />
 										</div>
 										<div class="mb-3">
-											<label for="entryDate" class="form-label">Date:</label>
-											<input type="date" class="form-control" id="entryDate" />
+											<label for="entryDate" class="form-label" style=" color: #6f42c1;">Date:</label>
+											<div class="input-group">
+												<span class="input-group-text" style="background-color: #f3f2f7; border: 1px solid #d7d4e5;">
+													<i class="bi bi-calendar2"></i> <!-- Bootstrap Icon for calendar -->
+												</span>
+												<input
+													type="date"
+													class="form-control"
+													id="entryDate"
+													placeholder="Select a date" 
+													style="
+														border: 1px solid #d7d4e5;
+														border-radius: 0 8px 8px 0;
+														background-color: #f8f9fc;
+														color: #495057;
+													"
+												/>
+											</div>
 										</div>
+										
 										<div class="mb-3">
 											<label for="entryDescription" class="form-label">Particulars:</label>
 											<textarea id="entryDescription" class="form-control" placeholder="Enter Description"></textarea>
@@ -90,16 +168,15 @@
 
 										<!-- Accounts Table -->
 										<div class="mt-3">
-											<table class="table table-bordered">
-												<thead>
+											<table class="table table-bordered text-center">
+												<thead class="table-light">
 													<tr>
 														<th>Accounts</th>
 														<th>Debit</th>
 														<th>Credit</th>
 													</tr>
 												</thead>
-												<tbody>
-												</tbody>
+												<tbody></tbody>
 											</table>
 										</div>
 									</div>
@@ -107,8 +184,191 @@
 							</div>
 							<!-- Modal Footer Actions -->
 							<div class="modal-footer">
-								<button type="reset" class="btn" data-bs-dismiss="modal" style="background-color: #e9ecef; color: #6c757d; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';" onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">Cancel</button>
-								<button id="addEntryBtn" type="submit" class="btn" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';">Add Journal Entry</button>
+								<button
+									type="reset"
+									class="btn"
+									data-bs-dismiss="modal"
+									style="
+										background-color: #e9ecef;
+										color: #6c757d;
+										border: none;
+										border-radius: 8px;
+										padding: 0.5rem 1rem;
+										transition: background-color 0.3s ease, color 0.3s ease;
+									"
+									onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+									onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+									Cancel
+								</button>
+								<button
+									id="addEntryBtn"
+									type="submit"
+									class="btn"
+									style="
+										background-color: #6f42c1;
+										color: white;
+										border: none;
+										border-radius: 8px;
+										padding: 0.5rem 1rem;
+										transition: background-color 0.3s ease, color 0.3s ease;
+									"
+									onmouseover="this.style.backgroundColor='#5a3795';"
+									onmouseout="this.style.backgroundColor='#6f42c1';">
+									Add Journal Entry
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- JEV Approval Modal -->
+				<div class="modal fade" id="jevApprovalModal" tabindex="-1" aria-labelledby="jevApprovalModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-xl">
+						<div class="modal-content">
+							<!-- Modal Header -->
+							<div class="modal-header">
+								<h5 class="modal-title" id="jevApprovalModalLabel">View JEV Details</h5>
+								<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+							</div>
+
+							<!-- Modal Body -->
+							<div id="jevViewModal" class="modal-body">
+								<!-- Header Section -->
+								<div class="row mb-4">
+									<div class="col-md-6">
+										<div class="mb-2"><strong>Date:</strong> <span id="jevDate"></span></div>
+										<div class="mb-2"><strong>JEV Number:</strong> <span id="jevNumber"></span></div>
+										<!-- <div class="mb-2"><strong>Template:</strong> <span id="template"></span></div> -->
+										<div class="mb-2">
+											<strong>Status:</strong>
+											<select id="statusDropdown" class="form-select" disabled>
+												<!-- Options will be dynamically loaded -->
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<!-- Table Section -->
+								<div class="table-responsive mt-3">
+									<table class="table table-bordered text-center">
+										<thead class="table-light">
+											<tr>
+												<th>Account</th>
+												<th>Account Code</th>
+												<th>Debit</th>
+												<th>Credit</th>
+											</tr>
+										</thead>
+										<tbody id="jevAccountTableBody"></tbody>
+									</table>
+								</div>
+
+								<!-- Remarks Section -->
+								<div class="mt-4">
+									<label for="remarks" class="form-label fw-bold">Remarks:</label>
+									<textarea id="remarks" class="form-control" rows="3" placeholder="Add remarks here..." disabled></textarea>
+								</div>
+							</div>
+
+							<!-- Modal Footer -->
+							<div class="modal-footer">
+								<button
+									type="reset"
+									class="btn btn-secondary"
+									data-bs-dismiss="modal"
+									style="
+										background-color: #e9ecef;
+										color: #6c757d;
+										border: none;
+										border-radius: 8px;
+										padding: 0.5rem 1rem;
+										transition: background-color 0.3s ease, color 0.3s ease;
+									"
+									onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+									onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+									Close
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- JEV Edit Modal -->
+				<div class="modal fade" id="jevEditModal" tabindex="-1" aria-labelledby="jevEditModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-xl">
+						<div class="modal-content">
+							<!-- Modal Header -->
+							<div class="modal-header">
+								<h5 class="modal-title" id="jevEditModalLabel">Edit JEV Details</h5>
+							</div>
+
+							<!-- Modal Body -->
+							<div id="jevEditModalBody" class="modal-body">
+								<!-- Header Section -->
+								<div class="row mb-4">
+									<div class="col-md-6">
+										<div class="mb-2">
+											<strong>Date:</strong>
+											<span id="jevEditDate"></span>
+										</div>
+										<div class="mb-2">
+											<strong>JEV Number:</strong>
+											<span id="jevEditNumber"></span>
+										</div>
+										<div class="mb-2">
+											<strong>Status:</strong>
+											<select id="statusEditDropdown" class="form-select" disabled>
+												<!-- Options will be dynamically loaded -->
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<!-- Table Section -->
+								<div class="table-responsive mt-3">
+									<table class="table table-bordered text-center">
+										<thead class="table-light">
+											<tr>
+												<th>Account</th>
+												<th>Account Code</th>
+												<th>Debit</th>
+												<th>Credit</th>
+											</tr>
+										</thead>
+										<tbody id="jevEditAccountTableBody">
+											<!-- Rows will be dynamically populated -->
+										</tbody>
+									</table>
+								</div>
+
+								<!-- Remarks Section -->
+								<div class="mt-4">
+									<label for="editRemarks" class="form-label fw-bold">Remarks:</label>
+									<textarea id="editRemarks" class="form-control" rows="3" placeholder="Add remarks here..." disabled></textarea>
+								</div>
+							</div>
+
+							<!-- Modal Footer -->
+							<div class="modal-footer">
+								<button
+									type="reset"
+									class="btn btn-secondary"
+									data-bs-dismiss="modal"
+									style="
+										background-color: #e9ecef;
+										color: #6c757d;
+										border: none;
+										border-radius: 8px;
+										padding: 0.5rem 1rem;
+										transition: background-color 0.3s ease, color 0.3s ease;
+									"
+									onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+									onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+									Close
+								</button>
+								<button type="button" id="saveChangesButton" class="btn btn-primary" style="border-radius: 8px; padding: 0.5rem 1rem">
+									Save Changes
+								</button>
 							</div>
 						</div>
 					</div>
@@ -119,10 +379,9 @@
 					<thead>
 						<tr>
 							<th onclick="sortTable('journalEntriesTable', true)">Date</th>
-            				<th>Entry No.</th>
+							<th>Entry No.</th>
 							<th>Particulars</th>
 							<th>Status</th>
-							<th>Template</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -131,11 +390,31 @@
 					</tbody>
 				</table>
 			</div>
-			
 		</div>
 	</div>
 </div>
-	{% endblock %} {% block extra_js %}
-	<script src="{% static 'js/Transaction/journalentries.js' %}"></script>
-	{% endblock %}
+{% endblock %}
 
+<!-- prettier-ignore -->
+{% block extra_js %}
+<script src="{% static 'js/Transaction/journalentries.js' %}"></script>
+
+<script>
+	// Calculate one year ago from today
+	const oneYearAgo = new Date();
+	oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+	// Initialize Flatpickr for fields with date restrictions
+	flatpickr("#entryDate", {
+		dateFormat: "Y-m-d", // Set the date format
+		maxDate: "today", // Disable future dates
+		minDate: oneYearAgo, // Disable dates more than one year in the past
+	});
+
+	flatpickr("#jevDate", {
+		dateFormat: "Y-m-d", // Set the date format
+		maxDate: "today", // Disable future dates
+		minDate: oneYearAgo, // Disable dates more than one year in the past
+	});
+</script>
+{% endblock %}

@@ -1,105 +1,113 @@
-{% extends 'base.html' %}
+<!-- prettier-ignore -->
+{% extends 'base.html' %} 
 
-{% load static %}
+{% load static %} 
 
-{% block title %}
-Bookkeeping Dashboard
-{% endblock %}
+{% block title %} 
+Bookkeeping Dashboard 
+{% endblock %} 
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
 <style>
-    body {
-        background-color: #f1f1f1;
-    }
+	.card-title {
+		font-size: 1.5rem;
+	}
 
-    .card-title {
-        font-size: 1.5rem;
-    }
+	.card-text {
+		font-size: 0.9rem;
+	}
 
-    .card-text {
-        font-size: 0.9rem;
-    }
-
-    .chart-container {
-        min-height: 300px;
-    }
+	.chart-container {
+		min-height: 300px;
+	}
 </style>
 {% endblock %}
 
+<!-- prettier-ignore -->
 {% block content %}
 <div class="container mt-5">
-    <h1 style="color: #6f42c1;">Bookkeeping Dashboard</h1>
-    <p>Overview of Financial Data</p>
+	<ol class="breadcrumb mt-2 mb-1">
+		<li class="breadcrumb-item d-flex align-items-center">
+			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
+			<span class="text-muted">Dashboard</span>
+		</li>
+	</ol>
+	<h1 style="color: #6f42c1">Bookkeeping Dashboard</h1>
+	<!-- Breadcrumbs -->
 
-    <div class="row g-4">
-        <!-- Income vs. Expenses (Wide) -->
-        <div class="col-md-8">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">₱120,000 <span class="text-success">↑ 8.2%</span></h5>
-                    <p class="card-text">Income vs Expenses</p>
-                    <div class="chart-container">
-                        <canvas id="incomeExpensesChart" class="img-fluid"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+	<p>Overview of Financial Data</p>
 
-        <!-- Outstanding Invoices -->
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">₱25,000 <span class="text-danger">↓ 2.3%</span></h5>
-                    <p class="card-text">Outstanding Invoices</p>
-                    <div class="chart-container">
-                        <canvas id="outstandingInvoicesChart" class="img-fluid"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+	<div class="row g-4">
+		<!-- Income vs. Expenses (Wide) -->
+		<div class="col-md-8">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">₱120,000 <span class="text-success">↑ 8.2%</span></h5>
+					<p class="card-text">Income vs Expenses</p>
+					<div class="chart-container">
+						<canvas id="incomeExpensesChart" class="img-fluid"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <!-- Account Balances -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">₱300,000 <span class="text-success">↑ 5.7%</span></h5>
-                    <p class="card-text">Account Balances</p>
-                    <div class="chart-container">
-                        <canvas id="accountBalancesChart" class="img-fluid"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+		<!-- Outstanding Invoices -->
+		<div class="col-md-4">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">₱25,000 <span class="text-danger">↓ 2.3%</span></h5>
+					<p class="card-text">Outstanding Invoices</p>
+					<div class="chart-container">
+						<canvas id="outstandingInvoicesChart" class="img-fluid"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <!-- Cash Flow -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">₱75,000 <span class="text-success">↑ 3.5%</span></h5>
-                    <p class="card-text">Cash Flow</p>
-                    <div class="chart-container">
-                        <canvas id="cashFlowChart" class="img-fluid"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+		<!-- Account Balances -->
+		<div class="col-md-6">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">₱300,000 <span class="text-success">↑ 5.7%</span></h5>
+					<p class="card-text">Account Balances</p>
+					<div class="chart-container">
+						<canvas id="accountBalancesChart" class="img-fluid"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <!-- Monthly Trends -->
-        <div class="col-md-12">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">₱500,000 <span class="text-success">↑ 10.3%</span></h5>
-                    <p class="card-text">Monthly Trends</p>
-                    <div class="chart-container">
-                        <canvas id="monthlyTrendsChart" class="img-fluid"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		<!-- Cash Flow -->
+		<div class="col-md-6">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">₱75,000 <span class="text-success">↑ 3.5%</span></h5>
+					<p class="card-text">Cash Flow</p>
+					<div class="chart-container">
+						<canvas id="cashFlowChart" class="img-fluid"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Monthly Trends -->
+		<div class="col-md-12">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">₱500,000 <span class="text-success">↑ 10.3%</span></h5>
+					<p class="card-text">Monthly Trends</p>
+					<div class="chart-container">
+						<canvas id="monthlyTrendsChart" class="img-fluid"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
 
+<!-- prettier-ignore -->
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="text/javascript" src="{% static 'js/Dashboard/dashboard.js' %}"></script>

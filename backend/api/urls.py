@@ -10,6 +10,10 @@ urlpatterns = [
         # LogMS Prototype URL
         path('orders-view/', views_api.OrderManagementView.as_view(), name='logistics_api'),
         
+        path('payment-record/', views_api.PaymentRecordView.as_view(), name='payment_api'),
+        path('get-payments/', views_api.PaymentRecordRetrieveView.as_view(), name='trinbox'),
+        
+        path('validate-token/', views_validate_token.ValidateTokenView.as_view(), name='validate_token'),
     # Dashboard #
     path('', views_.dashboard_view, name='dashboard'),
     # List of Accounts
@@ -33,21 +37,21 @@ urlpatterns = [
     # Transaction Type
     path('transactiontype/', views_trtype.TransactionTypeView.as_view(), name='transactiontype'),
     path('transactiontype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
-    # Transaction Inbox 
-        path('trinbox/', views_.transaction_inbox_view, name='trinbox'),
     # Journal Entries 
     # path('journalentries/', views_.journal_entries_view, name='journalentries'),
     path("journalentries/", views_journentries.JournalEntryView.as_view(), name="journalentries"),
-    path("journalentries/<int:pk>/", views_journentries.JournalEntryDetailView.as_view(), name="journal_entry_detail"),
+    path("journalentries/<int:pk>/", views_journentries.JournalRetrieveView.as_view(), name="journalentriespecified"),
+    path("journalentriesdetail/<int:pk>/", views_journentries.JournalEntryDetailView.as_view(), name="journal_detail"),
+
+     path('generaljournalquery/', views_query_journal.JournalQueryView.as_view(), name='generaljournal'),
     # JEV Approval 
     path('jevapproval/', views_.jev_approval_view, name='jevapproval'),
+    # Configuration
+    
+    path('configuration/', views_.configuration_view, name='configuration'),
+
     # Reports 
     path('reports/', views_.reports_view, name='reports'),
-    # Trial Balance 
-    path('trialbalance/', views_.trial_balance_view, name='trialbalance'),
-    # General Journal
-    path('generaljournal/', views_.general_journal_view, name='general_journal'),
-    # General Ledger
-    path('generalledger/', views_.general_ledger_view, name='general_ledger'),
+    path('querygeneraljournal/', views_queries.JournalQueryView.as_view(), name='filter_journal_entries'),
 ]
     

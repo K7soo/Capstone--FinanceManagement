@@ -1,0 +1,38 @@
+/* ilagay nyo to */
+body {
+	background-color: #f5f5f5b0;
+	/* Light gray background */
+}
+
+.dropdown-menu {
+	position: absolute !important;
+	/* Ensure dropdown doesn't affect layout */
+	z-index: 1050 !important;
+	/* Ensure it appears above other content */
+}
+
+.dropdown {
+	position: relative;
+	/* Create stacking context for dropdown */
+}
+
+.table {
+	position: relative;
+	/* Ensure dropdown stays within table context */
+	z-index: auto;
+}
+
+/* Responsive Fix for Zoom */
+@media (max-width: 768px) {
+	.btn {
+		width: 100%;
+		/* Make the button take full width for smaller screens */
+	}
+
+	button.btn {
+		margin-bottom: 1rem;
+		/* Add spacing below the button */
+		display: inline-block;
+		/* Ensure proper layout */
+	}
+}

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelButton = document.querySelector('[data-bs-dismiss="modal"]');
     const accountsTableBody = document.querySelector('#accounting-entries table tbody');
     const addTemplateSelect = document.getElementById('addTemplate');
+    const addEntryButton = document.getElementById('addEntryBtn');
 
     const transactionTypeMap = {}; // Map for TransactionType IDs to names
 
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return csrfToken;
     }
+    loadJournalEntries();
 
     function loadTransactionTypes() {
         return fetch('/get-transaction-types/', {
@@ -55,6 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return response.json();
             });
+    }
+
+    // Fetch all statuses
+    function fetchStatuses() {
+        return fetch('/entrystatuses/', {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch statuses");
+                }
+                return response.json();
+            })
+            .catch(error => console.error("Error fetching statuses:", error));
     }
 
     function loadTemplates() {
@@ -140,61 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error loading data:', error));
     }
 
-    addTemplateSelect?.addEventListener('change', event => {
-        const selectedTemplateId = event.target.value;
-        if (selectedTemplateId) {
-            loadTemplateDetails(selectedTemplateId);
-        } else {
-            if (accountsTableBody) accountsTableBody.innerHTML = '';
-            const transactionTypeTextbox = document.getElementById('transactionType');
-            if (transactionTypeTextbox) transactionTypeTextbox.outerHTML = '<input type="text" id="transactionType" class="form-control text-muted" style="cursor: not-allowed; background-color: #e9ecef;" value="" readonly />';
-        }
-    });
-
-    openModalButton?.addEventListener('click', () => {
-        if (!modal) {
-            console.error('Modal element not found');
-            return;
-        }
-        modal.style.display = 'block';
-        loadTransactionTypes().then(loadTemplates);
-    });
-
-    cancelButton?.addEventListener('click', () => {
-        if (modal) modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    accountsTableBody?.addEventListener('input', event => {
-        const target = event.target;
-        if (target.classList.contains('debit-input')) {
-            const creditInput = target.closest('tr').querySelector('.credit-input');
-            if (creditInput) {
-                if (target.value) {
-                    creditInput.value = '';
-                    creditInput.disabled = true;
-                } else {
-                    creditInput.disabled = false;
-                }
-            }
-        } else if (target.classList.contains('credit-input')) {
-            const debitInput = target.closest('tr').querySelector('.debit-input');
-            if (debitInput) {
-                if (target.value) {
-                    debitInput.value = '';
-                    debitInput.disabled = true;
-                } else {
-                    debitInput.disabled = false;
-                }
-            }
-        }
-    });
-
     function fetchTransactionTypeFromTemplate(templateId) {
         if (!templateId) {
             console.error('Template ID is invalid.');
@@ -215,20 +179,145 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     }
 
+    function loadJournalEntries() {
+        Promise.all([
+            fetch('/journalentries/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load journal entries");
+                return response.json();
+            }),
+            fetch('/entrystatuses/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load entry statuses");
+                return response.json();
+            })
+        ])
+            .then(([entries, statuses]) => {
+                const statusMap = {};
+                statuses.forEach(status => {
+                    statusMap[status.id] = status.Status_Name;
+                });
+    
+                const tableBody = document.querySelector("#journalEntriesTable tbody");
+                if (!tableBody) {
+                    console.error("Table body not found.");
+                    return;
+                }
+                tableBody.innerHTML = ""; // Clear existing rows
+    
+                entries.forEach(entry => {
+                    const journalEntry = entry.journal_entry;
+                    const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
+    
+                    // Format date to MM-DD-YYYY
+                    const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "numeric",
+                    });
+    
+                    // Add a row for the journal entry
+                    const entryRow = document.createElement("tr");
+                    entryRow.setAttribute("data-id", journalEntry.id);
+                    entryRow.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td>${journalEntry.Entry_No}</td>
+                        <td>${journalEntry.EntryParticulars}</td>
+                        <td>${entryStatus}</td>
+                        <td class="text-center align-middle">
+                            <div class="dropdown d-inline-block">
+                                <button
+                                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+                                    type="button"
+                                    id="dropdownMenuButton${journalEntry.id}"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; ">
+                                    <span>MENU</span>
+                                    <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
+                                </button>
+                                <ul
+                                    class="dropdown-menu"
+                                    aria-labelledby="dropdownMenuButton"${journalEntry.id}"
+                                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0">
+                                    <li>
+                                        <button
+                                            class="dropdown-item text-success print-entry"
+                                            type="button"
+                                            data-entry-id="${journalEntry.id}"
+                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                                            <i class="bi bi-printer me-2"></i>Print
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            class="dropdown-item text-primary view-entry"
+                                            type="button"
+                                            data-entry-id="${journalEntry.id}"
+                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                                            <i class="bi bi-eye me-2"></i>View
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            class="dropdown-item text-warning edit-entry"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editTemplateModal"
+                                            data-entry-id="${journalEntry.id}"
+                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                                            <i class="bi bi-pencil-square me-2"></i>Edit
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            class="dropdown-item text-danger delete-entry"
+                                            type="button"
+                                            data-entry-id="${journalEntry.id}"
+                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
+                                            <i class="bi bi-trash-fill me-2"></i>Delete
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(entryRow);
+                });
+            attachActionListeners();
+            })
+            .catch(error => console.error("Error loading journal entries:", error));
+    }
+
     function addJournalEntry() {
         const entryCode = document.getElementById('entryCode')?.value || '';
         const entryDate = document.getElementById('entryDate')?.value || '';
         const entryDescription = document.getElementById('entryDescription')?.value || '';
         const selectedTemplate = document.getElementById('addTemplate')?.value || '';
-
+    
         // Fetch TransactionType_FK from the dynamically updated textbox
         const transactionTypeFk = fetchTransactionTypeFromTemplate(selectedTemplate);
-
+    
         if (!transactionTypeFk) {
             console.error('TransactionType_FK is required and missing.');
-            alert('Please select a valid template to set the transaction type.');
+            Swal.fire({
+                title: 'Invalid Template',
+                text: 'Please select a valid template to set the transaction type.',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                buttonsStyling: true
+            });
             return;
         }
+    
 
         const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
         const journalDetails = Array.from(accountRows).map(row => {
@@ -277,12 +366,29 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(savedEntry => {
                 console.log('Journal entry saved successfully:', savedEntry);
-                alert('Journal entry saved successfully!');
-                document.getElementById('addJournalEntriesModal').style.display = 'none';
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Journal entry saved successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    // Hide modal and reload entries after user confirms success
+                    const modal = document.getElementById('addJournalEntriesModal');
+                    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                    if (bootstrapModal) {
+                        bootstrapModal.hide();
+                    }
+                    loadJournalEntries();
+                });
             })
             .catch(error => {
                 console.error('Error during fetch operation:', error);
-                alert('An error occurred while saving the journal entry. Please try again.');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while saving the journal entry. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
             });
         const modal = document.getElementById('addJournalEntriesModal');
         const bootstrapModal = bootstrap.Modal.getInstance(modal);
@@ -293,215 +399,779 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    document.getElementById('addTemplate').addEventListener('change', function () {
-        const selectedTemplate = this.value;
-        const transactionType = fetchTransactionTypeFromTemplate(selectedTemplate);
-        console.log('TransactionType_FK fetched from template:', transactionType);
-    });
-
-    function sortTableByColumn(columnIndex) {
-        const table = document.querySelector('.journal-entries-table tbody');
-        const rows = Array.from(table.querySelectorAll('tr'));
-    
-        const sortedRows = rows.sort((a, b) => {
-            const aValue = a.children[columnIndex].textContent;
-            const bValue = b.children[columnIndex].textContent;
-    
-            return columnIndex === 0 // If sorting by date
-                ? new Date(aValue) - new Date(bValue)
-                : aValue.localeCompare(bValue);
-        });
-    
-        // Reattach sorted rows
-        table.innerHTML = '';
-        sortedRows.forEach(row => table.appendChild(row));
-    }
-
-    function loadJournalEntries() {
-        Promise.all([
-            fetch('/journalentries/', {
+    function printEntry(entryId) {
+        // Fetch chart of accounts first
+        loadChartOfAccounts().then((accountMap) => {
+            fetch(`/journalentries/${entryId}/`, {
                 method: "GET",
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                 },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load journal entries");
-                return response.json();
-            }),
-            fetch('/entrystatuses/', {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load entry statuses");
-                return response.json();
-            }),
-            fetch('/journaltemplate/', {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load journal templates");
-                return response.json();
-            }),
-        ])
-            .then(([entries, statuses, templates]) => {
-                const statusMap = {};
-                statuses.forEach(status => {
-                    statusMap[status.id] = status.Status_Name;
-                });
-    
-                const templateMap = {};
-                templates.forEach(template => {
-                    templateMap[template.id] = template.TRTemplateCode;
-                });
-    
-                const tableBody = document.querySelector("#journalEntriesTable tbody");
-                if (!tableBody) {
-                    console.error("Table body not found.");
-                    return;
-                }
-                tableBody.innerHTML = ""; // Clear existing rows
-    
-                entries.forEach(entry => {
-                    const journalEntry = entry.journal_entry;
-                    const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
-                    const templateCode = templateMap[journalEntry.TRTemplate_FK] || "N/A";
-    
-                    // Add a row for the journal entry
-                    const entryRow = document.createElement("tr");
-                    entryRow.setAttribute("data-id", journalEntry.id);
-                    entryRow.innerHTML = `
-                        <td>${journalEntry.Entry_Date}</td>
-                        <td>${journalEntry.Entry_No}</td>
-                        <td>${journalEntry.EntryParticulars}</td>
-                        <td>${entryStatus}</td>
-                        <td>${templateCode}</td>
-                        <td class="text-center align-middle">
-                            <div class="dropdown d-inline-block">
-                                <button
-                                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
-                                    type="button"
-                                    id="dropdownMenuButton${journalEntry.id}"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
-                                    <span>MENU</span>
-                                    <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
-                                </button>
-                                <ul
-                                    class="dropdown-menu"
-                                    aria-labelledby="dropdownMenuButton${journalEntry.id}"
-                                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
-                                    <li>
-                                        <button
-                                            class="dropdown-item text-info"
-                                            type="button"
-                                            onclick="viewTemplate(${journalEntry.id})"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-eye me-2"></i>View
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="dropdown-item text-warning"
-                                            type="button"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editTemplateModal"
-                                            onclick="editTemplate(${journalEntry.id})"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-pencil-square me-2"></i>Edit
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="dropdown-item text-danger"
-                                            type="button"
-                                            onclick="deleteTemplate(${journalEntry.id})"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-trash-fill me-2"></i>Delete
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(entryRow);
-                });
-    
-                attachActionListeners(); // Attach event listeners to action buttons
             })
-            .catch(error => console.error("Error loading journal entries:", error));
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch journal entry details for printing");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    const mappedDetails = data.journal_details.map((detail) => {
+                        const account = accountMap[detail.Account_FK] || {
+                            AccountCode: "N/A",
+                            AccountDesc: "N/A",
+                        };
+    
+                        const debitAmount =
+                            detail.DebitAmount > 0
+                                ? parseFloat(detail.DebitAmount).toLocaleString("en-US", {
+                                      minimumFractionDigits: 2,
+                                      maximumFractionDigits: 2,
+                                  })
+                                : ""; // Leave blank if zero
+                        const creditAmount =
+                            detail.CreditAmount > 0
+                                ? parseFloat(detail.CreditAmount).toLocaleString("en-US", {
+                                      minimumFractionDigits: 2,
+                                      maximumFractionDigits: 2,
+                                  })
+                                : ""; // Leave blank if zero
+    
+                        return {
+                            accountDesc: account.AccountDesc,
+                            accountCode: account.AccountCode,
+                            debitAmount: debitAmount,
+                            creditAmount: creditAmount,
+                            isCredit: creditAmount !== "", // Mark credited accounts for indentation
+                        };
+                    });
+    
+                    const rows = 10; // Total number of rows to display
+                    const particulars = data.journal_entry.EntryParticulars || "N/A";
+    
+                    // Add empty rows to make up the difference if there are fewer than 10 rows
+                    const emptyRowCount = Math.max(rows - mappedDetails.length - 2, 0); // Reserve 2 rows for particulars and totals
+                    for (let i = 0; i < emptyRowCount; i++) {
+                        mappedDetails.push({
+                            accountDesc: "",
+                            accountCode: "",
+                            debitAmount: "",
+                            creditAmount: "",
+                            isCredit: false, // No indentation for empty rows
+                        });
+                    }
+    
+                    // Totals Calculation
+                    const totalDebit = mappedDetails
+                        .reduce(
+                            (sum, detail) =>
+                                sum + (detail.debitAmount ? parseFloat(detail.debitAmount.replace(/,/g, "")) : 0),
+                            0
+                        )
+                        .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+                    const totalCredit = mappedDetails
+                        .reduce(
+                            (sum, detail) =>
+                                sum + (detail.creditAmount ? parseFloat(detail.creditAmount.replace(/,/g, "")) : 0),
+                            0
+                        )
+                        .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+                    const printWindow = window.open("", "_blank");
+                    printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Print Journal Entry Voucher</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    margin: 20px;
+                                    padding: 0;
+                                    box-sizing: border-box;
+                                }
+                                table {
+                                    width: 90%; /* Adjusted width */
+                                    border-collapse: collapse;
+                                    margin: 20px auto; /* Center table */
+                                    font-size: 14px;
+                                }
+                                th, td {
+                                    border: 1px solid #000;
+                                    padding: 8px;
+                                    height: 30px; /* Ensures uniform row height */
+                                }
+                                th {
+                                    font-weight: bold;
+                                    background-color: #f2f2f2;
+                                }
+                                .totals {
+                                    font-weight: bold;
+                                }
+                                .header, .footer {
+                                    margin-bottom: 20px;
+                                    text-align: center;
+                                }
+                                .header h1 {
+                                    margin: 5px 0;
+                                    font-size: 18px; /* Adjusted title font size */
+                                }
+                                .header p {
+                                    margin: 2px 0;
+                                }
+                                .credit-indent {
+                                    text-indent: 20px; /* Indent credited accounts */
+                                }
+                                .right-align {
+                                    text-align: right; /* Right align amounts */
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="header">
+                                <h1>JOURNAL ENTRY VOUCHER</h1>
+                                <p>Company: Tikme Dine</p>
+                                <p>Date: ${data.journal_entry.Entry_Date || "N/A"}</p>
+                                <p>JEV No.: ${data.journal_entry.Entry_No || "N/A"}</p>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Accounts</th>
+                                        <th>Account Code</th>
+                                        <th class="right-align">Debit</th>
+                                        <th class="right-align">Credit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${mappedDetails
+                                        .map(
+                                            (detail) => `
+                                                <tr>
+                                                    <td class="${detail.isCredit ? "credit-indent" : ""}">
+                                                        ${detail.accountDesc}
+                                                    </td>
+                                                    <td>${detail.accountCode}</td>
+                                                    <td class="right-align">${detail.debitAmount}</td>
+                                                    <td class="right-align">${detail.creditAmount}</td>
+                                                </tr>
+                                            `
+                                        )
+                                        .join("")}
+                                    <tr>
+                                        <td colspan="4">Particulars: ${particulars}</td>
+                                    </tr>
+                                    <tr class="totals">
+                                        <td colspan="2">TOTAL</td>
+                                        <td class="right-align">${totalDebit}</td>
+                                        <td class="right-align">${totalCredit}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="footer">
+                                <p><strong>Prepared By:</strong> ${data.journal_entry.Created_By || "N/A"}</p>
+                                <p><strong>Approved By:</strong> ______________________</p>
+                            </div>
+                        </body>
+                    </html>
+                `);
+                    printWindow.document.close();
+                    printWindow.print();
+                })
+                .catch((error) => console.error("Error preparing print data:", error));
+        });
+    }
+
+    function viewEntry(entryId) {
+        loadChartOfAccounts().then((accountMap) => {
+            fetch(`/journalentries/${entryId}/`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch journal entry details");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // Populate particulars and remarks
+                    const dropdown = document.getElementById("statusDropdown");
+                    fetchStatuses()
+                        .then((statuses) => {
+                            dropdown.innerHTML = "";
+                            statuses.forEach((status) => {
+                                const option = document.createElement("option");
+                                option.value = status.id;
+                                option.textContent = status.Status_Name;
+                                if (status.id === data.journal_entry.EntryStatus_FK) {
+                                    option.selected = true;
+                                }
+                                dropdown.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching statuses for dropdown:", error)
+                        );
+    
+                    // Populate modal fields
+                    document.getElementById("jevDate").textContent = new Date(
+                        data.journal_entry.Entry_Date
+                    ).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "numeric",
+                    });
+                    document.getElementById("jevNumber").textContent =
+                        data.journal_entry.Entry_No || "N/A";
+                    document.getElementById("remarks").value =
+                        data.journal_entry.Review_Remarks || "";
+    
+                    // Map details and format amounts
+                    const mappedDetails = data.journal_details.map((detail) => {
+                        const account = accountMap[detail.Account_FK] || {
+                            AccountCode: "N/A",
+                            AccountDesc: "N/A",
+                        };
+                        return {
+                            accountDesc: account.AccountDesc,
+                            accountCode: account.AccountCode,
+                            debitAmount:
+                                detail.DebitAmount > 0
+                                    ? parseFloat(detail.DebitAmount).toLocaleString("en-US", {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })
+                                    : "",
+                            creditAmount:
+                                detail.CreditAmount > 0
+                                    ? parseFloat(detail.CreditAmount).toLocaleString("en-US", {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })
+                                    : "",
+                        };
+                    });
+    
+                    // Render the table
+                    const accountTableBody = document.getElementById("jevAccountTableBody");
+                    accountTableBody.innerHTML = mappedDetails
+                        .map(
+                            (detail) => `
+                            <tr>
+                                <td>${detail.accountDesc}</td>
+                                <td>${detail.accountCode}</td>
+                                <td>${detail.debitAmount}</td>
+                                <td>${detail.creditAmount}</td>
+                            </tr>
+                        `
+                        )
+                        .join("");
+    
+                    // Add totals and particulars row
+                    accountTableBody.insertAdjacentHTML(
+                        "beforeend",
+                        `
+                        <tr>
+                            <td colspan="4">Particulars: ${
+                                data.journal_entry.EntryParticulars || "N/A"
+                            }</td>
+                        </tr>
+                        <tr class="totals">
+                            <td colspan="2">TOTAL</td>
+                            <td>${mappedDetails
+                                .reduce(
+                                    (sum, detail) =>
+                                        sum +
+                                        (detail.debitAmount
+                                            ? parseFloat(detail.debitAmount.replace(/,/g, ""))
+                                            : 0),
+                                    0
+                                )
+                                .toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}</td>
+                            <td>${mappedDetails
+                                .reduce(
+                                    (sum, detail) =>
+                                        sum +
+                                        (detail.creditAmount
+                                            ? parseFloat(detail.creditAmount.replace(/,/g, ""))
+                                            : 0),
+                                    0
+                                )
+                                .toLocaleString("en-US", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}</td>
+                        </tr>
+                        `
+                    );
+    
+                    // Show the modal
+                    const modalElement = document.getElementById("jevApprovalModal");
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+    
+                    // Ensure backdrop is removed properly on modal hide
+                    modalElement.addEventListener("hidden.bs.modal", () => {
+                        // Remove lingering modal backdrops
+                        document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+                            backdrop.remove();
+                        });
+                        // Remove modal-specific body classes
+                        document.body.classList.remove("modal-open");
+                        document.body.style.paddingRight = "";
+                    });
+    
+                    // Close another modal (addJournalEntriesModal) if open
+                    const addEntriesModalElement = document.getElementById("addJournalEntriesModal");
+                    if (addEntriesModalElement) {
+                        const bootstrapAddEntriesModal =
+                            bootstrap.Modal.getInstance(addEntriesModalElement);
+                        if (bootstrapAddEntriesModal) {
+                            bootstrapAddEntriesModal.hide();
+                        }
+                    }
+                })
+                .catch((error) =>
+                    console.error("Error fetching journal entry details:", error)
+                );
+        });
     }
     
+    function editEntry(entryId) {
+        loadChartOfAccounts().then((accountMap) => {
+            fetch(`/journalentries/${entryId}/`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch journal entry details");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    const { journal_entry, journal_details } = data;
+    
+                    // Populate the modal fields
+                    document.getElementById("jevEditDate").textContent = new Date(journal_entry.Entry_Date)
+                        .toLocaleDateString("en-US", {
+                            month: "2-digit",
+                            day: "2-digit",
+                            year: "numeric",
+                        });
+                    document.getElementById("jevEditNumber").textContent =
+                        journal_entry.Entry_No || "N/A";
+                    document.getElementById("editRemarks").value =
+                        journal_entry.Review_Remarks || "";
+    
+                    // Populate status dropdown
+                    const dropdown = document.getElementById("statusEditDropdown");
+                    fetchStatuses()
+                        .then((statuses) => {
+                            dropdown.innerHTML = "";
+                            statuses.forEach((status) => {
+                                const option = document.createElement("option");
+                                option.value = status.id;
+                                option.textContent = status.Status_Name;
+                                if (status.id === journal_entry.EntryStatus_FK) {
+                                    option.selected = true;
+                                }
+                                dropdown.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching statuses for dropdown:", error)
+                        );
+    
+                    const accountTableBody = document.getElementById("jevEditAccountTableBody");
+                    accountTableBody.innerHTML = ""; // Clear previous data
+    
+                    // Map details and render rows
+                    const mappedDetails = journal_details.map((detail) => {
+                        const account = accountMap[detail.Account_FK] || {
+                            AccountCode: "N/A",
+                            AccountDesc: "N/A",
+                        };
+                        return {
+                            accountDesc: account.AccountDesc,
+                            accountCode: account.AccountCode,
+                            debitAmount: parseFloat(detail.DebitAmount) || 0,
+                            creditAmount: parseFloat(detail.CreditAmount) || 0,
+                            accountId: detail.Account_FK,
+                        };
+                    });
+    
+                    mappedDetails.forEach((detail) => {
+                        const row = document.createElement("tr");
+    
+                        // Account Description
+                        const accountDescCell = document.createElement("td");
+                        accountDescCell.textContent = detail.accountDesc;
+                        row.appendChild(accountDescCell);
+    
+                        // Account Code
+                        const accountCodeCell = document.createElement("td");
+                        accountCodeCell.textContent = detail.accountCode;
+                        row.appendChild(accountCodeCell);
+    
+                        // Debit Amount
+                        const debitCell = document.createElement("td");
+                        const debitInput = document.createElement("input");
+                        debitInput.type = "number";
+                        debitInput.value = detail.debitAmount.toFixed(2);
+                        debitInput.classList.add("form-control", "debit-input");
+                        if (detail.debitAmount === 0) debitInput.disabled = true;
+                        debitCell.appendChild(debitInput);
+                        row.appendChild(debitCell);
+    
+                        // Credit Amount
+                        const creditCell = document.createElement("td");
+                        const creditInput = document.createElement("input");
+                        creditInput.type = "number";
+                        creditInput.value = detail.creditAmount.toFixed(2);
+                        creditInput.classList.add("form-control", "credit-input");
+                        if (detail.creditAmount === 0) creditInput.disabled = true;
+                        creditCell.appendChild(creditInput);
+                        row.appendChild(creditCell);
+    
+                        accountTableBody.appendChild(row);
+    
+                        detail.debitInput = debitInput;
+                        detail.creditInput = creditInput;
+                    });
+    
+                    // Add totals and particulars row
+                    const particularsRow = document.createElement("tr");
+                    particularsRow.innerHTML = `
+                        <td colspan="4">Particulars: ${journal_entry.EntryParticulars || "N/A"}</td>
+                    `;
+                    accountTableBody.appendChild(particularsRow);
+    
+                    const totalRow = document.createElement("tr");
+                    totalRow.classList.add("totals");
+                    totalRow.innerHTML = `
+                        <td colspan="2">TOTAL</td>
+                        <td id="debitTotal">${mappedDetails
+                            .reduce((sum, detail) => sum + detail.debitAmount, 0)
+                            .toFixed(2)}</td>
+                        <td id="creditTotal">${mappedDetails
+                            .reduce((sum, detail) => sum + detail.creditAmount, 0)
+                            .toFixed(2)}</td>
+                    `;
+                    accountTableBody.appendChild(totalRow);
+    
+                    // Update totals on input change
+                    accountTableBody.addEventListener("input", () => {
+                        let totalDebit = 0;
+                        let totalCredit = 0;
+    
+                        mappedDetails.forEach((detail) => {
+                            const debitValue = parseFloat(detail.debitInput.value) || 0;
+                            const creditValue = parseFloat(detail.creditInput.value) || 0;
+                            totalDebit += debitValue;
+                            totalCredit += creditValue;
+                        });
+    
+                        document.getElementById("debitTotal").textContent = totalDebit.toFixed(2);
+                        document.getElementById("creditTotal").textContent = totalCredit.toFixed(2);
+                    });
+    
+                    // Show the modal
+                    const modalElement = document.getElementById("jevEditModal");
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+    
+                    // Add Save Changes button
+                    const modalFooter = modalElement.querySelector(".modal-footer");
+                    modalFooter.innerHTML = ""; // Clear existing buttons
+                    const saveButton = document.createElement("button");
+    
+                    saveButton.textContent = "Save Changes";
+                    saveButton.classList.add("btn", "btn-primary");
+                    saveButton.addEventListener("click", () => {
+                        let totalDebit = 0;
+                        let totalCredit = 0;
+    
+                        // Calculate total debit and credit amounts
+                        mappedDetails.forEach((detail) => {
+                            const debitValue = parseFloat(detail.debitInput.value) || 0;
+                            const creditValue = parseFloat(detail.creditInput.value) || 0;
+                            totalDebit += debitValue;
+                            totalCredit += creditValue;
+                        });
+    
+                        // Validate if totals match
+                        if (totalDebit.toFixed(2) !== totalCredit.toFixed(2)) {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Debit and Credit totals must be equal before saving.",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                            return; // Prevent submission if totals do not match
+                        }
+    
+                        // Prepare payload for the PUT request
+                        const updatedDetails = mappedDetails.map((detail) => ({
+                            Account_FK: detail.accountId,
+                            DebitAmount: parseFloat(detail.debitInput.value) || 0,
+                            CreditAmount: parseFloat(detail.creditInput.value) || 0,
+                        }));
+    
+                        const payload = {
+                            journal_entry: {
+                                Entry_ID: journal_entry.Entry_ID,
+                                Review_Remarks: document.getElementById("editRemarks").value || "",
+                                EntryStatus_FK: dropdown.value,
+                            },
+                            journal_details: updatedDetails,
+                        };
+    
+                        console.log("Sending payload:", JSON.stringify(payload, null, 2));
+    
+                        // Send the PUT request
+                        fetch(`/journalentries/${entryId}/`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": getCsrfToken(),
+                            },
+                            body: JSON.stringify(payload),
+                        })
+                            .then((response) => {
+                                if (!response.ok) {
+                                    return response.json().then((err) => {
+                                        console.error("Backend validation failed:", err);
+                                        throw new Error("Failed to save changes");
+                                    });
+                                }
+                                return response.json();
+                            })
+                            .then((updatedEntry) => {
+                                console.log("Successfully updated entry:", updatedEntry);
+                                Swal.fire({
+                                    title: "Success!",
+                                    text: "Changes saved successfully.",
+                                    icon: "success",
+                                    confirmButtonText: "OK",
+                                }).then(() => {
+                                    modal.hide();
+                                    loadJournalEntries(); // Reload the entries table
+                                });
+                            })
+                            .catch((error) => {
+                                console.error("Error saving changes:", error);
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: "Failed to save changes. Please try again.",
+                                    icon: "error",
+                                    confirmButtonText: "OK",
+                                });
+                            });
+                    });
+                    modalFooter.appendChild(saveButton);
+                })
+                .catch((error) =>
+                    console.error("Error fetching journal entry details:", error)
+                );
+        });
+    }
+    
+
+    function deleteEntry(entryId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action will permanently delete the journal entry.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/journalentriesdetail/${entryId}/`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRFToken": getCsrfToken(), // Ensure CSRF token is passed
+                    },
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Failed to delete journal entry");
+                        }
+                        Swal.fire("Deleted!", "The journal entry has been deleted.", "success");
+                        loadJournalEntries(); // Reload the table after deletion
+                    })
+                    .catch((error) => {
+                        console.error("Error deleting journal entry:", error);
+                        Swal.fire(
+                            "Error!",
+                            "An error occurred while trying to delete the journal entry.",
+                            "error"
+                        );
+                    });
+            }
+        });
+    }
+    
+
     function attachActionListeners() {
         const viewButtons = document.querySelectorAll(".view-entry");
+        const printButtons = document.querySelectorAll(".print-entry");
         const editButtons = document.querySelectorAll(".edit-entry");
         const deleteButtons = document.querySelectorAll(".delete-entry");
-    
+
         viewButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
-                console.log(`Viewing entry with ID: ${entryId}`);
-                // Logic for viewing the entry (modal or page redirection)
+                viewEntry(entryId);
             });
         });
-    
+
+        printButtons.forEach(button => {
+            button.addEventListener("click", event => {
+                const entryId = event.target.dataset.entryId;
+                printEntry(entryId);
+            });
+        });
+
         editButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
-                console.log(`Editing entry with ID: ${entryId}`);
-                // Logic for editing the entry
+                editEntry(entryId);
             });
         });
     
         deleteButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
-                console.log(`Deleting entry with ID: ${entryId}`);
-                // Logic for deleting the entry
+                deleteEntry(entryId);
             });
         });
     }
 
-    function sortTable(tableId, ascending = true) {
-        const table = document.getElementById(tableId);
-    
-        if (!table) {
-            console.error(`Table with id '${tableId}' not found.`);
+    addTemplateSelect?.addEventListener('change', event => {
+        const selectedTemplateId = event.target.value;
+        if (selectedTemplateId) {
+            loadTemplateDetails(selectedTemplateId);
+        } else {
+            if (accountsTableBody) accountsTableBody.innerHTML = '';
+            const transactionTypeTextbox = document.getElementById('transactionType');
+            if (transactionTypeTextbox) transactionTypeTextbox.outerHTML = '<input type="text" id="transactionType" class="form-control text-muted" style="cursor: not-allowed; background-color: #e9ecef;" value="" readonly />';
+        }
+    });
+
+    openModalButton?.addEventListener('click', () => {
+        if (!modal) {
+            console.error('Modal element not found');
             return;
         }
-    
-        const tbody = table.querySelector("tbody");
-    
-        if (!tbody) {
-            console.error(`Table body not found for table with id '${tableId}'.`);
-            return;
+        modal.style.display = 'block';
+        loadTransactionTypes().then(loadTemplates);
+    });
+
+    cancelButton?.addEventListener('click', () => {
+        if (modal) modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
         }
-    
-        const rows = Array.from(tbody.querySelectorAll("tr"));
-    
-        rows.sort((a, b) => {
-            const aDate = new Date(a.cells[0]?.innerText.trim()); // Assuming date is in the first column
-            const bDate = new Date(b.cells[0]?.innerText.trim());
-    
-            if (aDate < bDate) return ascending ? -1 : 1;
-            if (aDate > bDate) return ascending ? 1 : -1;
-            return 0;
+    });
+
+    accountsTableBody?.addEventListener('input', event => {
+        const target = event.target;
+
+        if (target.classList.contains('debit-input')) {
+            const creditInput = target.closest('tr').querySelector('.credit-input');
+            if (creditInput) {
+                if (target.value.trim() !== '') {
+                    creditInput.value = ''; // Clear the value
+                    creditInput.disabled = true; // Keep it disabled
+                } else {
+                    creditInput.disabled = true; // Ensure it stays disabled
+                }
+            }
+        } else if (target.classList.contains('credit-input')) {
+            const debitInput = target.closest('tr').querySelector('.debit-input');
+            if (debitInput) {
+                if (target.value.trim() !== '') {
+                    debitInput.value = ''; // Clear the value
+                    debitInput.disabled = true; // Keep it disabled
+                } else {
+                    debitInput.disabled = true; // Ensure it stays disabled
+                }
+            }
+        }
+    });
+
+    document.getElementById('addTemplate').addEventListener('change', function () {
+        const selectedTemplate = this.value;
+        const transactionType = fetchTransactionTypeFromTemplate(selectedTemplate);
+        console.log('TransactionType_FK fetched from template:', transactionType);
+    });
+
+    const modalElement = document.getElementById('addJournalEntriesModal');
+
+    // Add an event listener to clear the modal when it's hidden
+    modalElement.addEventListener('hidden.bs.modal', () => {
+        // Clear all input fields in the modal
+        modalElement.querySelectorAll('input, textarea, select').forEach((field) => {
+            field.value = '';
         });
-    
-        rows.forEach(row => tbody.appendChild(row));
-    }
+
+        // Clear the accounts table body
+        const accountsTableBody = modalElement.querySelector('#accounting-entries table tbody');
+        if (accountsTableBody) {
+            accountsTableBody.innerHTML = '';
+        }
+
+        // Reset the transaction type textbox to its default state
+        const transactionTypeTextbox = document.getElementById('transactionType');
+        if (transactionTypeTextbox) {
+            transactionTypeTextbox.outerHTML = '<input type="text" id="transactionType" class="form-control text-muted" style="cursor: not-allowed; background-color: #e9ecef;" value="" readonly />';
+        }
+
+        // Reset the template dropdown
+        const addTemplateSelect = document.getElementById('addTemplate');
+        if (addTemplateSelect) {
+            addTemplateSelect.value = '';
+        }
+    });
 
     // Call the function on page load
     document.addEventListener('DOMContentLoaded', loadJournalEntries);
 
-    const addEntryButton = document.getElementById('addEntryBtn');
     if (addEntryButton) {
-        addEntryButton.addEventListener('click', addJournalEntry);
+        addEntryButton.addEventListener('click', () => {
+            // Gather journal details for validation
+            const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
+            const journalDetails = Array.from(accountRows).map(row => {
+                return {
+                    DebitAmount: parseFloat(row.querySelector('.debit-input')?.value || '0'),
+                    CreditAmount: parseFloat(row.querySelector('.credit-input')?.value || '0'),
+                };
+            });
+    
+            // Validate debit and credit amounts
+            const totalDebit = journalDetails.reduce((sum, detail) => sum + detail.DebitAmount, 0);
+            const totalCredit = journalDetails.reduce((sum, detail) => sum + detail.CreditAmount, 0);
+    
+            if (totalDebit !== totalCredit) {
+                alert('The total debit and credit amounts must be equal.');
+                return; // Stop execution if the totals are not balanced
+            }
+    
+            // Proceed to add journal entry if validation passes
+            addJournalEntry();
+        });
     }
-
-    loadJournalEntries();
 });

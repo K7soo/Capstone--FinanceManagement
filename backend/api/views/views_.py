@@ -33,23 +33,27 @@ def journal_entries_view(request):
 def jev_approval_view(request):
     return render(request, 'Transaction/jevapproval.html')
 
+def configuration_view(request):
+    return render(request, 'Transaction/configuration.html')
+
 def trial_balance_view(request):
     return render(request, 'Reports/trialbalance.html')
 
+def reports_view(request):
+    return render(request, 'Reports/reports.html')
+
 
 def general_journal_view(request):
-    return render(request, 'Transaction/general_journal.html')
+    return render(request, 'Reports/general_journal.html')
 
 def general_ledger_view(request):
-    return render(request, 'Transaction/general_ledger.html')
+    return render(request, 'Reports/general_ledger.html')
 
 # End of dropdown 
 
 def payment_view(request):
     return render(request, 'payment.html')
 
-def reports_view(request):
-    return render(request, 'reports.html')
 
 # sidebar view 
 def sidebar_view(request):
@@ -60,3 +64,5 @@ def menubar_view(request):
 #bookkeeping sidebar button
 def bookkeeping_view(request):
     return render(request, 'bookkeeping.html')
+
+

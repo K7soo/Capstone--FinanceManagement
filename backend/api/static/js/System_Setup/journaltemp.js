@@ -25,6 +25,7 @@ const templateRowsContainer = document.getElementById("templateRows");
 window.journalTemplates = [];
 window.transactionTypeMap = {}; // Map for TransactionType IDs to names
 window.accountMap = {}; // Map for Account IDs to descriptions
+window.removedRows = [];
 
 console.log("JavaScript loaded successfully");
 
@@ -146,14 +147,14 @@ function addRowToTable(template) {
                     id="dropdownMenuButton${template.id}"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
-                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative;">
                     <span>MENU</span>
                     <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
                 </button>
                 <ul
                     class="dropdown-menu"
                     aria-labelledby="dropdownMenuButton${template.id}"
-                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
+                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0;">
                     <li>
                         <button
                             class="dropdown-item text-info"
@@ -218,13 +219,55 @@ addTemplateForm.addEventListener("submit", (event) => {
     const transactionType = document.getElementById("transactionType").value;
 
     if (!templateCode || !transactionType) {
-        alert("Please fill in all fields.");
+        Swal.fire({
+            title: "Validation Error",
+            text: "Please fill in all fields before submitting.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return;
+    }
+    // Validate that at least one account is added
+    const templateRows = document.querySelectorAll("#templateRows tr");
+    if (templateRows.length === 0) {
+        Swal.fire({
+            title: "Validation Error",
+            text: "You need to attach at least one account to the template.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return;
+    }
+    // Validation for at least two account rows
+    if (templateRows.length < 2) {
+        Swal.fire({
+            title: "Error",
+            text: "You must add at least two accounts to create a template.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
         return;
     }
 
-    const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
+    // Validate Select Account in each row
+    let allRowsValid = true;
+    templateRows.forEach((row) => {
+        const accountCode = row.querySelector(".account-code").value;
+        if (!accountCode) {
+            allRowsValid = false;
+        }
+    });
 
-    console.log("Submitting template header:", newTemplate);
+    if (!allRowsValid) {
+        Swal.fire({
+            title: "Error",
+            text: "Please select an account for each row.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return;
+    }
+    const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
 
     // Create template header first
     fetch("/journaltemplate/", {
@@ -246,69 +289,115 @@ addTemplateForm.addEventListener("submit", (event) => {
         })
         .then((createdTemplate) => {
             console.log("Template header added successfully:", createdTemplate);
-            addRowToTable(createdTemplate);
 
-            // After creating the template header, create the template body
-            const templateRows = document.querySelectorAll("#templateRows tr");
+            // Add template details for each row
+            const promises = [];
             templateRows.forEach((row) => {
                 const accountCode = row.querySelector(".account-code").value;
-                const debitCheckbox = row.querySelector(".debit-checkbox");
-                const creditCheckbox = row.querySelector(".credit-checkbox");
-
-                if (!accountCode || (!debitCheckbox && !creditCheckbox)) {
-                    console.warn("Row contains invalid or incomplete data.");
-                    return;
-                }
-
-                const debitChecked = debitCheckbox.checked;
-                const creditChecked = creditCheckbox.checked;
+                const debitCheckbox = row.querySelector(".debit-checkbox").checked;
+                const creditCheckbox = row.querySelector(".credit-checkbox").checked;
 
                 const newTemplateDetail = {
                     Template_FK: createdTemplate.id,
                     Account_FK: accountCode,
-                    Debit: debitChecked ? 1 : 0,
-                    Credit: creditChecked ? 1 : 0,
+                    Debit: debitCheckbox ? 1 : 0,
+                    Credit: creditCheckbox ? 1 : 0,
                 };
 
-                console.log("Submitting template body:", newTemplateDetail);
-
-                fetch("/journaltemplatedetails/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken,
-                    },
-                    body: JSON.stringify(newTemplateDetail),
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error("Failed to add template detail");
-                        }
-                        return response.json();
+                promises.push(
+                    fetch("/journaltemplatedetails/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": csrfToken,
+                        },
+                        body: JSON.stringify(newTemplateDetail),
                     })
-                    .then((createdDetail) => {
-                        console.log("Template detail added successfully:", createdDetail);
-                    })
-                    .catch((error) => console.error("Error adding template detail:", error));
+                );
             });
 
-            // Reset the form
-            addTemplateForm.reset();
+            Promise.all(promises)
+                .then(() => {
+                    console.log("All template details added successfully.");
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Journal template added successfully.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    }).then(() => {
+                        location.reload(); // Refresh the page
+                    });
 
-            // Hide the modal using Bootstrap's modal instance
-            const modalInstance = bootstrap.Modal.getInstance(
-                document.getElementById("addTemplateModal")
-            );
+                    // Reset the form and hide the modal
+                    addTemplateForm.reset();
+                    const modalInstance = bootstrap.Modal.getInstance(
+                        document.getElementById("addTemplateModal")
+                    );
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
 
-            if (modalInstance) {
-                modalInstance.hide();
-            } else {
-                console.warn("Modal instance not found. Closing manually.");
-                document.getElementById("addTemplateModal").style.display = "none";
-            }
+                    // Fetch and render the updated table
+                    fetchAndRenderTemplates();
+                })
+                .catch((error) => {
+                    console.error("Error adding template details:", error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Failed to add all template details. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                });
         })
-        .catch((error) => console.error("Error adding template:", error));
+        .catch((error) => {
+            console.error("Error adding template:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to add the journal template. Please try again.",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+        });
 });
+
+function fetchAndRenderTemplates() {
+    fetch("/journaltemplate/")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch templates.");
+            }
+            return response.text();
+        })
+        .then((templates) => {
+            const tableBody = document.getElementById("templateRows");
+            if (!tableBody) {
+                console.error("Table body element not found!");
+                return;
+            }
+
+            // Clear existing rows
+            tableBody.innerHTML = "";
+
+            // Append all templates to the table
+            templates.forEach((template) => {
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td>${template.TRTemplateCode}</td>
+                    <td>${template.TransactionType_FK}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm">Edit</button>
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(newRow);
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching templates:", error);
+        });
+}
+
 
 // Add a row to the template (modal)
 function addTemplateRow(containerId = "templateRows") {
@@ -325,12 +414,12 @@ function addTemplateRow(containerId = "templateRows") {
             <select class="form-select account-code">
                 <option value="">Select Account</option>
                 ${window.chartOfAccounts
-                    .map(
-                        (account) => `
+            .map(
+                (account) => `
                             <option value="${account.id}">${account.AccountDesc}</option>
                         `
-                    )
-                    .join("")}
+            )
+            .join("")}
             </select>
         </td>
         <td>
@@ -541,14 +630,14 @@ function editTemplate(templateId) {
                             <select class="form-select account-code">
                                 <option value="">Select Account</option>
                                 ${window.chartOfAccounts
-                                    .map(
-                                        (account) => `
+                            .map(
+                                (account) => `
                                             <option value="${account.id}" ${account.id === detail.Account_FK ? "selected" : ""}>
                                                 ${account.AccountDesc}
                                             </option>
                                         `
-                                    )
-                                    .join("")}
+                            )
+                            .join("")}
                             </select>
                         </td>
                         <td>
@@ -622,120 +711,206 @@ function removeRow(button) {
 }
 window.removeRow = removeRow;
 
-// Ensure this function is globally accessible
-window.editTemplate = editTemplate;
-
 // Save Edited Template
-function saveEditedTemplate() {
-    const templateId = document.getElementById("editTemplateId").value;
-    if (!templateId) {
-        console.error("Template ID is missing!");
-        alert("Template ID is missing. Please reload the page and try again.");
-        return;
+function saveEditedTemplate(event) {
+    if (event) {
+        event.preventDefault(); // Prevent default form submission behavior
     }
 
+    const templateId = document.getElementById("editTemplateId").value; // Fetch template ID
+    if (!templateId) {
+        Swal.fire({
+            title: "Error!",
+            text: "Template ID is missing. Please reload the page and try again.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return; // Exit if template ID is missing
+    }
+
+    // Gather updated template data
     const updatedTemplate = {
-        TRTemplateCode: document.getElementById("editTemplateCode").value,
-        TransactionType_FK: parseInt(document.getElementById("editTransactionType").value),
+        TRTemplateCode: document.getElementById("editTemplateCode").value, // Template Code
+        TransactionType_FK: parseInt(document.getElementById("editTransactionType").value), // Transaction Type
     };
 
+    // Validation: Ensure fields are filled
     if (!updatedTemplate.TRTemplateCode || isNaN(updatedTemplate.TransactionType_FK)) {
-        alert("Please provide a valid Template Code and Transaction Type.");
-        return;
+        Swal.fire({
+            title: "Validation Error",
+            text: "Please provide a valid Template Code and Transaction Type.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return; // Exit on validation error
     }
 
-    const updatedDetails = [];
-    const editTemplateRows = document.querySelectorAll("#editTemplateRows tr");
+    const rows = document.querySelectorAll("#editTemplateRows tr"); // Get table rows
+    const details = []; // Collect all rows' data
+    let hasInvalidRow = false;
 
-    editTemplateRows.forEach((row) => {
-        const accountCode = parseInt(row.querySelector(".account-code").value);
-        const debitChecked = row.querySelector(".debit-checkbox").checked;
-        const creditChecked = row.querySelector(".credit-checkbox").checked;
+    // Process each row in the table
+    rows.forEach((row) => {
+        const accountCode = parseInt(row.querySelector(".account-code").value); // Fetch Account Code
+        const debitChecked = row.querySelector(".debit-checkbox").checked; // Debit selected
+        const creditChecked = row.querySelector(".credit-checkbox").checked; // Credit selected
 
+        // Validate row
         if (!accountCode || debitChecked === creditChecked) {
-            console.warn("Invalid row data:", { accountCode, debitChecked, creditChecked });
-            return; // Skip invalid rows
+            hasInvalidRow = true; // Mark row as invalid
+            console.warn("Invalid row data:", { accountCode, debitChecked, creditChecked }); // Log invalid row
+            return; // Skip this row
         }
 
         const detail = {
-            Template_FK: parseInt(templateId), // Add Template_FK here
-            Account_FK: accountCode,
-            Debit: debitChecked ? 1.0 : 0.0,
-            Credit: creditChecked ? 1.0 : 0.0,
+            Template_FK: parseInt(templateId), // Template ID
+            Account_FK: accountCode, // Account Code
+            Debit: debitChecked ? 1.0 : 0.0, // Debit Value
+            Credit: creditChecked ? 1.0 : 0.0, // Credit Value
         };
 
-        const existingDetailId = row.getAttribute("data-id");
+        const existingDetailId = row.getAttribute("data-id"); // Check if existing or new
         if (existingDetailId) {
-            detail.id = parseInt(existingDetailId);
+            detail.id = parseInt(existingDetailId); // Add existing ID for updates
         }
 
-        updatedDetails.push(detail);
+        details.push(detail); // Add row to the details array
     });
 
-    const payload = {
-        template: updatedTemplate,
-        details: updatedDetails,
-        deletedDetails: removedRows, // Include the removed rows in the payload
-    };
+    // Validation: Check for invalid rows
+    if (hasInvalidRow) {
+        Swal.fire({
+            title: "Validation Error",
+            text: "All rows must have a valid account and either debit or credit selected.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return; // Exit if rows are invalid
+    }
 
-    console.log("Payload being sent:", JSON.stringify(payload));
+    // Validation: Ensure at least two accounts are included
+    if (details.length < 2) {
+        Swal.fire({
+            title: "Validation Error",
+            text: "You must include at least two accounts in the template.",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return; // Exit if fewer than two accounts
+    }
 
-    fetch(`/journaltemplate/${templateId}/`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-        },
-        body: JSON.stringify(payload),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                return response.json().then((errorData) => {
-                    console.error("Server-side validation errors:", errorData);
-                    throw new Error("Failed to update template");
+    // Confirm Save Changes
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to save these changes?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, save it!",
+        cancelButtonText: "Cancel",
+        cancelButtonColor: "#d33",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Send the update request
+            fetch(`/journaltemplate/${templateId}/`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,
+                },
+                body: JSON.stringify({
+                    template: updatedTemplate,
+                    details: details, // Pass collected details
+                }),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to update template");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log("Template updated successfully:", data);
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Template updated successfully.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    }).then(function () {
+                        window.location.reload(); // Reload the page after success
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error updating template:", error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Failed to update the template. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
                 });
-            }
-            return response.json();
-        })
-        .then((data) => {
-            console.log("Template updated successfully:", data);
-            document.getElementById("editTemplateModal").style.display = "none";
-            loadJournalTemplates(); // Reload the table with updated data
-            removedRows = []; // Clear removed rows array
-        })
-        .catch((error) => console.error("Error updating template:", error));
+        }
+    });
 }
+
 window.saveEditedTemplate = saveEditedTemplate;
+
 
 // Function to delete a template
 function deleteTemplate(templateId) {
     console.log("Deleting template:", templateId);
 
-    if (!confirm("Are you sure you want to delete this template?")) {
-        return;
-    }
+    // SweetAlert confirmation dialog
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to delete this template? This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonColor: '#fffff',
+        cancelButtonText: "Cancel",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/journaltemplate/${templateId}/`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to delete template");
+                    }
 
-    fetch(`/journaltemplate/${templateId}/`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRFToken": csrfToken,
-            "X-Requested-With": "XMLHttpRequest",
-        },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Failed to delete template");
-            }
+                    console.log("Template deleted successfully:", templateId);
 
-            console.log("Template deleted successfully:", templateId);
+                    // Remove the deleted template's row from the table
+                    const rowToDelete = document.querySelector(`tr[data-id='${templateId}']`);
+                    if (rowToDelete) {
+                        rowToDelete.remove();
+                    }
 
-            // Remove the deleted template's row from the table
-            const rowToDelete = document.querySelector(`tr[data-id='${templateId}']`);
-            if (rowToDelete) {
-                rowToDelete.remove();
-            }
-        })
-        .catch((error) => console.error("Error deleting template:", error));
+                    // SweetAlert success message
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "The template has been deleted successfully.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error deleting template:", error);
+
+                    // SweetAlert error message
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Failed to delete the template. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                });
+        }
+    });
 }
 
 // Expose the functions globally to make them accessible from the HTML
@@ -743,12 +918,47 @@ window.viewTemplate = viewTemplate;
 window.editTemplate = editTemplate;
 window.deleteTemplate = deleteTemplate;
 
-// Remove a row from the template (modal)
+// Remove a row from the template (modal) // Global variable to track removed rows
+// Global variable to track removed rows
+
 function removeRow(button) {
     const row = button.closest("tr");
-    row.remove();
+    const existingDetailId = row.getAttribute("data-id");
+
+    if (existingDetailId) {
+        if (!removedRows.includes(parseInt(existingDetailId))) {
+            removedRows.push(parseInt(existingDetailId)); // Track removed row IDs
+            console.log(`Row with ID ${existingDetailId} marked for deletion.`);
+        }
+    }
+
+    row.remove(); // Remove the row from the DOM
 }
 window.removeRow = removeRow;
+
+function addRow(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error("Container not found for adding row:", containerId);
+        return;
+    }
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>
+            <select class="account-code">
+                <option value="">Select Account</option>
+                <!-- Populate dynamically with account options -->
+            </select>
+        </td>
+        <td><input type="checkbox" class="debit-checkbox" /></td>
+        <td><input type="checkbox" class="credit-checkbox" /></td>
+        <td><button type="button" class="remove-row-btn">Remove</button></td>
+    `;
+    container.appendChild(row);
+
+    console.log("Adding row to container:", containerId);
+}
 
 // Close modals on clicking the close button or outside modal
 closeModalBtns.forEach((btn) => {
@@ -789,4 +999,43 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Page fully loaded, journal templates and transaction types fetched.");
         })
         .catch((error) => console.error("Error loading transaction types:", error));
+});
+
+console.log("Payload being sent:", JSON.stringify({
+    template: updatedTemplate,
+    details: details,
+}));
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.querySelector("table tbody"); // Select the table body
+
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase(); // Get the search input value in lowercase
+        const rows = tableBody.querySelectorAll("tr"); // Select all rows in the table body
+
+        let hasResults = false; // Track if there are matching rows
+
+        rows.forEach((row) => {
+            const rowText = row.textContent.toLowerCase(); // Get the text content of the row
+            if (rowText.includes(query)) {
+                row.style.display = ""; // Show matching row
+                hasResults = true; // Mark that we found a match
+            } else {
+                row.style.display = "none"; // Hide non-matching row
+            }
+        });
+
+        // Show a message if no rows match
+        if (!hasResults) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #6c757d;">
+                        No matching records found.
+                    </td>
+                </tr>
+            `;
+        }
+    });
 });

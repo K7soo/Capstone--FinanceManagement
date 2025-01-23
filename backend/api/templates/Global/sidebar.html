@@ -1,120 +1,139 @@
 {% load static %}
 
-<nav>
-    <!-- Logo -->
-    <div class="logo-name">
-        <span class="logo_name">Finance</span>
-    </div>
+<!--begin: Sidebar Navigation-->
+<nav class="bar" >
+	<!--begin: Logo Section-->
+	<div class="logo-name">
+		<span class="logo_name">Finance</span>
+	</div>
+	<!--end: Logo Section-->
 
-    <!-- Sidebar Menu -->
-    <div class="menu-items">
-        <ul class="nav-links">
-            <!-- Dashboard -->
-            <li class="dropdown">
-                <a href="{% url 'dashboard' %} ">
-                    <i class="uil uil-estate"></i>
-                    <span class="link-name">Dashboard</span>
-                </a>
-            </li>
+	<!--begin: Sidebar Menu-->
+	<div class="menu-items">
+		<ul class="nav-links">
+			<!--begin: Dashboard-->
+			<li class="dropdown">
+				<a href="{% url 'dashboard' %}" class="{% if 'dashboard' in request.path %}active{% endif %}">
+					<i class="uil-presentation-line"></i>
+					<span class="link-name">Dashboard</span>
+				</a>
+			</li>
+			<!--end: Dashboard-->
 
-            <!-- System Setup -->
-            <li class="dropdown" data-dropdown-id="system-setup">
-                <a href="#" class="dropdown-toggle">
-                    <i class="uil uil-book-open"></i>
-                    <span class="link-name">System Setup</span>
-                    <i class="uil uil-angle-down dropdown-arrow"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="{% url 'listofacc' %}">Accounts Setup</a></li>
-                    <li><a href="{% url 'chartofacc' %}">Chart of
-                            Accounts</a></li>
-                    <li><a href="{% url 'transactiontype' %}">Transaction
-                            Type</a></li>
-                    <li><a href="{% url 'journaltemplate' %}">Entry
-                            Templates</a></li>
-                </ul>
-            </li>
+			<!--begin: Reports-->
+			<li class="dropdown">
+				<a href="{% url 'reports' %}" class="{% if 'reports' in request.path %}active{% endif %}">
+					<i class="uil-invoice"></i>
+					<span class="link-name">Reports</span>
+				</a>
+			</li>
+			<!--end: Reports-->
 
-            <!-- Transaction Dropdown -->
-            <li class="dropdown" data-dropdown-id="Transaction">
-                <a href="#" class="dropdown-toggle">
-                    <i class="uil uil-book-open"></i>
-                    <span class="link-name">Transaction</span>
-                    <i class="uil uil-angle-down dropdown-arrow"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="{% url 'trinbox' %}">Transaction Inbox</a></li>
-                    <li><a href="{% url 'journalentries' %}">Journal
-                            Entries</a></li>
-                    <li><a href="{% url 'jevapproval' %}">JEV Approval</a></li>
-                    <li><a href="{% url 'general_journal' %}">General
-                            Journal</a></li>
-                    <li><a href="{% url 'general_ledger' %}">General
-                            Ledger</a></li>
-                </ul>
-            </li>
+			<!--begin: System Setup-->
+			<li
+				class="dropdown {% if 'configuration' in request.path or 'listofacc' in request.path or 'chartofacc' in request.path or 'transactiontype' in request.path or 'journaltemplate' in request.path %}active{% endif %}"
+				data-dropdown-id="system-setup">
+				<a href="#" class="dropdown-toggle">
+					<i class="uil uil-cog"></i>
+					<span class="link-name">System Setup</span>
+					<i class="uil uil-angle-down dropdown-arrow"></i>
+				</a>
+				<ul class="submenu">
+					<!--begin: System Setup Links-->
+					<li><a href="{% url 'configuration' %}" class="{% if 'configuration' in request.path %}active{% endif %}">Configuration</a></li>
+					<li><a href="{% url 'listofacc' %}" class="{% if 'listofacc' in request.path %}active{% endif %}">Account Type</a></li>
+					<li><a href="{% url 'chartofacc' %}" class="{% if 'chartofacc' in request.path %}active{% endif %}">Chart of Accounts</a></li>
+					<li>
+						<a href="{% url 'transactiontype' %}" class="{% if 'transactiontype' in request.path %}active{% endif %}">Transaction Type</a>
+					</li>
+					<li>
+						<a href="{% url 'journaltemplate' %}" class="{% if 'journaltemplate' in request.path %}active{% endif %}">Entry Templates</a>
+					</li>
+					<!--end: System Setup Links-->
+				</ul>
+			</li>
+			<!--end: System Setup-->
 
-            <!-- Transaction Dropdown -->
-            <li class="dropdown" data-dropdown-id="Reports">
-                <a href="#" class="dropdown-toggle">
-                    <i class="uil uil-chart-line"></i>
-                    <span class="link-name">Reports</span>
-                    <i class="uil uil-angle-down dropdown-arrow"></i>
-                </a>
-                <ul class="submenu">
-                    <li><a href="{% url 'trialbalance' %}">Trial
-                            Balance</a></li>
-                </ul>
-            </li>
+			<!--end: System Setup-->
 
-            <!-- Logout and Dark Mode -->
-            <ul class="logout-mode">
-                <!-- Logout -->
-                <li>
-                    <a href="#">
-                        <i class="uil uil-signout"></i>
-                        <span class="link-name">Logout</span>
-                    </a>
-                </li>
+			<!--begin: Transaction-->
+			<li class="dropdown" data-dropdown-id="Transaction">
+				<a href="#" class="dropdown-toggle">
+					<i class="uil uil-usd-square"></i>
+					<span class="link-name">Transaction</span>
+					<i class="uil uil-angle-down dropdown-arrow"></i>
+				</a>
+				<ul class="submenu">
+					<!--begin: Transaction Links-->
+					<li><a href="{% url 'trinbox' %}" class="{% if 'trinbox' in request.path %}active{% endif %}">Transaction Inbox</a></li>
+					<li>
+						<a href="{% url 'journalentries' %}" class="{% if 'journalentries' in request.path %}active{% endif %}">Journal Entries</a>
+					</li>
+					<li><a href="{% url 'jevapproval' %}" class="{% if 'jevapproval' in request.path %}active{% endif %}">JEV Approval</a></li>
+					<!--end: Transaction Links-->
+				</ul>
+			</li>
+			<!--end: Transaction-->
 
-                <!-- Dark Mode -->
-                <li class="mode">
-                    <a href="#">
-                        <i class="uil uil-moon"></i>
-                        <span class="link-name">Dark Mode</span>
-                    </a>
-                    <div class="mode-toggle">
-                        <span class="switch"></span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
+			<!--begin: Logout and Dark Mode-->
+			<ul class="logout-mode mt-auto">
+				<!--begin: Logout-->
+				<li>
+					<a href="#">
+						<i class="uil uil-signout"></i>
+						<span class="link-name">Logout</span>
+					</a>
+				</li>
+				<!--end: Logout-->
 
-    <section class="dashboard">
-        <!-- Top Section -->
-        <div class="top">
-            <i class="uil uil-bars sidebar-toggle"></i>
+				<!--begin: Dark Mode-->
+				<li class="mode">
+					<a href="#">
+						<i class="uil uil-moon"></i>
+						<span class="link-name">Dark Mode</span>
+					</a>
+					<div class="mode-toggle">
+						<span class="switch"></span>
+					</div>
+				</li>
+				<!--end: Dark Mode-->
+			</ul>
+			<!--end: Logout and Dark Mode-->
+		</ul>
+	</div>
+	<!--end: Sidebar Menu-->
+</nav>
+<!--end: Sidebar Navigation-->
 
-            <!-- Breadcrumbs -->
-            <div class="breadcrumbs">
-                <a href="#" class="breadcrumb-link">Dashboard</a>
-                <span class="breadcrumb-divider">/</span>
-                <a href="#" class="breadcrumb-link current">Current Page</a>
-            </div>
+<!--begin: Main Dashboard Section-->
+<section class="dashboard">
+	<!--begin: Top Section-->
+	<div class="top"  >
+		<i class="uil uil-bars sidebar-toggle"></i>
+		<!--begin: Profile and Notification Section-->
+		<div class="top-right-section d-flex align-items-center" style="position: relative">
+			<!-- Notification Icon -->
+			<div class="notification-section me-3 position-relative">
+				<i class="uil uil-bell notification-icon" style="font-size: 1.5rem; cursor: pointer" data-bs-toggle="dropdown"></i>
+				<span class="notification-badge badge bg-danger" style="position: absolute; top: -5px; right: -10px; font-size: 0.75rem">5</span>
+			</div>
 
-            <!-- Profile Section -->
-            <div class="profile-section">
-                <img src="{% static 'images/profile.png' %}" alt="Profile"
-                    class="profile-img">
-                <div class="profile-dropdown">
-                    <span class="profile-name">John Doe</span>
-                    <ul>
-                        <li><a href="#">View Profile</a></li>
-                        <li><a href="#">Account Settings</a></li>
-                        <li><a href="#">Activity Logs</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
+			<!-- Profile Section -->
+			<div class="profile-section dropdown">
+				<img
+					src="{% static 'images/profile.png' %}"
+					alt="Profile"
+					class="profile-img rounded-circle"
+					style="width: 40px; height: 40px; cursor: pointer"
+					data-bs-toggle="dropdown" />
+				<ul class="dropdown-menu dropdown-menu-end">
+					<li><a href="#" class="dropdown-item">View Profile</a></li>
+					<li><a href="#" class="dropdown-item">Account Settings</a></li>
+					<li><a href="#" class="dropdown-item">Activity Logs</a></li>
+				</ul>
+			</div>
+		</div>
+		<!--end: Profile and Notification Section-->
+		<!--end: Main Dashboard Section-->
+	</div>
+</section>

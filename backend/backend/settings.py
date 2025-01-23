@@ -1,16 +1,48 @@
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+import os
 from decouple import config
+# import dj_database_url
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+   
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# Security settings
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', cast=bool, default=False)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+# SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# JWT Configuration
+SECRET_KEY = 'django-insecure-v7v#(i^h&inmhh=co@_nd#knjr2$zd29s!0(22qla=+#wyp3=@'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+DEBUG = "true"
+# ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = [
+    '192.168.1.24',
+    '192.168.1.53',
+    '192.168.1.82', 
+    'localhost', 
+    '127.0.0.1',
+    ]
+
+
+# Authentication Service URL
+AUTHENTICATION_SERVICE_URL = config('AUTHENTICATION_SERVICE_URL', default='http://0.0.0.0:8001/validate-token/')
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=config('ACCESS_TOKEN_LIFETIME_DAYS', cast=int, default=1)),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=config('REFRESH_TOKEN_LIFETIME_DAYS', cast=int, default=1)),

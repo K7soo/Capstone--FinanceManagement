@@ -71,14 +71,14 @@ function addAccountRow(account) {
                     id="dropdownMenuButton${account.id}" 
                     data-bs-toggle="dropdown" 
                     aria-expanded="false"
-                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative;">
                     <span>MENU</span>
                     <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
                 </button>
                 <ul 
                     class="dropdown-menu"
                     aria-labelledby="dropdownMenuButton${account.id}"
-                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
+                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; ">
                     <li>
                         <button
                             class="dropdown-item text-warning"
@@ -162,7 +162,8 @@ addAccountForm.addEventListener('submit', (event) => {
                 title: 'Success!',
                 text: 'Account has been successfully added.',
                 icon: 'success',
-                confirmButtonText: 'OK'
+                showConfirmButton: false,
+                timer: 1500
             });
         })
         .catch(error => {
@@ -252,7 +253,8 @@ editAccountForm.addEventListener('submit', function (event) {
                         title: 'Saved!',
                         text: 'The changes have been saved.',
                         icon: 'success',
-                        confirmButtonText: 'OK'
+                        showConfirmButton: false,
+                        timer: 1500
                     });
                 })
                 .catch(error => {
@@ -267,3 +269,58 @@ editAccountForm.addEventListener('submit', function (event) {
         }
     });
 });
+// DELETE
+function deleteAccount(button) {
+    const row = button.closest('tr');
+    const accountId = row.dataset.id;
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This action cannot be undone!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#fffff',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/listofacc-change/${accountId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+            })
+                .then(response => {
+                    if (response.status === 204) {
+                        console.log("Account successfully deleted.");
+                        row.remove();
+
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'The account has been deleted.',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        console.error('Failed to delete account:', response.statusText);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to delete the account. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting account:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while deleting the account.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        }
+    });
+}
