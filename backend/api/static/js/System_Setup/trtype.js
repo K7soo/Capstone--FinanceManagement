@@ -180,7 +180,8 @@ addTransactionTypeForm.addEventListener("submit", (event) => {
                 title: 'Success!',
                 text: 'Transaction type added successfully.',
                 icon: 'success',
-                confirmButtonText: 'OK'
+                showConfirmButton: false,
+                timer: 1500
             });
 
             // Hide the modal
@@ -238,7 +239,8 @@ function deleteTransactionType(button) {
                         title: 'Deleted!',
                         text: 'Transaction type deleted successfully.',
                         icon: 'success',
-                        confirmButtonText: 'OK',
+                        showConfirmButton: false,
+                        timer: 1500
                     });
                 })
                 .catch((error) => {
@@ -370,7 +372,8 @@ editTransactionTypeForm.addEventListener("submit", (event) => {
                         title: 'Success!',
                         text: 'Transaction type updated successfully.',
                         icon: 'success',
-                        confirmButtonText: 'OK',
+                        showConfirmButton: false,
+                        timer: 1500
                     });
 
                     // Hide the modal

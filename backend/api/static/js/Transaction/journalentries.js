@@ -302,15 +302,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const entryDate = document.getElementById('entryDate')?.value || '';
         const entryDescription = document.getElementById('entryDescription')?.value || '';
         const selectedTemplate = document.getElementById('addTemplate')?.value || '';
-
+    
         // Fetch TransactionType_FK from the dynamically updated textbox
         const transactionTypeFk = fetchTransactionTypeFromTemplate(selectedTemplate);
-
+    
         if (!transactionTypeFk) {
             console.error('TransactionType_FK is required and missing.');
-            alert('Please select a valid template to set the transaction type.');
+            Swal.fire({
+                title: 'Invalid Template',
+                text: 'Please select a valid template to set the transaction type.',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                buttonsStyling: true
+            });
             return;
         }
+    
 
         const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
         const journalDetails = Array.from(accountRows).map(row => {
