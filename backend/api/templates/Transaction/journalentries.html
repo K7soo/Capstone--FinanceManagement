@@ -276,96 +276,100 @@ Journal Entries
 					</div>
 				</div>
 
-        <!-- JEV Edit Modal -->
-        <div class="modal fade" id="jevEditModal" tabindex="-1" aria-labelledby="jevEditModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content">
-              <!-- Modal Header -->
-              <div class="modal-header">
-                <h5 class="modal-title" id="jevEditModalLabel">
-                  Edit JEV Details
-                </h5>
-              </div>
+				<!-- JEV Edit Modal -->
+				<div class="modal fade" id="jevEditModal" tabindex="-1" aria-labelledby="jevEditModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-xl">
+						<div class="modal-content">
+							<!-- Modal Header -->
+							<div class="modal-header">
+								<h5 class="modal-title" id="jevEditModalLabel">Edit JEV Details</h5>
+							</div>
 
-              <!-- Modal Body -->
-              <div id="jevEditModalBody" class="modal-body">
-                <!-- Header Section -->
-                <div class="row mb-4">
-                  <div class="col-md-6">
-                    <div class="mb-2">
-                      <strong>Date:</strong> <span id="jevEditDate"></span>
-                    </div>
-                    <div class="mb-2">
-                      <strong>JEV Number:</strong>
-                      <span id="jevEditNumber"></span>
-                    </div>
-                    <div class="mb-2">
-                      <strong>Status:</strong>
-                      <select id="statusEditDropdown" class="form-select" disabled>
-                        <!-- Options will be dynamically loaded -->
-                      </select>
-                    </div>
-                  </div>
-                </div>
+							<!-- Modal Body -->
+							<div id="jevEditModalBody" class="modal-body">
+								<!-- Header Section -->
+								<div class="row mb-4">
+									<div class="col-md-6">
+										<div class="mb-2"><strong>Date:</strong> <span id="jevEditDate"></span></div>
+										<div class="mb-2">
+											<strong>JEV Number:</strong>
+											<span id="jevEditNumber"></span>
+										</div>
+										<div class="mb-2">
+											<strong>Status:</strong>
+											<select id="statusEditDropdown" class="form-select" disabled>
+												<!-- Options will be dynamically loaded -->
+											</select>
+										</div>
+									</div>
+								</div>
 
-                <!-- Table Section -->
-                <div class="table-responsive mt-3">
-                  <table class="table table-bordered text-center">
-                    <thead class="table-light">
-                      <tr>
-                        <th>Account</th>
-                        <th>Account Code</th>
-                        <th>Debit</th>
-                        <th>Credit</th>
-                      </tr>
-                    </thead>
-                    <tbody id="jevEditAccountTableBody">
-                      <!-- Rows will be dynamically populated -->
-                    </tbody>
-                  </table>
-                </div>
+								<!-- Table Section -->
+								<div class="table-responsive mt-3">
+									<table class="table table-bordered text-center">
+										<thead class="table-light">
+											<tr>
+												<th>Account</th>
+												<th>Account Code</th>
+												<th>Debit</th>
+												<th>Credit</th>
+											</tr>
+										</thead>
+										<tbody id="jevEditAccountTableBody">
+											<!-- Rows will be dynamically populated -->
+										</tbody>
+									</table>
+								</div>
 
-                <!-- Remarks Section -->
-                <div class="mt-4">
-                  <label for="editRemarks" class="form-label fw-bold">Remarks:</label>
-                  <textarea id="editRemarks" class="form-control" rows="3" placeholder="Add remarks here..."
-                    disabled></textarea>
-                </div>
-              </div>
+								<!-- Remarks Section -->
+								<div class="mt-4">
+									<label for="editRemarks" class="form-label fw-bold">Remarks:</label>
+									<textarea id="editRemarks" class="form-control" rows="3" placeholder="Add remarks here..." disabled></textarea>
+								</div>
+							</div>
 
-              <!-- Modal Footer -->
-              <div class="modal-footer">
-                <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal" style="
-                    background-color: #e9ecef;
-                    color: #6c757d;
-                    border: none;
-                    border-radius: 8px;
-                    padding: 0.5rem 1rem;
-                    transition: background-color 0.3s ease, color 0.3s ease;
-                  " onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
-                  onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
-                  Close
-                </button>
+							<!-- Modal Footer -->
+							<div class="modal-footer">
+								<button
+									type="reset"
+									class="btn btn-secondary"
+									data-bs-dismiss="modal"
+									style="
+										background-color: #e9ecef;
+										color: #6c757d;
+										border: none;
+										border-radius: 8px;
+										padding: 0.5rem 1rem;
+										transition: background-color 0.3s ease, color 0.3s ease;
+									"
+									onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+									onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+									Close
+								</button>
 
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="
-                    background-color: #e9ecef;
-                    color: #6c757d;
-                    border: none;
-                    border-radius: 8px;
-                    padding: 0.5rem 1rem;
-                    transition: background-color 0.3s ease, color 0.3s ease;
-                  " onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
-                  onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
-                  Close
-                </button>
-                <button type="button" id="saveChangesButton" class="btn btn-primary"
-                  style="border-radius: 8px; padding: 0.5rem 1rem">
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+								<button
+									type="button"
+									class="btn btn-secondary"
+									data-bs-dismiss="modal"
+									style="
+										background-color: #e9ecef;
+										color: #6c757d;
+										border: none;
+										border-radius: 8px;
+										padding: 0.5rem 1rem;
+										transition: background-color 0.3s ease, color 0.3s ease;
+									"
+									onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+									onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+									Close
+								</button>
+								<button type="button" id="saveChangesButton" class="btn btn-primary" style="border-radius: 8px; padding: 0.5rem 1rem">
+									Save Changes
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="table-responsive">
 				<table id="journalEntriesTable" class="table table-bordered table-hover text-center table-acc">
@@ -375,7 +379,7 @@ Journal Entries
 							<th>Entry No.</th>
 							<th>Particulars</th>
 							<th>Status</th>
-							<th>Template</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody id="journalEntriesTable">
