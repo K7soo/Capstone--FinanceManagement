@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 							onmouseover="this.style.backgroundColor='#5a3795';"
 							onmouseout="this.style.backgroundColor='#6f42c1';"
 							data-bs-toggle="modal"
-							data-bs-target="#addTemplateModal">
+							data-bs-target="#">
 							CREATE JEV
 						</button>
                 </td>
