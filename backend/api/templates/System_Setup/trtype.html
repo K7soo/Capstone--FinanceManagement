@@ -30,10 +30,10 @@ Transaction Type
 				<div class="mb-3 d-flex align-items-center">
 					<label for="records-per-page" class="form-label me-2">Records Per Page:</label>
 					<select id="records-per-page" name="records-per-page" class="form-select w-auto">
+						<option value="5">5</option>
 						<option value="10">10</option>
-						<option value="25">25</option>
-						<option value="50">50</option>
-						<option value="100">100</option>
+						<option value="15">15</option>
+						<option value="20">20</option>
 					</select>
 				</div>
 
@@ -267,4 +267,43 @@ Transaction Type
 <!-- prettier-ignore -->
 {% block extra_js %}
 <script src="{% static 'js/System_Setup/trtype.js' %}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const recordsPerPageDropdown = document.getElementById("records-per-page");
+    const tableBody = document.querySelector("table tbody"); // Select the table body
+    const allRows = Array.from(tableBody.querySelectorAll("tr")); // Store all rows initially
+
+    function updateTableRows() {
+        const recordsPerPage = parseInt(recordsPerPageDropdown.value); // Get the selected value
+
+        // Clear the table body
+        tableBody.innerHTML = "";
+
+        // Add only the required number of rows
+        const rowsToShow = allRows.slice(0, recordsPerPage); // Select rows to display
+        rowsToShow.forEach((row) => {
+            tableBody.appendChild(row); // Append rows to the table body
+        });
+
+        // If no rows exist, show a "No records available" message
+        if (rowsToShow.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #6c757d;">
+                        No records available.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // Initial render on page load
+    updateTableRows();
+
+    // Update table rows on dropdown change
+    recordsPerPageDropdown.addEventListener("change", updateTableRows);
+});
+
+
+</script>
 {% endblock %}
