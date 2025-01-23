@@ -11,6 +11,7 @@ urlpatterns = [
         path('orders-view/', views_api.OrderManagementView.as_view(), name='logistics_api'),
         
         path('payment-record/', views_api.PaymentRecordView.as_view(), name='payment_api'),
+        path('get-payments/', views_api.PaymentRecordRetrieveView.as_view(), name='trinbox'),
         
         path('validate-token/', views_validate_token.ValidateTokenView.as_view(), name='validate_token'),
     # Dashboard #
@@ -36,8 +37,6 @@ urlpatterns = [
     # Transaction Type
     path('transactiontype/', views_trtype.TransactionTypeView.as_view(), name='transactiontype'),
     path('transactiontype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
-    # Transaction Inbox 
-        path('trinbox/', views_.transaction_inbox_view, name='trinbox'),
     # Journal Entries 
     # path('journalentries/', views_.journal_entries_view, name='journalentries'),
     path("journalentries/", views_journentries.JournalEntryView.as_view(), name="journalentries"),

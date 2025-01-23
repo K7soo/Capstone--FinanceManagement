@@ -20,7 +20,6 @@ class AccountTypeListView(views.APIView):
 # Chart of Accounts - List and Create
 class ChartOfAccountsView(views.APIView):
     permission_classes = [AllowAny]
-
     def get(self, request):
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             chart_of_accs = ChartOfAccs.objects.all()
