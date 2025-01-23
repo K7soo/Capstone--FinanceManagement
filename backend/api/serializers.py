@@ -2,6 +2,11 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import *
 
+class PaymentRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentRecord
+        fields = '__all__'
+
 class JournalEntrySerializer(serializers.ModelSerializer):
     TransactionType_FK = serializers.PrimaryKeyRelatedField(queryset = TransactionType.objects.all())
     class Meta:
