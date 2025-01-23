@@ -1,10 +1,19 @@
-{% extends 'base.html' %} {% load static %} {% block title %} Configuration {% endblock %} {% block extra_css %}
-<style>
-	body {
-		background-color: #f1f1f1; /* Light gray background */
-	}
-</style>
-{% endblock %} {% block content %}
+<!-- prettier-ignore -->
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} 
+Configuration 
+{% endblock %} 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
+<style></style>
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block content %}
 <div class="container mt-5">
 	<ol class="breadcrumb mt-2 mb-1">
 		<li class="breadcrumb-item d-flex align-items-center">
@@ -70,11 +79,11 @@
 						<tbody>
 							<tr>
 								<td>Pending</td>
-                                <td class="text-center align-middle">
-                                    <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
+								<td class="text-center align-middle">
+									<button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
+										<i class="bi bi-trash"></i>
+									</button>
+								</td>
 							</tr>
 							<!-- Additional rows dynamically generated -->
 						</tbody>
@@ -100,22 +109,50 @@
 					</form>
 
 					<!-- Export Buttons -->
-                    <div class="mt-4 d-flex justify-content-end gap-3">
-                        <button class="btn btn-primary" style="background-color: #6f42c1; color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" onmouseover="this.style.backgroundColor='#5a3795';" onmouseout="this.style.backgroundColor='#6f42c1';" data-bs-toggle="modal" data-bs-target="#">
-                            <!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
-                            <i class="bi bi-printer me-2"></i>
-                            Print
-                        </button>
-                        <button class="btn btn-success" style="color: white; border: none; border-radius: 8px; font-weight: 500; padding: 0.5rem 1rem 0.5rem 1rem; transition: background-color 0.3s ease, color 0.3s ease" data-bs-toggle="modal" data-bs-target="#">
-                            <i class="bi bi-file-earmark-spreadsheet me-2"></i> 
-                            Export
-                        </button>
-                    </div>
+					<div class="mt-4 d-flex justify-content-end gap-3">
+						<button
+							class="btn btn-primary"
+							style="
+								background-color: #6f42c1;
+								color: white;
+								border: none;
+								border-radius: 8px;
+								font-weight: 500;
+								padding: 0.5rem 1rem 0.5rem 1rem;
+								transition: background-color 0.3s ease, color 0.3s ease;
+							"
+							onmouseover="this.style.backgroundColor='#5a3795';"
+							onmouseout="this.style.backgroundColor='#6f42c1';"
+							data-bs-toggle="modal"
+							data-bs-target="#">
+							<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
+							<i class="bi bi-printer me-2"></i>
+							Print
+						</button>
+						<button
+							class="btn btn-success"
+							style="
+								color: white;
+								border: none;
+								border-radius: 8px;
+								font-weight: 500;
+								padding: 0.5rem 1rem 0.5rem 1rem;
+								transition: background-color 0.3s ease, color 0.3s ease;
+							"
+							data-bs-toggle="modal"
+							data-bs-target="#">
+							<i class="bi bi-file-earmark-spreadsheet me-2"></i>
+							Export
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-{% endblock %} {% block extra_js %}
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block extra_js %}
 <script src="{% static 'js/configuration.js' %}"></script>
 {% endblock %}

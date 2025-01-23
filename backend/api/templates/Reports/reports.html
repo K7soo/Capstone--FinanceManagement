@@ -1,8 +1,15 @@
-{% extends 'base.html' %} {% load static %} {% block title %} General Journal {% endblock %} {% block extra_css %}
+<!-- prettier-ignore -->
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} 
+Reports
+{% endblock %} 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
 <style>
-	body {
-		background-color: #f1f1f1; /* Light gray background */
-	}
 	.nav-tabs .nav-link.active {
 		color: #6f42c1; /* Bootstrap primary color */
 		border-color: #6f42c1 #6f42c1 #fff;
@@ -19,14 +26,17 @@
 		margin-bottom: 0; /* Align the card content tightly */
 	}
 </style>
-{% endblock %} {% block content %}
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block content %}
 <div class="container mt-5">
 	<!-- Breadcrumb -->
 	<ol class="breadcrumb mt-2 mb-1">
 		<li class="breadcrumb-item d-flex align-items-center">
 			<span class="text-muted">Reports</span>
 		</li>
-		<li class="breadcrumb-item active" aria-current="page">Reports</li>
+		<!-- <li class="breadcrumb-item active" aria-current="page">Reports</li> -->
 	</ol>
 	<h1 class="text" style="color: #6f42c1">Reports</h1>
 	<p>Reports</p>
@@ -471,8 +481,10 @@
 			<!--end: Tab Contents -->
 		</div>
 	</div>
-
-	{% endblock %} {% block extra_js %}
-	<script src="{% static 'js/Reports/general_journal.js' %}"></script>
-	{% endblock %}
 </div>
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block extra_js %}
+<script src="{% static 'js/Reports/general_journal.js' %}"></script>
+{% endblock %}
