@@ -147,14 +147,14 @@ function addRowToTable(template) {
                     id="dropdownMenuButton${template.id}"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
-                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; z-index: 1050;">
+                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative;">
                     <span>MENU</span>
                     <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
                 </button>
                 <ul
                     class="dropdown-menu"
                     aria-labelledby="dropdownMenuButton${template.id}"
-                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0; z-index: 1060;">
+                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0;">
                     <li>
                         <button
                             class="dropdown-item text-info"
