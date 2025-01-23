@@ -25,6 +25,42 @@ const tableBody = document.querySelector('.table-acc tbody');
 const accountTypeDropdown = document.querySelector("select[name='AccountType']");
 const editAccountTypeDropdown = document.getElementById('EditAccountType');
 
+// search function
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.querySelector("table tbody"); // Select the table body
+
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase(); // Get the search input value in lowercase
+        const rows = tableBody.querySelectorAll("tr"); // Select all rows in the table body
+
+        let hasResults = false; // Track if there are matching rows
+
+        rows.forEach((row) => {
+            const rowText = row.textContent.toLowerCase(); // Get the text content of the row
+            if (rowText.includes(query)) {
+                row.style.display = ""; // Show matching row
+                hasResults = true; // Mark that we found a match
+            } else {
+                row.style.display = "none"; // Hide non-matching row
+            }
+        });
+
+        // Show a message if no rows match
+        if (!hasResults) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #6c757d;">
+                        No matching records found.
+                    </td>
+                </tr>
+            `;
+        }
+    });
+});
+
+
+// end of search function
 
 // Initialize the page
 document.addEventListener("DOMContentLoaded", () => {
