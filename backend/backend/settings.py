@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
+from decouple import config
 # import dj_database_url
 
 load_dotenv()
@@ -40,6 +41,10 @@ ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1',
     ]
+
+
+# Authentication Service URL
+AUTHENTICATION_SERVICE_URL = config('AUTHENTICATION_SERVICE_URL', default='http://0.0.0.0:8001/validate-token/')
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

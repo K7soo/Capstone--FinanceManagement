@@ -121,6 +121,71 @@ class JournalRetrieveView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
     
+    def put(self, request, pk):
+        # Fetch the journal entry by primary key
+        journal_entry = get_object_or_404(JournalEntry, pk=pk)
+
+        # Extract the payload for journal entry and details
+        journal_entry_data = request.data.get("journal_entry")
+        journal_details_data = request.data.get("journal_details", [])
+
+        if not journal_entry_data or not journal_details_data:
+            return JsonResponse(
+                {"error": "Journal entry and details are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Update the journal entry
+        journal_entry_serializer = JournalEntrySerializer(
+            journal_entry, data=journal_entry_data, partial=True
+        )
+        if not journal_entry_serializer.is_valid():
+            return JsonResponse(
+                journal_entry_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        journal_entry_serializer.save()
+
+        # Handle journal entry details
+        existing_details = JournalEntryDetails.objects.filter(JournalEntry_FK=journal_entry.id)
+        existing_detail_ids = set(existing_details.values_list("id", flat=True))
+        incoming_detail_ids = set(
+            [detail.get("id") for detail in journal_details_data if detail.get("id") is not None]
+        )
+
+        # Delete removed details
+        details_to_delete = existing_detail_ids - incoming_detail_ids
+        JournalEntryDetails.objects.filter(id__in=details_to_delete).delete()
+
+        # Update existing or create new details
+        for detail_data in journal_details_data:
+            detail_id = detail_data.get("id")
+            if detail_id and detail_id in existing_detail_ids:
+                # Update existing detail
+                detail_instance = JournalEntryDetails.objects.get(id=detail_id)
+                detail_serializer = JournalEntryDetailsSerializer(
+                    detail_instance, data=detail_data, partial=True
+                )
+                if not detail_serializer.is_valid():
+                    return JsonResponse(
+                        detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                    )
+                detail_serializer.save()
+            else:
+                # Create new detail
+                detail_data["JournalEntry_FK"] = journal_entry.id
+                detail_serializer = JournalEntryDetailsSerializer(data=detail_data)
+                if not detail_serializer.is_valid():
+                    return JsonResponse(
+                        detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                    )
+                detail_serializer.save()
+
+        return JsonResponse(
+            {"message": "JournalEntry and details updated successfully."},
+            status=status.HTTP_200_OK,
+        )
+    
 
 class JournalEntryDetailView(views.APIView):
     permission_classes = [AllowAny]

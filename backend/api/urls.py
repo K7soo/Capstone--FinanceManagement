@@ -9,7 +9,7 @@ urlpatterns = [
         path('reservations-view/', views_api.ReservationsView.as_view(), name='reservations_api'),
         # LogMS Prototype URL
         path('orders-view/', views_api.OrderManagementView.as_view(), name='logistics_api'),
-        
+        path('validate-token/', views_validate_token.ValidateTokenView.as_view(), name='validate_token'),
     # Dashboard #
     path('', views_.dashboard_view, name='dashboard'),
     # List of Accounts
