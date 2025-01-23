@@ -855,9 +855,6 @@ function saveEditedTemplate(event) {
 window.saveEditedTemplate = saveEditedTemplate;
 
 
-
-
-
 // Function to delete a template
 function deleteTemplate(templateId) {
     console.log("Deleting template:", templateId);
@@ -1003,6 +1000,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch((error) => console.error("Error loading transaction types:", error));
 });
+
 console.log("Payload being sent:", JSON.stringify({
     template: updatedTemplate,
     details: details,

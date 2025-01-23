@@ -121,12 +121,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const logout = document.getElementsByClassName("logout-mode mt-auto");
     document.addEventListener("click", ()=>{
-        fetch('http://192.168.1.82:8001/admin_login/', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(Response()),
-        }) 
     });
 });
