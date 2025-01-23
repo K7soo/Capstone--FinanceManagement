@@ -37,7 +37,7 @@ Journal Entries
 
 	<div class="card shadow-sm">
 		<div class="card-body">
-			<div class="d-flex justify-content-between mb-3">
+			<div class="d-flex justify-content-between align-items-center pb-3" style="color: #6f42c1">
 				<div class="mb-3 d-flex align-items-center">
 					<label for="records-per-page" class="form-label me-2">Records Per Page:</label>
 					<select id="records-per-page" name="records-per-page" class="form-select w-auto">
@@ -50,26 +50,29 @@ Journal Entries
 
 				<!-- Add Journal Entries Button -->
 				<!-- <button class="btn btn-primary" id="openAddJournalEntriesModal" data-bs-toggle="modal" data-bs-target="#addJournalEntriesModal">Add Journal Entries</button> -->
-				<button
-					id="openAddJournalEntriesModal"
-					class="btn btn-primary"
-					style="
-						background-color: #6f42c1;
-						color: white;
-						border: none;
-						border-radius: 8px;
-						font-weight: 500;
-						padding: 0.5rem 1rem 0.5rem 0.5rem;
-						transition: background-color 0.3s ease, color 0.3s ease;
-					"
-					onmouseover="this.style.backgroundColor='#5a3795';"
-					onmouseout="this.style.backgroundColor='#6f42c1';"
-					data-bs-toggle="modal"
-					data-bs-target="#addJournalEntriesModal">
-					<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
-					<i class="bi bi-plus"></i>
-					ADD JOURNAL ENTRIES
-				</button>
+
+				<div class="col-auto ms-auto">
+					<button
+						id="openAddJournalEntriesModal"
+						class="btn btn-primary"
+						style="
+							background-color: #6f42c1;
+							color: white;
+							border: none;
+							border-radius: 8px;
+							font-weight: 500;
+							padding: 0.5rem 1rem 0.5rem 0.5rem;
+							transition: background-color 0.3s ease, color 0.3s ease;
+						"
+						onmouseover="this.style.backgroundColor='#5a3795';"
+						onmouseout="this.style.backgroundColor='#6f42c1';"
+						data-bs-toggle="modal"
+						data-bs-target="#addJournalEntriesModal">
+						<!-- style="border-radius: 8px; font-weight: 600; font-size: 0.875rem; padding: 0.5rem 1rem; -->
+						<i class="bi bi-plus"></i>
+						ADD JOURNAL ENTRIES
+					</button>
+				</div>
 
 				<!-- Add Journal Template Modal -->
 				<div id="addJournalEntriesModal" class="modal fade" tabindex="-1" aria-labelledby="addJournalEntriesModalLabel" aria-hidden="true">
