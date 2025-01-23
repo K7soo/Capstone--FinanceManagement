@@ -123,9 +123,26 @@ Journal Entries
 												required />
 										</div>
 										<div class="mb-3">
-											<label for="entryDate" class="form-label">Date:</label>
-											<input type="date" class="form-control" id="entryDate" />
+											<label for="entryDate" class="form-label" style=" color: #6f42c1;">Date:</label>
+											<div class="input-group">
+												<span class="input-group-text" style="background-color: #f3f2f7; border: 1px solid #d7d4e5;">
+													<i class="bi bi-calendar2"></i> <!-- Bootstrap Icon for calendar -->
+												</span>
+												<input
+													type="date"
+													class="form-control"
+													id="entryDate"
+													placeholder="Select a date" 
+													style="
+														border: 1px solid #d7d4e5;
+														border-radius: 0 8px 8px 0;
+														background-color: #f8f9fc;
+														color: #495057;
+													"
+												/>
+											</div>
 										</div>
+										
 										<div class="mb-3">
 											<label for="entryDescription" class="form-label">Particulars:</label>
 											<textarea id="entryDescription" class="form-control" placeholder="Enter Description"></textarea>
@@ -151,8 +168,8 @@ Journal Entries
 
 										<!-- Accounts Table -->
 										<div class="mt-3">
-											<table class="table table-bordered">
-												<thead>
+											<table class="table table-bordered text-center">
+												<thead class="table-light">
 													<tr>
 														<th>Accounts</th>
 														<th>Debit</th>
@@ -290,7 +307,10 @@ Journal Entries
 								<!-- Header Section -->
 								<div class="row mb-4">
 									<div class="col-md-6">
-										<div class="mb-2"><strong>Date:</strong> <span id="jevEditDate"></span></div>
+										<div class="mb-2">
+											<strong>Date:</strong>
+											<span id="jevEditDate"></span>
+										</div>
 										<div class="mb-2">
 											<strong>JEV Number:</strong>
 											<span id="jevEditNumber"></span>
@@ -346,23 +366,6 @@ Journal Entries
 									onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
 									Close
 								</button>
-
-								<button
-									type="button"
-									class="btn btn-secondary"
-									data-bs-dismiss="modal"
-									style="
-										background-color: #e9ecef;
-										color: #6c757d;
-										border: none;
-										border-radius: 8px;
-										padding: 0.5rem 1rem;
-										transition: background-color 0.3s ease, color 0.3s ease;
-									"
-									onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
-									onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
-									Close
-								</button>
 								<button type="button" id="saveChangesButton" class="btn btn-primary" style="border-radius: 8px; padding: 0.5rem 1rem">
 									Save Changes
 								</button>
@@ -395,4 +398,23 @@ Journal Entries
 <!-- prettier-ignore -->
 {% block extra_js %}
 <script src="{% static 'js/Transaction/journalentries.js' %}"></script>
+
+<script>
+	// Calculate one year ago from today
+	const oneYearAgo = new Date();
+	oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+	// Initialize Flatpickr for fields with date restrictions
+	flatpickr("#entryDate", {
+		dateFormat: "Y-m-d", // Set the date format
+		maxDate: "today", // Disable future dates
+		minDate: oneYearAgo, // Disable dates more than one year in the past
+	});
+
+	flatpickr("#jevDate", {
+		dateFormat: "Y-m-d", // Set the date format
+		maxDate: "today", // Disable future dates
+		minDate: oneYearAgo, // Disable dates more than one year in the past
+	});
+</script>
 {% endblock %}

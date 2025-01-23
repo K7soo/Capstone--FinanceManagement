@@ -162,7 +162,8 @@ addAccountForm.addEventListener('submit', (event) => {
                 title: 'Success!',
                 text: 'Account has been successfully added.',
                 icon: 'success',
-                confirmButtonText: 'OK'
+                showConfirmButton: false,
+                timer: 1500
             });
         })
         .catch(error => {
@@ -252,7 +253,8 @@ editAccountForm.addEventListener('submit', function (event) {
                         title: 'Saved!',
                         text: 'The changes have been saved.',
                         icon: 'success',
-                        confirmButtonText: 'OK'
+                        showConfirmButton: false,
+                        timer: 1500
                     });
                 })
                 .catch(error => {
@@ -297,7 +299,8 @@ function deleteAccount(button) {
                             title: 'Deleted!',
                             text: 'The account has been deleted.',
                             icon: 'success',
-                            confirmButtonText: 'OK'
+                            showConfirmButton: false,
+                            timer: 1500
                         });
                     } else {
                         console.error('Failed to delete account:', response.statusText);
