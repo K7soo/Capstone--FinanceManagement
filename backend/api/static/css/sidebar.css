@@ -152,6 +152,7 @@ nav {
     overflow-x: hidden;
     /* Hide horizontal overflow */
     scrollbar-width: thin;
+    z-index: 1050; /* Higher than other elements */
     scrollbar-color: var(--primary-color) var(--panel-color);
 }
 
