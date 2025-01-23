@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error loading templates:', error));
     }
 
-    function loadTemplateDetails(templateId, isEditMode = false) {
+    function loadTemplateDetails(templateId) {
         Promise.all([
             loadChartOfAccounts(),
             fetch(`/journaltemplate/${templateId}/`, {
@@ -122,24 +122,24 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         ])
             .then(([chartOfAccounts, templateData]) => {
-                const transactionTypeTextbox = isEditMode
-                    ? document.getElementById('editTransactionType')
-                    : document.getElementById('transactionType');
-                const accountsTableBody = isEditMode
-                    ? document.querySelector('#editAccountingEntriesTable tbody')
-                    : document.querySelector('#accounting-entries table tbody');
-    
-                // Populate transaction type
+                const transactionTypeSelect = document.getElementById('transactionType');
+                const accountsTableBody = document.querySelector('#accounting-entries table tbody');
+
+                if (!transactionTypeSelect || !accountsTableBody) {
+                    console.error('Transaction Type or Accounts Table Body element not found');
+                    return;
+                }
+
+                // Convert transaction type dropdown to a readonly, greyed-out textbox without cursor
                 const transactionTypeName = transactionTypeMap[templateData.template.TransactionType_FK] || 'Unknown';
-                transactionTypeTextbox.value = transactionTypeName;
-                transactionTypeTextbox.disabled = isEditMode;
-    
+                transactionTypeSelect.outerHTML = `<input type="text" id="transactionType" class="form-control text-muted" style="background-color: #e9ecef;" value="${transactionTypeName}" disabled />`;
+
                 accountsTableBody.innerHTML = ''; // Clear existing rows
-    
-                // Populate accounts table
-                templateData.details.forEach(detail => {
+
+                const detailAccounts = templateData.details || [];
+                detailAccounts.forEach(detail => {
                     const accountDesc = chartOfAccounts.find(account => account.id === detail.Account_FK)?.AccountDesc || 'Unknown';
-    
+
                     const newRow = document.createElement('tr');
                     newRow.innerHTML = `
                         <td>
@@ -147,16 +147,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             <input type="text" class="form-control text-muted" style="background-color: #e9ecef;" value="${accountDesc}" disabled />
                         </td>
                         <td>
-                            <input type="text" class="form-control debit-input" value="${detail.DebitAmount > 0 ? detail.DebitAmount : ''}" ${detail.DebitAmount > 0 ? '' : 'disabled'} />
+                            <input type="text" class="form-control debit-input" placeholder="" ${detail.Debit > 0 ? '' : 'disabled'} />
                         </td>
                         <td>
-                            <input type="text" class="form-control credit-input" value="${detail.CreditAmount > 0 ? detail.CreditAmount : ''}" ${detail.CreditAmount > 0 ? '' : 'disabled'} />
+                            <input type="text" class="form-control credit-input" placeholder="" ${detail.Credit > 0 ? '' : 'disabled'} />
                         </td>
-                    `;
+                        `;
                     accountsTableBody.appendChild(newRow);
                 });
             })
-            .catch(error => console.error('Error loading template details:', error));
+            .catch(error => console.error('Error loading data:', error));
     }
 
     function fetchTransactionTypeFromTemplate(templateId) {
