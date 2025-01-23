@@ -1,23 +1,9 @@
 <!-- prettier-ignore-start -->
-{% extends 'base.html' %} {% load static %} {% block title %} List of Accounts {% endblock %} {% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% block title %} List of Accounts {% endblock %} 
+{% block extra_css %}
 <!-- prettier-ignore-end -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-<style>
-/* ilagay nyo to */
-    body {
-        background-color: #f1f1f1;
-        /* Light gray background */
-    }
-    .dropdown-menu {
-        z-index: 1060 !important; /* Higher z-index to ensure overlap */
-        position: absolute !important; /* Position the dropdown correctly */
-    }
-
-    .table-container {
-        position: relative; /* Ensure relative positioning of the table */
-        overflow: visible !important; /* Prevent dropdown clipping */
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
 {% endblock %} {% block content %}
 
 <!-- Begin: Container -->

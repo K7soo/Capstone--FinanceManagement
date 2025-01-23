@@ -7,19 +7,18 @@
 		background-color: #f1f1f1;
 	}
 	.dropdown-menu {
-    position: absolute !important; /* Ensure dropdown doesn't affect layout */
-    z-index: 1050 !important; /* Ensure it appears above other content */
-}
+		position: absolute !important; /* Ensure dropdown doesn't affect layout */
+		z-index: 1050 !important; /* Ensure it appears above other content */
+	}
 
-.dropdown {
-    position: relative; /* Create stacking context for dropdown */
-}
+	.dropdown {
+		position: relative; /* Create stacking context for dropdown */
+	}
 
-.table {
-    position: relative; /* Ensure dropdown stays within table context */
-    z-index: auto;
-}
-
+	.table {
+		position: relative; /* Ensure dropdown stays within table context */
+		z-index: auto;
+	}
 </style>
 {% endblock %} {% block content %}
 <div class="container mt-5">
