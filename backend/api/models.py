@@ -82,3 +82,12 @@ class JournalEntryDetails(models.Model):
 
 class EntryStatus(models.Model):
     Status_Name = models.TextField(null=False, blank=False)
+    
+    
+class PaymentRecord(models.Model):
+    transaction_id = models.CharField(max_length=255, unique=True)  
+    PaymentDate = models.DateTimeField()  
+    Amount = models.DecimalField(max_digits=10, decimal_places=2)  
+    PaymentMethod = models.CharField(max_length=50)  
+    Description = models.TextField(blank=True, null=True)  
+    created_at = models.DateTimeField(auto_now_add=True)  
