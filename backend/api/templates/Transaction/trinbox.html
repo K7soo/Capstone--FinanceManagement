@@ -1,22 +1,19 @@
+<!-- prettier-ignore -->
 {% extends 'base.html' %}
 
-<!-- Always load static files -->
-{% load static %} {% block title %} Transaction Inbox {% endblock %} {% block extra_css %}
-<style>
-	body {
-		background-color: #f1f1f1;
-	}
-	.dropdown-menu {
-		z-index: 1060 !important; /* Higher z-index to ensure overlap */
-		position: absolute !important; /* Position the dropdown correctly */
-	}
+{% load static %} 
 
-	.table-container {
-		position: relative; /* Ensure relative positioning of the table */
-		overflow: visible !important; /* Prevent dropdown clipping */
-	}
-</style>
-{% endblock %} {% block content %}
+{% block title %} 
+Transaction Inbox 
+{% endblock %} 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
+<style></style>
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block content %}
 <div class="container mt-5">
 	<!--begin: Breadcrumb -->
 	<ol class="breadcrumb mt-2 mb-1">
@@ -386,8 +383,9 @@
 	</div>
 	<!--end: Combined Filter and Table Section -->
 </div>
+{% endblock %}
 
-{% endblock %} {% block extra_js %}
+<!-- prettier-ignore -->
+{% block extra_js %}
 <script src="{% static 'js/trinbox.js' %}"></script>
-
 {% endblock %}

@@ -1,26 +1,19 @@
+<!-- prettier-ignore -->
 {% extends 'base.html' %}
 
-<!-- Always do a load static -->
-{% load static %} {% block title %} Transaction Type {% endblock %} {% block extra_css %}
-<style>
-	body {
-		background-color: #f1f1f1;
-	}
-	.dropdown-menu {
-		position: absolute !important; /* Ensure dropdown doesn't affect layout */
-		z-index: 1050 !important; /* Ensure it appears above other content */
-	}
+{% load static %} 
 
-	.dropdown {
-		position: relative; /* Create stacking context for dropdown */
-	}
+{% block title %} 
+Transaction Type
+{% endblock %} 
 
-	.table {
-		position: relative; /* Ensure dropdown stays within table context */
-		z-index: auto;
-	}
-</style>
-{% endblock %} {% block content %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
+<style></style>
+{% endblock %}
+
+<!-- prettier-ignore -->
+{% block content %}
 <div class="container mt-5">
 	<ol class="breadcrumb mt-2 mb-1">
 		<li class="breadcrumb-item d-flex align-items-center">
@@ -33,7 +26,7 @@
 	<p>Adding Transactions</p>
 	<div class="card shadow-sm">
 		<!-- <div class="mb-3 row align-items-center g-1 ps-3 pt-2"> -->
-		<div class="d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
+		<div class="d-flex justify-content-between align-items -center p-3 pb-1" style="color: #6f42c1">
 			<!-- Records Per Page Dropdown -->
 			<div class="col-auto">
 				<label for="records-per-page" class="col-form-label pe-2">Records Per Page:</label>
@@ -272,7 +265,9 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
 
-{% endblock %} {% block extra_js %}
+<!-- prettier-ignore -->
+{% block extra_js %}
 <script src="{% static 'js/System_Setup/trtype.js' %}"></script>
 {% endblock %}
