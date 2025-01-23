@@ -110,70 +110,30 @@
 	<!--begin: Top Section-->
 	<div class="top">
 		<i class="uil uil-bars sidebar-toggle"></i>
-<!--begin: Profile and Notification Section-->
-<div class="top-right-section d-flex align-items-center" style="position: relative;">
-    <!-- Notification Icon -->
-    <div class="notification-section me-3 position-relative">
-        <i class="uil uil-bell notification-icon" style="font-size: 1.5rem; cursor: pointer;" data-bs-toggle="dropdown"></i>
-        <span class="notification-badge badge bg-danger" style="position: absolute; top: -5px; right: -10px; font-size: 0.75rem;">5</span>
-        
-        <!-- Dropdown -->
-        <div class="dropdown-menu dropdown-menu-end p-3" style="width: 400px; max-height: 400px; overflow-y: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="m-0">JEV Notifications</h6>
-                <a href="#" class="text-decoration-none small text-muted">Clear All</a>
-            </div>
-            <table class="table table-borderless table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>JEV No.</th>
-                        <th>Particulars</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>01/22/2025</td>
-                        <td>12345</td>
-                        <td>Purchase Order</td>
-                        <td><span class="badge bg-warning text-dark">Pending</span></td>
-                    </tr>
-                    <tr>
-                        <td>01/21/2025</td>
-                        <td>12346</td>
-                        <td>Invoice Payment</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                    </tr>
-                    <tr>
-                        <td>01/20/2025</td>
-                        <td>12347</td>
-                        <td>Salary Disbursement</td>
-                        <td><span class="badge bg-danger">Rejected</span></td>
-                    </tr>
-                    <tr>
-                        <td>01/19/2025</td>
-                        <td>12348</td>
-                        <td>Utility Payment</td>
-                        <td><span class="badge bg-warning text-dark">Pending</span></td>
-                    </tr>
-                </tbody>
-            </table>
-            <a href="#" class="text-center text-decoration-none d-block mt-2 text-primary small">View All</a>
-        </div>
-    </div>
+		<!--begin: Profile and Notification Section-->
+		<div class="top-right-section d-flex align-items-center" style="position: relative">
+			<!-- Notification Icon -->
+			<div class="notification-section me-3 position-relative">
+				<i class="uil uil-bell notification-icon" style="font-size: 1.5rem; cursor: pointer" data-bs-toggle="dropdown"></i>
+				<span class="notification-badge badge bg-danger" style="position: absolute; top: -5px; right: -10px; font-size: 0.75rem">5</span>
+			</div>
 
-    <!-- Profile Section -->
-    <div class="profile-section dropdown">
-        <img src="{% static 'images/profile.png' %}" alt="Profile" class="profile-img rounded-circle" style="width: 40px; height: 40px; cursor: pointer;" data-bs-toggle="dropdown">
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li><a href="#" class="dropdown-item">View Profile</a></li>
-            <li><a href="#" class="dropdown-item">Account Settings</a></li>
-            <li><a href="#" class="dropdown-item">Activity Logs</a></li>
-        </ul>
-    </div>
-</div>
-<!--end: Profile and Notification Section-->
-
+			<!-- Profile Section -->
+			<div class="profile-section dropdown">
+				<img
+					src="{% static 'images/profile.png' %}"
+					alt="Profile"
+					class="profile-img rounded-circle"
+					style="width: 40px; height: 40px; cursor: pointer"
+					data-bs-toggle="dropdown" />
+				<ul class="dropdown-menu dropdown-menu-end">
+					<li><a href="#" class="dropdown-item">View Profile</a></li>
+					<li><a href="#" class="dropdown-item">Account Settings</a></li>
+					<li><a href="#" class="dropdown-item">Activity Logs</a></li>
+				</ul>
+			</div>
+		</div>
+		<!--end: Profile and Notification Section-->
+		<!--end: Main Dashboard Section-->
+	</div>
 </section>
-<!--end: Main Dashboard Section-->
