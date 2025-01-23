@@ -7,6 +7,20 @@ from rest_framework.permissions import AllowAny
 from ..serializers import *
 from ..models import *
 
+class PaymentRecordRetrieveView(views.APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            # Return JSON response for AJAX requests
+            records = PaymentRecord.objects.all()
+            serializer = PaymentRecordSerializer(records, many=True)
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+
+        # Return rendered HTML for non-AJAX requests
+        records = PaymentRecord.objects.all()
+        serializer = PaymentRecordSerializer(records, many=True)
+        return render(request, "Transaction/trinbox.html", {"PaymentRecord": serializer.data})
+    
 
 class PaymentRecordView(views.APIView):
     permission_classes = [AllowAny]
