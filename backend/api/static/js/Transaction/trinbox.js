@@ -10,18 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch payment records");
                 }
-                return response.json();
+                return response.json(); // Parse response as JSON
             })
             .then((data) => {
-                if (data.length === 0) {
-                    console.log("No payment records found."); // Debugging
-                    document.querySelector("#payment-records-table-body").innerHTML = `
-                        <tr>
-                            <td colspan="5" style="text-align: center;">No payment records available.</td>
-                        </tr>
-                    `;
-                    return;
-                }
+                console.log("Payment Records:", data); // Debugging: Check received data
                 populateTable(data); // Call your table-populating logic
             })
             .catch((error) => console.error("Error fetching payment records:", error));
@@ -46,15 +38,16 @@ document.addEventListener("DOMContentLoaded", () => {
 								color: white;
 								border: none;
 								border-radius: 8px;
-								font-weight: 500;
-								padding: 0.5rem 1rem 0.5rem 0.5rem;
+								font-weight: 400;
+								padding: 0.5rem 1rem 0.5rem 1rem;
 								transition: background-color 0.3s ease, color 0.3s ease;
 							"
 							onmouseover="this.style.backgroundColor='#5a3795';"
 							onmouseout="this.style.backgroundColor='#6f42c1';"
 							data-bs-toggle="modal"
 							data-bs-target="#">
-							CREATE JEV
+							<i class="bi bi-pencil-square me-2"></i>
+							Create JEV
 						</button>
                 </td>
             `;
