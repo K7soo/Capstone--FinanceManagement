@@ -10,10 +10,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch payment records");
                 }
-                return response.json(); // Parse response as JSON
+                return response.json();
             })
             .then((data) => {
-                console.log("Payment Records:", data); // Debugging: Check received data
+                if (data.length === 0) {
+                    console.log("No payment records found."); // Debugging
+                    document.querySelector("#payment-records-table-body").innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center;">No payment records available.</td>
+                        </tr>
+                    `;
+                    return;
+                }
                 populateTable(data); // Call your table-populating logic
             })
             .catch((error) => console.error("Error fetching payment records:", error));
