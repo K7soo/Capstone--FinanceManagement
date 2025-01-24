@@ -55,7 +55,12 @@ Chart of Accounts
 		<div class="d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
 			<!--begin: Search Bar -->
 			<div class="search-bar mb-0" style="width: 300px; position: relative">
-				<input id="searchInput" type="text" class="form-control ps-5" placeholder="Search Account..." style="width: 100%; border-radius: 8px" />
+				<input
+					id="searchInput"
+					type="text"
+					class="form-control ps-5"
+					placeholder="Search Account..."
+					style="width: 100%; border-radius: 8px" />
 				<svg
 					width="16"
 					height="16"
@@ -102,7 +107,11 @@ Chart of Accounts
 				<table id="chartOfAccTable" class="table table-bordered table-hover text-center table-acc">
 					<thead class="table-light">
 						<tr>
-							<th onclick="sortTable(0)">Account Code</th>
+							<!-- Add a filter icon inside the <th> -->
+							<th onclick="sortTable(0)" style="cursor: pointer">
+								<i class="bi bi-filter" style="margin-left: 5px; cursor: pointer" onclick="openFilterModal(event, 0)"></i>
+								Account Code
+							</th>
 							<th>Account Description</th>
 							<th>Account Type</th>
 							<th>Actions</th>
@@ -125,6 +134,24 @@ Chart of Accounts
 				</table>
 				<div id="paginationControls" class="pagination-controls"></div>
 			</div>
+			<!-- Pagination -->
+			<nav aria-label="Page navigation example"></nav>
+				<ul class="pagination">
+					<li class="page-item">
+						<a class="page-link" href="#" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>
+					<li class="page-item"><a class="page-link" href="#">1</a></li>
+					<li class="page-item"><a class="page-link" href="#">2</a></li>
+					<li class="page-item"><a class="page-link" href="#">3</a></li>
+					<li class="page-item">
+						<a class="page-link" href="#" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
 		</div>
 	</div>
 	<!-- </div>

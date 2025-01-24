@@ -24,7 +24,7 @@ const editChartForm = document.getElementById('editChartForm');
 const tableBody = document.querySelector('.table-acc tbody');
 const accountTypeDropdown = document.querySelector("select[name='AccountType']");
 const editAccountTypeDropdown = document.getElementById('EditAccountType');
-
+const paginationNav = document.querySelector('.pagination-nav');
 // search function
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
