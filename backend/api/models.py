@@ -86,7 +86,7 @@ class EntryStatus(models.Model):
     
 class PaymentRecord(models.Model):
     transaction_id = models.CharField(max_length=255, unique=True)  
-    PaymentDate = models.DateTimeField()  
+    PaymentDate = models.DateField()  
     Amount = models.DecimalField(max_digits=10, decimal_places=2)  
     PaymentMethod = models.CharField(max_length=50)  
     Description = models.TextField(blank=True, null=True)  
