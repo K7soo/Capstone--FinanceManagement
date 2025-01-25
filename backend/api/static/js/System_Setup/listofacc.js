@@ -241,11 +241,24 @@ editAccountForm.addEventListener('submit', function (event) {
                 })
                 .then(updatedData => {
                     console.log("Account successfully updated:", updatedData);
+
+                    // Locate the row in the table
                     const row = document.querySelector(`tr[data-id="${accountId}"]`);
                     if (row) {
+                        // Update the row's cells
                         row.cells[0].textContent = updatedData.AccountCode;
                         row.cells[1].textContent = updatedData.AccountTypeDesc;
+
+                        // Update the row's dataset to reflect the new data
+                        row.dataset.accountCode = updatedData.AccountCode;
+                        row.dataset.accountTypeDesc = updatedData.AccountTypeDesc;
                     }
+
+                    // Update the modal dataset for future edits
+                    editAccountForm.dataset.originalAccountCode = updatedData.AccountCode;
+                    editAccountForm.dataset.originalAccountTypeDesc = updatedData.AccountTypeDesc;
+
+                    // Reset the form and close the modal
                     editAccountForm.reset();
                     bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
 
@@ -269,6 +282,40 @@ editAccountForm.addEventListener('submit', function (event) {
         }
     });
 });
+
+// Open the Edit Account modal and populate fields
+function openEditModal(id) {
+    // Locate the row and fetch current data
+    const row = document.querySelector(`tr[data-id="${id}"]`);
+    if (!row) {
+        console.error('Row not found for account ID:', id);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Unable to load the account details. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    // Get the latest values from the row
+    const accountCode = row.cells[0].textContent.trim();
+    const accountTypeDesc = row.cells[1].textContent.trim();
+
+    // Populate the modal fields
+    document.getElementById('EditAccountId').value = id;
+    document.getElementById('EditAccountCode').value = accountCode;
+    document.getElementById('EditAccountTypeDesc').value = accountTypeDesc;
+
+    // Update the modal's dataset
+    editAccountForm.dataset.originalAccountCode = accountCode;
+    editAccountForm.dataset.originalAccountTypeDesc = accountTypeDesc;
+
+    // Show the modal
+    const editModal = new bootstrap.Modal(document.getElementById('editAccountModal'));
+    editModal.show();
+}
+
 // DELETE
 function deleteAccount(button) {
     const row = button.closest('tr');

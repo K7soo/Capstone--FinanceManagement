@@ -31,7 +31,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${record.Amount}</td>
                 <td>${record.PaymentMethod}</td>
                 <td>
-                    <button class="btn btn-warning">Create JEV</button>
+                        <button
+							class="btn btn-primary"
+							style="
+								background-color: #6f42c1;
+								color: white;
+								border: none;
+								border-radius: 8px;
+								font-weight: 400;
+								padding: 0.5rem 1rem 0.5rem 1rem;
+								transition: background-color 0.3s ease, color 0.3s ease;
+							"
+							onmouseover="this.style.backgroundColor='#5a3795';"
+							onmouseout="this.style.backgroundColor='#6f42c1';"
+							data-bs-toggle="modal"
+							data-bs-target="#">
+							<i class="bi bi-pencil-square me-2"></i>
+							Create JEV
+						</button>
                 </td>
             `;
             tableBody.appendChild(row);

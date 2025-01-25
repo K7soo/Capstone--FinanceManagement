@@ -24,7 +24,7 @@ const editChartForm = document.getElementById('editChartForm');
 const tableBody = document.querySelector('.table-acc tbody');
 const accountTypeDropdown = document.querySelector("select[name='AccountType']");
 const editAccountTypeDropdown = document.getElementById('EditAccountType');
-
+const paginationNav = document.querySelector('.pagination-nav');
 // search function
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
 
 // end of search function
 
@@ -144,50 +143,8 @@ function sortTable(columnIndex) {
     rows.forEach(row => tbody.appendChild(row));
 }
 
-function paginateTable(tableId, rowsPerPage) {
-    const table = document.getElementById(tableId);
-    const tbody = table.querySelector("tbody");
-    const rows = Array.from(tbody.rows);
-    const totalPages = Math.ceil(rows.length / rowsPerPage);
-    let currentPage = 1;
 
-    function renderPage() {
-        tbody.innerHTML = ""; // Clear the table
-        const start = (currentPage - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        rows.slice(start, end).forEach(row => tbody.appendChild(row));
-    }
 
-    function createPaginationControls() {
-        const paginationControls = document.getElementById("paginationControls");
-        paginationControls.innerHTML = ""; // Clear existing controls
-
-        for (let i = 1; i <= totalPages; i++) {
-            const button = document.createElement("button");
-            button.textContent = i;
-            button.className = "pagination-button";
-            button.onclick = () => {
-                currentPage = i;
-                renderPage();
-                updateActiveButton();
-            };
-            paginationControls.appendChild(button);
-        }
-    }
-
-    function updateActiveButton() {
-        const buttons = document.querySelectorAll("#paginationControls .pagination-button");
-        buttons.forEach((button, index) => {
-            button.classList.toggle("active", index === currentPage - 1);
-        });
-    }
-
-    renderPage();
-    createPaginationControls();
-    updateActiveButton();
-}
-// Call paginateTable with your table ID and desired rows per page
-paginateTable("chartOfAccTable", 10);
 
 // Add a row to the table
 function addRowToTable(account) {

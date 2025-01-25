@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.querySelector("body");
     const modeToggle = body.querySelector(".mode-toggle");
-    const sidebar = body.querySelector("nav");
+    const sidebar = body.querySelector('.sidebar-nav');
     const sidebarToggle = body.querySelector(".sidebar-toggle");
     const mainContent = document.querySelector(".main-content");
 
