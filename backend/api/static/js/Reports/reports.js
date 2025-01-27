@@ -41,6 +41,15 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch((error) => console.error("Error loading chart of accounts:", error));
     }
 
+    function calculateTotal(data, field) {
+        return data.reduce((sum, entry) => {
+            const details = entry.journal_details || [];
+            return (
+                sum +
+                details.reduce((detailSum, detail) => detailSum + (parseFloat(detail[field]) || 0), 0)
+            );
+        }, 0);
+    }
 
     // Initialize Tabs
     function initTabs() {
@@ -92,7 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
         let fetchedData = []; // Store the queried data for print/export operations
         let chartOfAccounts = {}; // Store Chart of Accounts mapping
-    
+        let journalEntriesMap = {}; 
+
         // Populate the Transaction Types Dropdown
         function populateTransactionTypes() {
             loadTransactionTypes()
@@ -110,7 +120,31 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.error("Error populating transaction types:", error);
                 });
         }
-    
+
+        // Load Journal Entries Map
+        function loadJournalEntriesMap() {
+            return fetch("/journalentries/", { // Replace with your actual endpoint
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) throw new Error("Failed to load journal entries");
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log("Raw Journal Entries Data:", data); // Inspect API response
+                    journalEntriesMap = data.reduce((map, journal_entry) => {
+                        map[journal_entry.id] = journal_entry.Entry_No; // Adjust keys/values as needed
+                        return map;
+                    }, {});
+                    console.log("Mapped Journal Entries:", journalEntriesMap); // Verify mapped data
+                })
+                .catch((error) => console.error("Error loading journal entries:", error));
+        }
+        
+        
         // Load Chart of Accounts
         function loadChartOfAccounts() {
             return fetch("/get-chart-types/") // Replace with your actual endpoint
@@ -119,11 +153,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     return response.json();
                 })
                 .then((data) => {
-                    console.log("Raw Chart of Accounts Data:", data); // Log raw data to inspect structure
+                    console.log("Raw Chart of Accounts Data:", data); // Inspect API response
                     chartOfAccounts = data.reduce((map, account) => {
-                        map[account.accountId] = account.accountName;
+                        map[account.id] = account.AccountDesc; // Adjust keys/values as needed
                         return map;
                     }, {});
+                    console.log("Mapped Chart of Accounts:", chartOfAccounts); // Verify mapped data
                 })
                 .catch((error) => console.error("Error loading chart of accounts:", error));
         }
@@ -196,33 +231,30 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         // Map Account Details
-        function mapAccountDetails(journalEntries) {
-            return journalEntries.map((entry) => {
+        function mapAccountDetails(generalJournalData) {
+            return generalJournalData.map((entry) => {
+                // Map journal details
                 entry.journal_details = entry.journal_details.map((detail) => ({
                     ...detail,
-                    accountDesc: chartOfAccounts[detail.Account_FK] || "Unknown Account", // Correctly map account names using Account_FK
+                    accountDesc: chartOfAccounts[detail.Account_FK] || "Unknown Account",
                 }));
+                // Map journal entry details
+                const journalEntry = journalEntriesMap[entry.id] || {};
+                entry.Entry_No = journalEntry.Entry_No || "N/A";
+                entry.Entry_Date = journalEntry.Entry_Date || "N/A";
+                entry.EntryParticulars = journalEntry.EntryParticulars || "No description provided.";
                 return entry;
             });
         }
-    
-        // Handle Print
-        function handlePrint() {
-            fetchGeneralJournalData((data) => {
-                console.log("Print Payload:", data);
-                printReport(data); // Call the print function
+
+        function formatNumber(number) {
+            return parseFloat(number).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
             });
         }
-    
-        // Handle Export
-        function handleExport() {
-            fetchGeneralJournalData((data) => {
-                console.log("Export Payload:", data);
-                exportToCSV(data, "general_journal.csv"); // Call the export function
-            });
-        }
-    
-        // Attach Event Listeners for Print and Export
+
+
         const printButton = document.querySelector(".btn.btn-primary");
         const exportButton = document.querySelector(".btn.btn-success");
     
@@ -230,8 +262,17 @@ document.addEventListener("DOMContentLoaded", () => {
             printButton.addEventListener("click", handlePrint);
         }
     
-        if (exportButton) {
-            exportButton.addEventListener("click", handleExport);
+        // if (exportButton) {
+        //     exportButton.addEventListener("click", handleExport);
+        // }
+    
+        // Handle Print
+        function handlePrint() {
+            fetchGeneralJournalData((data) => {
+                console.log("Print Payload:", data);
+                console.log("Fetched Data for Printing:", fetchedData);
+                printReport(data); // Call the print function
+            });
         }
     
         // Print Report
@@ -290,25 +331,24 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                ${data
-                                    .map((entry) => {
-                                        const journalDetails = entry.journal_details || [];
-                                        const date = entry.Entry_Date || "N/A";
-                                        const particulars = entry.EntryParticulars || "No description provided.";
-                                        const reference = entry.Entry_No || "N/A";
-        
-                                        return `
-                                            ${journalDetails
-                                                .map((detail, index) => `
-                                                    <tr>
-                                                        <td>${index === 0 ? date : ""}</td>
-                                                        <td>${detail.accountDesc || "N/A"}</td>
-                                                        <td>${index === 0 ? reference : ""}</td>
-                                                        <td class="right-align">${detail.DebitAmount ? formatNumber(detail.DebitAmount) : ""}</td>
-                                                        <td class="right-align">${detail.CreditAmount ? formatNumber(detail.CreditAmount) : ""}</td>
-                                                    </tr>
-                                                `)
-                                                .join("")}
+                            ${data
+                                .map((entry) => {
+                                    const journalDetails = entry.journal_details || []; // Ensure journal_details exists
+                                    const date = entry.Entry_Date || "N/A";
+                                    const particulars = entry.EntryParticulars || "No description provided.";
+                                    const reference = entry.Entry_No || "N/A";
+    
+                                    return `
+                                        ${journalDetails
+                                            .map((detail, index) => `
+                                                <tr>
+                                                    <td>${index === 0 ? date : ""}</td>
+                                                    <td>${detail.accountDesc || "Unknown Account"}</td>
+                                                    <td>${index === 0 ? reference : ""}</td>
+                                                    <td class="right-align">${detail.DebitAmount ? formatNumber(detail.DebitAmount) : ""}</td>
+                                                    <td class="right-align">${detail.CreditAmount ? formatNumber(detail.CreditAmount) : ""}</td>
+                                                </tr>
+                                            `).join("")}
                                             <tr>
                                                 <td colspan="5" class="description">
                                                     ${particulars}
@@ -332,67 +372,18 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.document.close();
             printWindow.print();
         }
-        
-        
-        function formatNumber(number) {
-            return parseFloat(number).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-        
-        function calculateTotal(data, field) {
-            return data.reduce((sum, entry) => {
-                const details = entry.journal_details || [];
-                return (
-                    sum +
-                    details.reduce((detailSum, detail) => detailSum + (parseFloat(detail[field]) || 0), 0)
-                );
-            }, 0);
-        }
-        
-        function exportToCSV(data, filename) {
-            const csvContent = [
-                ["Date", "Account", "Ref", "Debit", "Credit"], // Header row
-                ...data.flatMap((entry) => {
-                    const journalDetails = entry.journal_details || [];
-                    const totalDebit = journalDetails.reduce(
-                        (sum, detail) => sum + (parseFloat(detail.DebitAmount) || 0),
-                        0
-                    );
-                    const totalCredit = journalDetails.reduce(
-                        (sum, detail) => sum + (parseFloat(detail.CreditAmount) || 0),
-                        0
-                    );
-        
-                    const rows = journalDetails.map((detail, index) => [
-                        index === 0 ? entry.Entry_Date : "",
-                        detail.Account_FK || "N/A",
-                        entry.Entry_No || "N/A",
-                        parseFloat(detail.DebitAmount || 0).toFixed(2),
-                        parseFloat(detail.CreditAmount || 0).toFixed(2),
-                    ]);
-        
-                    rows.push([
-                        "", "Total", "", totalDebit.toFixed(2), totalCredit.toFixed(2),
-                    ]);
-        
-                    return rows;
-                }),
-            ];
-        
-            const csvFormatted = csvContent.map((row) => row.join(",")).join("\n");
-            const blob = new Blob([csvFormatted], { type: "text/csv" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
-        }
-    
-        // Attach Event Listeners for Print and Export
     
         // Populate Transaction Types
         populateTransactionTypes();
-        loadChartOfAccounts();
+        Promise.all([loadChartOfAccounts(), loadJournalEntriesMap()])
+        .then(() => {
+            console.log("All data loaded successfully.");
+        })
+        .catch((error) => {
+            console.error("Error loading initial data:", error);
+        });
     }
-    
+
 
     function loadGeneralLedger() {
         console.log("Loading General Ledger Tab...");
