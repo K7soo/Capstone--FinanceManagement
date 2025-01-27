@@ -1,18 +1,7 @@
-
-{% extends 'base.html' %}
-
-{% load static %} 
-
-{% block title %} 
-Transaction Inbox 
-{% endblock %} 
-
-{% block extra_css %}
+{% extends 'base.html' %} {% load static %} {% block title %} Transaction Inbox {% endblock %} {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
 <style></style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="container mt-5">
 	<!--begin: Breadcrumb -->
 	<ol class="breadcrumb mt-2 mb-1">
@@ -82,7 +71,7 @@ Transaction Inbox
 				<tbody id="payment-records">
 					{% if PaymentRecord|length == 0 %}
 					<tr>
-						<td colspan="6" style="text-align: center;">No payment records available.</td>
+						<td colspan="6" style="text-align: center">No payment records available.</td>
 					</tr>
 					{% endif %}
 				</tbody>
@@ -91,6 +80,79 @@ Transaction Inbox
 		<!--end: Transaction Table -->
 	</div>
 	<!--end: Combined Filter and Table Section -->
+
+	<!-- Begin: Create JEV Transaction Modal -->
+	<div class="modal fade" id="createInboxJev" tabindex="-1" aria-labelledby="createInboxJevModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header">
+					<h5 class="modal-title" id="jevApprovalModalLabel">Auto Generated JEV</h5>
+					<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+				</div>
+
+				<!-- Modal Body -->
+				<div id="jevViewModal" class="modal-body">
+					<!-- Header Section -->
+					<div class="row mb-4">
+						<div class="col-md-6">
+							<div class="mb-2"><strong>Date:</strong> <span id="jevDate"></span></div>
+							<div class="mb-2"><strong>JEV Number:</strong> <span id="jevNumber"></span></div>
+							<!-- <div class="mb-2"><strong>Template:</strong> <span id="template"></span></div> -->
+							<div class="mb-2">
+								<strong>Status:</strong>
+								<select id="statusDropdown" class="form-select" disabled>
+									<!-- Options will be dynamically loaded -->
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<!-- Table Section -->
+					<div class="table-responsive mt-3">
+						<table class="table table-bordered text-center">
+							<thead class="table-light">
+								<tr>
+									<th>Account</th>
+									<th>Account Code</th>
+									<th>Debit</th>
+									<th>Credit</th>
+								</tr>
+							</thead>
+							<tbody id="jevAccountTableBody"></tbody>
+						</table>
+					</div>
+
+					<!-- Remarks Section -->
+					<div class="mt-4">
+						<label for="remarks" class="form-label fw-bold">Remarks:</label>
+						<textarea id="remarks" class="form-control" rows="3" placeholder="Add remarks here..." disabled></textarea>
+					</div>
+				</div>
+
+				<!-- Modal Footer -->
+				<div class="modal-footer">
+					<button
+						type="reset"
+						class="btn btn-secondary"
+						data-bs-dismiss="modal"
+						style="
+							background-color: #e9ecef;
+							color: #6c757d;
+							border: none;
+							border-radius: 8px;
+							padding: 0.5rem 1rem;
+							transition: background-color 0.3s ease, color 0.3s ease;
+						"
+						onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+						onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End: Create JEV Transaction Modal -->
 </div>
 {% endblock %}
 
