@@ -10,7 +10,8 @@ urlpatterns = [
         path('get-payments/', views_api.PaymentRecordRetrieveView.as_view(), name='trinbox'),
 
         # URLs for Integration with External Systems
-        path('total-income/', views_api.IncomeTotalQueryView.as_view(), name='income-total'),
+        path('total-income/', views_api.IncomeTotalWithSources.as_view(), name='income-total'),
+        path('total-income-span/', views_api.IncomeTotalQueryView.as_view(), name='income-totals'),
     
     # Dashboard #
     path('', views_.dashboard_view, name='dashboard'),
