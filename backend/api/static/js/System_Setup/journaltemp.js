@@ -87,7 +87,7 @@ function loadChartOfAccounts() {
 
 // Load and display the journal templates
 function loadJournalTemplates() {
-    fetch("/journaltemplate/?t=" + new Date().getTime(), {
+    fetch("/journaltemplatefull/?t=" + new Date().getTime(), {
         method: "GET",
         headers: {
             "X-Requested-With": "XMLHttpRequest",
@@ -270,7 +270,7 @@ addTemplateForm.addEventListener("submit", (event) => {
     const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
 
     // Create template header first
-    fetch("/journaltemplate/", {
+    fetch("/journaltemplatefull/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

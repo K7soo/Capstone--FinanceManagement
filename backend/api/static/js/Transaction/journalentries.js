@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadTemplates() {
-        fetch('/journaltemplate/?t=' + new Date().getTime(), {
+        fetch('/journaltemplatefull/?t=' + new Date().getTime(), {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',

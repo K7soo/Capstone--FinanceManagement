@@ -24,6 +24,25 @@ class TransactionTypeGet(views.APIView):
         transaction_type = TransactionType.objects.all()
         serializer = TransactionTypeSerializer(transaction_type, many=True)
         return JsonResponse(serializer.data, safe=False)
+    
+
+class JournalTemplateOrig(views.APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        templates = TRTemplate.objects.all()
+        serializer = TRTemplateSerializer(templates, many=True)
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
+        return render(request, 'System_Setup/journaltemp.html', {'JournalTemplate': serializer.data})
+
+    def post(self, request):
+        serializer = TRTemplateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # List and Create Journal Templates
 class JournalTemplateView(views.APIView):
