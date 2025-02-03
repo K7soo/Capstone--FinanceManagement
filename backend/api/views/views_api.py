@@ -43,52 +43,9 @@ class PaymentRecordView(views.APIView):
             return Response({"message": "Payment record saved successfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class ReservationsView(views.APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        # URL for the API hosted on Laptop 1
-        api_url = "http://192.168.1.82:8000/reservations/"
-        
-        try:
-            response = requests.get(api_url)
-            response.raise_for_status()  # Raise an error for bad responses (4xx and 5xx)
-            reservations = response.json()
-
-        except requests.RequestException as e:
-            print(f"Error fetching data from API: {e}")
-            return JsonResponse(
-                {"error": "Error retrieving data from the external API."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-        return render(request, "trinbox.html", {'reservations': reservations})
-
-class OrderManagementView(views.APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        # URL for the API hosted on Laptop 1
-        api_url = "http://192.168.1.82:8000/logistics/"
-        
-        try:
-            response = requests.get(api_url)
-            response.raise_for_status()  # Raise an error for bad responses (4xx and 5xx)
-            reservations = response.json()
-
-        except requests.RequestException as e:
-            print(f"Error fetching data from API: {e}")
-            return JsonResponse(
-                {"error": "Error retrieving data from the external API."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-        return render(request, "trinbox.html", {'ManageOrder': ManageOrder})
-
 class IncomeTotalQueryView(views.APIView):
     permission_classes = [AllowAny]
-    
+
     def get(self, request):
         try:
             # Filter for 'Income' Account Type
