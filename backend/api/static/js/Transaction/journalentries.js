@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then((data) => {
                     const mappedDetails = data.journal_details.map((detail) => {
-                        const account = accountMap[detail.Account_FK] || {
+                        const account = Object.values(accountMap).find(acc => acc.id === detail.Account_FK) || {
                             AccountCode: "N/A",
                             AccountDesc: "N/A",
                         };
@@ -630,7 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
                     // Map details and format amounts
                     const mappedDetails = data.journal_details.map((detail) => {
-                        const account = accountMap[detail.Account_FK] || {
+                        const account = Object.values(accountMap).find(acc => acc.id === detail.Account_FK) || {
                             AccountCode: "N/A",
                             AccountDesc: "N/A",
                         };
