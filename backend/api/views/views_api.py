@@ -47,6 +47,49 @@ class PaymentRecordView(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+class ExpenseTotalWithSources(views.APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            # Filter for 'Expense' Account Type
+            expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='Expenses')
+
+            # Filter JournalEntryDetails for:
+            # 1. Accounts under 'Expense'
+            # 2. Only Approved Journal Entries (EntryStatus_FK=2)
+            journal_details = JournalEntryDetails.objects.filter(
+                Account_FK__in=expense_accounts,
+                JournalEntry_FK__EntryStatus_FK=2  # Approved entries only
+            )
+
+            # Calculate total: Debit - Credit
+            total_expense = journal_details.aggregate(
+                total=Sum(ExpressionWrapper(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField()))
+            )['total'] or 0  # Default to 0 if no data
+
+            # Prepare detailed account information
+            account_sources = journal_details.values(
+                'Account_FK__AccountCode',
+                'Account_FK__AccountDesc'
+            ).annotate(
+                total_debit=Sum('DebitAmount'),
+                total_credit=Sum('CreditAmount'),
+                net_expense=ExpressionWrapper(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField())
+            )
+
+            # Structure the response
+            response_data = {
+                "total_expense": total_expense,
+                "account_sources": list(account_sources)
+            }
+
+            return JsonResponse(response_data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
 class IncomeTotalWithSources(views.APIView):
     permission_classes = [AllowAny]
     def get(self, request):
