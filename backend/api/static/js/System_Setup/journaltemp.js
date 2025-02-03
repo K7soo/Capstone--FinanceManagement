@@ -232,7 +232,7 @@ addTemplateForm.addEventListener("submit", (event) => {
     if (templateRows.length === 0) {
         Swal.fire({
             title: "Validation Error",
-            text: "You need to attach at least one account to the template.",
+            text: "You must add at least two accounts to create a template.",
             icon: "error",
             confirmButtonText: "OK",
         });

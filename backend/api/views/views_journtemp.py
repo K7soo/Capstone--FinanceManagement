@@ -31,10 +31,23 @@ class JournalTemplateView(views.APIView):
 
     def get(self, request):
         templates = TRTemplate.objects.all()
-        serializer = TRTemplateSerializer(templates, many=True)
+        template_data = []
+
+        for template in templates:
+            template_serializer = TRTemplateSerializer(template)
+            details = TRTemplateDetails.objects.filter(Template_FK=template)
+            details_serializer = TRTemplateDetailsSerializer(details, many=True)
+
+            # Combine template with its details
+            template_data.append({
+                "template": template_serializer.data,
+                "details": details_serializer.data
+            })
+
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
-        return render(request, 'System_Setup/journaltemp.html', {'JournalTemplate': serializer.data})
+            return JsonResponse(template_data, safe=False, status=status.HTTP_200_OK)
+        
+        return render(request, 'System_Setup/journaltemp.html', {'JournalTemplate': template_data})
 
     def post(self, request):
         serializer = TRTemplateSerializer(data=request.data)
