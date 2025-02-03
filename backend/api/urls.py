@@ -8,6 +8,9 @@ urlpatterns = [
         # URLs for Payment Gateway
         path('payment-record/', views_api.PaymentRecordView.as_view(), name='payment_api'),
         path('get-payments/', views_api.PaymentRecordRetrieveView.as_view(), name='trinbox'),
+
+        # URLs for Integration with External Systems
+        path('total-income/', views_api.IncomeTotalQueryView.as_view(), name='income-total'),
     
     # Dashboard #
     path('', views_.dashboard_view, name='dashboard'),

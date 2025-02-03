@@ -6,6 +6,7 @@ from rest_framework import status, views
 from rest_framework.permissions import AllowAny
 from ..serializers import *
 from ..models import *
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 
 class PaymentRecordRetrieveView(views.APIView):
     permission_classes = [AllowAny]
@@ -84,3 +85,23 @@ class OrderManagementView(views.APIView):
             )
 
         return render(request, "trinbox.html", {'ManageOrder': ManageOrder})
+
+class IncomeTotalQueryView(views.APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        try:
+            # Filter for 'Income' Account Type
+            income_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='Income')
+            
+            # Fetch JournalEntryDetails referencing these accounts
+            journal_details = JournalEntryDetails.objects.filter(Account_FK__in=income_accounts)
+
+            # Calculate total: Credit - Debit
+            total_amount = journal_details.aggregate(
+                total=Sum(ExpressionWrapper(F('CreditAmount') - F('DebitAmount'), output_field=DecimalField()))
+            )['total'] or 0  # Default to 0 if no data
+
+            return JsonResponse({"total_income": total_amount}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
