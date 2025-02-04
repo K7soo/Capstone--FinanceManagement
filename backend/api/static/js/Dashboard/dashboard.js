@@ -1,4 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
+    fetch('/total-income/')
+        .then(response => response.json())
+        .then(data => {
+            // Assuming the backend returns { "total_income": 76500, "growth_percentage": 5.8 }
+            document.getElementById('totalRevenue').innerText = `₱${data.total_income.toLocaleString()}`;
+
+            const growthElement = document.getElementById('growthPercentage');
+            growthElement.innerHTML = `<i class="mdi mdi-arrow-top-right"></i> ${data.growth_percentage}%`;
+            growthElement.classList.add(data.growth_percentage >= 0 ? 'text-success' : 'text-danger');
+
+        })
+        .catch(error => console.error('Error fetching total income:', error));
+        
     // Income vs Expenses Chart
     const incomeExpensesCtx = document.getElementById('incomeExpensesChart').getContext('2d');
     new Chart(incomeExpensesCtx, {

@@ -31,6 +31,7 @@ urlpatterns = [
     path('get-chart-types/', views_journtemp.ChartOfAccsListView.as_view(), name='get_chartofaccs'),
     path('get-transaction-types/', views_journtemp.TransactionTypeGet.as_view(), name='get_transactiontypes'),
     
+    
     path('journaltemplate/', views_journtemp.JournalTemplateView.as_view(), name='journaltemplate'),
     path('journaltemplatefull/', views_journtemp.JournalTemplateOrig.as_view(), name='journaltemplates'),
     path('journaltemplate/<int:pk>/', views_journtemp.JournalTemplateDetailView.as_view(), name='journaltemplatedetail'),
