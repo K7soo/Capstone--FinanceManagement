@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Metronic Style Comment: Adding search functionality for Journal Entries
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById("searchInput"); // For Journal Entries only
-        const tableBody = document.querySelector("#journalEntriesTableBody"); // ✅ Updated table body selector
+        const tableBody = document.querySelector("#journalEntriesTableBody"); 
 
         searchInput.addEventListener("input", function () {
             const query = searchInput.value.toLowerCase(); // Get the search input value in lowercase
@@ -64,6 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return csrfToken;
     }
     loadJournalEntries();
+
+    function generateEntryCode() {
+        const timestamp = Date.now().toString().slice(-6); // Take the last 6 digits of the timestamp
+        return `MNL-JEV-${timestamp}`;
+    }
 
     function loadTransactionTypes() {
         return fetch('/get-transaction-types/', {
@@ -339,8 +344,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error("Error loading journal entries:", error));
     }
 
+
     function addJournalEntry() {
-        const entryCode = document.getElementById('entryCode')?.value || '';
+        const entryCode = generateEntryCode();
         const entryDate = document.getElementById('entryDate')?.value || '';
         const entryDescription = document.getElementById('entryDescription')?.value || '';
         const selectedTemplate = document.getElementById('addTemplate')?.value || '';

@@ -200,10 +200,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const jevNumber = generateJEVNumber(transaction.Description);
         const statusId = 2; // Default to Approved
     
-        const templateType = transaction.Description === 'Reservation' ? 'Reservation Transaction' : 'Logistics Transaction';
-        const template = journalTemplates[templateType];
+        let templateType;
+        if (transaction.Description === 'Reservation Dine-in') {
+            templateType = 'Reservation Dine In';
+        } else if (transaction.Description === 'Reservation Event') {
+            templateType = 'Reservation Event';
+        } else if (transaction.Description === 'Logistics Purchase') {
+            templateType = 'Logistics Purchase';
+        } else {
+            console.error(`No template found for ${transaction.Description}`);
+            return; // Exit if no matching description
+        }
     
-        console.log("Selected Template:", template); 
+        const template = journalTemplates[templateType];
     
         if (template && template.details && template.details.length > 0) {
             const mappedDetails = template.details.map(detail => {
@@ -217,15 +226,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     : null;
             }).filter(detail => detail !== null);
-            populateJEVModal(transaction, jevNumber, statusId, mappedDetails, template); 
+    
+            populateJEVModal(transaction, jevNumber, statusId, mappedDetails, template);
         } else {
             console.error(`No template found for ${templateType} or the template has no details.`);
         }
     }
 
     function generateJEVNumber(description) {
-        const timestamp = Date.now();
-        const prefix = description === 'Reservation' ? 'RES' : description === 'Logistics' ? 'LGS' : 'JEV';
+        const timestamp = Date.now().toString().slice(-6);
+        let prefix;
+    
+        if (description === 'Reservation Dine-in') {
+            prefix = 'RSVE-AUTO-JEV';
+        } else if (description === 'Reservation Event') {
+            prefix = 'RSVD-AUTO-JEV';
+        } else if (description === 'Logistics Purchase') {
+            prefix = 'LGS-AUTO-JEV';
+        } else {
+            prefix = 'MNL-JEV';
+        }
+    
         return `${prefix}-${timestamp}`;
     }
 
