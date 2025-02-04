@@ -402,93 +402,91 @@ Journal Entries
 					</div>
 				</div>
 			</div>
-			
-			
-				<!-- Tab Content -->
-				<div class="tab-content mt-3">
-					<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-						<div class="table-responsive">
-							<table id="journalEntriesTable" class="table table-bordered table-hover text-center">
-								<thead>
-									<tr>
-										<th onclick="sortTable('journalEntriesTable', true)">Date</th>
-										<th>JEV No.</th>
-										<th>Particulars</th>
-										<th>Status</th>
-										<th>Actions</th>
-									</tr>
-								</thead>
-								<tbody id="journalEntriesTable">
-									<!-- Rows will be dynamically populated -->
-								</tbody>
-							</table>
+
+			<!-- Tab Content -->
+			<div class="tab-content mt-3">
+				<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+					<div class="table-responsive">
+						<table id="journalEntriesTable" class="table table-bordered table-hover text-center">
+							<thead>
+								<tr>
+									<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+									<th>JEV No.</th>
+									<th>Particulars</th>
+									<th>Status</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="journalEntriesTable">
+								<!-- Rows will be dynamically populated -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+					<div class="tab-content mt-3">
+						<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+							<div class="table-responsive">
+								<table id="pendingTable" class="table table-bordered table-hover text-center">
+									<thead>
+										<tr>
+											<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+											<th>JEV No.</th>
+											<th>Particulars</th>
+											<th>Status</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody id="journalEntriesTable">
+										<!-- Rows will be dynamically populated -->
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
-					<div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-						<div class="tab-content mt-3">
-							<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-								<div class="table-responsive">
-									<table id="pendingTable" class="table table-bordered table-hover text-center">
-										<thead>
-											<tr>
-												<th onclick="sortTable('journalEntriesTable', true)">Date</th>
-												<th>JEV No.</th>
-												<th>Particulars</th>
-												<th>Status</th>
-												<th>Actions</th>
-											</tr>
-										</thead>
-										<tbody id="journalEntriesTable">
-											<!-- Rows will be dynamically populated -->
-										</tbody>
-									</table>
-								</div>
-							</div>					
-						</div>					
+				</div>
+				<div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
+					<div class="tab-content mt-3">
+						<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+							<div class="table-responsive">
+								<table id="rejectedTable" class="table table-bordered table-hover text-center">
+									<thead>
+										<tr>
+											<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+											<th>JEV No.</th>
+											<th>Particulars</th>
+											<th>Status</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody id="journalEntriesTable">
+										<!-- Rows will be dynamically populated -->
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
-					<div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
-						<div class="tab-content mt-3">
-							<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-								<div class="table-responsive">
-									<table id="rejectedTable" class="table table-bordered table-hover text-center">
-										<thead>
-											<tr>
-												<th onclick="sortTable('journalEntriesTable', true)">Date</th>
-												<th>JEV No.</th>
-												<th>Particulars</th>
-												<th>Status</th>
-												<th>Actions</th>
-											</tr>
-										</thead>
-										<tbody id="journalEntriesTable">
-											<!-- Rows will be dynamically populated -->
-										</tbody>
-									</table>
-								</div>
-							</div>					
-						</div>					
-					</div>
-					<div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
-						<div class="tab-content mt-3">
-							<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-								<div class="table-responsive">
-									<table id="approvedTable" class="table table-bordered table-hover text-center">
-										<thead>
-											<tr>
-												<th onclick="sortTable('journalEntriesTable', true)">Date</th>
-												<th>JEV No.</th>
-												<th>Particulars</th>
-												<th>Status</th>
-												<th>Actions</th>
-											</tr>
-										</thead>
-										<tbody id="journalEntriesTable">
-											<!-- Rows will be dynamically populated -->
-										</tbody>
-									</table>
-								</div>
-							</div>					
-						</div>					
+				</div>
+				<div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+					<div class="tab-content mt-3">
+						<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+							<div class="table-responsive">
+								<table id="approvedTable" class="table table-bordered table-hover text-center">
+									<thead>
+										<tr>
+											<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+											<th>JEV No.</th>
+											<th>Particulars</th>
+											<th>Status</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody id="journalEntriesTable">
+										<!-- Rows will be dynamically populated -->
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
