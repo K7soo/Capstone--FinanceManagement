@@ -25,6 +25,17 @@ class PaymentRecordRetrieveView(views.APIView):
         serializer = PaymentRecordSerializer(records, many=True)
         return render(request, "Transaction/trinbox.html", {"PaymentRecord": serializer.data})
     
+    def delete(self, request):
+        try:
+            # Delete all payment records
+            deleted_count, _ = PaymentRecord.objects.all().delete()
+            return Response(
+                {"message": f"All payment records deleted successfully. Total deleted: {deleted_count}"},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 
 class PaymentRecordView(views.APIView):
     permission_classes = [AllowAny]
@@ -46,6 +57,18 @@ class PaymentRecordView(views.APIView):
             return Response({"message": "Payment record saved successfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request):
+        transaction_id = request.query_params.get('transaction_id')
+        if not transaction_id:
+            return Response({"error": "Transaction ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            payment_record = PaymentRecord.objects.get(transaction_id=transaction_id)
+            payment_record.delete()
+            return Response({"message": "Payment record deleted successfully"}, status=status.HTTP_200_OK)
+        except PaymentRecord.DoesNotExist:
+            return Response({"error": "Payment record not found"}, status=status.HTTP_404_NOT_FOUND)
+    
 
 class ExpenseTotalWithSources(views.APIView):
     permission_classes = [AllowAny]
@@ -53,7 +76,7 @@ class ExpenseTotalWithSources(views.APIView):
     def get(self, request):
         try:
             # Filter for 'Expense' Account Type
-            expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='Expenses')
+            expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='EXPENSES')
 
             # Filter JournalEntryDetails for:
             # 1. Accounts under 'Expense'
@@ -130,7 +153,7 @@ class IncomeTotalWithSources(views.APIView):
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
 
 class IncomeTotalQueryView(views.APIView):
     permission_classes = [AllowAny]

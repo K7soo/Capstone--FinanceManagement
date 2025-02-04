@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     "api",
     'authentication.apps.AuthenticationConfig',
     'rest_framework',
@@ -81,12 +82,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  
-    'authentication.middleware.JWTMiddleware',  # Add your middleware here
+    'authentication.middleware.JWTMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',# Add your middleware here
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8003/",
+    "http://localhost:8003/",
+    "http://192.168.1.83:8003/"
+]
 
 ROOT_URLCONF = 'backend.urls'
 

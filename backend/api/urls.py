@@ -12,7 +12,6 @@ urlpatterns = [
         # URLs for Integration with External Systems
         path('total-income/', views_api.IncomeTotalWithSources.as_view(), name='income-total'),
         # path('total-income-span/', views_api.IncomeTotalQueryView.as_view(), name='income-totals'), # not working #
-
         path('total-expense/', views_api.ExpenseTotalWithSources.as_view(), name='expense-total'),
     
     # Dashboard #

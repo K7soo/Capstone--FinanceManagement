@@ -147,8 +147,8 @@ Journal Entries
 												class="form-control"
 												id="entryCode"
 												name="entryCode"
-												placeholder="Enter Entry Code"
-												required />
+												placeholder="Entry Code is Auto-Generated."
+												disabled />
 										</div>
 										<div class="mb-3">
 											<label for="entryDate" class="form-label" style="color: #6f42c1">Date:</label>
@@ -405,22 +405,22 @@ Journal Entries
 				<!--begin::Reports Tabs-->
 				<ul class="nav nav-tabs" id="journalTabs" role="tablist">
 					<li class="nav-item" role="presentation">
-						<button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
+						<button class="nav-link active" data-status="all" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
 							<i class="uil uil-list-ul"></i> All
 						</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="false">
+						<button class="nav-link" data-status="Pending" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="false">
 							<i class="uil uil-clock"></i> Pending
 						</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected" type="button" role="tab" aria-controls="rejected" aria-selected="false">
+						<button class="nav-link" data-status="Rejected" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected" type="button" role="tab" aria-controls="rejected" aria-selected="false">
 							<i class="uil uil-times"></i> Rejected
 						</button>
 					</li>
 					<li class="nav-item" role="presentation">
-						<button class="nav-link" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab" aria-controls="approved" aria-selected="false">
+						<button class="nav-link"data-status="Approved" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab" aria-controls="approved" aria-selected="false">
 							<i class="uil uil-check"></i> Approved
 						</button>
 					</li>
