@@ -1,5 +1,57 @@
 document.addEventListener("DOMContentLoaded", () => {
     const csrfToken = getCsrfToken();
+// Metronic Style Comment: Adding search functionality for Trinbox
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchTrinbox"); // Select the input with the new ID
+    const tableBody = document.getElementById("payment-records"); // Select the table body
+
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase().trim(); // Get the search input value in lowercase and trim spaces
+        const rows = tableBody.querySelectorAll("tr"); // Select all rows in the table body
+
+        let hasResults = false; // Track if there are matching rows
+
+        rows.forEach((row) => {
+            const cells = row.querySelectorAll("td"); // Select all table cells in the row
+            let rowMatches = false;
+
+            // Check if any cell in the row contains the search query
+            cells.forEach((cell) => {
+                if (cell.textContent.toLowerCase().includes(query)) {
+                    rowMatches = true;
+                }
+            });
+
+            if (rowMatches || query === "") {
+                row.style.display = ""; // Show matching row
+                hasResults = true; // Mark that we found a match
+            } else {
+                row.style.display = "none"; // Hide non-matching row
+            }
+        });
+
+        // Show a message if no rows match
+        if (!hasResults && query !== "") {
+            if (!document.querySelector(".no-results-row")) {
+                const noResultsRow = document.createElement("tr");
+                noResultsRow.classList.add("no-results-row");
+                noResultsRow.innerHTML = `
+                    <td colspan="5" style="text-align: center; color: #6c757d;">
+                        No matching records found.
+                    </td>
+                `;
+                tableBody.appendChild(noResultsRow);
+            }
+        } else {
+            const noResultsRow = document.querySelector(".no-results-row");
+            if (noResultsRow) {
+                noResultsRow.remove(); // Remove the message if there are results
+            }
+        }
+    });
+});
+
+
 
     function getCsrfToken() {
         let csrfToken = null;
