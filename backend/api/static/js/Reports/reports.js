@@ -123,25 +123,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Load Journal Entries Map
         function loadJournalEntriesMap() {
-            return fetch("/journalentries/", { // Replace with your actual endpoint
+            return fetch("/journalentries/", {
                 method: "GET",
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                 },
             })
-                .then((response) => {
-                    if (!response.ok) throw new Error("Failed to load journal entries");
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log("Raw Journal Entries Data:", data); // Inspect API response
-                    journalEntriesMap = data.reduce((map, journal_entry) => {
-                        map[journal_entry.id] = journal_entry.Entry_No; // Adjust keys/values as needed
-                        return map;
-                    }, {});
-                    console.log("Mapped Journal Entries:", journalEntriesMap); // Verify mapped data
-                })
-                .catch((error) => console.error("Error loading journal entries:", error));
+            .then((response) => {
+                if (!response.ok) throw new Error("Failed to load journal entries");
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Raw Journal Data:", data); // Debugging raw data
+        
+                journalEntriesMap = data.reduce((map, entry) => {
+                    // Check for ID in different structures
+                    const entryId = entry.journal_entry?.id || entry.id || entry.Entry_ID;
+        
+                    if (entryId) {
+                        map[entryId] = {
+                            Entry_No: entry.journal_entry.Entry_No || "N/A",
+                            Entry_Date: entry.journal_entry.Entry_Date || "N/A",
+                            EntryParticulars: entry.journal_entry.EntryParticulars || "No description provided.",
+                        };
+                    } else {
+                        console.warn("Missing ID for journal entry:", entry); // Debug missing IDs
+                    }
+        
+                    return map;
+                }, {});
+        
+                console.log("Mapped Journal Entries:", journalEntriesMap); // Final mapped output
+            })
+            .catch((error) => console.error("Error loading journal entries:", error));
         }
         
         
@@ -233,16 +247,20 @@ document.addEventListener("DOMContentLoaded", () => {
         // Map Account Details
         function mapAccountDetails(generalJournalData) {
             return generalJournalData.map((entry) => {
-                // Map journal details
+                // Correctly map journal details
                 entry.journal_details = entry.journal_details.map((detail) => ({
                     ...detail,
                     accountDesc: chartOfAccounts[detail.Account_FK] || "Unknown Account",
                 }));
-                // Map journal entry details
-                const journalEntry = journalEntriesMap[entry.id] || {};
+        
+                // Correctly map journal entry details
+                const journalEntry = journalEntriesMap[entry.journal_entry?.id] || {};
                 entry.Entry_No = journalEntry.Entry_No || "N/A";
                 entry.Entry_Date = journalEntry.Entry_Date || "N/A";
                 entry.EntryParticulars = journalEntry.EntryParticulars || "No description provided.";
+        
+                console.log("Entry:", entry);
+                console.log("Journal Entry ID:", entry.journal_entry?.id);
                 return entry;
             });
         }
