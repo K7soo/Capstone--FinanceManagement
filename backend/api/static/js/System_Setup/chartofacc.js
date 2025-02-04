@@ -26,9 +26,10 @@ const accountTypeDropdown = document.querySelector("select[name='AccountType']")
 const editAccountTypeDropdown = document.getElementById('EditAccountType');
 const paginationNav = document.querySelector('.pagination-nav');
 // search function
+// Metronic Style Comment: Adding search functionality for Chart of Accounts
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
-    const tableBody = document.querySelector("table tbody"); // Select the table body
+    const tableBody = document.querySelector("#chartOfAccTable tbody"); // Select the table body
 
     searchInput.addEventListener("input", function () {
         const query = searchInput.value.toLowerCase(); // Get the search input value in lowercase
@@ -47,14 +48,22 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Show a message if no rows match
-        if (!hasResults) {
-            tableBody.innerHTML = `
-                <tr>
+        if (!hasResults && query !== "") {
+            if (!document.querySelector(".no-results-row")) {
+                const noResultsRow = document.createElement("tr");
+                noResultsRow.classList.add("no-results-row");
+                noResultsRow.innerHTML = `
                     <td colspan="4" style="text-align: center; color: #6c757d;">
                         No matching records found.
                     </td>
-                </tr>
-            `;
+                `;
+                tableBody.appendChild(noResultsRow);
+            }
+        } else {
+            const noResultsRow = document.querySelector(".no-results-row");
+            if (noResultsRow) {
+                noResultsRow.remove(); // Remove the message if there are results
+            }
         }
     });
 });
