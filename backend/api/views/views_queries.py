@@ -10,17 +10,16 @@ class JournalQueryView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        # Retrieve filter parameters
         transaction_type = request.GET.get('transaction_type', None)
         as_of_date = request.GET.get('as_of', None)
         duration_from = request.GET.get('duration_from', None)
         duration_to = request.GET.get('duration_to', None)
 
-        # Base queryset: Approved entries only
+        # Filter only for Approved entries
         journal_entries = JournalEntry.objects.filter(EntryStatus_FK=2)
 
-        # Apply transaction type filter
-        if transaction_type:
+        # Apply transaction type filter if not "All"
+        if transaction_type and transaction_type != 'all':
             journal_entries = journal_entries.filter(TransactionType_FK=transaction_type)
 
         # Apply date filters

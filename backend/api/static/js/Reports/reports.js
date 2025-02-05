@@ -108,11 +108,12 @@ document.addEventListener("DOMContentLoaded", () => {
             loadTransactionTypes()
                 .then(() => {
                     const dropdown = document.getElementById("transaction-type");
-                    dropdown.innerHTML = '<option value="">Select a Transaction Type</option>'; // Reset options
+                    dropdown.innerHTML = '<option value="all">All Transaction Types</option>'; // Add "All" option first
+                    
                     Object.entries(transactionTypeMap).forEach(([id, name]) => {
                         const option = document.createElement("option");
-                        option.value = id; // Use ID as the value
-                        option.textContent = name; // Display name
+                        option.value = id;
+                        option.textContent = name;
                         dropdown.appendChild(option);
                     });
                 })
@@ -120,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.error("Error populating transaction types:", error);
                 });
         }
+        
 
         // Load Journal Entries Map
         function loadJournalEntriesMap() {
@@ -207,16 +209,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const asOfDate = document.getElementById("as-of").value;
             const durationFrom = document.getElementById("duration-from").value;
             const durationTo = document.getElementById("duration-to").value;
-    
+        
             if (!validateFilters()) return;
-    
+        
             const params = new URLSearchParams({
-                transaction_type: transactionType,
+                transaction_type: transactionType === "all" ? "" : transactionType,
                 as_of: asOfDate || "",
                 duration_from: durationFrom || "",
                 duration_to: durationTo || "",
             }).toString();
-    
+        
             fetch(`/querygeneraljournal/?${params}`, {
                 method: "GET",
                 headers: {
@@ -231,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then((data) => {
                     console.log("Fetched General Journal Data:", data);
-                    fetchedData = mapAccountDetails(data); // Map account names
+                    const fetchedData = mapAccountDetails(data); 
                     if (fetchedData && fetchedData.length > 0) {
                         callback(fetchedData);
                     } else {
