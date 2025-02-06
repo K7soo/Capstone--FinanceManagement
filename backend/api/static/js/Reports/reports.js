@@ -87,8 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
             case "general-ledger-tab":
                 loadGeneralLedger();
                 break;
-            case "cash-flow-tab":
-                loadCashFlow();
+            case "trial-balance-tab":
+                loadTrialBalance();
                 break;
             case "income-expense-tab":
                 loadIncomeVsExpense();
@@ -313,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-family: Arial, sans-serif;
                                 margin: 20px;
                             }
-                            h1 {
+                            h1, h3 {
                                 text-align: center;
                                 margin-bottom: 20px;
                             }
@@ -345,7 +345,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         </style>
                     </head>
                     <body>
-                        <h1>General Journal</h1>
+                        <h1>General Journal Report</h1>
+                        <h3>Tikme Dine</h3>
                         <table>
                             <thead>
                                 <tr>
@@ -496,16 +497,16 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validate Filters
         function validateFilters() {
             const chartOfAccounts = document.getElementById("ledger-account").value;
-            const asOfDate = document.getElementById("as-of").value;
-            const durationFrom = document.getElementById("duration-from").value;
-            const durationTo = document.getElementById("duration-to").value;
+            const asOfDateLedger = document.getElementById("as-of-ledger").value;
+            const durationFromLedger = document.getElementById("duration-from-ledger").value;
+            const durationToLedger = document.getElementById("duration-to-ledger").value;
     
             if (!chartOfAccounts) {
                 Swal.fire("Validation Error", "Please select a Ledger Account.", "error");
                 return false;
             }
     
-            if (!asOfDate && (!durationFrom || !durationTo)) {
+            if (!asOfDateLedger && (!durationFromLedger || !durationToLedger)) {
                 Swal.fire(
                     "Validation Error",
                     "Please select either an 'As of' date or a valid duration range.",
@@ -520,9 +521,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Fetch Data for General Journal
         function fetchGeneralLedgerData(callback) {
             const chartOfAccounts = document.getElementById("ledger-account").value;
-            const asOfDate = document.getElementById("as-of").value;
-            const durationFrom = document.getElementById("duration-from").value;
-            const durationTo = document.getElementById("duration-to").value;
+            const asOfDate = document.getElementById("as-of-ledger").value;
+            const durationFrom = document.getElementById("duration-from-ledger").value;
+            const durationTo = document.getElementById("duration-to-ledger").value;
         
             if (!validateFilters()) return;
         
@@ -547,8 +548,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then((data) => {
                     console.log("Fetched General Ledger Data:", data);
-                    const fetchedData = mapAccountDetails(data); 
-                    if (fetchedData && fetchedData.length > 0) {
+                    if (!Array.isArray(data)) {
+                        console.error("Expected an array but received:", data);
+                        return;
+                    }
+                    const fetchedData = mapAccountDetails(data);
+                    if (fetchedData.length > 0) {
                         callback(fetchedData);
                     } else {
                         Swal.fire("No Data", "No records found for the selected filters.", "info");
@@ -563,8 +568,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Map Account Details
         function mapAccountDetails(generalLedgerData) {
             return generalLedgerData.map((entry) => {
-                // Correctly map journal details
-                entry.journal_details = entry.journal_details.map((detail) => ({
+                // Ensure journal_details is an array
+                const journalDetails = Array.isArray(entry.journal_details) ? entry.journal_details : [];
+                entry.journal_details = journalDetails.map((detail) => ({
                     ...detail,
                     accountDesc: chartOfAccounts[detail.Account_FK] || "Unknown Account",
                 }));
@@ -575,8 +581,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 entry.Entry_Date = journalEntry.Entry_Date || "N/A";
                 entry.EntryParticulars = journalEntry.EntryParticulars || "No description provided.";
         
-                console.log("Entry:", entry);
-                console.log("Journal Entry ID:", entry.journal_entry?.id);
+                console.log("Mapped Entry:", entry);
                 return entry;
             });
         }
@@ -589,7 +594,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const printledger = document.querySelector(".btn.btn-primary");
+        const printledger = document.getElementById("print-ledger");
         const exportButton = document.querySelector(".btn.btn-success");
     
         if (printledger) {
@@ -655,8 +660,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         </style>
                     </head>
                     <body>
-                        <h1>GENERAL LEDGER REPORT</h1>
-                        <h3>Company ABC</h3>
+                        <h1>General Ledger Report</h1>
+                        <h3>Tikme Dine</h3>
                         <h4>${new Date().toLocaleDateString()}</h4>
                         <table>
                             <thead>
@@ -671,25 +676,25 @@ document.addEventListener("DOMContentLoaded", () => {
         
             // Generate table data grouped by Account
             for (const account in data) {
-                const transactions = data[account];
+                const transactions = Array.isArray(data[account]) ? data[account] : [];
                 let totalDebit = 0;
                 let totalCredit = 0;
-        
-                // Add account as a header row
+            
+                // Add account header
                 htmlContent += `<tr><td colspan="4" class="account-header">${account}</td></tr>`;
-        
+            
                 transactions.forEach(entry => {
-                    totalDebit += entry.Debit;
-                    totalCredit += entry.Credit;
+                    totalDebit += entry.Debit || 0;
+                    totalCredit += entry.Credit || 0;
                     htmlContent += `
                         <tr>
                             <td>${entry.Entry_Date}</td>
-                            <td>${entry.Transaction}</td>
+                            <td>${entry.EntryParticulars}</td>
                             <td class="right-align">${entry.Debit ? `$${entry.Debit.toFixed(2)}` : ""}</td>
                             <td class="right-align">${entry.Credit ? `$${entry.Credit.toFixed(2)}` : ""}</td>
                         </tr>`;
                 });
-        
+            
                 // Net movement row
                 htmlContent += `
                     <tr class="total-row">
@@ -720,7 +725,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     
 
-    function loadCashFlow() {
+    function loadTrialBalance() {
         console.log("Loading Cash Flow Tab...");
         // Logic to load Cash Flow data
     }

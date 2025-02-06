@@ -80,14 +80,14 @@ Reports
 			<li class="nav-item" role="presentation">
 				<button
 					class="nav-link"
-					id="cash-flow-tab"
+					id="trial-balance-tab"
 					data-bs-toggle="tab"
-					data-bs-target="#cash-flow"
+					data-bs-target="#trial-balance"
 					type="button"
 					role="tab"
-					aria-controls="cash-flow"
+					aria-controls="trial-balance"
 					aria-selected="false">
-					Cash Flow
+					Trial Balance
 				</button>
 			</li>
 			<!--end::Cash Flow Tab-->
@@ -245,7 +245,7 @@ Reports
 							<i class="bi bi-file-earmark-spreadsheet me-2"></i>
 							Export
 						</button>
-						<button
+						<button id="print-ledger"
 							class="btn btn-primary"
 							style="
 								background-color: #6f42c1;
@@ -271,25 +271,25 @@ Reports
 			<!--end: General Ledger Tab-->
 
 			<!--begin: Cash Flow Tab-->
-			<div class="tab-pane fade" id="cash-flow" role="tabpanel" aria-labelledby="cash-flow-tab">
+			<div class="tab-pane fade" id="trial-balance" role="tabpanel" aria-labelledby="trial-balance-tab">
 				<!--begin: Card-->
 				<div class="card p-3 shadow-sm">
 					<!--begin: Row-->
 					<div class="row g-3">
 						<!--begin: As of Date-->
 						<div class="col-md-4">
-							<label for="as-of-cash" class="form-label">As of</label>
-							<input type="date" id="as-of-cash" class="form-control" />
+							<label for="as-of-tb" class="form-label">As of</label>
+							<input type="date" id="as-of-tb" class="form-control" />
 						</div>
 						<!--end: As of Date-->
 
 						<!--begin: Duration-->
 						<div class="col-md-4">
-							<label for="duration-from-cash" class="form-label">Duration</label>
+							<label for="duration-from-tb" class="form-label">Duration</label>
 							<div class="d-flex gap-2">
-								<input type="date" id="duration-from-cash" class="form-control" />
+								<input type="date" id="duration-from-tb" class="form-control" />
 								<span class="align-self-center">to</span>
-								<input type="date" id="duration-to-cash" class="form-control" />
+								<input type="date" id="duration-to-tb" class="form-control" />
 							</div>
 						</div>
 						<!--end: Duration-->
