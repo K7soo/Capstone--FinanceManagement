@@ -313,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-family: Arial, sans-serif;
                                 margin: 20px;
                             }
-                            h1, h3 {
+                            h1, h3, h4 {
                                 text-align: center;
                                 margin-bottom: 20px;
                             }
@@ -346,7 +346,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     </head>
                     <body>
                         <h1>General Journal Report</h1>
-                        <h3>Tikme Dine</h3>
+                        <h3>Company: Tikme Dine</h3>
+                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
                         <table>
                             <thead>
                                 <tr>
@@ -661,8 +662,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     </head>
                     <body>
                         <h1>General Ledger Report</h1>
-                        <h3>Tikme Dine</h3>
-                        <h4>${new Date().toLocaleDateString()}</h4>
+                        <h3>Company: Tikme Dine</h3>
+                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
                         <table>
                             <thead>
                                 <tr>

@@ -41,6 +41,7 @@ urlpatterns = [
     path('transactiontype/<int:pk>', views_trtype.TransactionTypeDetailView.as_view(), name='transactiontype_detail'),
     # Journal Entries 
     path("journalentries/", views_journentries.JournalEntryView.as_view(), name="journalentries"),
+    path("journalentriessort/", views_journentries.JournalEntrySortView.as_view(), name="journalentries"),
     path("journalentries/<int:pk>/", views_journentries.JournalRetrieveView.as_view(), name="journalentriespecified"),
     path("journalentriesdetail/<int:pk>/", views_journentries.JournalEntryDetailView.as_view(), name="journal_detail"),
     # JEV Approval 

@@ -13,7 +13,7 @@ class JournalEntryView(views.APIView):
     def get(self, request):
         # Check if this is an AJAX request
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
-            journal_entries = JournalEntry.objects.all()
+            journal_entries = JournalEntry.objects.all().order_by("Entry_Date")  # Sort from oldest to newest
             response_data = []
 
             # Include related JournalEntryDetails for each JournalEntry
@@ -21,7 +21,8 @@ class JournalEntryView(views.APIView):
                 journal_entry_serializer = JournalEntrySerializer(journal_entry)
                 journal_details = JournalEntryDetails.objects.filter(
                     JournalEntry_FK=journal_entry.id
-                )
+                ).order_by("id")  # Optional: Sort journal details if needed
+                
                 journal_details_serializer = JournalEntryDetailsSerializer(
                     journal_details, many=True
                 )
@@ -33,7 +34,7 @@ class JournalEntryView(views.APIView):
             return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
 
         # Render template if not an AJAX request
-        journal_entries = JournalEntry.objects.all()
+        journal_entries = JournalEntry.objects.all().order_by("Entry_Date")
         serializer = JournalEntrySerializer(journal_entries, many=True)
         return render(request, "Transaction/journalentries.html", {"journal_entries": serializer.data})
     
@@ -73,6 +74,36 @@ class JournalEntryView(views.APIView):
             status=status.HTTP_201_CREATED
         )
 
+class JournalEntrySortView(views.APIView):
+    permission_classes = [AllowAny]
+     
+    def get(self, request):
+        # Check if this is an AJAX request
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            journal_entries = JournalEntry.objects.all().order_by("Entry_Date")  # Sort from oldest to newest
+            response_data = []
+
+            # Include related JournalEntryDetails for each JournalEntry
+            for journal_entry in journal_entries:
+                journal_entry_serializer = JournalEntrySerializer(journal_entry)
+                journal_details = JournalEntryDetails.objects.filter(
+                    JournalEntry_FK=journal_entry.id
+                ).order_by("id")  # Optional: Sort journal details if needed
+                
+                journal_details_serializer = JournalEntryDetailsSerializer(
+                    journal_details, many=True
+                )
+                response_data.append({
+                    "journal_entry": journal_entry_serializer.data,
+                    "journal_details": journal_details_serializer.data,
+                })
+
+            return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+
+        # Render template if not an AJAX request
+        journal_entries = JournalEntry.objects.all().order_by("Entry_Date")
+        serializer = JournalEntrySerializer(journal_entries, many=True)
+        return render(request, "Transaction/journalentries.html", {"journal_entries": serializer.data})
 
 class JournalRetrieveView(views.APIView):
     permission_classes = [AllowAny]

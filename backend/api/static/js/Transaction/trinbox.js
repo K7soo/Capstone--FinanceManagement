@@ -154,11 +154,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const tableBody = document.getElementById("payment-records");
         records.forEach((record) => {
             const formattedDate = record.PaymentDate ? formatDate(record.PaymentDate) : 'N/A'; // Date formatted here
+            const formattedAmount = record.Amount ? parseFloat(record.Amount).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) : '0.00';
+
             const row = document.createElement("tr");
             row.innerHTML = `
+                <td>${record.transaction_id}</td>
                 <td>${formattedDate}</td> 
                 <td>${record.Description}</td>
-                <td>${record.Amount}</td>
+                <td>${formattedAmount}</td>
                 <td>${record.PaymentMethod}</td>
                 <td>
                     <button
@@ -199,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function autoGenerateJEV(transaction) {
         const jevNumber = generateJEVNumber(transaction.Description);
         const statusId = 2; // Default to Approved
-    
+        
         let templateType;
         if (transaction.Description === 'Reservation Dine-in') {
             templateType = 'Reservation Dine In';
@@ -211,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(`No template found for ${transaction.Description}`);
             return; // Exit if no matching description
         }
-    
+        
         const template = journalTemplates[templateType];
     
         if (template && template.details && template.details.length > 0) {
@@ -238,13 +244,13 @@ document.addEventListener("DOMContentLoaded", function () {
         let prefix;
     
         if (description === 'Reservation Dine-in') {
-            prefix = 'RSVE-AUTO-JEV';
+            prefix = 'RSVE-JEV';
         } else if (description === 'Reservation Event') {
-            prefix = 'RSVD-AUTO-JEV';
+            prefix = 'RSVD-JEV';
         } else if (description === 'Logistics Purchase') {
-            prefix = 'LGS-AUTO-JEV';
+            prefix = 'LGST-JEV';
         } else {
-            prefix = 'MNL-JEV';
+            prefix = 'FMS-JEV';
         }
     
         return `${prefix}-${timestamp}`;
@@ -253,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function populateJEVModal(transaction, jevNumber, statusId, mappedDetails, template) {
         const formattedDate = transaction.PaymentDate ? formatDate(transaction.PaymentDate) : 'N/A';
         document.getElementById('jevDate').textContent = formattedDate;
-        document.getElementById('jevNumber').textContent = jevNumber;
+        // document.getElementById('jevNumber').textContent = jevNumber;
     
         console.log("Modal Data:", {
             Transaction: transaction,
@@ -275,14 +281,25 @@ document.addEventListener("DOMContentLoaded", function () {
     
         const accountsTable = document.getElementById('jevAccountTableBody');
         accountsTable.innerHTML = '';
-    
+
         mappedDetails.forEach(detail => {
+            // Format debit and credit values with commas and 2 decimal places
+            const formattedDebit = detail.debit ? parseFloat(detail.debit).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) : '0.00';
+    
+            const formattedCredit = detail.credit ? parseFloat(detail.credit).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) : '0.00';
+    
             const row = `
                 <tr>
                     <td>${detail.accountDesc}</td>
                     <td>${detail.accountCode}</td>
-                    <td>${detail.debit}</td>
-                    <td>${detail.credit}</td>
+                    <td class="text-end">${formattedDebit}</td>
+                    <td class="text-end">${formattedCredit}</td>
                 </tr>
             `;
             accountsTable.insertAdjacentHTML('beforeend', row);

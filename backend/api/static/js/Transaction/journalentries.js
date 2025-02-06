@@ -186,12 +186,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const detailAccounts = templateData.details || [];
                 detailAccounts.forEach(detail => {
                     const accountDesc = chartOfAccounts.find(account => account.id === detail.Account_FK)?.AccountDesc || 'Unknown';
+                    const accountCode = chartOfAccounts.find(account => account.id === detail.Account_FK)?.AccountCode|| 'Unknown';
 
                     const newRow = document.createElement('tr');
                     newRow.innerHTML = `
                         <td>
                             <input type="hidden" class="account-id" value="${detail.Account_FK}" />
                             <input type="text" class="form-control text-muted" style="background-color: #e9ecef;" value="${accountDesc}" disabled />
+                        </td>
+                        <td>
+                            <input type="hidden" class="account-id" value="${detail.Account_FK}" />
+                            <input type="text" class="form-control text-muted" style="background-color: #e9ecef;" value="${accountCode}" disabled />
                         </td>
                         <td>
                             <input type="text" class="form-control debit-input" placeholder="" ${detail.Debit > 0 ? '' : 'disabled'} />
@@ -228,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadJournalEntries() {
         Promise.all([
-            fetch('/journalentries/', {
+            fetch('/journalentriessort/', {
                 method: "GET",
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",

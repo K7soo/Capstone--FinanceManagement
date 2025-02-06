@@ -22,11 +22,11 @@ class ChartOfAccountsView(views.APIView):
     permission_classes = [AllowAny]
     def get(self, request):
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
-            chart_of_accs = ChartOfAccs.objects.all()
+            chart_of_accs = ChartOfAccs.objects.all().order_by("AccountCode")  # Sort in ascending order
             serializer = ChartOfAccsSerializer(chart_of_accs, many=True)
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
-        chart_of_accs = ChartOfAccs.objects.all()
+        chart_of_accs = ChartOfAccs.objects.all().order_by("AccountCode")  # Apply sorting for both AJAX and template rendering
         serializer = ChartOfAccsSerializer(chart_of_accs, many=True)
         return render(request, "System_Setup/chartofacc.html", {"ChartOfAccounts": serializer.data})
 
