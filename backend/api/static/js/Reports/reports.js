@@ -717,29 +717,38 @@ document.addEventListener("DOMContentLoaded", () => {
                     const reference = entry.Entry_No || "N/A";
         
                     entry.journal_details.forEach((detail, index) => {
-                        const debit = parseFloat(detail.debit || 0);  // Adjusted property names
-                        const credit = parseFloat(detail.credit || 0); // Adjusted property names
+                        const debit = parseFloat(detail.debit || 0);
+                        const credit = parseFloat(detail.credit || 0);
                         totalDebit += debit;
                         totalCredit += credit;
+        
+                        // If the value is zero, replace it with an empty string
+                        const formattedDebit = debit > 0 ? debit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "";
+                        const formattedCredit = credit > 0 ? credit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "";
         
                         rows += `
                             <tr>
                                 <td>${index === 0 ? formattedDate : ""}</td>
                                 <td>${index === 0 ? particulars : ""}</td>
                                 <td>${index === 0 ? reference : ""}</td>
-                                <td class="right-align">${debit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                                <td class="right-align">${credit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                                <td class="right-align">${formattedDebit}</td>
+                                <td class="right-align">${formattedCredit}</td>
                             </tr>
                         `;
                     });
                 });
         
-                // Net Movement Row
+                // Calculate Net Movement
+                const netMovement = Math.abs(totalDebit - totalCredit);
+                const netMovementDebit = totalDebit > totalCredit ? netMovement.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "";
+                const netMovementCredit = totalCredit > totalDebit ? netMovement.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "";
+        
+                // Net Movement Row (Only Show the Column That Has a Value)
                 rows += `
                     <tr class="total-row">
                         <td colspan="3" class="net-movement">Net Movement</td>
-                        <td class="right-align"><strong>${totalDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
-                        <td class="right-align"><strong>${totalCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
+                        <td class="right-align"><strong>${netMovementDebit}</strong></td>
+                        <td class="right-align"><strong>${netMovementCredit}</strong></td>
                     </tr>
                 `;
             });

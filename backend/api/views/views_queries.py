@@ -55,7 +55,10 @@ class LedgerQueryView(APIView):
         duration_from = request.GET.get('duration_from', None)
         duration_to = request.GET.get('duration_to', None)
 
-        ledger_entries = JournalEntryDetails.objects.select_related('JournalEntry_FK').all()
+        # Filter only approved journal entries and order by ascending date
+        ledger_entries = JournalEntryDetails.objects.select_related('JournalEntry_FK').filter(
+            JournalEntry_FK__EntryStatus_FK=2  # Ensures only Approved entries are fetched
+        ).order_by('JournalEntry_FK__Entry_Date')  # Sorts entries by ascending date
 
         # Filter by account
         if charted_account and charted_account != 'all':
@@ -78,3 +81,4 @@ class LedgerQueryView(APIView):
             })
 
         return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
+    
