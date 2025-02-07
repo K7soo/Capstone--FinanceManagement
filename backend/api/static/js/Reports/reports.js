@@ -300,6 +300,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 printReport(data); // Call the print function
             });
         }
+
+        function formatDate(dateString) {
+            if (!dateString) return "N/A";
+            
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return "Invalid Date"; // Ensure the date is valid
+        
+            const month = date.getMonth() + 1; // Months are 0-based
+            const day = date.getDate();
+            const year = date.getFullYear();
+        
+            return `${month}/${day}/${year}`;
+        }
     
         // Print Report
         function printReport(data) {
@@ -315,16 +328,16 @@ document.addEventListener("DOMContentLoaded", () => {
                             }
                             h1, h3, h4 {
                                 text-align: center;
-                                margin-bottom: 20px;
+                                margin-bottom: 15px;
                             }
                             table {
                                 border-collapse: collapse;
                                 width: 100%;
-                                margin-top: 20px;
+                                margin-top: 15px;
                             }
                             th, td {
-                                border: 1px solid black;
-                                padding: 8px;
+                                border: 1px solid black; /* Ensure all cells have black borders */
+                                padding: 6px;
                                 text-align: left;
                             }
                             th {
@@ -339,9 +352,22 @@ document.addEventListener("DOMContentLoaded", () => {
                             }
                             .description {
                                 font-style: italic;
-                                color: #555;
+                                font-weight: bold;
+                                color: #000;
+                                padding-left: 10px;
+                                border-left: 1px solid black;
+                                border-right: 1px solid black;
+                                border-bottom: 1px solid black;
+                            }
+                            .credit-indent {
                                 padding-left: 20px;
                             }
+                            /* Adjust column widths */
+                            .col-date { width: 12%; }
+                            .col-account { width: 40%; }
+                            .col-ref { width: 18%; }
+                            .col-debit { width: 15%; }
+                            .col-credit { width: 15%; }
                         </style>
                     </head>
                     <body>
@@ -351,55 +377,64 @@ document.addEventListener("DOMContentLoaded", () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Account</th>
-                                    <th>Ref</th>
-                                    <th>Debit</th>
-                                    <th>Credit</th>
+                                    <th class="col-date">Date</th>
+                                    <th class="col-account">Explanation</th>
+                                    <th class="col-ref">Post Ref.</th>
+                                    <th class="col-debit">Debit</th>
+                                    <th class="col-credit">Credit</th>
                                 </tr>
                             </thead>
                             <tbody>
                             ${data
-                                .map((entry) => {
-                                    const journalDetails = entry.journal_details || []; // Ensure journal_details exists
-                                    const date = entry.Entry_Date || "N/A";
+                                .map((entry, entryIndex) => {
+                                    const journalDetails = entry.journal_details || [];
+                                    const date = new Date(entry.Entry_Date).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" });
                                     const particulars = entry.EntryParticulars || "No description provided.";
                                     const reference = entry.Entry_No || "N/A";
-    
-                                    return `
-                                        ${journalDetails
-                                            .map((detail, index) => `
-                                                <tr>
-                                                    <td>${index === 0 ? date : ""}</td>
-                                                    <td>${detail.accountDesc || "Unknown Account"}</td>
-                                                    <td>${index === 0 ? reference : ""}</td>
-                                                    <td class="right-align">${detail.DebitAmount ? formatNumber(detail.DebitAmount) : ""}</td>
-                                                    <td class="right-align">${detail.CreditAmount ? formatNumber(detail.CreditAmount) : ""}</td>
-                                                </tr>
-                                            `).join("")}
+                                    const refRowSpan = journalDetails.length;
+        
+                                    let rowHtml = `
+                                        <tr>
+                                            <td class="col-date">${date}</td>
+                                            <td class="col-account">${journalDetails[0]?.accountDesc || "Unknown Account"}</td>
+                                            <td class="col-ref" rowspan="${refRowSpan}">${reference}</td>
+                                            <td class="right-align col-debit">${journalDetails[0]?.DebitAmount || ""}</td>
+                                            <td class="right-align col-credit">${journalDetails[0]?.CreditAmount || ""}</td>
+                                        </tr>`;
+        
+                                    journalDetails.slice(1).forEach(detail => {
+                                        rowHtml += `
                                             <tr>
-                                                <td colspan="5" class="description">
-                                                    ${particulars}
-                                                </td>
-                                            </tr>
-                                        `;
-                                    })
-                                    .join("")}
-                                <tr class="total-row">
-                                    <td>Total</td>
-                                    <td colspan="2"></td>
-                                    <td class="right-align">${formatNumber(calculateTotal(data, "DebitAmount"))}</td>
-                                    <td class="right-align">${formatNumber(calculateTotal(data, "CreditAmount"))}</td>
-                                </tr>
+                                                <td></td>
+                                                <td class="col-account ${detail.CreditAmount > 0 ? "credit-indent" : ""}">${detail.accountDesc || "Unknown Account"}</td>
+                                                <td class="right-align col-debit">${detail.DebitAmount || ""}</td>
+                                                <td class="right-align col-credit">${detail.CreditAmount || ""}</td>
+                                            </tr>`;
+                                    });
+        
+                                    // Particulars row under the "Account" column with black side & bottom border
+                                    rowHtml += `
+                                        <tr>
+                                            <td></td>
+                                            <td colspan="4" class="description">Particulars: ${particulars}</td>
+                                        </tr>`;
+        
+                                    return rowHtml;
+                                })
+                                .join("")}
                             </tbody>
                         </table>
                     </body>
                 </html>
             `;
+        
             printWindow.document.write(htmlContent);
             printWindow.document.close();
             printWindow.print();
         }
+        
+        
+        
     
         // Populate Transaction Types
         populateTransactionTypes();
@@ -654,11 +689,31 @@ document.addEventListener("DOMContentLoaded", () => {
                             h1 { text-align: center; margin-bottom: 5px; }
                             h2 { text-align: center; margin-top: 0; font-size: 1.1rem; }
                             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                            th, td { border: 1px solid black; padding: 8px; text-align: left; }
-                            th { background-color: #f2f2f2; }
+                            th, td { 
+                                border: 1px solid black; 
+                                padding: 6px; 
+                                text-align: left; 
+                                font-size: 14px;
+                                word-wrap: break-word;
+                            }
+                            th { 
+                                background-color: #f2f2f2; 
+                                text-align: center;
+                            }
                             td.right-align { text-align: right; }
-                            .account-header { font-weight: bold; font-style: italic; background-color: #eaeaea; }
-                            .net-movement { font-weight: bold; text-align: right; }
+                            .account-header { 
+                                font-weight: bold; 
+                                font-style: italic; 
+                                background-color: #eaeaea;
+                                text-transform: uppercase;
+                            }
+                            .net-movement-row {
+                                font-weight: bold; 
+                                text-align: right; 
+                            }
+                            .bold-line {
+                                border-top: 2px solid black; /* Bold line directly below Net Movement */
+                            }
                         </style>
                     </head>
                     <body>
@@ -668,11 +723,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Transaction</th>
-                                    <th>Reference</th>
-                                    <th>Debit</th>
-                                    <th>Credit</th>
+                                    <th style="width: 12%;">Date</th>
+                                    <th style="width: 46%;">Transaction</th>
+                                    <th style="width: 20%;">Reference</th>
+                                    <th style="width: 11%;">Debit</th>
+                                    <th style="width: 11%;">Credit</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -687,6 +742,7 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.print();
         }
         
+        // Function to generate the ledger rows with the correct Net Movement underline placement
         function generateLedgerRows(data) {
             let rows = "";
             let accountGroups = {};
@@ -712,7 +768,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 rows += `<tr><td colspan="5" class="account-header">${account}</td></tr>`;
         
                 entries.forEach((entry) => {
-                    const formattedDate = entry.Entry_Date || "N/A";
+                    const formattedDate = entry.Entry_Date 
+                        ? new Date(entry.Entry_Date).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" }) 
+                        : "N/A";
+        
                     const particulars = entry.EntryParticulars || "N/A";
                     const reference = entry.Entry_No || "N/A";
         
@@ -722,39 +781,40 @@ document.addEventListener("DOMContentLoaded", () => {
                         totalDebit += debit;
                         totalCredit += credit;
         
-                        // If the value is zero, replace it with an empty string
-                        const formattedDebit = debit > 0 ? debit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "";
-                        const formattedCredit = credit > 0 ? credit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "";
-        
                         rows += `
                             <tr>
                                 <td>${index === 0 ? formattedDate : ""}</td>
                                 <td>${index === 0 ? particulars : ""}</td>
                                 <td>${index === 0 ? reference : ""}</td>
-                                <td class="right-align">${formattedDebit}</td>
-                                <td class="right-align">${formattedCredit}</td>
+                                <td class="right-align">${debit > 0 ? debit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : ""}</td>
+                                <td class="right-align">${credit > 0 ? credit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : ""}</td>
                             </tr>
                         `;
                     });
                 });
         
-                // Calculate Net Movement
+                // Calculate Net Movement: Place under larger amount column
                 const netMovement = Math.abs(totalDebit - totalCredit);
-                const netMovementDebit = totalDebit > totalCredit ? netMovement.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "";
-                const netMovementCredit = totalCredit > totalDebit ? netMovement.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "";
+                const netDebit = totalDebit > totalCredit ? netMovement : 0;
+                const netCredit = totalCredit > totalDebit ? netMovement : 0;
         
-                // Net Movement Row (Only Show the Column That Has a Value)
+                // Net Movement Row (Now bold underline is **directly below** it)
                 rows += `
-                    <tr class="total-row">
+                    <tr class="net-movement-row">
                         <td colspan="3" class="net-movement">Net Movement</td>
-                        <td class="right-align"><strong>${netMovementDebit}</strong></td>
-                        <td class="right-align"><strong>${netMovementCredit}</strong></td>
+                        <td class="right-align">${netDebit > 0 ? `<strong>${netDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong>` : ""}</td>
+                        <td class="right-align">${netCredit > 0 ? `<strong>${netCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong>` : ""}</td>
+                    </tr>
+                    <tr class="bold-line">
+                        <td colspan="5"></td> <!-- Bold underline is now directly below Net Movement -->
                     </tr>
                 `;
             });
         
             return rows;
         }
+        
+        
         
         
         function formatNumber(number) {

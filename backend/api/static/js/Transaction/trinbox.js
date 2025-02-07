@@ -1,56 +1,55 @@
 document.addEventListener("DOMContentLoaded", () => {
     const csrfToken = getCsrfToken();
-// Metronic Style Comment: Adding search functionality for Trinbox
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchTrinbox"); // Select the input with the new ID
-    const tableBody = document.getElementById("payment-records"); // Select the table body
+    // Metronic Style Comment: Adding search functionality for Trinbox
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchTrinbox"); // Select the input with the new ID
+        const tableBody = document.getElementById("payment-records"); // Select the table body
 
-    searchInput.addEventListener("input", function () {
-        const query = searchInput.value.toLowerCase().trim(); // Get the search input value in lowercase and trim spaces
-        const rows = tableBody.querySelectorAll("tr"); // Select all rows in the table body
+        searchInput.addEventListener("input", function () {
+            const query = searchInput.value.toLowerCase().trim(); // Get the search input value in lowercase and trim spaces
+            const rows = tableBody.querySelectorAll("tr"); // Select all rows in the table body
 
-        let hasResults = false; // Track if there are matching rows
+            let hasResults = false; // Track if there are matching rows
 
-        rows.forEach((row) => {
-            const cells = row.querySelectorAll("td"); // Select all table cells in the row
-            let rowMatches = false;
+            rows.forEach((row) => {
+                const cells = row.querySelectorAll("td"); // Select all table cells in the row
+                let rowMatches = false;
 
-            // Check if any cell in the row contains the search query
-            cells.forEach((cell) => {
-                if (cell.textContent.toLowerCase().includes(query)) {
-                    rowMatches = true;
+                // Check if any cell in the row contains the search query
+                cells.forEach((cell) => {
+                    if (cell.textContent.toLowerCase().includes(query)) {
+                        rowMatches = true;
+                    }
+                });
+
+                if (rowMatches || query === "") {
+                    row.style.display = ""; // Show matching row
+                    hasResults = true; // Mark that we found a match
+                } else {
+                    row.style.display = "none"; // Hide non-matching row
                 }
             });
 
-            if (rowMatches || query === "") {
-                row.style.display = ""; // Show matching row
-                hasResults = true; // Mark that we found a match
+            // Show a message if no rows match
+            if (!hasResults && query !== "") {
+                if (!document.querySelector(".no-results-row")) {
+                    const noResultsRow = document.createElement("tr");
+                    noResultsRow.classList.add("no-results-row");
+                    noResultsRow.innerHTML = `
+                        <td colspan="5" style="text-align: center; color: #6c757d;">
+                            No matching records found.
+                        </td>
+                    `;
+                    tableBody.appendChild(noResultsRow);
+                }
             } else {
-                row.style.display = "none"; // Hide non-matching row
+                const noResultsRow = document.querySelector(".no-results-row");
+                if (noResultsRow) {
+                    noResultsRow.remove(); // Remove the message if there are results
+                }
             }
         });
-
-        // Show a message if no rows match
-        if (!hasResults && query !== "") {
-            if (!document.querySelector(".no-results-row")) {
-                const noResultsRow = document.createElement("tr");
-                noResultsRow.classList.add("no-results-row");
-                noResultsRow.innerHTML = `
-                    <td colspan="5" style="text-align: center; color: #6c757d;">
-                        No matching records found.
-                    </td>
-                `;
-                tableBody.appendChild(noResultsRow);
-            }
-        } else {
-            const noResultsRow = document.querySelector(".no-results-row");
-            if (noResultsRow) {
-                noResultsRow.remove(); // Remove the message if there are results
-            }
-        }
     });
-});
-
 
 
     function getCsrfToken() {
@@ -244,13 +243,13 @@ document.addEventListener("DOMContentLoaded", function () {
         let prefix;
     
         if (description === 'Reservation Dine-in') {
-            prefix = 'RSVE-JEV';
+            prefix = 'RE-JEV';
         } else if (description === 'Reservation Event') {
-            prefix = 'RSVD-JEV';
+            prefix = 'RD-JEV';
         } else if (description === 'Logistics Purchase') {
-            prefix = 'LGST-JEV';
+            prefix = 'LP-JEV';
         } else {
-            prefix = 'FMS-JEV';
+            prefix = 'FM-JEV';
         }
     
         return `${prefix}-${timestamp}`;
