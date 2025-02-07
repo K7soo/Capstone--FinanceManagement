@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadGeneralLedger() {
-        console.log("Initializing General Journal Tab...");
+        console.log("Initializing General Ledger Tab...");
     
         let fetchedData = []; // Store the queried data for print/export operations
         let chartOfAccounts = {}; // Store Chart of Accounts mapping
@@ -569,17 +569,22 @@ document.addEventListener("DOMContentLoaded", () => {
         // Map Account Details
         function mapAccountDetails(generalLedgerData) {
             return generalLedgerData.map(entry => {
-                // Ensure journal_details exists and is an array
+                // Ensure journal_details is an array
                 if (!Array.isArray(entry.journal_details)) {
-                    console.warn("journal_details is not an array:", entry.journal_details);
-                    entry.journal_details = [];  // Ensure it's at least an empty array
+                    console.warn("journal_details is not an array, converting:", entry.journal_details);
+                    entry.journal_details = entry.journal_details ? [entry.journal_details] : [];
                 }
         
-                entry.journal_details = entry.journal_details.map(detail => ({
-                    accountDesc: chartOfAccounts[detail.Account_FK] || "Unknown Account",
-                    debit: detail.DebitAmount ? formatNumber(detail.DebitAmount) : "0.00",
-                    credit: detail.CreditAmount ? formatNumber(detail.CreditAmount) : "0.00"
-                }));
+                // Map journal details properly
+                entry.journal_details = entry.journal_details.map(detail => {
+                    console.log("Processing detail:", detail); // Debugging log
+        
+                    return {
+                        accountDesc: chartOfAccounts[detail.Account_FK] || "Unknown Account",
+                        debit: detail.DebitAmount ? parseFloat(detail.DebitAmount).toFixed(2) : "0.00",
+                        credit: detail.CreditAmount ? parseFloat(detail.CreditAmount).toFixed(2) : "0.00"
+                    };
+                });
         
                 const journalEntry = journalEntriesMap[entry.journal_entry?.id] || {};
                 entry.Entry_No = journalEntry.Entry_No || "N/A";
@@ -589,7 +594,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return entry;
             });
         }
-        
+
         function formatNumber(number) {
             return parseFloat(number).toLocaleString("en-US", {
                 minimumFractionDigits: 2,
@@ -624,91 +629,130 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         function printReport(data) {
-            console.log("Printing Data:", data); // Debugging
-            if (!Array.isArray(data)) {
-                console.error("Expected an array but received:", data);
-                Swal.fire("Error", "Invalid data format for printing.", "error");
-                return;
-            }
+            // Group data by AccountDesc
+            const groupedData = data.reduce((acc, entry) => {
+                const accountDesc = entry.journal_details.length > 0
+                    ? entry.journal_details[0].accountDesc || "Unknown Account"
+                    : "Unknown Account";
+        
+                if (!acc[accountDesc]) {
+                    acc[accountDesc] = [];
+                }
+                acc[accountDesc].push(entry);
+                return acc;
+            }, {});
         
             const printWindow = window.open("", "_blank");
+            const currentDate = new Date().toLocaleDateString("en-US");
+        
             let htmlContent = `
                 <html>
                     <head>
                         <title>General Ledger Report</title>
                         <style>
                             body { font-family: Arial, sans-serif; margin: 20px; }
-                            h1, h3, h4 { text-align: center; }
-                            table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+                            h1 { text-align: center; margin-bottom: 5px; }
+                            h2 { text-align: center; margin-top: 0; font-size: 1.1rem; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
                             th, td { border: 1px solid black; padding: 8px; text-align: left; }
                             th { background-color: #f2f2f2; }
                             td.right-align { text-align: right; }
-                            .total-row { font-weight: bold; background-color: #eaeaea; }
-                            .account-header { font-weight: bold; font-size: 16px; margin-top: 10px; }
+                            .account-header { font-weight: bold; font-style: italic; background-color: #eaeaea; }
                             .net-movement { font-weight: bold; text-align: right; }
                         </style>
                     </head>
                     <body>
                         <h1>General Ledger Report</h1>
-                        <h3>Company: Tikme Dine</h3>
-                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
+                        <h2>Company: Tikme Dine</h2>
+                        <h2>Exported on: ${currentDate}</h2>
                         <table>
                             <thead>
                                 <tr>
                                     <th>Date</th>
                                     <th>Transaction</th>
+                                    <th>Reference</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
                                 </tr>
                             </thead>
-                            <tbody>`;
-        
-            // Group transactions by account
-            const groupedData = data.reduce((acc, entry) => {
-                const accountName = entry.journal_details.length > 0
-                    ? entry.journal_details[0].accountDesc
-                    : "Unknown Account";
-                if (!acc[accountName]) acc[accountName] = [];
-                acc[accountName].push(entry);
-                return acc;
-            }, {});
-        
-            // Generate table data grouped by account
-            for (const account in groupedData) {
-                const transactions = groupedData[account];
-                let totalDebit = 0;
-                let totalCredit = 0;
-        
-                // Add account header
-                htmlContent += `<tr><td colspan="4" class="account-header">${account}</td></tr>`;
-        
-                transactions.forEach(entry => {
-                    totalDebit += entry.journal_details.reduce((sum, d) => sum + (parseFloat(d.DebitAmount) || 0), 0);
-                    totalCredit += entry.journal_details.reduce((sum, d) => sum + (parseFloat(d.CreditAmount) || 0), 0);
-        
-                    htmlContent += `
-                        <tr>
-                            <td>${entry.Entry_Date}</td>
-                            <td>${entry.EntryParticulars}</td>
-                            <td class="right-align">${totalDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                            <td class="right-align">${totalCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                        </tr>`;
-                });
-        
-                // Net movement row
-                htmlContent += `
-                    <tr class="total-row">
-                        <td colspan="2">Net Movement</td>
-                        <td class="right-align"><strong>${totalDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
-                        <td class="right-align"><strong>${totalCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
-                    </tr>`;
-            }
-        
-            htmlContent += `</tbody></table></body></html>`;
+                            <tbody>
+                                ${generateLedgerRows(data)}
+                            </tbody>
+                        </table>
+                    </body>
+                </html>`;
         
             printWindow.document.write(htmlContent);
             printWindow.document.close();
             printWindow.print();
+        }
+        
+        function generateLedgerRows(data) {
+            let rows = "";
+            let accountGroups = {};
+        
+            // Group entries by account
+            data.forEach((entry) => {
+                const accountName = entry.journal_details.length > 0
+                    ? entry.journal_details[0].accountDesc || "Unknown Account"
+                    : "Unknown Account";
+        
+                if (!accountGroups[accountName]) {
+                    accountGroups[accountName] = [];
+                }
+                accountGroups[accountName].push(entry);
+            });
+        
+            // Generate table rows
+            Object.entries(accountGroups).forEach(([account, entries]) => {
+                let totalDebit = 0;
+                let totalCredit = 0;
+        
+                // Account Header
+                rows += `<tr><td colspan="5" class="account-header">${account}</td></tr>`;
+        
+                entries.forEach((entry) => {
+                    const formattedDate = entry.Entry_Date || "N/A";
+                    const particulars = entry.EntryParticulars || "N/A";
+                    const reference = entry.Entry_No || "N/A";
+        
+                    entry.journal_details.forEach((detail, index) => {
+                        const debit = parseFloat(detail.debit || 0);  // Adjusted property names
+                        const credit = parseFloat(detail.credit || 0); // Adjusted property names
+                        totalDebit += debit;
+                        totalCredit += credit;
+        
+                        rows += `
+                            <tr>
+                                <td>${index === 0 ? formattedDate : ""}</td>
+                                <td>${index === 0 ? particulars : ""}</td>
+                                <td>${index === 0 ? reference : ""}</td>
+                                <td class="right-align">${debit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                                <td class="right-align">${credit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                        `;
+                    });
+                });
+        
+                // Net Movement Row
+                rows += `
+                    <tr class="total-row">
+                        <td colspan="3" class="net-movement">Net Movement</td>
+                        <td class="right-align"><strong>${totalDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
+                        <td class="right-align"><strong>${totalCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
+                    </tr>
+                `;
+            });
+        
+            return rows;
+        }
+        
+        
+        function formatNumber(number) {
+            return number.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
         }
         
     
