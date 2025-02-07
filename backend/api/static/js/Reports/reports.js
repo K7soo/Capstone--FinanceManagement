@@ -568,25 +568,28 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Map Account Details
         function mapAccountDetails(generalLedgerData) {
-            return generalLedgerData.map((entry) => {
-                // Ensure journal_details is an array
-                const journalDetails = Array.isArray(entry.journal_details) ? entry.journal_details : [];
-                entry.journal_details = journalDetails.map((detail) => ({
-                    ...detail,
+            return generalLedgerData.map(entry => {
+                // Ensure journal_details exists and is an array
+                if (!Array.isArray(entry.journal_details)) {
+                    console.warn("journal_details is not an array:", entry.journal_details);
+                    entry.journal_details = [];  // Ensure it's at least an empty array
+                }
+        
+                entry.journal_details = entry.journal_details.map(detail => ({
                     accountDesc: chartOfAccounts[detail.Account_FK] || "Unknown Account",
+                    debit: detail.DebitAmount ? formatNumber(detail.DebitAmount) : "0.00",
+                    credit: detail.CreditAmount ? formatNumber(detail.CreditAmount) : "0.00"
                 }));
         
-                // Correctly map journal entry details
                 const journalEntry = journalEntriesMap[entry.journal_entry?.id] || {};
                 entry.Entry_No = journalEntry.Entry_No || "N/A";
                 entry.Entry_Date = journalEntry.Entry_Date || "N/A";
                 entry.EntryParticulars = journalEntry.EntryParticulars || "No description provided.";
         
-                console.log("Mapped Entry:", entry);
                 return entry;
             });
         }
-
+        
         function formatNumber(number) {
             return parseFloat(number).toLocaleString("en-US", {
                 minimumFractionDigits: 2,
@@ -610,54 +613,39 @@ document.addEventListener("DOMContentLoaded", () => {
         function handlePrint() {
             fetchGeneralLedgerData((data) => {
                 console.log("Print Payload:", data);
-                console.log("Fetched Data for Printing:", fetchedData);
-                printReport(data); // Call the print function
+                fetchedData = data; // Store fetched data globally
+                if (!fetchedData || fetchedData.length === 0) {
+                    console.error("No data available for printing.");
+                    Swal.fire("Error", "No data available to print.", "error");
+                    return;
+                }
+                printReport(fetchedData); // Call the print function with fetched data
             });
         }
     
         function printReport(data) {
+            console.log("Printing Data:", data); // Debugging
+            if (!Array.isArray(data)) {
+                console.error("Expected an array but received:", data);
+                Swal.fire("Error", "Invalid data format for printing.", "error");
+                return;
+            }
+        
             const printWindow = window.open("", "_blank");
             let htmlContent = `
                 <html>
                     <head>
                         <title>General Ledger Report</title>
                         <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                margin: 20px;
-                            }
-                            h1, h3, h4 {
-                                text-align: center;
-                            }
-                            table {
-                                border-collapse: collapse;
-                                width: 100%;
-                                margin-top: 20px;
-                            }
-                            th, td {
-                                border: 1px solid black;
-                                padding: 8px;
-                                text-align: left;
-                            }
-                            th {
-                                background-color: #f2f2f2;
-                            }
-                            td.right-align {
-                                text-align: right;
-                            }
-                            .total-row {
-                                font-weight: bold;
-                                background-color: #eaeaea;
-                            }
-                            .account-header {
-                                font-weight: bold;
-                                font-size: 16px;
-                                margin-top: 10px;
-                            }
-                            .net-movement {
-                                font-weight: bold;
-                                text-align: right;
-                            }
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h1, h3, h4 { text-align: center; }
+                            table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+                            th, td { border: 1px solid black; padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; }
+                            td.right-align { text-align: right; }
+                            .total-row { font-weight: bold; background-color: #eaeaea; }
+                            .account-header { font-weight: bold; font-size: 16px; margin-top: 10px; }
+                            .net-movement { font-weight: bold; text-align: right; }
                         </style>
                     </head>
                     <body>
@@ -675,33 +663,44 @@ document.addEventListener("DOMContentLoaded", () => {
                             </thead>
                             <tbody>`;
         
-            // Generate table data grouped by Account
-            for (const account in data) {
-                const transactions = Array.isArray(data[account]) ? data[account] : [];
+            // Group transactions by account
+            const groupedData = data.reduce((acc, entry) => {
+                const accountName = entry.journal_details.length > 0
+                    ? entry.journal_details[0].accountDesc
+                    : "Unknown Account";
+                if (!acc[accountName]) acc[accountName] = [];
+                acc[accountName].push(entry);
+                return acc;
+            }, {});
+        
+            // Generate table data grouped by account
+            for (const account in groupedData) {
+                const transactions = groupedData[account];
                 let totalDebit = 0;
                 let totalCredit = 0;
-            
+        
                 // Add account header
                 htmlContent += `<tr><td colspan="4" class="account-header">${account}</td></tr>`;
-            
+        
                 transactions.forEach(entry => {
-                    totalDebit += entry.Debit || 0;
-                    totalCredit += entry.Credit || 0;
+                    totalDebit += entry.journal_details.reduce((sum, d) => sum + (parseFloat(d.DebitAmount) || 0), 0);
+                    totalCredit += entry.journal_details.reduce((sum, d) => sum + (parseFloat(d.CreditAmount) || 0), 0);
+        
                     htmlContent += `
                         <tr>
                             <td>${entry.Entry_Date}</td>
                             <td>${entry.EntryParticulars}</td>
-                            <td class="right-align">${entry.Debit ? `$${entry.Debit.toFixed(2)}` : ""}</td>
-                            <td class="right-align">${entry.Credit ? `$${entry.Credit.toFixed(2)}` : ""}</td>
+                            <td class="right-align">${totalDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                            <td class="right-align">${totalCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
                         </tr>`;
                 });
-            
+        
                 // Net movement row
                 htmlContent += `
                     <tr class="total-row">
                         <td colspan="2">Net Movement</td>
-                        <td class="right-align"><strong>$${totalDebit.toFixed(2)}</strong></td>
-                        <td class="right-align"><strong>$${totalCredit.toFixed(2)}</strong></td>
+                        <td class="right-align"><strong>${totalDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
+                        <td class="right-align"><strong>${totalCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
                     </tr>`;
             }
         
@@ -711,6 +710,7 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.document.close();
             printWindow.print();
         }
+        
     
         // Populate Transaction Types
         populateChartOfAccounts();
