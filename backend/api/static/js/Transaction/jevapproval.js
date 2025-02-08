@@ -68,115 +68,107 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadJournalEntries() {
         Promise.all([
-            fetch('/journalentries/', {
+            fetch('/journalentriessort/', {
                 method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load journal entries");
-                return response.json();
-            }),
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+            }).then(response => response.json()),
+    
             fetch('/entrystatuses/', {
                 method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load entry statuses");
-                return response.json();
-            }),
-            fetch('/journaltemplate/', {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            }).then(response => {
-                if (!response.ok) throw new Error("Failed to load journal templates");
-                return response.json();
-            }),
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+            }).then(response => response.json()),
         ])
-            .then(([entries, statuses, templates]) => {
-                const statusMap = {};
-                statuses.forEach(status => {
-                    statusMap[status.id] = status.Status_Name;
+        .then(([entries, statuses]) => {
+            const statusMap = {};
+            statuses.forEach(status => {
+                statusMap[status.id] = status.Status_Name;
+            });
+    
+            // Clear previous data
+            const tables = {
+                all: document.querySelector("#all tbody"),
+                pending: document.querySelector("#pending tbody"),
+                rejected: document.querySelector("#rejected tbody"),
+                approved: document.querySelector("#approved tbody"),
+            };
+    
+            Object.values(tables).forEach(table => table.innerHTML = "");
+    
+            entries.forEach(entry => {
+                const journalEntry = entry.journal_entry;
+                const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
+                const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
+                    month: "2-digit", day: "2-digit", year: "numeric"
                 });
     
-                const templateMap = {};
-                templates.forEach(template => {
-                    templateMap[template.id] = template.TRTemplateCode;
-                });
+                const entryRow = document.createElement("tr");
+                entryRow.setAttribute("data-id", journalEntry.id);
     
-                const tableBody = document.querySelector("#jevApprovalTable tbody");
-                if (!tableBody) {
-                    console.error("Table body not found.");
-                    return;
-                }
-                tableBody.innerHTML = ""; // Clear existing rows
+                // Disable button if the entry is "Rejected"
+                const isRejected = entryStatus === "Rejected";
+                const menuButtonDisabled = isRejected ? "disabled" : "";
     
-                entries.forEach(entry => {
-                    const journalEntry = entry.journal_entry;
-                    const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
+                entryRow.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${journalEntry.Entry_No}</td>
+                    <td>${journalEntry.EntryParticulars}</td>
+                    <td>${journalEntry.Created_By || ""}</td>
+                    <td>${journalEntry.Review_Remarks || ""}</td>
+                    <td>${entryStatus}</td>
+                    <td class="text-center align-middle">
+                        <div class="dropdown d-inline-block">
+                            <button
+                                class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
+                                type="button"
+                                id="dropdownMenuButton${journalEntry.id}"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative;"
+                                ${menuButtonDisabled}>
+                                <span>MENU</span>
+                                <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
+                            </button>
+                            <ul
+                                class="dropdown-menu"
+                                aria-labelledby="dropdownMenuButton${journalEntry.id}"
+                                style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0;">
+                                <li>
+                                    <button
+                                        class="dropdown-item text-info view-entry"
+                                        data-entry-id="${journalEntry.id}"
+                                        style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;"
+                                        ${menuButtonDisabled}>
+                                        <i class="bi bi-clipboard-check"></i> Review
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        class="dropdown-item text-success print-entry"
+                                        data-entry-id="${journalEntry.id}"
+                                        style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;"
+                                        ${menuButtonDisabled}>
+                                        <i class="bi bi-printer me-2"></i>Print
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                `;
     
-                    // Format date to MM-DD-YYYY
-                    const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
-                        month: "2-digit",
-                        day: "2-digit",
-                        year: "numeric",
-                    });
+                // Append to the "All" table
+                tables.all.appendChild(entryRow);
     
-                    // Add a row for the journal entry
-                    const entryRow = document.createElement("tr");
-                    entryRow.setAttribute("data-id", journalEntry.id);
-                    entryRow.innerHTML = `
-                        <td>${formattedDate}</td>
-                        <td>${journalEntry.Entry_No}</td>
-                        <td>${journalEntry.EntryParticulars}</td>
-                        <td>${journalEntry.Created_By || ""}</td>
-                        <td>${journalEntry.Review_Remarks || ""}</td>
-                        <td>${entryStatus}</td>
-                        <td class="text-center align-middle">
-                            <div class="dropdown d-inline-block">
-                                <button
-                                    class="btn btn-secondary dropdown-toggle btn-sm d-flex align-items-center justify-content-between"
-                                    type="button"
-                                    id="dropdownMenuButton${journalEntry.id}"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    style="border-radius: 8px; font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1rem; position: relative; ">
-                                    <span>MENU</span>
-                                    <i class="bi bi-caret-down-fill ms-1" style="vertical-align: middle;"></i>
-                                </button>
-                                <ul
-                                    class="dropdown-menu"
-                                    aria-labelledby="dropdownMenuButton${journalEntry.id}"
-                                    style="border: none; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); font-size: 0.875rem; min-width: 200px; padding: 0.75rem 0;">
-                                    <li>
-                                        <button
-                                            class="dropdown-item text-info view-entry"
-                                            data-entry-id="${journalEntry.id}"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-clipboard-check"></i> Review
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="dropdown-item text-success print-entry"
-                                            data-entry-id="${journalEntry.id}"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-printer me-2"></i>Print
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(entryRow);
-                });
-                attachActionListeners();
-            })
-            .catch(error => console.error("Error loading journal entries:", error));
+                // Append to the appropriate status-based table
+                if (entryStatus === "Pending") tables.pending.appendChild(entryRow.cloneNode(true));
+                if (entryStatus === "Rejected") tables.rejected.appendChild(entryRow.cloneNode(true));
+                if (entryStatus === "Approved") tables.approved.appendChild(entryRow.cloneNode(true));
+            });
+    
+            attachActionListeners();
+        })
+        .catch(error => console.error("Error loading journal entries:", error));
     }
+    
     
     
 
@@ -201,53 +193,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveApproval(entryId) {
         if (!entryId) {
-            console.error("Entry ID is missing or undefined!");
-            alert("Unable to save. Entry ID is missing.");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Unable to save. Entry ID is missing!",
+            });
             return;
         }
-
+    
         const selectedStatus = document.getElementById("statusDropdown").value;
         const remarks = document.getElementById("remarks").value;
-
+    
         if (!selectedStatus) {
-            alert("Please select a status.");
+            Swal.fire({
+                icon: "warning",
+                title: "Validation Error",
+                text: "Please select a status before saving.",
+            });
             return;
         }
     
-        // Prepare the payload
-        const payload = {
-            EntryStatus_FK: parseInt(selectedStatus), // Ensure status is a number
-            Review_Remarks: remarks,
-        };
+        // Confirm Save Action
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to save these changes?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Save it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Prepare the payload
+                const payload = {
+                    EntryStatus_FK: parseInt(selectedStatus), // Ensure status is a number
+                    Review_Remarks: remarks,
+                };
     
-        fetch(`/journalentries/${entryId}/`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCsrfToken(),
-            },
-            body: JSON.stringify(payload),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    return response.json().then((errorData) => {
-                        console.error("Server-side validation errors:", errorData);
-                        throw new Error("Failed to update journal entry");
+                fetch(`/journalentries/${entryId}/`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCsrfToken(),
+                    },
+                    body: JSON.stringify(payload),
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        return response.json().then((errorData) => {
+                            console.error("Server-side validation errors:", errorData);
+                            throw new Error("Failed to update journal entry");
+                        });
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log("Journal entry updated successfully:", data);
+    
+                    // Close modal after successful save
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("jevApprovalModal"));
+                    modal.hide(); 
+    
+                    // Success Message
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "Journal entry updated successfully!",
+                        timer: 2000,
+                        showConfirmButton: false
                     });
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log("Journal entry updated successfully:", data);
-                const modal = bootstrap.Modal.getInstance(
-                    document.getElementById("jevApprovalModal")
-                );
-                modal.hide(); // Close the modal after successful save
-                loadJournalEntries(); // Reload the table with updated data
-            })
-            .catch((error) =>
-                console.error("Error updating journal entry status and remarks:", error)
-            );
+    
+                    // Reload the table with updated data
+                    loadJournalEntries();
+                })
+                .catch((error) => {
+                    console.error("Error updating journal entry status and remarks:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Failed to update journal entry. Please try again.",
+                    });
+                });
+            }
+        });
     }
     
 

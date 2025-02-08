@@ -29,6 +29,82 @@ window.removedRows = [];
 
 console.log("JavaScript loaded successfully");
 
+// Metronic Style Comment: Adding search functionality for Journal Template
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.getElementById("journalTemplateTable"); // Select the table body
+
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase(); // Get the search input value in lowercase
+        const rows = tableBody.querySelectorAll("tr"); // Select all rows in the table body
+
+        let hasResults = false; // Track if there are matching rows
+
+        rows.forEach((row) => {
+            const rowText = row.textContent.toLowerCase(); // Get the text content of the row
+            if (rowText.includes(query)) {
+                row.style.display = ""; // Show matching row
+                hasResults = true; // Mark that we found a match
+            } else {
+                row.style.display = "none"; // Hide non-matching row
+            }
+        });
+
+        // Show a message if no rows match
+        if (!hasResults && query !== "") {
+            if (!document.querySelector(".no-results-row")) {
+                const noResultsRow = document.createElement("tr");
+                noResultsRow.classList.add("no-results-row");
+                noResultsRow.innerHTML = `
+                    <td colspan="3" style="text-align: center; color: #6c757d;">
+                        No matching records found.
+                    </td>
+                `;
+                tableBody.appendChild(noResultsRow);
+            }
+        } else {
+            const noResultsRow = document.querySelector(".no-results-row");
+            if (noResultsRow) {
+                noResultsRow.remove(); // Remove the message if there are results
+            }
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchbar");
+    const tableBody = document.querySelector("table tbody"); // Select the table body
+
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase(); // Get the search input value in lowercase
+        const rows = tableBody.querySelectorAll("tr.journal-template-row"); // Select all rows in the table body
+
+        let hasResults = false; // Track if there are matching rows
+
+        rows.forEach((row) => {
+            const rowText = row.textContent.toLowerCase(); // Get the text content of the row
+            if (rowText.includes(query)) {
+                row.style.display = ""; // Show matching row
+                hasResults = true; // Mark that we found a match
+            } else {
+                row.style.display = "none"; // Hide non-matching row
+            }
+        });
+
+        // Show a message if no rows match
+        if (!hasResults) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #6c757d;">
+                        No matching records found.
+                    </td>
+                </tr>
+            `;
+        }
+    });
+});
+
+
 function loadTransactionTypes() {
     return fetch("/get-transaction-types/", {
         // Replace with your actual endpoint for fetching transaction types
@@ -87,7 +163,7 @@ function loadChartOfAccounts() {
 
 // Load and display the journal templates
 function loadJournalTemplates() {
-    fetch("/journaltemplate/?t=" + new Date().getTime(), {
+    fetch("/journaltemplatefull/?t=" + new Date().getTime(), {
         method: "GET",
         headers: {
             "X-Requested-With": "XMLHttpRequest",
@@ -136,6 +212,7 @@ function addRowToTable(template) {
 
     const newRow = document.createElement("tr");
     newRow.setAttribute("data-id", template.id);
+    newRow.classList.add("journal-template-row"); // ✅ Add this class for search functionality
     newRow.innerHTML = `
         <td>${template.TRTemplateCode}</td>
         <td>${transactionTypeName}</td>
@@ -188,6 +265,8 @@ function addRowToTable(template) {
             </div>
         </td>
     `;
+    // ✅ Correct reference to the table body
+    const templateTableBody = document.getElementById("journalTemplateTable");
     templateTableBody.appendChild(newRow);
 
     // Reinitialize the dropdown for dynamically added elements
@@ -195,8 +274,7 @@ function addRowToTable(template) {
     dropdownToggle.forEach((dropdown) => {
         new bootstrap.Dropdown(dropdown);
     });
-}
-
+}   
 // Show the Add Template modal
 function openAddTemplateModal() {
     console.log("Add Template button clicked, opening modal.");
@@ -232,7 +310,7 @@ addTemplateForm.addEventListener("submit", (event) => {
     if (templateRows.length === 0) {
         Swal.fire({
             title: "Validation Error",
-            text: "You need to attach at least one account to the template.",
+            text: "You must add at least two accounts to create a template.",
             icon: "error",
             confirmButtonText: "OK",
         });
@@ -270,7 +348,7 @@ addTemplateForm.addEventListener("submit", (event) => {
     const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
 
     // Create template header first
-    fetch("/journaltemplate/", {
+    fetch("/journaltemplatefull/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

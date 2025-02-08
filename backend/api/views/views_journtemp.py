@@ -24,9 +24,9 @@ class TransactionTypeGet(views.APIView):
         transaction_type = TransactionType.objects.all()
         serializer = TransactionTypeSerializer(transaction_type, many=True)
         return JsonResponse(serializer.data, safe=False)
+    
 
-# List and Create Journal Templates
-class JournalTemplateView(views.APIView):
+class JournalTemplateOrig(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -35,6 +35,38 @@ class JournalTemplateView(views.APIView):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
         return render(request, 'System_Setup/journaltemp.html', {'JournalTemplate': serializer.data})
+
+    def post(self, request):
+        serializer = TRTemplateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# List and Create Journal Templates
+class JournalTemplateView(views.APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        templates = TRTemplate.objects.all()
+        template_data = []
+
+        for template in templates:
+            template_serializer = TRTemplateSerializer(template)
+            details = TRTemplateDetails.objects.filter(Template_FK=template)
+            details_serializer = TRTemplateDetailsSerializer(details, many=True)
+
+            # Combine template with its details
+            template_data.append({
+                "template": template_serializer.data,
+                "details": details_serializer.data
+            })
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse(template_data, safe=False, status=status.HTTP_200_OK)
+        
+        return render(request, 'System_Setup/journaltemp.html', {'JournalTemplate': template_data})
 
     def post(self, request):
         serializer = TRTemplateSerializer(data=request.data)

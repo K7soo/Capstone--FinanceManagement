@@ -9,6 +9,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const transactionTypeMap = {}; // Map for TransactionType IDs to names
 
+    // Metronic Style Comment: Adding search functionality for Journal Entries
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput"); // For Journal Entries only
+        const tableBody = document.querySelector("#journalEntriesTableBody"); 
+
+        searchInput.addEventListener("input", function () {
+            const query = searchInput.value.toLowerCase(); // Get the search input value in lowercase
+            const rows = tableBody.querySelectorAll("tr"); // Select all rows in the table body
+
+            let hasResults = false; // Track if there are matching rows
+
+            rows.forEach((row) => {
+                const rowText = row.textContent.toLowerCase(); // Get the text content of the row
+                if (rowText.includes(query)) {
+                    row.style.display = ""; // Show matching row
+                    hasResults = true; // Mark that we found a match
+                } else {
+                    row.style.display = "none"; // Hide non-matching row
+                }
+            });
+
+            // Show a message if no rows match
+            if (!hasResults && query !== "") {
+                if (!document.querySelector(".no-results-row")) {
+                    const noResultsRow = document.createElement("tr");
+                    noResultsRow.classList.add("no-results-row");
+                    noResultsRow.innerHTML = `
+                    <td colspan="5" style="text-align: center; color: #6c757d;">
+                        No matching records found.
+                    </td>
+                `;
+                    tableBody.appendChild(noResultsRow);
+                }
+            } else {
+                const noResultsRow = document.querySelector(".no-results-row");
+                if (noResultsRow) {
+                    noResultsRow.remove(); // Remove the message if there are results
+                }
+            }
+        });
+    });
+
     function getCsrfToken() {
         let csrfToken = null;
         if (document.cookie && document.cookie !== '') {
@@ -22,6 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return csrfToken;
     }
     loadJournalEntries();
+
+    function generateEntryCode() {
+        const timestamp = Date.now().toString().slice(-6); // Take the last 6 digits of the timestamp
+        return `MNL-JEV-${timestamp}`;
+    }
 
     function loadTransactionTypes() {
         return fetch('/get-transaction-types/', {
@@ -77,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadTemplates() {
-        fetch('/journaltemplate/?t=' + new Date().getTime(), {
+        fetch('/journaltemplatefull/?t=' + new Date().getTime(), {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -139,12 +186,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const detailAccounts = templateData.details || [];
                 detailAccounts.forEach(detail => {
                     const accountDesc = chartOfAccounts.find(account => account.id === detail.Account_FK)?.AccountDesc || 'Unknown';
+                    const accountCode = chartOfAccounts.find(account => account.id === detail.Account_FK)?.AccountCode|| 'Unknown';
 
                     const newRow = document.createElement('tr');
                     newRow.innerHTML = `
                         <td>
                             <input type="hidden" class="account-id" value="${detail.Account_FK}" />
                             <input type="text" class="form-control text-muted" style="background-color: #e9ecef;" value="${accountDesc}" disabled />
+                        </td>
+                        <td>
+                            <input type="hidden" class="account-id" value="${detail.Account_FK}" />
+                            <input type="text" class="form-control text-muted" style="background-color: #e9ecef;" value="${accountCode}" disabled />
                         </td>
                         <td>
                             <input type="text" class="form-control debit-input" placeholder="" ${detail.Debit > 0 ? '' : 'disabled'} />
@@ -181,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadJournalEntries() {
         Promise.all([
-            fetch('/journalentries/', {
+            fetch('/journalentriessort/', {
                 method: "GET",
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
@@ -205,25 +257,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 statuses.forEach(status => {
                     statusMap[status.id] = status.Status_Name;
                 });
-    
+
                 const tableBody = document.querySelector("#journalEntriesTable tbody");
                 if (!tableBody) {
                     console.error("Table body not found.");
                     return;
                 }
                 tableBody.innerHTML = ""; // Clear existing rows
-    
+
                 entries.forEach(entry => {
                     const journalEntry = entry.journal_entry;
                     const entryStatus = statusMap[journalEntry.EntryStatus_FK] || "N/A";
-    
+
                     // Format date to MM-DD-YYYY
                     const formattedDate = new Date(journalEntry.Entry_Date).toLocaleDateString("en-US", {
                         month: "2-digit",
                         day: "2-digit",
                         year: "numeric",
                     });
-    
+
                     // Add a row for the journal entry
                     const entryRow = document.createElement("tr");
                     entryRow.setAttribute("data-id", journalEntry.id);
@@ -292,20 +344,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     tableBody.appendChild(entryRow);
                 });
-            attachActionListeners();
+                attachActionListeners();
             })
             .catch(error => console.error("Error loading journal entries:", error));
     }
 
+
     function addJournalEntry() {
-        const entryCode = document.getElementById('entryCode')?.value || '';
+        const entryCode = generateEntryCode();
         const entryDate = document.getElementById('entryDate')?.value || '';
         const entryDescription = document.getElementById('entryDescription')?.value || '';
         const selectedTemplate = document.getElementById('addTemplate')?.value || '';
-    
+
         // Fetch TransactionType_FK from the dynamically updated textbox
         const transactionTypeFk = fetchTransactionTypeFromTemplate(selectedTemplate);
-    
+
         if (!transactionTypeFk) {
             console.error('TransactionType_FK is required and missing.');
             Swal.fire({
@@ -317,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return;
         }
-    
+
 
         const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
         const journalDetails = Array.from(accountRows).map(row => {
@@ -416,26 +469,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then((data) => {
                     const mappedDetails = data.journal_details.map((detail) => {
-                        const account = accountMap[detail.Account_FK] || {
+                        const account = Object.values(accountMap).find(acc => acc.id === detail.Account_FK) || {
                             AccountCode: "N/A",
                             AccountDesc: "N/A",
                         };
-    
+
                         const debitAmount =
                             detail.DebitAmount > 0
                                 ? parseFloat(detail.DebitAmount).toLocaleString("en-US", {
-                                      minimumFractionDigits: 2,
-                                      maximumFractionDigits: 2,
-                                  })
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })
                                 : ""; // Leave blank if zero
                         const creditAmount =
                             detail.CreditAmount > 0
                                 ? parseFloat(detail.CreditAmount).toLocaleString("en-US", {
-                                      minimumFractionDigits: 2,
-                                      maximumFractionDigits: 2,
-                                  })
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })
                                 : ""; // Leave blank if zero
-    
+
                         return {
                             accountDesc: account.AccountDesc,
                             accountCode: account.AccountCode,
@@ -444,10 +497,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             isCredit: creditAmount !== "", // Mark credited accounts for indentation
                         };
                     });
-    
+
                     const rows = 10; // Total number of rows to display
                     const particulars = data.journal_entry.EntryParticulars || "N/A";
-    
+
                     // Add empty rows to make up the difference if there are fewer than 10 rows
                     const emptyRowCount = Math.max(rows - mappedDetails.length - 2, 0); // Reserve 2 rows for particulars and totals
                     for (let i = 0; i < emptyRowCount; i++) {
@@ -459,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             isCredit: false, // No indentation for empty rows
                         });
                     }
-    
+
                     // Totals Calculation
                     const totalDebit = mappedDetails
                         .reduce(
@@ -468,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             0
                         )
                         .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
+
                     const totalCredit = mappedDetails
                         .reduce(
                             (sum, detail) =>
@@ -476,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             0
                         )
                         .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
+
                     const printWindow = window.open("", "_blank");
                     printWindow.document.write(`
                     <html>
@@ -544,8 +597,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </thead>
                                 <tbody>
                                     ${mappedDetails
-                                        .map(
-                                            (detail) => `
+                            .map(
+                                (detail) => `
                                                 <tr>
                                                     <td class="${detail.isCredit ? "credit-indent" : ""}">
                                                         ${detail.accountDesc}
@@ -555,8 +608,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                                     <td class="right-align">${detail.creditAmount}</td>
                                                 </tr>
                                             `
-                                        )
-                                        .join("")}
+                            )
+                            .join("")}
                                     <tr>
                                         <td colspan="4">Particulars: ${particulars}</td>
                                     </tr>
@@ -614,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         .catch((error) =>
                             console.error("Error fetching statuses for dropdown:", error)
                         );
-    
+
                     // Populate modal fields
                     document.getElementById("jevDate").textContent = new Date(
                         data.journal_entry.Entry_Date
@@ -627,10 +680,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         data.journal_entry.Entry_No || "N/A";
                     document.getElementById("remarks").value =
                         data.journal_entry.Review_Remarks || "";
-    
+
                     // Map details and format amounts
                     const mappedDetails = data.journal_details.map((detail) => {
-                        const account = accountMap[detail.Account_FK] || {
+                        const account = Object.values(accountMap).find(acc => acc.id === detail.Account_FK) || {
                             AccountCode: "N/A",
                             AccountDesc: "N/A",
                         };
@@ -640,20 +693,20 @@ document.addEventListener('DOMContentLoaded', () => {
                             debitAmount:
                                 detail.DebitAmount > 0
                                     ? parseFloat(detail.DebitAmount).toLocaleString("en-US", {
-                                          minimumFractionDigits: 2,
-                                          maximumFractionDigits: 2,
-                                      })
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })
                                     : "",
                             creditAmount:
                                 detail.CreditAmount > 0
                                     ? parseFloat(detail.CreditAmount).toLocaleString("en-US", {
-                                          minimumFractionDigits: 2,
-                                          maximumFractionDigits: 2,
-                                      })
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })
                                     : "",
                         };
                     });
-    
+
                     // Render the table
                     const accountTableBody = document.getElementById("jevAccountTableBody");
                     accountTableBody.innerHTML = mappedDetails
@@ -668,53 +721,52 @@ document.addEventListener('DOMContentLoaded', () => {
                         `
                         )
                         .join("");
-    
+
                     // Add totals and particulars row
                     accountTableBody.insertAdjacentHTML(
                         "beforeend",
                         `
                         <tr>
-                            <td colspan="4">Particulars: ${
-                                data.journal_entry.EntryParticulars || "N/A"
-                            }</td>
+                            <td colspan="4">Particulars: ${data.journal_entry.EntryParticulars || "N/A"
+                        }</td>
                         </tr>
                         <tr class="totals">
                             <td colspan="2">TOTAL</td>
                             <td>${mappedDetails
-                                .reduce(
-                                    (sum, detail) =>
-                                        sum +
-                                        (detail.debitAmount
-                                            ? parseFloat(detail.debitAmount.replace(/,/g, ""))
-                                            : 0),
-                                    0
-                                )
-                                .toLocaleString("en-US", {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                })}</td>
+                            .reduce(
+                                (sum, detail) =>
+                                    sum +
+                                    (detail.debitAmount
+                                        ? parseFloat(detail.debitAmount.replace(/,/g, ""))
+                                        : 0),
+                                0
+                            )
+                            .toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}</td>
                             <td>${mappedDetails
-                                .reduce(
-                                    (sum, detail) =>
-                                        sum +
-                                        (detail.creditAmount
-                                            ? parseFloat(detail.creditAmount.replace(/,/g, ""))
-                                            : 0),
-                                    0
-                                )
-                                .toLocaleString("en-US", {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                })}</td>
+                            .reduce(
+                                (sum, detail) =>
+                                    sum +
+                                    (detail.creditAmount
+                                        ? parseFloat(detail.creditAmount.replace(/,/g, ""))
+                                        : 0),
+                                0
+                            )
+                            .toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}</td>
                         </tr>
                         `
                     );
-    
+
                     // Show the modal
                     const modalElement = document.getElementById("jevApprovalModal");
                     const modal = new bootstrap.Modal(modalElement);
                     modal.show();
-    
+
                     // Ensure backdrop is removed properly on modal hide
                     modalElement.addEventListener("hidden.bs.modal", () => {
                         // Remove lingering modal backdrops
@@ -725,7 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.body.classList.remove("modal-open");
                         document.body.style.paddingRight = "";
                     });
-    
+
                     // Close another modal (addJournalEntriesModal) if open
                     const addEntriesModalElement = document.getElementById("addJournalEntriesModal");
                     if (addEntriesModalElement) {
@@ -741,7 +793,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
         });
     }
-    
+
     function editEntry(entryId) {
         loadChartOfAccounts().then((accountMap) => {
             fetch(`/journalentries/${entryId}/`, {
@@ -758,7 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then((data) => {
                     const { journal_entry, journal_details } = data;
-    
+
                     // Populate the modal fields
                     document.getElementById("jevEditDate").textContent = new Date(journal_entry.Entry_Date)
                         .toLocaleDateString("en-US", {
@@ -770,7 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         journal_entry.Entry_No || "N/A";
                     document.getElementById("editRemarks").value =
                         journal_entry.Review_Remarks || "";
-    
+
                     // Populate status dropdown
                     const dropdown = document.getElementById("statusEditDropdown");
                     fetchStatuses()
@@ -789,10 +841,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         .catch((error) =>
                             console.error("Error fetching statuses for dropdown:", error)
                         );
-    
+
                     const accountTableBody = document.getElementById("jevEditAccountTableBody");
                     accountTableBody.innerHTML = ""; // Clear previous data
-    
+
                     // Map details and render rows
                     const mappedDetails = journal_details.map((detail) => {
                         const account = accountMap[detail.Account_FK] || {
@@ -807,20 +859,20 @@ document.addEventListener('DOMContentLoaded', () => {
                             accountId: detail.Account_FK,
                         };
                     });
-    
+
                     mappedDetails.forEach((detail) => {
                         const row = document.createElement("tr");
-    
+
                         // Account Description
                         const accountDescCell = document.createElement("td");
                         accountDescCell.textContent = detail.accountDesc;
                         row.appendChild(accountDescCell);
-    
+
                         // Account Code
                         const accountCodeCell = document.createElement("td");
                         accountCodeCell.textContent = detail.accountCode;
                         row.appendChild(accountCodeCell);
-    
+
                         // Debit Amount
                         const debitCell = document.createElement("td");
                         const debitInput = document.createElement("input");
@@ -830,7 +882,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (detail.debitAmount === 0) debitInput.disabled = true;
                         debitCell.appendChild(debitInput);
                         row.appendChild(debitCell);
-    
+
                         // Credit Amount
                         const creditCell = document.createElement("td");
                         const creditInput = document.createElement("input");
@@ -840,20 +892,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (detail.creditAmount === 0) creditInput.disabled = true;
                         creditCell.appendChild(creditInput);
                         row.appendChild(creditCell);
-    
+
                         accountTableBody.appendChild(row);
-    
+
                         detail.debitInput = debitInput;
                         detail.creditInput = creditInput;
                     });
-    
+
                     // Add totals and particulars row
                     const particularsRow = document.createElement("tr");
                     particularsRow.innerHTML = `
                         <td colspan="4">Particulars: ${journal_entry.EntryParticulars || "N/A"}</td>
                     `;
                     accountTableBody.appendChild(particularsRow);
-    
+
                     const totalRow = document.createElement("tr");
                     totalRow.classList.add("totals");
                     totalRow.innerHTML = `
@@ -866,39 +918,39 @@ document.addEventListener('DOMContentLoaded', () => {
                             .toFixed(2)}</td>
                     `;
                     accountTableBody.appendChild(totalRow);
-    
+
                     // Update totals on input change
                     accountTableBody.addEventListener("input", () => {
                         let totalDebit = 0;
                         let totalCredit = 0;
-    
+
                         mappedDetails.forEach((detail) => {
                             const debitValue = parseFloat(detail.debitInput.value) || 0;
                             const creditValue = parseFloat(detail.creditInput.value) || 0;
                             totalDebit += debitValue;
                             totalCredit += creditValue;
                         });
-    
+
                         document.getElementById("debitTotal").textContent = totalDebit.toFixed(2);
                         document.getElementById("creditTotal").textContent = totalCredit.toFixed(2);
                     });
-    
+
                     // Show the modal
                     const modalElement = document.getElementById("jevEditModal");
                     const modal = new bootstrap.Modal(modalElement);
                     modal.show();
-    
+
                     // Add Save Changes button
                     const modalFooter = modalElement.querySelector(".modal-footer");
                     modalFooter.innerHTML = ""; // Clear existing buttons
                     const saveButton = document.createElement("button");
-    
+
                     saveButton.textContent = "Save Changes";
                     saveButton.classList.add("btn", "btn-primary");
                     saveButton.addEventListener("click", () => {
                         let totalDebit = 0;
                         let totalCredit = 0;
-    
+
                         // Calculate total debit and credit amounts
                         mappedDetails.forEach((detail) => {
                             const debitValue = parseFloat(detail.debitInput.value) || 0;
@@ -906,7 +958,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             totalDebit += debitValue;
                             totalCredit += creditValue;
                         });
-    
+
                         // Validate if totals match
                         if (totalDebit.toFixed(2) !== totalCredit.toFixed(2)) {
                             Swal.fire({
@@ -917,14 +969,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                             return; // Prevent submission if totals do not match
                         }
-    
+
                         // Prepare payload for the PUT request
                         const updatedDetails = mappedDetails.map((detail) => ({
                             Account_FK: detail.accountId,
                             DebitAmount: parseFloat(detail.debitInput.value) || 0,
                             CreditAmount: parseFloat(detail.creditInput.value) || 0,
                         }));
-    
+
                         const payload = {
                             journal_entry: {
                                 Entry_ID: journal_entry.Entry_ID,
@@ -933,9 +985,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             },
                             journal_details: updatedDetails,
                         };
-    
+
                         console.log("Sending payload:", JSON.stringify(payload, null, 2));
-    
+
                         // Send the PUT request
                         fetch(`/journalentries/${entryId}/`, {
                             method: "PUT",
@@ -983,7 +1035,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
         });
     }
-    
+
 
     function deleteEntry(entryId) {
         Swal.fire({
@@ -1020,7 +1072,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
+
 
     function attachActionListeners() {
         const viewButtons = document.querySelectorAll(".view-entry");
@@ -1048,7 +1100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 editEntry(entryId);
             });
         });
-    
+
         deleteButtons.forEach(button => {
             button.addEventListener("click", event => {
                 const entryId = event.target.dataset.entryId;
@@ -1160,16 +1212,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     CreditAmount: parseFloat(row.querySelector('.credit-input')?.value || '0'),
                 };
             });
-    
+
             // Validate debit and credit amounts
             const totalDebit = journalDetails.reduce((sum, detail) => sum + detail.DebitAmount, 0);
             const totalCredit = journalDetails.reduce((sum, detail) => sum + detail.CreditAmount, 0);
-    
+
             if (totalDebit !== totalCredit) {
                 alert('The total debit and credit amounts must be equal.');
                 return; // Stop execution if the totals are not balanced
             }
-    
+
             // Proceed to add journal entry if validation passes
             addJournalEntry();
         });

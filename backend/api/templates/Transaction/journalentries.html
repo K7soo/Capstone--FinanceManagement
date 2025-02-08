@@ -19,6 +19,18 @@ Journal Entries
 	.nav-tabs .nav-link {
 		color: black; /* Default text color */
 	}
+	#pending-tab.active {
+		color: #ffc107 !important;
+		border-color: #ffc107 #ffc107 #fff !important;
+	}
+	#rejected-tab.active {
+		color: #dc3545 !important;
+		border-color: #dc3545 #dc3545 #fff !important;
+	}
+	#approved-tab.active {
+		color: #28a745 !important;
+		border-color: #28a745 #28a745 #fff !important;
+	}
 </style>
 {% endblock %}
 
@@ -38,14 +50,30 @@ Journal Entries
 	<div class="card shadow-sm">
 		<div class="card-body">
 			<div class="d-flex justify-content-between align-items-center pb-3" style="color: #6f42c1">
-				<div class="mb-3 d-flex align-items-center">
-					<label for="records-per-page" class="form-label me-2">Records Per Page:</label>
-					<select id="records-per-page" name="records-per-page" class="form-select w-auto">
-						<option value="10">10</option>
-						<option value="25">25</option>
-						<option value="50">50</option>
-						<option value="100">100</option>
-					</select>
+				<!--begin: Search Bar and Add Account Button -->
+				<!--begin: Search Bar -->
+				<div class="search-bar mb-0" style="width: 300px; position: relative">
+					<input
+						id="searchInput"
+						type="text"
+						class="form-control ps-5"
+						placeholder="Search Account..."
+						style="width: 100%; border-radius: 8px" />
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 20 20"
+						aria-hidden="true"
+						class="search-icon"
+						style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: #6f42c1">
+						<path
+							d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z"
+							stroke="currentColor"
+							fill="none"
+							fill-rule="evenodd"
+							stroke-linecap="round"
+							stroke-linejoin="round"></path>
+					</svg>
 				</div>
 
 				<!-- Add Journal Entries Button -->
@@ -119,30 +147,30 @@ Journal Entries
 												class="form-control"
 												id="entryCode"
 												name="entryCode"
-												placeholder="Enter Entry Code"
-												required />
+												placeholder="Entry Code is Auto-Generated."
+												disabled />
 										</div>
 										<div class="mb-3">
-											<label for="entryDate" class="form-label" style=" color: #6f42c1;">Date:</label>
+											<label for="entryDate" class="form-label" style="color: #6f42c1">Date:</label>
 											<div class="input-group">
-												<span class="input-group-text" style="background-color: #f3f2f7; border: 1px solid #d7d4e5;">
-													<i class="bi bi-calendar2"></i> <!-- Bootstrap Icon for calendar -->
+												<span class="input-group-text" style="background-color: #f3f2f7; border: 1px solid #d7d4e5">
+													<i class="bi bi-calendar2"></i>
+													<!-- Bootstrap Icon for calendar -->
 												</span>
 												<input
 													type="date"
 													class="form-control"
 													id="entryDate"
-													placeholder="Select a date" 
+													placeholder="Select a date"
 													style="
 														border: 1px solid #d7d4e5;
 														border-radius: 0 8px 8px 0;
 														background-color: #f8f9fc;
 														color: #495057;
-													"
-												/>
+													" />
 											</div>
 										</div>
-										
+
 										<div class="mb-3">
 											<label for="entryDescription" class="form-label">Particulars:</label>
 											<textarea id="entryDescription" class="form-control" placeholder="Enter Description"></textarea>
@@ -172,6 +200,7 @@ Journal Entries
 												<thead class="table-light">
 													<tr>
 														<th>Accounts</th>
+														<th>Account Code</th>
 														<th>Debit</th>
 														<th>Credit</th>
 													</tr>
@@ -374,21 +403,93 @@ Journal Entries
 					</div>
 				</div>
 			</div>
-			<div class="table-responsive">
-				<table id="journalEntriesTable" class="table table-bordered table-hover text-center table-acc">
-					<thead>
-						<tr>
-							<th onclick="sortTable('journalEntriesTable', true)">Date</th>
-							<th>Entry No.</th>
-							<th>Particulars</th>
-							<th>Status</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody id="journalEntriesTable">
-						<!-- Rows will be dynamically populated -->
-					</tbody>
-				</table>
+
+			<!-- Tab Content -->
+			<div class="tab-content mt-3">
+				<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+					<div class="table-responsive">
+						<table id="journalEntriesTable" class="table table-bordered table-hover text-center">
+							<thead>
+								<tr>
+									<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+									<th>JEV No.</th>
+									<th>Particulars</th>
+									<th>Status</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="journalEntriesTable">
+								<!-- Rows will be dynamically populated -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+					<div class="tab-content mt-3">
+						<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+							<div class="table-responsive">
+								<table id="pendingTable" class="table table-bordered table-hover text-center">
+									<thead>
+										<tr>
+											<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+											<th>JEV No.</th>
+											<th>Particulars</th>
+											<th>Status</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody id="journalEntriesTable">
+										<!-- Rows will be dynamically populated -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
+					<div class="tab-content mt-3">
+						<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+							<div class="table-responsive">
+								<table id="rejectedTable" class="table table-bordered table-hover text-center">
+									<thead>
+										<tr>
+											<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+											<th>JEV No.</th>
+											<th>Particulars</th>
+											<th>Status</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody id="journalEntriesTable">
+										<!-- Rows will be dynamically populated -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="approved" role="tabpanel" aria-labelledby="approved-tab">
+					<div class="tab-content mt-3">
+						<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+							<div class="table-responsive">
+								<table id="approvedTable" class="table table-bordered table-hover text-center">
+									<thead>
+										<tr>
+											<th onclick="sortTable('journalEntriesTable', true)">Date</th>
+											<th>JEV No.</th>
+											<th>Particulars</th>
+											<th>Status</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody id="journalEntriesTable">
+										<!-- Rows will be dynamically populated -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

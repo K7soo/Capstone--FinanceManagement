@@ -25,167 +25,237 @@ Chart of Accounts
 
 <!-- prettier-ignore -->
 {% block content %}
-<div class="container mt-5">
-	<ol class="breadcrumb mt-2 mb-1">
-		<li class="breadcrumb-item d-flex align-items-center">
-			<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
-			<span class="text-muted">System Setup</span>
-		</li>
-		<li class="breadcrumb-item active" aria-current="page">Chart of Accounts</li>
-	</ol>
-	<h1 class="text" style="color: #6f42c1">Chart of Accounts</h1>
-	<p>Setup page of charting ledger accounts.</p>
-	<!-- <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header text-white"
-                    style="background-color: #6f42c1;">
-                    <h5 class="mb-0">File Tree</h5>
-                </div>
-                <div class="card-body">
-                    <ul id="fileTree" class="list-group">
-                    </ul>
-                </div>
-            </div>
-        </div> -->
-	<!-- Main Content Section -->
-	<!-- <div class="col-md-8"> -->
-	<div class="card shadow-sm">
-		<!--begin: Search Bar and Add Account Button -->
-		<div class="d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
-			<!--begin: Search Bar -->
-			<div class="search-bar mb-0" style="width: 300px; position: relative">
-				<input
-					id="searchInput"
-					type="text"
-					class="form-control ps-5"
-					placeholder="Search Account..."
-					style="width: 100%; border-radius: 8px" />
-				<svg
-					width="16"
-					height="16"
-					viewBox="0 0 20 20"
-					aria-hidden="true"
-					class="search-icon"
-					style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: #6f42c1">
-					<path
-						d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z"
-						stroke="currentColor"
-						fill="none"
-						fill-rule="evenodd"
-						stroke-linecap="round"
-						stroke-linejoin="round"></path>
-				</svg>
-			</div>
-			<!--end: Search Bar -->
-
-			<!--begin: Add Account Button -->
-			<button
-				class="btn btn-primary add-chart-btn text-white"
-				style="
-					background-color: #6f42c1;
-					color: white;
-					border: none;
-					border-radius: 8px;
-					font-weight: 500;
-					padding: 0.5rem 1.25rem;
-					transition: background-color 0.3s ease, color 0.3s ease;
-				"
-				onmouseover="this.style.backgroundColor='#5a3795';"
-				onmouseout="this.style.backgroundColor='#6f42c1';"
-				data-bs-toggle="modal"
-				data-bs-target="#addChartModal">
-				<i class="bi bi-plus"></i>
-				ADD ACCOUNT
-			</button>
-			<!--end: Add Account Button -->
-		</div>
-		<!--end: Search Bar and Add Account Button -->
-
-		<div class="card-body">
-			<div class="table-responsive">
-				<table id="chartOfAccTable" class="table table-bordered table-hover text-center table-acc">
-					<thead class="table-light">
-						<tr>
-							<!-- Add a filter icon inside the <th> -->
-							<th onclick="sortTable(0)" style="cursor: pointer">
-								<i class="bi bi-filter" style="margin-left: 5px; cursor: pointer" onclick="openFilterModal(event, 0)"></i>
-								Account Code
-							</th>
-							<th>Account Description</th>
-							<th>Account Type</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for account in accounts %}
-						<tr>
-							<td>{{ account.AccountCode }}</td>
-							<td>{{ account.AccountTypeDesc }}</td>
-							<td>{{ account.AccountType }}</td>
-							<td class="text-center">
-								<button class="btn btn-warning btn-sm custom-btn-edit">EDIT</button>
-								<button class="btn btn-info btn-sm custom-btn-view">VIEW</button>
-								<button class="btn btn-danger btn-sm custom-btn-delete">DELETE</button>
-							</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</div>
-			<!-- Pagination -->
-			<nav aria-label="Page navigation example"></nav>
-			<ul class="pagination justify-content-end">
-					<li class="page-item">
-						<a class="page-link" href="#" aria-label="Previous">
-							<span aria-hidden="true">&laquo;</span>
-						</a>
-					</li>
-					<li class="page-item"><a class="page-link" href="#">1</a></li>
-					<li class="page-item"><a class="page-link" href="#">2</a></li>
-					<li class="page-item"><a class="page-link" href="#">3</a></li>
-					<li class="page-item">
-						<a class="page-link" href="#" aria-label="Next">
-							<span aria-hidden="true">&raquo;</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
-	</div>
-	<!-- </div>
-    </div> -->
-
-	<!-- Add Account Modal -->
-	<div class="modal fade" id="addChartModal" tabindex="-1" aria-labelledby="addChartModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="addChartModalLabel">Add New Account</h5>
-					<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+	<div class="container mt-5">
+		<ol class="breadcrumb mt-2 mb-1">
+			<li class="breadcrumb-item d-flex align-items-center">
+				<!-- <i class="bi bi-caret-right-fill me-2 text-muted"></i> -->
+				<span class="text-muted">System Setup</span>
+			</li>
+			<li class="breadcrumb-item active" aria-current="page">Chart of Accounts</li>
+		</ol>
+		<h1 class="text" style="color: #6f42c1">Chart of Accounts</h1>
+		<p>Setup page of charting ledger accounts.</p>
+		<!-- <div class="row">
+	        <div class="col-md-4">
+	            <div class="card shadow-sm">
+	                <div class="card-header text-white"
+	                    style="background-color: #6f42c1;">
+	                    <h5 class="mb-0">File Tree</h5>
+	                </div>
+	                <div class="card-body">
+	                    <ul id="fileTree" class="list-group">
+	                    </ul>
+	                </div>
+	            </div>
+	        </div> -->
+		<!-- Main Content Section -->
+		<!-- <div class="col-md-8"> -->
+		<div class="card shadow-sm">
+			<!--begin: Search Bar and Add Account Button -->
+			<div class="d-flex justify-content-between align-items-center p-3 pb-1" style="color: #6f42c1">
+				<!--begin: Search Bar -->
+				<div class="search-bar mb-0" style="width: 300px; position: relative">
+					<input
+						id="searchInput"
+						type="text"
+						class="form-control ps-5"
+						placeholder="Search Account..."
+						style="width: 100%; border-radius: 8px" />
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 20 20"
+						aria-hidden="true"
+						class="search-icon"
+						style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: #6f42c1">
+						<path
+							d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z"
+							stroke="currentColor"
+							fill="none"
+							fill-rule="evenodd"
+							stroke-linecap="round"
+							stroke-linejoin="round"></path>
+					</svg>
 				</div>
-				<form id="addChartForm">
-					<div class="modal-body">
-						<div class="mb-3">
-							<label for="AccountCode" class="form-label">Account Code</label>
-							<input type="text" id="AccountCode" name="AccountCode" class="form-control" required />
-						</div>
-						<div class="mb-3">
-							<label for="AccountDesc" class="form-label">Account Description</label>
-							<input type="text" id="AccountDesc" name="AccountDesc" class="form-control" required />
-						</div>
-						<div class="mb-3">
-							<label for="AccountType" class="form-label">Account Type</label>
-							<select id="accountType" name="AccountType" class="form-select" required>
-								<option value="">Select Account Type</option>
-								<!-- Options will be dynamically populated -->
-							</select>
-						</div>
-						<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+				<!--end: Search Bar -->
+
+				<!--begin: Add Account Button -->
+				<button
+					class="btn btn-primary add-chart-btn text-white"
+					style="
+						background-color: #6f42c1;
+						color: white;
+						border: none;
+						border-radius: 8px;
+						font-weight: 500;
+						padding: 0.5rem 1.25rem;
+						transition: background-color 0.3s ease, color 0.3s ease;
+					"
+					onmouseover="this.style.backgroundColor='#5a3795';"
+					onmouseout="this.style.backgroundColor='#6f42c1';"
+					data-bs-toggle="modal"
+					data-bs-target="#addChartModal">
+					<i class="bi bi-plus"></i>
+					ADD ACCOUNT
+				</button>
+				<!--end: Add Account Button -->
+			</div>
+			<!--end: Search Bar and Add Account Button -->
+
+			<div class="card-body">
+				<div class="table-responsive">
+					<table id="chartOfAccTable" class="table table-bordered table-hover text-center table-acc">
+						<thead class="table-light">
+							<tr>
+								<!-- Add a filter icon inside the <th> -->
+								<th onclick="sortTable(0)" style="cursor: pointer">
+									<i class="bi bi-filter" style="margin-left: 5px; cursor: pointer" onclick="openFilterModal(event, 0)"></i>
+									Account Code
+								</th>
+								<th>Account Description</th>
+								<th>Account Type</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for account in accounts %}
+							<tr>
+								<td>{{ account.AccountCode }}</td>
+								<td>{{ account.AccountTypeDesc }}</td>
+								<td>{{ account.AccountType }}</td>
+								<td class="text-center">
+									<button class="btn btn-warning btn-sm custom-btn-edit">EDIT</button>
+									<button class="btn btn-info btn-sm custom-btn-view">VIEW</button>
+									<button class="btn btn-danger btn-sm custom-btn-delete">DELETE</button>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<!-- Pagination -->
+				<!-- <nav aria-label="Page navigation example"></nav>
+				<ul class="pagination justify-content-end">
+						<li class="page-item">
+							<a class="page-link" href="#" aria-label="Previous">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+						<li class="page-item"><a class="page-link" href="#">1</a></li>
+						<li class="page-item"><a class="page-link" href="#">2</a></li>
+						<li class="page-item"><a class="page-link" href="#">3</a></li>
+						<li class="page-item">
+							<a class="page-link" href="#" aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+					</ul>
+				</nav> -->
+			</div>
+		</div>
+		<!-- </div>
+	    </div> -->
+
+		<!-- Add Account Modal -->
+		<div class="modal fade" id="addChartModal" tabindex="-1" aria-labelledby="addChartModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="addChartModalLabel">Add New Account</h5>
+						<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
 					</div>
+					<form id="addChartForm">
+						<div class="modal-body">
+							<div class="mb-3">
+								<label for="AccountCode" class="form-label">Account Code</label>
+								<input type="text" id="AccountCode" name="AccountCode" class="form-control" required />
+							</div>
+							<div class="mb-3">
+								<label for="AccountDesc" class="form-label">Account Description</label>
+								<input type="text" id="AccountDesc" name="AccountDesc" class="form-control" required />
+							</div>
+							<div class="mb-3">
+								<label for="AccountType" class="form-label">Account Type</label>
+								<select id="accountType" name="AccountType" class="form-select" required>
+									<option value="">Select Account Type</option>
+									<!-- Options will be dynamically populated -->
+								</select>
+							</div>
+							<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+						</div>
+						<div class="modal-footer">
+							<button
+								type="reset"
+								class="btn"
+								data-bs-dismiss="modal"
+								style="
+									background-color: #e9ecef;
+									color: #6c757d;
+									border: none;
+									border-radius: 4px;
+									padding: 0.5rem 1rem;
+									transition: background-color 0.3s ease, color 0.3s ease;
+								"
+								onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
+								onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
+								Cancel
+							</button>
+
+							<button
+								type="submit"
+								class="btn"
+								style="
+									background-color: #6f42c1;
+									color: white;
+									border: none;
+									border-radius: 4px;
+									padding: 0.5rem 1rem;
+									transition: background-color 0.3s ease, color 0.3s ease;
+								"
+								onmouseover="this.style.backgroundColor='#5a3795';"
+								onmouseout="this.style.backgroundColor='#6f42c1';">
+								Add Account
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Edit Account Modal -->
+		<div id="editChartModal" class="modal fade" tabindex="-1" aria-labelledby="editChartModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h5 class="modal-title" id="editChartModalLabel">Edit Account</h5>
+						<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+					</div>
+					<!-- Modal Body -->
+					<div class="modal-body">
+						<form id="editChartForm">
+							<div class="mb-3">
+								<label for="EditAccountCode" class="form-label">Account Code:</label>
+								<input type="text" id="EditAccountCode" name="AccountCode" class="form-control" required />
+							</div>
+							<div class="mb-3">
+								<label for="EditAccountDesc" class="form-label">Account Description:</label>
+								<input type="text" id="EditAccountDesc" name="AccountDesc" class="form-control" required />
+							</div>
+							<div class="mb-3">
+								<label for="EditAccountType" class="form-label">Account Type:</label>
+								<select id="EditAccountType" class="form-select" name="AccountType" required>
+									<option value="">Select Account Type</option>
+									<!-- Options will be dynamically populated -->
+								</select>
+							</div>
+							<input type="hidden" id="EditAccountId" name="id" />
+						</form>
+					</div>
+					<!-- Modal Footer -->
 					<div class="modal-footer">
 						<button
-							type="reset"
+							type="button"
 							class="btn"
 							data-bs-dismiss="modal"
 							style="
@@ -203,6 +273,7 @@ Chart of Accounts
 
 						<button
 							type="submit"
+							form="editChartForm"
 							class="btn"
 							style="
 								background-color: #6f42c1;
@@ -214,84 +285,13 @@ Chart of Accounts
 							"
 							onmouseover="this.style.backgroundColor='#5a3795';"
 							onmouseout="this.style.backgroundColor='#6f42c1';">
-							Add Account
+							Save Changes
 						</button>
 					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
-	<!-- Edit Account Modal -->
-	<div id="editChartModal" class="modal fade" tabindex="-1" aria-labelledby="editChartModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<!-- Modal Header -->
-				<div class="modal-header">
-					<h5 class="modal-title" id="editChartModalLabel">Edit Account</h5>
-					<!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-				</div>
-				<!-- Modal Body -->
-				<div class="modal-body">
-					<form id="editChartForm">
-						<div class="mb-3">
-							<label for="EditAccountCode" class="form-label">Account Code:</label>
-							<input type="text" id="EditAccountCode" name="AccountCode" class="form-control" required />
-						</div>
-						<div class="mb-3">
-							<label for="EditAccountDesc" class="form-label">Account Description:</label>
-							<input type="text" id="EditAccountDesc" name="AccountDesc" class="form-control" required />
-						</div>
-						<div class="mb-3">
-							<label for="EditAccountType" class="form-label">Account Type:</label>
-							<select id="EditAccountType" class="form-select" name="AccountType" required>
-								<option value="">Select Account Type</option>
-								<!-- Options will be dynamically populated -->
-							</select>
-						</div>
-						<input type="hidden" id="EditAccountId" name="id" />
-					</form>
-				</div>
-				<!-- Modal Footer -->
-				<div class="modal-footer">
-					<button
-						type="button"
-						class="btn"
-						data-bs-dismiss="modal"
-						style="
-							background-color: #e9ecef;
-							color: #6c757d;
-							border: none;
-							border-radius: 4px;
-							padding: 0.5rem 1rem;
-							transition: background-color 0.3s ease, color 0.3s ease;
-						"
-						onmouseover="this.style.backgroundColor='#d6d8db'; this.style.color='#343a40';"
-						onmouseout="this.style.backgroundColor='#e9ecef'; this.style.color='#6c757d';">
-						Cancel
-					</button>
-
-					<button
-						type="submit"
-						form="editChartForm"
-						class="btn"
-						style="
-							background-color: #6f42c1;
-							color: white;
-							border: none;
-							border-radius: 4px;
-							padding: 0.5rem 1rem;
-							transition: background-color 0.3s ease, color 0.3s ease;
-						"
-						onmouseover="this.style.backgroundColor='#5a3795';"
-						onmouseout="this.style.backgroundColor='#6f42c1';">
-						Save Changes
-					</button>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 {% endblock %}
 
 <!-- prettier-ignore -->
