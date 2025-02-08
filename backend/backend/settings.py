@@ -163,7 +163,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [ 
-    os.path.join(BASE_DIR, 'api', 'static'),
+    os.path.join(BASE_DIR, 'backend', 'api', 'static'),
     os.path.join(BASE_DIR, 'authentication/static'),
 ]
 
