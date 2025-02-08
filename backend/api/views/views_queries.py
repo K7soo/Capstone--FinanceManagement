@@ -82,3 +82,8 @@ class LedgerQueryView(APIView):
 
         return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
     
+
+class TrialBalanceQueryView(APIView):
+    def get(self, request):
+        pass
+    
