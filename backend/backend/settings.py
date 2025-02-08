@@ -1,6 +1,8 @@
 from pathlib import Path
 from datetime import timedelta
+import os
 from decouple import config
+# import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -92,7 +94,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Static files
 STATIC_URL = '/static/'
-STATIC_ROOT = config('STATIC_ROOT', default=BASE_DIR / 'staticfiles')
+
+STATICFILES_DIRS = [ 
+    os.path.join(BASE_DIR, 'api', 'static'),
+    os.path.join(BASE_DIR, 'authentication/static'),
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 
