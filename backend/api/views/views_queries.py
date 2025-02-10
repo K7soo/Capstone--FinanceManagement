@@ -5,6 +5,7 @@ from rest_framework import status
 from ..models import *
 from ..serializers import *
 from rest_framework.permissions import AllowAny
+from django.db.models import Sum, Q, Case, When, Value
 
 class JournalQueryView(APIView):
     permission_classes = [AllowAny]
@@ -84,6 +85,81 @@ class LedgerQueryView(APIView):
     
 
 class TrialBalanceQueryView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
-        pass
-    
+        # Get filtering parameters from request
+        start_date = request.GET.get("start_date")
+        end_date = request.GET.get("end_date")
+        status = request.GET.get("status", "Approved")  # Default to "Approved"
+
+        # Apply filters to the query
+        filters = Q(JournalEntry_FK__EntryStatus_FK=2)  # Updated field name
+
+        if start_date and end_date:
+            filters &= Q(JournalEntry_FK__Entry_Date__range=[start_date, end_date])
+
+        trial_balance = (
+            JournalEntryDetails.objects
+            .filter(filters)
+            .values(
+                "Account_FK__AccountCode",
+                "Account_FK__AccountDesc",
+                "Account_FK__AccountType_FK__AccountTypeDesc",
+            )
+            .annotate(
+                total_debit=Sum("DebitAmount"),
+                total_credit=Sum("CreditAmount")
+            )
+            .order_by(
+                Case(
+                    When(Account_FK__AccountType_FK__AccountTypeDesc="Assets", then=Value(1)),
+                    When(Account_FK__AccountType_FK__AccountTypeDesc="Expenses", then=Value(2)),
+                    When(Account_FK__AccountType_FK__AccountTypeDesc="Liabilities", then=Value(3)),
+                    When(Account_FK__AccountType_FK__AccountTypeDesc="Equity", then=Value(4)),
+                    When(Account_FK__AccountType_FK__AccountTypeDesc="Income", then=Value(5)),
+                    default=Value(6)
+                ),
+                "Account_FK__AccountCode"  # Sorting by account code after type
+            )
+        )
+
+        # Format response data
+        trial_balance_data = []
+        total_debit = 0
+        total_credit = 0
+
+        for account in trial_balance:
+            account_type = account["Account_FK__AccountType_FK__AccountTypeDesc"]
+            debit = account["total_debit"] or 0
+            credit = account["total_credit"] or 0
+
+            # Apply debit/credit nature calculation
+            if account_type in ["Assets", "Expenses"]:
+                balance = debit - credit
+                debit = balance if balance > 0 else 0
+                credit = abs(balance) if balance < 0 else 0
+            else:  # Liabilities, Equity, Income
+                balance = credit - debit
+                credit = balance if balance > 0 else 0
+                debit = abs(balance) if balance < 0 else 0
+
+            trial_balance_data.append({
+                "AccountCode": account["Account_FK__AccountCode"],
+                "AccountDesc": account["Account_FK__AccountDesc"],
+                "Debit": debit,
+                "Credit": credit
+            })
+
+            total_debit += debit
+            total_credit += credit
+
+        # Add total row
+        trial_balance_data.append({
+            "AccountCode": "TOTAL",
+            "AccountDesc": "",
+            "Debit": total_debit,
+            "Credit": total_credit
+        })
+
+        return Response(trial_balance_data)

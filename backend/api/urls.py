@@ -52,6 +52,7 @@ urlpatterns = [
     path('reports/', views_.reports_view, name='reports'),
     path('querygeneraljournal/', views_queries.JournalQueryView.as_view(), name='filter_journal_entries'),
     path('querygeneralledger/', views_queries.LedgerQueryView.as_view(), name='filter_journal_entries'),
+     path('querytrialbalance/', views_queries.TrialBalanceQueryView.as_view(), name='filter_journal_entries'),
 
     # -- Alternate path: path('generaljournalquery/', views_query_journal.JournalQueryView.as_view(), name='generaljournal'), -- #
 ]
