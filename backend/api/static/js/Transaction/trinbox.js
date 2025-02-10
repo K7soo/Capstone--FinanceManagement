@@ -282,23 +282,15 @@ document.addEventListener("DOMContentLoaded", () => {
         accountsTable.innerHTML = '';
 
         mappedDetails.forEach(detail => {
-            // Format debit and credit values with commas and 2 decimal places
-            const formattedDebit = detail.debit ? parseFloat(detail.debit).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }) : '0.00';
-    
-            const formattedCredit = detail.credit ? parseFloat(detail.credit).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }) : '0.00';
-    
+            const rawDebit = detail.debit || '0.00';
+            const rawCredit = detail.credit || '0.00';
+        
             const row = `
                 <tr>
                     <td>${detail.accountDesc}</td>
                     <td>${detail.accountCode}</td>
-                    <td class="text-end">${formattedDebit}</td>
-                    <td class="text-end">${formattedCredit}</td>
+                    <td class="text-end">${rawDebit}</td>
+                    <td class="text-end">${rawCredit}</td>
                 </tr>
             `;
             accountsTable.insertAdjacentHTML('beforeend', row);
