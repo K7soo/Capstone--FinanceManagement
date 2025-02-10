@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('createJevBtn').addEventListener('click', function () {
         const jevDate = document.getElementById('jevDate').textContent;
         const jevDateAPI = formatDateForAPI(jevDate);
-        const jevNumber = document.getElementById('jevNumber').textContent;
+        const jevNumber = generateJEVNumber();
         const remarks = document.getElementById('remarks').value;
         const TRTemplate_FK = window.currentTemplateId;
     
