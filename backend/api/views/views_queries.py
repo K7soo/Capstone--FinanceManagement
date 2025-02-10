@@ -117,6 +117,7 @@ class TrialBalanceQueryView(APIView):
                 total_credit=Sum("CreditAmount")
             )
             .order_by(
+                "Account_FK__AccountCode",
                 Case(
                     When(Account_FK__AccountType_FK__AccountTypeDesc="Assets", then=Value(1)),
                     When(Account_FK__AccountType_FK__AccountTypeDesc="Expenses", then=Value(2)),
@@ -125,7 +126,7 @@ class TrialBalanceQueryView(APIView):
                     When(Account_FK__AccountType_FK__AccountTypeDesc="Income", then=Value(5)),
                     default=Value(6)
                 ),
-                "Account_FK__AccountCode"  # Sorting by account code after type
+                "Account_FK__AccountType_FK__AccountTypeDesc",  # Ensures account types remain grouped  # Sorts by account code in ascending order
             )
         )
 
