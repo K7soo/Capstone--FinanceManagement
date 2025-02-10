@@ -91,12 +91,17 @@ class TrialBalanceQueryView(APIView):
         # Get filtering parameters from request
         start_date = request.GET.get("start_date")
         end_date = request.GET.get("end_date")
-        status = request.GET.get("status", "Approved")  # Default to "Approved"
+        as_of_date = request.GET.get("as_of")  # New "As of" date filter
 
         # Apply filters to the query
-        filters = Q(JournalEntry_FK__EntryStatus_FK=2)  # Updated field name
+        filters = Q(JournalEntry_FK__EntryStatus_FK=2)  # Only Approved entries
 
-        if start_date and end_date:
+        # Apply "As of" date filter correctly
+        if as_of_date:
+            filters &= Q(JournalEntry_FK__Entry_Date__lte=as_of_date)
+
+        # Apply "start_date" and "end_date" only if "as_of" is NOT selected
+        elif start_date and end_date:
             filters &= Q(JournalEntry_FK__Entry_Date__range=[start_date, end_date])
 
         trial_balance = (
@@ -112,6 +117,7 @@ class TrialBalanceQueryView(APIView):
                 total_credit=Sum("CreditAmount")
             )
             .order_by(
+                "Account_FK__AccountCode",
                 Case(
                     When(Account_FK__AccountType_FK__AccountTypeDesc="Assets", then=Value(1)),
                     When(Account_FK__AccountType_FK__AccountTypeDesc="Expenses", then=Value(2)),
@@ -120,7 +126,7 @@ class TrialBalanceQueryView(APIView):
                     When(Account_FK__AccountType_FK__AccountTypeDesc="Income", then=Value(5)),
                     default=Value(6)
                 ),
-                "Account_FK__AccountCode"  # Sorting by account code after type
+                "Account_FK__AccountType_FK__AccountTypeDesc",  # Ensures account types remain grouped  # Sorts by account code in ascending order
             )
         )
 
@@ -163,3 +169,5 @@ class TrialBalanceQueryView(APIView):
         })
 
         return Response(trial_balance_data)
+    
+    

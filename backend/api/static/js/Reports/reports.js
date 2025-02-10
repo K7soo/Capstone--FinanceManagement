@@ -447,7 +447,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function loadGeneralLedger() {
+    function loadGeneralLedger() 
+    {
         console.log("Initializing General Ledger Tab...");
     
         let fetchedData = []; // Store the queried data for print/export operations
@@ -644,7 +645,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (printledger) {
             printledger.addEventListener("click", handlePrint);
         }
-    
+        
         // if (exportButton) {
         //     exportButton.addEventListener("click", handleExport);
         // }
@@ -835,14 +836,164 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error loading initial data:", error);
         });
     }
-    
-    
-    
 
     function loadTrialBalance() {
-        console.log("Loading Cash Flow Tab...");
-        // Logic to load Cash Flow data
+        console.log("Initializing Trial Balance Tab...");
+    
+        // Validate Filters
+        function validateFilters() {
+            const asOfDate = document.getElementById("as-of-tb").value;
+            const durationFrom = document.getElementById("duration-from-tb").value;
+            const durationTo = document.getElementById("duration-to-tb").value;
+    
+            if (!asOfDate && (!durationFrom || !durationTo)) {
+                Swal.fire(
+                    "Validation Error",
+                    "Please select either an 'As of' date or a valid duration range.",
+                    "error"
+                );
+                return false;
+            }
+    
+            return true;
+        }
+    
+        // Fetch Trial Balance Data with Date Filters
+        function fetchTrialBalanceData(asOfDate, startDate, endDate) {
+            if (!validateFilters()) return Promise.reject("Invalid date selection.");
+        
+            let url = "/querytrialbalance/";
+            const params = new URLSearchParams();
+        
+            if (asOfDate) {
+                params.append("as_of", asOfDate);
+            } else if (startDate && endDate) {
+                params.append("start_date", startDate);
+                params.append("end_date", endDate);
+            }
+        
+            if (params.toString()) {
+                url += "?" + params.toString();
+            }
+        
+            console.log("Fetching Trial Balance from:", url); // Debugging output
+        
+            return fetch(url, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Calculate total debit & credit from the response
+                let totalDebit = 0;
+                let totalCredit = 0;
+        
+                data.forEach(entry => {
+                    totalDebit += entry.Debit || 0;
+                    totalCredit += entry.Credit || 0;
+                });
+        
+                // If both totals are zero, show an alert and return an empty response
+                if (totalDebit === 0 && totalCredit === 0) {
+                    Swal.fire("No Data", "No trial balance data found for the selected filters.", "info");
+                    return Promise.reject("No data found.");
+                }
+        
+                return data;
+            })
+            .catch(error => {
+                console.error("Error fetching trial balance data:", error);
+                throw error;
+            });
+        }
+    
+        // Print Function
+        function handleTrialBalancePrint(data) {
+            const printWindow = window.open("", "_blank");
+            const htmlContent = `
+                <html>
+                    <head>
+                        <title>Trial Balance Report</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                margin: 20px;
+                            }
+                            h1, h3, h4 {
+                                text-align: center;
+                                margin-bottom: 15px;
+                            }
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                                margin-top: 15px;
+                            }
+                            th, td {
+                                border: 1px solid black;
+                                padding: 6px;
+                                text-align: left;
+                            }
+                            th {
+                                background-color: #f2f2f2;
+                            }
+                            td.right-align {
+                                text-align: right;
+                            }
+                            .total-row {
+                                font-weight: bold;
+                                background-color: #eaeaea;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Trial Balance Report</h1>
+                        <h3>Company: Tikme Dine</h3>
+                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Account Code</th>
+                                    <th>Account Description</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.map(entry => `
+                                    <tr>
+                                        <td>${entry.AccountCode}</td>
+                                        <td>${entry.AccountDesc}</td>
+                                        <td class="right-align">${entry.Debit > 0 ? entry.Debit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : ""}</td>
+                                        <td class="right-align">${entry.Credit > 0 ? entry.Credit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : ""}</td>
+                                    </tr>
+                                `).join("")}
+                            </tbody>
+                        </table>
+                    </body>
+                </html>
+            `;
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    
+        // Set Up Print Action Listener
+        const printButton = document.getElementById("print-trial-balance");
+        if (printButton) {
+            printButton.addEventListener("click", () => {
+                const asOfDate = document.getElementById("as-of-tb").value;
+                const startDate = document.getElementById("duration-from-tb").value;
+                const endDate = document.getElementById("duration-to-tb").value;
+    
+                fetchTrialBalanceData(asOfDate, startDate, endDate)
+                    .then(data => handleTrialBalancePrint(data))
+                    .catch(error => console.error("Failed to load trial balance:", error));
+            });
+        }
     }
+    
 
     function loadIncomeVsExpense() {
         console.log("Loading Income vs Expense Tab...");
