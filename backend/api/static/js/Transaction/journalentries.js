@@ -1212,18 +1212,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     CreditAmount: parseFloat(row.querySelector('.credit-input')?.value || '0'),
                 };
             });
-
+    
             // Validate debit and credit amounts
             const totalDebit = journalDetails.reduce((sum, detail) => sum + detail.DebitAmount, 0);
             const totalCredit = journalDetails.reduce((sum, detail) => sum + detail.CreditAmount, 0);
-
+    
             if (totalDebit !== totalCredit) {
-                alert('The total debit and credit amounts must be equal.');
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: 'The total debit and credit amounts must be equal.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
                 return; // Stop execution if the totals are not balanced
             }
-
+    
             // Proceed to add journal entry if validation passes
-            addJournalEntry();
+            Swal.fire({
+                title: 'Success',
+                text: 'Journal entry added successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                addJournalEntry();
+            });
         });
     }
 });
