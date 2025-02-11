@@ -68,6 +68,104 @@ class PaymentRecordView(views.APIView):
             return Response({"message": "Payment record deleted successfully"}, status=status.HTTP_200_OK)
         except PaymentRecord.DoesNotExist:
             return Response({"error": "Payment record not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class COGSTotalWithSources(views.APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            # Get the specific "Cost of Goods Sold" account
+            cogs_account = ChartOfAccs.objects.filter(AccountDesc__iexact="Cost of Goods Sold").first()
+
+            # If account does not exist, return an empty response
+            if not cogs_account:
+                return JsonResponse({"message": "Cost of Goods Sold account not found."}, status=status.HTTP_204_NO_CONTENT)
+
+            # Retrieve approved journal entries for "Cost of Goods Sold"
+            journal_details = JournalEntryDetails.objects.filter(
+                Account_FK=cogs_account,
+                JournalEntry_FK__EntryStatus_FK=2  # Only Approved Entries
+            )
+
+            # Calculate total COGS (default to 0 if no values)
+            total_cogs = journal_details.aggregate(
+                total=Sum(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField())
+            )['total'] or 0
+
+            # Retrieve sources contributing to COGS
+            account_sources = journal_details.values(
+                'Account_FK__AccountCode',
+                'Account_FK__AccountDesc'
+            ).annotate(
+                total_debit=Sum('DebitAmount'),
+                total_credit=Sum('CreditAmount'),
+                net_expense=Sum(F('DebitAmount') - F('CreditAmount'))
+            ).order_by('Account_FK__AccountCode')  # Sort by Account Code
+
+            # If no data is found, return an empty response
+            if not account_sources and total_cogs == 0:
+                return JsonResponse({"message": "No Cost of Goods Sold data found."}, status=status.HTTP_204_NO_CONTENT)
+
+            # Structure the response
+            response_data = {
+                "total_cogs": total_cogs,
+                "account_sources": list(account_sources)
+            }
+
+            return JsonResponse(response_data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class ProductInventoryTotalWithSources(views.APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            # Get the specific "Product Inventory" account
+            inventory_account = ChartOfAccs.objects.filter(AccountDesc__iexact="Products Inventory").first()
+
+            # If account does not exist, return an empty response
+            if not inventory_account:
+                return JsonResponse({"message": "Product Inventory account not found."}, status=status.HTTP_204_NO_CONTENT)
+
+            # Retrieve approved journal entries for "Product Inventory"
+            journal_details = JournalEntryDetails.objects.filter(
+                Account_FK=inventory_account,
+                JournalEntry_FK__EntryStatus_FK=2  # Only Approved Entries
+            )
+
+            # Calculate total purchase cost of inventory (default to 0 if no values)
+            total_inventory_purchase = journal_details.aggregate(
+                total=Sum(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField())
+            )['total'] or 0
+
+            # Retrieve sources contributing to Product Inventory
+            account_sources = journal_details.values(
+                'Account_FK__AccountCode',
+                'Account_FK__AccountDesc'
+            ).annotate(
+                total_debit=Sum('DebitAmount'),
+                total_credit=Sum('CreditAmount'),
+                net_inventory_cost=Sum(F('DebitAmount') - F('CreditAmount'))
+            ).order_by('Account_FK__AccountCode')  # Sort by Account Code
+
+            # If no data is found, return an empty response
+            if not account_sources and total_inventory_purchase == 0:
+                return JsonResponse({"message": "No Product Inventory data found."}, status=status.HTTP_204_NO_CONTENT)
+
+            # Structure the response
+            response_data = {
+                "total_inventory_purchase": total_inventory_purchase,
+                "account_sources": list(account_sources)
+            }
+
+            return JsonResponse(response_data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
 class ExpenseTotalWithSources(views.APIView):
@@ -76,7 +174,7 @@ class ExpenseTotalWithSources(views.APIView):
     def get(self, request):
         try:
             # Filter for 'Expense' Account Type
-            expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='EXPENSES')
+            expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='Expenses')
 
             # Filter JournalEntryDetails for:
             # 1. Accounts under 'Expense'

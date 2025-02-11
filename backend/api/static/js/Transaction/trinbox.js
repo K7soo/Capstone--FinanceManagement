@@ -214,6 +214,12 @@ document.addEventListener("DOMContentLoaded", () => {
             templateType = 'Logistics Purchase';
         } else {
             console.error(`No template found for ${transaction.Description}`);
+            Swal.fire({
+                icon: 'warning',
+                title: 'No preset template found!',
+                text: 'Please create the necessary template for auto-generation.',
+                confirmButtonColor: '#6f42c1'
+            });
             return; // Exit if no matching description
         }
         
