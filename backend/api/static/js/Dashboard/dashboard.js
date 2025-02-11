@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+    loadFinancialData();
+
     fetch('/total-income/')
         .then(response => response.json())
         .then(data => {
@@ -40,6 +42,41 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => console.error('Error fetching income vs expenses:', error));
+
+
+    function loadFinancialData() {
+        const totalIncomeUrl = "/total-income/";
+        const totalExpensesUrl = "/total-expenses/";
+    
+        // Fetch Total Revenue (Income)
+        const fetchIncome = fetch(totalIncomeUrl)
+            .then(response => response.json())
+            .then(data => data.total_income || 0)
+            .catch(error => {
+                console.error("Error fetching Total Revenue:", error);
+                return 0;
+            });
+    
+        // Fetch Total Expenses (Includes COGS)
+        const fetchExpenses = fetch(totalExpensesUrl)
+            .then(response => response.json())
+            .then(data => data.total_expense || 0)
+            .catch(error => {
+                console.error("Error fetching Total Expenses:", error);
+                return 0;
+            });
+    
+        // Process all fetch requests together
+        Promise.all([fetchIncome, fetchExpenses])
+            .then(([totalRevenue, totalExpenses]) => {
+                // Compute Net Profit = Total Revenue - Total Expenses
+                const netProfit = totalRevenue - totalExpenses;
+    
+                // Display Net Profit
+                document.getElementById("net-profit-value").innerText = `₱${netProfit.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+            })
+            .catch(error => console.error("Error processing financial data:", error));
+    }
 
     // Function to Update Income vs Expenses Chart
     function updateIncomeExpensesChart(totalIncome, totalExpenses) {
