@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     loadFinancialData();
+    loadCashFlowChart();
+    loadIncomeVsExpensesChart();
+    loadDebtToEquityChart();
 
     fetch('/total-income/')
         .then(response => response.json())
@@ -30,20 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => console.error('Error fetching total COGS:', error));
-        
-    // Income vs Expenses Chart
-    fetch('/income-vs-expenses/')
-        .then(response => response.json())
-        .then(data => {
-            if (data.total_income !== undefined && data.total_expenses !== undefined) {
-                updateIncomeExpensesChart(data.total_income, data.total_expenses);
-            } else {
-                console.error("Invalid response format for income vs expenses.");
-            }
-        })
-        .catch(error => console.error('Error fetching income vs expenses:', error));
 
-
+    // -- NET PROFIT -- //
     function loadFinancialData() {
         const totalIncomeUrl = "/total-income/";
         const totalExpensesUrl = "/total-expenses/";
@@ -78,55 +69,269 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error("Error processing financial data:", error));
     }
 
-    // Function to Update Income vs Expenses Chart
-    function updateIncomeExpensesChart(totalIncome, totalExpenses) {
-        const incomeExpensesCtx = document.getElementById('incomeExpensesChart').getContext('2d');
-        new Chart(incomeExpensesCtx, {
-            type: 'bar',
+    // -- Income vs Expenses Over Time Chart -- //
+    function loadIncomeVsExpensesChart() {
+        fetch("/income-vs-expenses-ot/")
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    console.warn("No income vs expenses data available.");
+                    return;
+                }
+    
+                // Extract labels (weeks) and datasets
+                const labels = data.map(entry => new Date(entry.period).toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+                const incomeData = data.map(entry => entry.total_income);
+                const expenseData = data.map(entry => entry.total_expenses);
+    
+                // Render Chart
+                renderIncomeExpensesChart(labels, incomeData, expenseData);
+            })
+            .catch(error => console.error("Error fetching income vs expenses data:", error));
+    }
+
+    function renderIncomeExpensesChart(labels, incomeData, expenseData) {
+        const ctx = document.getElementById("incomeExpensesChart").getContext("2d");
+    
+        new Chart(ctx, {
+            type: "bar",
             data: {
-                labels: ['Total Income', 'Total Expenses'],
+                labels: labels,
                 datasets: [
                     {
-                        label: 'Amount (₱)',
-                        data: [totalIncome, totalExpenses],
-                        backgroundColor: ['#28a745', '#dc3545'],
+                        label: "Income",
+                        data: incomeData,
+                        backgroundColor: 'rgba(137, 76, 236, 0.66)',
+                        yAxisID: "y"
+                    },
+                    {
+                        label: "Expenses",
+                        data: expenseData,
+                        backgroundColor: 'rgba(78, 12, 184, 0.74)',
+                        yAxisID: "y"
                     }
                 ]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return `₱${context.raw.toLocaleString()}`;
-                            }
-                        }
-                    }
-                },
+                maintainAspectRatio: false,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Amount (₱)"
+                        }
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: "top"
                     }
                 }
             }
         });
     }
 
-    // Outstanding Invoices Chart
-    const outstandingInvoicesCtx = document.getElementById('outstandingInvoicesChart').getContext('2d');
-    new Chart(outstandingInvoicesCtx, {
-        type: 'pie',
-        data: {
-            labels: ['Paid', 'Unpaid', 'Overdue'],
-            datasets: [{
-                data: [70, 20, 10],
-                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
-            }]
-        }
-    });
+    // -- Cash Flow Charts -- //
 
-    // Account Balances Chart
+    function loadCashFlowChart() {
+        fetch("/cashflow/")
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    console.warn("No cash flow data available.");
+                    return;
+                }
+    
+                // Extract labels (weeks) & datasets
+                const labels = data.map(entry => new Date(entry.period).toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+                const inflows = data.map(entry => entry.total_inflows);
+                const outflows = data.map(entry => entry.total_outflows);
+                const netflows = data.map(entry => entry.net_cash_flow);
+    
+                renderCashFlowChart(labels, inflows, outflows, netflows);
+            })
+            .catch(error => console.error("Error fetching cash flow data:", error));
+    }
+
+    // Stacked Bar Cash Flow Chart
+    function renderCashFlowChart(labels, inflows, outflows, netflows) {
+        const ctxBar = document.getElementById("multiCashFlowChart").getContext("2d");
+        const ctxLine = document.getElementById("cashFlowChart").getContext("2d");
+    
+        // Determine max absolute value for symmetric y-axis
+        const maxAbsValue = Math.max(
+            ...inflows.map(Math.abs),
+            ...outflows.map(Math.abs),
+            ...netflows.map(Math.abs)
+        );
+        const yLimit = Math.ceil(maxAbsValue * 1.2); // Add padding for better visualization
+    
+        // Stacked Bar Chart (Inflows & Outflows)
+        new Chart(ctxBar, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Inflows",
+                        data: inflows,
+                        backgroundColor: 'rgba(78, 12, 184, 0.74)', // Purple for inflows
+                        borderWidth: 1,
+                        stack: 'cashFlowStack' // Ensure stacking
+                    },
+                    {
+                        label: "Outflows",
+                        data: outflows.map(value => -value), // Convert to negative for stacking
+                        backgroundColor: 'rgba(226, 160, 17, 0.74)', // Orange for outflows
+                        borderWidth: 1,
+                        stack: 'cashFlowStack' // Ensure stacking
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: "Time Period" },
+                        ticks: {
+                            autoSkip: false,
+                            maxRotation: 0,
+                            minRotation: 0
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        min: -yLimit,
+                        max: yLimit,
+                        title: { display: true, text: "Amount (₱)" },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString("en-US"); // Format numbers with commas
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { position: "top" }
+                }
+            }
+        });
+    
+        // Line Chart (Net Cash Flow)
+        new Chart(ctxLine, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Net Cash Flow",
+                        data: netflows,
+                        borderColor: '#6f42c1',
+                        backgroundColor: 'rgba(111, 66, 193, 0.2)',
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 5 // Make points more visible
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: -yLimit,
+                        max: yLimit,
+                        title: { display: true, text: "Net Amount (₱)" },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString("en-US");
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { position: "top" }
+                }
+            }
+        });
+    }
+
+
+    function loadDebtToEquityChart() {
+        fetch("/debt-to-equity-trend/")
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    console.warn("No debt-to-equity data available.");
+                    return;
+                }
+    
+                // Extract Labels & Data
+                const labels = data.map(entry => entry.period);
+                const debtEquityRatios = data.map(entry => entry.debt_to_equity_ratio);
+    
+                // Get Latest Ratio & Determine Risk Level
+                const latestRatio = debtEquityRatios[debtEquityRatios.length - 1];
+                let riskLevel = "Low Risk"; 
+                let riskColor = '#007bff';
+    
+                if (latestRatio >= 2.0) {
+                    riskLevel = "High Risk";
+                    riskColor = "red";
+                } else if (latestRatio >= 1.0) {
+                    riskLevel = "Moderate Risk";
+                    riskColor = "orange";
+                }
+    
+                // Update Chart
+                const ctx = document.getElementById("debtEquityChart").getContext("2d");
+    
+                new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "Debt-to-Equity Ratio",
+                                data: debtEquityRatios,
+                                borderColor: '#6f42c1',
+                                backgroundColor: 'rgba(123, 50, 218, 0.34)',
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 5
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: "Debt-to-Equity Ratio" }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `Debt-to-Equity Trend (Current Risk: ${riskLevel})`,
+                                color: riskColor,
+                                font: { size: 16, weight: "bold"}
+                            },
+                            legend: { position: "top" }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error("Error fetching Debt-to-Equity data:", error));
+    }
+
+
+    // -- Account Balances -- //
     const accountBalancesCtx = document.getElementById('accountBalancesChart').getContext('2d');
     new Chart(accountBalancesCtx, {
         type: 'bar',
@@ -140,22 +345,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Cash Flow Chart
-    const cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
-    new Chart(cashFlowCtx, {
-        type: 'line',
-        data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            datasets: [{
-                label: 'Cash Flow (₱)',
-                data: [20000, 25000, 30000, 40000],
-                borderColor: '#6f42c1',
-                backgroundColor: 'rgba(111, 66, 193, 0.2)',
-                tension: 0.4,
-                fill: true,
-            }]
-        }
-    });
 
     // Monthly Trends Chart
     const monthlyTrendsCtx = document.getElementById('monthlyTrendsChart').getContext('2d');

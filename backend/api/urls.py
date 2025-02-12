@@ -9,13 +9,16 @@ urlpatterns = [
         path('payment-record/', views_api.PaymentRecordView.as_view(), name='payment_api'),
         path('get-payments/', views_api.PaymentRecordRetrieveView.as_view(), name='trinbox'),
 
-        # URLs for Integration with External Systems
+        # URLs for Analytics and Data
         path('total-income/', views_api.IncomeTotalWithSources.as_view(), name='income-total'),
         path('total-expenses/', views_api.ExpenseTotalWithSources.as_view(), name='expense-total'),
         path('total-cogs/', views_api.COGSTotalWithSources.as_view(), name='cogs-expense-total'),
         path('total-purchase/', views_api.ProductInventoryTotalWithSources.as_view(), name='expense-total'),
 
         path('income-vs-expenses/',views_queries.IncomeVsExpenses.as_view(), name='income-vs-expenses'),
+        path('income-vs-expenses-ot/',views_analytics.IncomeVsExpensesOverTime.as_view(), name='income-vs-expenses'),
+        path('cashflow/',views_analytics.CashFlowQuery.as_view(), name='cash-flow'),
+        path('debt-to-equity-trend/',views_analytics.DebtToEquityTrend.as_view(), name='debt-to-equity-ratio'),
 
     # Dashboard #
     path('', views_.dashboard_view, name='dashboard'),
