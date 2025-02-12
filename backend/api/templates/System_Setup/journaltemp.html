@@ -152,8 +152,61 @@ Journal Templates
 										</tr>
 									</thead>
 									<tbody class="templateRows" id="templateRows">
-										<!-- Rows added dynamically -->
+										<tr>
+											<!-- <td>
+												<select class="form-select account-code">
+													<option value="">Select Account</option>
+												</select>
+											</td>
+											<td>
+												<div class="form-check d-flex justify-content-center align-items-center">
+													<input type="checkbox" class="form-check-input debit-checkbox" 
+													style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+													onchange="toggleDebitCredit(this, 'debit')" />
+												</div>
+											</td>
+											<td>
+												<div class="form-check d-flex justify-content-center align-items-center">
+													<input type="checkbox" class="form-check-input credit-checkbox" 
+													style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+													onchange="toggleDebitCredit(this, 'credit')" />
+												</div>
+											</td>
+											<td class="text-center align-middle">
+												<button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
+													<i class="bi bi-trash"></i>
+												</button>
+											</td>
+										</tr>
+									
+										<tr>
+											<td>
+												<select class="form-select account-code">
+													<option value="">Select Account</option>
+												</select>
+											</td>
+											<td>
+												<div class="form-check d-flex justify-content-center align-items-center">
+													<input type="checkbox" class="form-check-input debit-checkbox" 
+													style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+													onchange="toggleDebitCredit(this, 'debit')" />
+												</div>
+											</td>
+											<td>
+												<div class="form-check d-flex justify-content-center align-items-center">
+													<input type="checkbox" class="form-check-input credit-checkbox" 
+													style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+													onchange="toggleDebitCredit(this, 'credit')" />
+												</div>
+											</td>
+											<td class="text-center align-middle">
+												<button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
+													<i class="bi bi-trash"></i>
+												</button>
+											</td>
+										</tr> -->
 									</tbody>
+									
 								</table>
 							</div>
 							<button type="button" class="btn btn-outline-secondary mb-3 btn-add-row" onclick="addTemplateRow()">Add Row</button>
