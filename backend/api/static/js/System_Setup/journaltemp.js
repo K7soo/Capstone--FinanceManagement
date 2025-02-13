@@ -494,6 +494,7 @@ function addTemplateRow() {
                 class="form-check-input debit-checkbox" 
                 style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                 onchange="toggleDebitCredit(this, 'debit')" 
+                ${rowCount === 0 ? "checked" : ""}
             />
         </div>
     </td>
@@ -518,6 +519,24 @@ function addTemplateRow() {
     // Append the new row correctly
     tableBody.appendChild(newRow);
 }
+
+// Function to remove a row
+function removeRow(button) {
+    const row = button.closest("tr");
+    row.remove();
+
+    // Re-enable remove buttons when more than two rows exist
+    const rows = document.querySelectorAll("#templateRows tr");
+    if (rows.length > 2) {
+        rows.forEach((row, index) => {
+            const removeButton = row.querySelector(".btn-remove");
+            if (removeButton) {
+                removeButton.disabled = index < 2; // Disable first two, enable others
+            }
+        });
+    }
+}
+
 
 // Function to remove a row
 function removeRow(button) {
