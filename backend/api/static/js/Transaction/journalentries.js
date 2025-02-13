@@ -1292,3 +1292,14 @@ if (addEntryButton) {
     
     
 });
+
+
+$('#editTemplateModal').on('shown.bs.modal', function () {
+    // Set the "Particulars" tab as active
+    $('#editTemplateModal .nav-tabs .nav-link').removeClass('active');
+    $('#editTemplateModal .nav-tabs .nav-link:first').addClass('active');
+
+    // Activate the corresponding tab pane
+    $('#editTemplateModal .tab-content .tab-pane').removeClass('show active');
+    $('#editTemplateModal .tab-content .tab-pane:first').addClass('show active');
+});
