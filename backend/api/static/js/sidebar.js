@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const mainContent = document.querySelector(".main-content");
 
     // Restore mode and sidebar state from localStorage
-    if (localStorage.getItem("mode") === "dark") {
-        body.classList.add("dark");
-    }
+    // if (localStorage.getItem("mode") === "dark") {
+    //     body.classList.add("dark");
+    // }
 
     if (localStorage.getItem("status") === "close") {
         sidebar.classList.add("close");
@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Toggle dark mode
-    modeToggle.addEventListener("click", () => {
-        body.classList.toggle("dark");
-        localStorage.setItem("mode", body.classList.contains("dark") ? "dark" : "light");
-    });
+    // modeToggle.addEventListener("click", () => {
+    //     body.classList.toggle("dark");
+    //     localStorage.setItem("mode", body.classList.contains("dark") ? "dark" : "light");
+    // });
 
     // Toggle sidebar
     sidebarToggle.addEventListener("click", () => {

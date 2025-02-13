@@ -219,8 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
             text: "Do you want to save these changes?",
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
             confirmButtonText: "Yes, Save it!"
         }).then((result) => {
             if (result.isConfirmed) {
