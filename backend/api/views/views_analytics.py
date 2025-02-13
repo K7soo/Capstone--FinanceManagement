@@ -17,7 +17,10 @@ class CashFlowQuery(APIView):
             cash_accounts = ChartOfAccs.objects.filter(AccountDesc__in=valid_cash_accounts)
 
             # Get transactions for these accounts
-            cash_entries = JournalEntryDetails.objects.filter(Account_FK__in=cash_accounts)
+            cash_entries = JournalEntryDetails.objects.filter(
+                Account_FK__in=cash_accounts, 
+                JournalEntry_FK__EntryStatus_FK=2
+            )
 
             # Group transactions by **week** and compute inflows/outflows
             cash_flow_data = (
@@ -121,6 +124,25 @@ class DebtToEquityTrend(APIView):
                 })
 
             return Response(formatted_data)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+        
+
+class TotalInventoryQuery(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            # Get total quantity of active products linked to **approved** journal entries
+            total_inventory = ProductInventory.objects.filter(
+                is_active=True,
+                journal_entry__EntryStatus_FK=2  # ✅ Filtering only approved journal entries
+            ).aggregate(
+                total_products=Sum("quantity_available", default=0)  # ✅ Summing available quantity
+            )
+
+            return Response(total_inventory)
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)

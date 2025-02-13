@@ -81,6 +81,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8003/",
     "http://localhost:8003/",
     "http://192.168.241.151:8003/"
+    
+    "http://127.0.0.1:8004/",
+    "http://localhost:8004/",
+    "http://192.168.1.49:8004/"
 ]
 
 ROOT_URLCONF = 'backend.urls'

@@ -20,6 +20,8 @@ urlpatterns = [
         path('income-vs-expenses-ot/',views_analytics.IncomeVsExpensesOverTime.as_view(), name='income-vs-expenses'),
         path('cashflow/',views_analytics.CashFlowQuery.as_view(), name='cash-flow'),
         path('debt-to-equity-trend/',views_analytics.DebtToEquityTrend.as_view(), name='debt-to-equity-ratio'),
+        path('total-inventory-purchase/',views_analytics.TotalInventoryQuery.as_view(), name='debt-to-equity-ratio'),
+        
 
     # Dashboard #
     path('', views_.dashboard_view, name='dashboard'),
