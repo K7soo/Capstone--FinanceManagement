@@ -177,10 +177,10 @@ class IncomeVsExpenses(APIView):
     def get(self, request):
         try:
             # Get income accounts
-            income_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc__iexact='INCOME')
+            income_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc__iexact='Income')
 
             # Get expense accounts
-            expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc__iexact='EXPENSES')
+            expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc__iexact='Expenses')
 
             # Get approved journal entries
             income_details = JournalEntryDetails.objects.filter(

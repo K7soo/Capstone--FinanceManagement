@@ -196,6 +196,12 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll('.create-jev-btn').forEach(button => {
             button.addEventListener('click', function () {
                 const transactionData = JSON.parse(this.getAttribute('data-transaction'));
+    
+                // 🟢 Store the correct ID, not transaction_id
+                window.currentRecordId = transactionData.id;
+    
+                console.log("✅ Record ID Set:", window.currentRecordId);
+    
                 autoGenerateJEV(transactionData);
             });
         });
@@ -310,6 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById('createJevBtn').addEventListener('click', function () {
+        const transactionId = window.currentTransactionId;
         const jevDate = document.getElementById('jevDate').textContent;
         const jevDateAPI = formatDateForAPI(jevDate);
         const jevNumber = generateJEVNumber();
@@ -357,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 EntryStatus_FK: 2,
                 Entry_Date: jevDateAPI,
                 EntryParticulars: remarks,
-                Created_By: ""
+                Created_By: "",
             },
             journal_details: journalDetails
         };
@@ -393,14 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return response.json();
                 })
                 .then(data => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Journal Entry successfully created!',
-                        confirmButtonColor: '#6f42c1'
-                    }).then(() => {
-                        location.reload(); 
-                    });
+                    patchEntryCreated();
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -415,6 +415,60 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
     
+    function patchEntryCreated() {
+        const recordId = window.currentRecordId; // Use the correct record ID
+    
+        if (!recordId) {
+            console.error("❌ Record ID is missing when calling PATCH!");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Record ID is not available. Please try again.',
+                confirmButtonColor: '#6f42c1'
+            });
+            return;
+        }
+    
+        console.log("🔄 Sending PATCH Request for Record ID:", recordId);
+    
+        fetch(`/get-payments/${recordId}/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ EntryCreated: true }) // Update EntryCreated to True
+        })
+        .then(response => {
+            console.log("PATCH Response Status:", response.status);
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw errorData;
+                });
+            }
+            return response.json();
+        })
+        .then(updatedData => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Journal Entry successfully created!',
+                confirmButtonColor: '#6f42c1'
+            }).then(() => {
+                location.reload(); 
+            });
+        })
+        .catch(error => {
+            console.error("❌ PATCH Request Failed:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: error.message || 'Failed to update payment record.',
+                confirmButtonColor: '#6f42c1'
+            });
+        });
+    }
 
     // Initial Load
     Promise.all([loadChartOfAccounts(), loadJournalTemplates(), loadEntryStatuses()])

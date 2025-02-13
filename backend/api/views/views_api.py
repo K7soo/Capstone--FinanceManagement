@@ -1,5 +1,5 @@
 import requests
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from calendar import monthrange
 from django.http import JsonResponse
 from rest_framework.response import Response
@@ -16,7 +16,7 @@ class PaymentRecordRetrieveView(views.APIView):
     def get(self, request):
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             # Return JSON response for AJAX requests
-            records = PaymentRecord.objects.all()
+            records = PaymentRecord.objects.filter(EntryCreated=0)
             serializer = PaymentRecordSerializer(records, many=True)
             return JsonResponse(serializer.data, safe=False, status=status.HTTP_200_OK)
 
@@ -24,6 +24,16 @@ class PaymentRecordRetrieveView(views.APIView):
         records = PaymentRecord.objects.all()
         serializer = PaymentRecordSerializer(records, many=True)
         return render(request, "Transaction/trinbox.html", {"PaymentRecord": serializer.data})
+    
+    def patch(self, request, pk):
+        payment_record = get_object_or_404(PaymentRecord, pk=pk)
+        serializer = PaymentRecordSerializer(payment_record, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request):
         try:
