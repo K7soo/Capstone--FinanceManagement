@@ -472,6 +472,18 @@ function addTemplateRow() {
     const tableBody = document.getElementById("templateRows");
     const rowCount = tableBody.rows.length; // Get the current number of rows
 
+    // Limit the rows to 10
+    if (rowCount >= 10) {
+
+        Swal.fire({
+            icon:'warning',
+            title:'Row limit',
+            text:'You can only add up to 10 rows',
+            confirmButtonColor: '#6f42c1', // Customize the button color
+        });
+        return; // Prevent adding more rows
+    }
+
     // Create a new row
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
@@ -494,7 +506,7 @@ function addTemplateRow() {
                 class="form-check-input debit-checkbox" 
                 style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
                 onchange="toggleDebitCredit(this, 'debit')" 
-                ${rowCount === 0 ? "checked" : ""}
+                ${rowCount === 0 ? "checked disabled" : ""}
             />
         </div>
     </td>
@@ -504,7 +516,8 @@ function addTemplateRow() {
                 type="checkbox" 
                 class="form-check-input credit-checkbox" 
                 style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
-                onchange="toggleDebitCredit(this, 'credit')" 
+                onchange="toggleDebitCredit(this, 'credit' )" 
+                ${rowCount === 0 ? "disabled" : ""}
             />
         </div>
     </td>
