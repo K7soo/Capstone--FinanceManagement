@@ -1,9 +1,10 @@
-from django.db.models import Sum, Q, F, Func
+from django.db.models import Sum, Q, F, Func, ExpressionWrapper, DecimalField
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from ..models import *
 from rest_framework.permissions import AllowAny
 from django.db.models.functions import TruncWeek, TruncMonth
+
 
 class CashFlowQuery(APIView):
     permission_classes = [AllowAny]
@@ -127,22 +128,87 @@ class DebtToEquityTrend(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)
-        
+      
 
-class TotalInventoryQuery(APIView):
-    permission_classes = [AllowAny]
 
-    def get(self, request):
-        try:
-            # Get total quantity of active products linked to **approved** journal entries
-            total_inventory = ProductInventory.objects.filter(
-                is_active=True,
-                journal_entry__EntryStatus_FK=2  # ✅ Filtering only approved journal entries
-            ).aggregate(
-                total_products=Sum("quantity_available", default=0)  # ✅ Summing available quantity
-            )
+# class LiquidityRiskAnalysis(APIView):
+#     permission_classes = [AllowAny]
 
-            return Response(total_inventory)
+#     def get(self, request):
+#         try:
+#             # 📌 Get Relevant Accounts
+#             current_assets_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc__iexact='Assets')
+#             current_liabilities_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc__iexact='Liabilities')
+#             cash_accounts = ChartOfAccs.objects.filter(AccountDesc__iexact='Cash')
 
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
+#             # 📌 Get Approved Journal Entries
+#             asset_entries = JournalEntryDetails.objects.filter(
+#                 Account_FK__in=current_assets_accounts, JournalEntry_FK__EntryStatus_FK=2
+#             )
+
+#             liability_entries = JournalEntryDetails.objects.filter(
+#                 Account_FK__in=current_liabilities_accounts, JournalEntry_FK__EntryStatus_FK=2
+#             )
+
+#             cash_entries = JournalEntryDetails.objects.filter(
+#                 Account_FK__in=cash_accounts, JournalEntry_FK__EntryStatus_FK=2
+#             )
+
+#             # ✅ Aggregate Total Values with Fallback for NULL Values
+#             total_current_assets = asset_entries.aggregate(
+#                 total=Sum(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField())
+#             )['total'] or 0.0
+
+#             total_current_liabilities = liability_entries.aggregate(
+#                 total=Sum(F('CreditAmount') - F('DebitAmount'), output_field=DecimalField())
+#             )['total'] or 0.0
+
+#             total_cash = cash_entries.aggregate(
+#                 total=Sum(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField())
+#             )['total'] or 0.0
+
+#             # 📊 Compute Liquidity Ratios Safely
+#             current_ratio = round(total_current_assets / total_current_liabilities, 2) if total_current_liabilities > 0 else 0.0
+#             quick_ratio = round((total_current_assets - total_cash) / total_current_liabilities, 2) if total_current_liabilities > 0 else 0.0
+#             cash_ratio = round(total_cash / total_current_liabilities, 2) if total_current_liabilities > 0 else 0.0
+
+#             # 🔍 Debugging: Print Values to Verify Correct Aggregation
+#             print(f"Total Current Assets: {total_current_assets}")
+#             print(f"Total Current Liabilities: {total_current_liabilities}")
+#             print(f"Total Cash: {total_cash}")
+#             print(f"Computed Ratios -> Current: {current_ratio}, Quick: {quick_ratio}, Cash: {cash_ratio}")
+
+#             # 📅 Group Data by Week for Trend Analysis
+#             liquidity_data = (
+#                 JournalEntryDetails.objects
+#                 .filter(Account_FK__in=list(current_assets_accounts) + list(current_liabilities_accounts) + list(cash_accounts),
+#                         JournalEntry_FK__EntryStatus_FK=2)
+#                 .annotate(period=TruncWeek("JournalEntry_FK__Entry_Date"))
+#                 .values("period")
+#                 .annotate(
+#                     total_current_assets=Sum(
+#                         ExpressionWrapper(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField()),
+#                         filter=Q(Account_FK__in=current_assets_accounts)
+#                     ) or 0.0,
+#                     total_current_liabilities=Sum(
+#                         ExpressionWrapper(F('CreditAmount') - F('DebitAmount'), output_field=DecimalField()),
+#                         filter=Q(Account_FK__in=current_liabilities_accounts)
+#                     ) or 0.0,
+#                     total_cash=Sum(
+#                         ExpressionWrapper(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField()),
+#                         filter=Q(Account_FK__in=cash_accounts)
+#                     ) or 0.0,
+#                 )
+#                 .order_by("period")
+#             )
+
+#             # 🚀 Return Properly Filtered Data
+#             return Response({
+#                 "current_ratio": current_ratio,
+#                 "quick_ratio": quick_ratio,
+#                 "cash_ratio": cash_ratio,
+#                 "liquidity_trend": list(liquidity_data),
+#             })
+
+#         except Exception as e:
+#             return Response({"error": str(e)}, status=500)
