@@ -60,33 +60,8 @@ Dashboard
 								<h1 id="totalRevenue" class="mt-1 mb-3">₱0</h1>
 								<!-- Dynamic Data Here -->
 								<div class="mb-0">
-									<span id="growthPercentage">0%</span>
-									<span class="text-muted">Since Previous Transactions</span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Visitors Card -->
-					<div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col mt-0">
-										<h5 class="card-title">Total Expenses</h5>
-									</div>
-									<div class="col-auto">
-										<div class="stat text-primary">
-											<i class="align-middle" data-feather="dollar-sign"></i> <!-- Changed icon to dollar-sign -->
-										</div>
-									</div>
-								</div>
-								<h1 id="totalExpenses" class="mt-1 mb-3">₱0.00</h1> <!-- Updated ID to match JS function -->
-								<div class="mb-0">
-									<span id="expenseGrowthPercentage" class="text-primary">
-										<i class="mdi mdi-arrow-bottom-right"></i> 0%
-									</span>
-									<span class="text-muted">Since Previous Transactions</span>
+									<span id="growthPercentage" class="text-muted">0%</span>
+									<span class="text-muted">Since last week</span>
 								</div>
 							</div>
 						</div>
@@ -108,7 +83,10 @@ Dashboard
 								</div>
 								<h1 class="mt-1 mb-3" id="net-profit-value">₱0.00</h1>
 								<div class="mb-0">
-									<span class="text-muted">Total Profitable Revenue</span>
+									<span id="net-profit-change" class="text-success">
+										<i class="mdi mdi-arrow-top-right"></i> 0%
+									</span>
+									<span class="text-muted">Since last period</span>
 								</div>
 							</div>
 						</div>
@@ -135,7 +113,29 @@ Dashboard
 							</div>
 						</div>
 					</div>
-					
+
+					<!-- Visitors Card -->
+					<div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col mt-0">
+										<h5 class="card-title">Statistic</h5>
+									</div>
+									<div class="col-auto">
+										<div class="stat text-primary">
+											<i class="align-middle" data-feather="eye"></i>
+										</div>
+									</div>
+								</div>
+								<h1 class="mt-1 mb-3">0</h1>
+								<div class="mb-0">
+									<span class="text-primary"> <i class="mdi mdi-arrow-bottom-right"></i> 0% </span>
+									<span class="text-muted">Since last week</span>
+								</div>
+							</div>
+						</div>
+					</div>
 
 				</div>
 			</div>
@@ -147,6 +147,7 @@ Dashboard
 			<div class="card shadow-sm h-100">
 				<div class="card-body">
 					<h5 class="card-title">Cash In-Flow and Out-Flow</h5>
+					<p class="card-subtitle text-success"> ↑ 0%</p>
 					<div class="chart-container">
 						<canvas id="multiCashFlowChart" width="400" height="200"></canvas>
 					</div>
@@ -159,6 +160,7 @@ Dashboard
 			<div class="card shadow-sm h-100">
 				<div class="card-body">
 					<h5 class="card-title">Income vs Expenses</h5>
+					<p class="card-subtitle text-success">↑ 0%</p>
 					<div class="chart-container">
 						<canvas id="incomeExpensesChart" class="img-fluid"></canvas>
 					</div>
@@ -178,6 +180,19 @@ Dashboard
 			</div>
 		</div>
 
+		<!-- Account Balances -->
+		<div class="col-md-6">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">₱300,000 <span class="text-success"> ↑ 5.7%</span></h5>
+					<p class="card-text">Account Balances</p>
+					<div class="chart-container">
+						<canvas id="accountBalancesChart" class="img-fluid"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<!-- Monthly Trends -->
 		<div class="col-md-6">
 			<div class="card shadow-sm h-100">
@@ -191,27 +206,13 @@ Dashboard
 			</div>
 		</div>
 
-		<!-- Liquidity Risk Analysis
+		<!-- Monthly Trends -->
 		<div class="col-md-6">
 			<div class="card shadow-sm h-100">
 				<div class="card-body">
-					<h5 class="card-title">Liquidity Risk Analysis</h5>
+					<h5 class="card-title">Weekly Trends Chart <span class="text-success">↑ 10.3%</span></h5>
 					<div class="chart-container">
-						<canvas id="liquidityRiskChart" width="400" height="200"></canvas>
-					</div>
-				</div>
-			</div>
-		</div> -->
-
-		<div class="col-lg-6 col-md-12">
-			<div class="card shadow-sm h-100">
-				<div class="card-body">
-					<h5 class="card-title">Revenue Trend Forecasting</h5>
-					<p class="text-muted">
-						Forecasted Revenue: <span id="forecastedRevenue" class="fw-bold text-primary">₱0.00</span>
-					</p>
-					<div class="chart-container">
-						<canvas id="revenueTrendChart" width="400" height="200"></canvas>
+						<canvas id="monthlyTrendsChart" class="img-fluid"></canvas>
 					</div>
 				</div>
 			</div>

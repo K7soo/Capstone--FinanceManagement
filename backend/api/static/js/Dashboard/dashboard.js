@@ -3,29 +3,20 @@ document.addEventListener('DOMContentLoaded', function () {
     loadCashFlowChart();
     loadIncomeVsExpensesChart();
     loadDebtToEquityChart();
-    loadRevenueTrendChart();
 
     fetch('/total-income/')
-    .then(response => response.json())
-    .then(data => {
-        // Ensure total income is formatted correctly
-        document.getElementById('totalRevenue').innerText = `₱${Number(data.total_income || 0).toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        })}`;
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalRevenue').innerText = `₱${Number(data.total_income).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`;
 
-        // Convert growth percentage to a valid number
-        let growthPercentage = Number(data.percentage_change) || 0; // Ensures it's always a number
-
-        // Update the growth percentage text
-        const growthElement = document.getElementById('growthPercentage');
-        growthElement.innerHTML = `<i class="mdi ${growthPercentage >= 0 ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-right'}"></i> ${growthPercentage.toFixed(2)}%`;
-
-        // Apply color based on positive (green) or negative (red) change
-        growthElement.classList.remove('text-success', 'text-danger');
-        growthElement.classList.add(growthPercentage >= 0 ? 'text-primary' : 'text-danger');
-    })
-    .catch(error => console.error('Error fetching total income:', error));
+            const growthElement = document.getElementById('growthPercentage');
+            growthElement.innerHTML = `<i class="mdi mdi-arrow-top-right"></i> ${data.growth_percentage}%`;
+            growthElement.classList.add(data.growth_percentage >= 0 ? 'text-success' : 'text-danger');
+        })
+        .catch(error => console.error('Error fetching total income:', error));
 
     // Fetch Cost of Goods Sold (COGS)
     fetch('/total-cogs/')
@@ -42,28 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => console.error('Error fetching total COGS:', error));
-
-        fetch('/total-expenses/')
-        .then(response => response.json())
-        .then(data => {
-            // Ensure total expense is formatted correctly
-            document.getElementById('totalExpenses').innerText = `₱${Number(data.total_expense || 0).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            })}`;
-    
-            // Convert growth percentage to a valid number
-            let growthPercentage = Number(data.growth_percentage) || 0;
-    
-            // Update the growth percentage text
-            const expenseGrowthElement = document.getElementById('expenseGrowthPercentage');
-            expenseGrowthElement.innerHTML = `<i class="mdi ${growthPercentage >= 0 ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-right'}"></i> ${growthPercentage.toFixed(2)}%`;
-    
-            // Apply color based on positive (red for increased expenses) or negative (green for reduced expenses) change
-            expenseGrowthElement.classList.remove('text-success', 'text-danger');
-            expenseGrowthElement.classList.add(growthPercentage >= 0 ? 'text-danger' : 'text-success');
-        })
-        .catch(error => console.error('Error fetching total expenses:', error));
 
     // -- NET PROFIT -- //
     function loadFinancialData() {
@@ -123,10 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderIncomeExpensesChart(labels, incomeData, expenseData) {
         const ctx = document.getElementById("incomeExpensesChart").getContext("2d");
-
-        const maxValue = Math.max(...incomeData, ...expenseData);
-        const paddedMaxValue = Math.ceil(maxValue * 1.5);
-        const stepSize = Math.ceil(maxValue / 5);
     
         new Chart(ctx, {
             type: "bar",
@@ -152,14 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 maintainAspectRatio: false,
                 scales: {
                     y: {
-                        min: -paddedMaxValue,
-                        max: paddedMaxValue,
-                        ticks: {
-                            stepsize: stepSize,
-                            callback: function(value) {
-                                return value.toLocaleString("en-US"); // Format numbers with commas
-                            }
-                        },
                         beginAtZero: true,
                         title: {
                             display: true,
@@ -177,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // -- Cash Flow Charts -- //
+
     function loadCashFlowChart() {
         fetch("/cashflow/")
             .then(response => response.json())
@@ -209,9 +167,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ...netflows.map(Math.abs)
         );
         const yLimit = Math.ceil(maxAbsValue * 1.2); // Add padding for better visualization
-        const maxValue = Math.max(...netflows.map(Math.abs));
-        const paddedMaxValue = Math.ceil(maxValue * 1.5);
-        const stepSize = Math.ceil(maxValue / 5);
     
         // Stacked Bar Chart (Inflows & Outflows)
         new Chart(ctxBar, {
@@ -250,11 +205,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     y: {
                         stacked: true,
-                        min: -paddedMaxValue,
-                        max: paddedMaxValue,
+                        min: -yLimit,
+                        max: yLimit,
                         title: { display: true, text: "Amount (₱)" },
                         ticks: {
-                            stepsize: stepSize,
                             callback: function(value) {
                                 return value.toLocaleString("en-US"); // Format numbers with commas
                             }
@@ -289,11 +243,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 maintainAspectRatio: false,
                 scales: {
                     y: {
-                        min: -paddedMaxValue,
-                        max: paddedMaxValue,
+                        min: -yLimit,
+                        max: yLimit,
                         title: { display: true, text: "Net Amount (₱)" },
                         ticks: {
-                            stepsize: stepSize,
                             callback: function(value) {
                                 return value.toLocaleString("en-US");
                             }
@@ -358,8 +311,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         maintainAspectRatio: false,
                         scales: {
                             y: {
-                                max: 2.0,
-                                stepsize: 2.0 / 20,
                                 beginAtZero: true,
                                 title: { display: true, text: "Debt-to-Equity Ratio" }
                             }
@@ -379,133 +330,36 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error("Error fetching Debt-to-Equity data:", error));
     }
 
-    function loadRevenueTrendChart() {
-        let actualRevenueData = [];
-        let forecastedRevenue = null;
-        let labels = [];
-    
-        // Fetch actual revenue trend data
-        fetch("/total-income-trend/")
-            .then(response => response.json())
-            .then(data => {
-                if (!data || data.revenue_trend.length === 0) {
-                    console.warn("No revenue trend data available.");
-                    return;
-                }
-    
-                // 🏷️ Extract Labels & Data
-                labels = data.revenue_trend.map(entry =>
-                    new Date(entry.period).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-                );
-                actualRevenueData = data.revenue_trend.map(entry => entry.total_revenue);
-    
-                // Fetch predicted revenue separately
-                return fetch("/total-income/");
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data || !data.predicted_next_revenue) {
-                    console.warn("No predicted revenue data available.");
-                } else {
-                    forecastedRevenue = data.predicted_next_revenue;
-                    labels.push("Next Forecast");
-                    actualRevenueData.push(null); // Maintain alignment
-                }
-    
-                // 📈 Render the final chart with actual & forecasted revenue
-                renderRevenueChart(labels, actualRevenueData, forecastedRevenue);
-            })
-            .catch(error => console.error("Error fetching revenue trend:", error));
-    }
-    
-    function loadRevenueTrendChart() {
-        Promise.all([
-            fetch("/total-income-trend/").then(response => response.json()),
-            fetch("/total-income/").then(response => response.json()) // Fetch forecasted revenue separately
-        ])
-        .then(([trendData, forecastData]) => {
-            if (!trendData || trendData.revenue_trend.length === 0) {
-                console.warn("No revenue trend data available.");
-                return;
-            }
-    
-            // Extract Labels & Data
-            const labels = trendData.revenue_trend.map(entry =>
-                new Date(entry.period).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-            );
-            const revenueData = trendData.revenue_trend.map(entry => entry.total_revenue);
-            
-            // Get the forecasted revenue from `/total-income/`
-            const estimatedRevenue = forecastData.predicted_next_revenue || 0;
-    
-            // Append forecast label and revenue
-            labels.push("Next Forecast");
-            revenueData.push(estimatedRevenue);
-    
-            // Split the actual and forecasted parts
-            const actualRevenueData = [...revenueData]; // Clone actual revenue data
-            const forecastedRevenueData = revenueData.map((value, index) =>
-                index < revenueData.length - 1 ? null : value
-            ); // Only show last point as forecast
-    
-            // Update the forecasted revenue amount on the card
-            document.getElementById("forecastedRevenue").innerText = `₱${Number(estimatedRevenue).toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            })}`;
-    
-            renderRevenueChart(labels, actualRevenueData, forecastedRevenueData);
-        })
-        .catch(error => console.error("Error fetching revenue trend or forecasted revenue:", error));
-    }
-    
-    function renderRevenueChart(labels, actualRevenueData, forecastedRevenueData) {
-        const ctx = document.getElementById("revenueTrendChart").getContext("2d");
-    
-        new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: "Actual Revenue",
-                        data: actualRevenueData,
-                        borderColor: '#6f42c1',
-                        backgroundColor: 'rgba(111, 66, 193, 0.2)',
-                        fill: true,
-                        yAxisID: "y",
-                        tension: 0.4,
-                        pointRadius: 5
-                    },
-                    {
-                        label: "Forecasted Revenue",
-                        data: forecastedRevenueData,
-                        borderColor: 'orange', // Different line color for forecast
-                        backgroundColor: 'rgba(255, 165, 0, 0.2)', // Different fill color for forecast
-                        fill: true,
-                        yAxisID: "y",
-                        tension: 0.4,
-                        pointRadius: 5,
-                        borderDash: [5, 5], // Dashed line for forecast
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        title: { display: true, text: "Time Period" }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: "Revenue (₱)" }
-                    }
-                },
-                plugins: {
-                    legend: { position: "top" }
-                }
-            }
-        });
-    }
+
+    // -- Account Balances -- //
+    const accountBalancesCtx = document.getElementById('accountBalancesChart').getContext('2d');
+    new Chart(accountBalancesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Checking', 'Savings', 'Credit'],
+            datasets: [{
+                label: 'Balance (₱)',
+                data: [150000, 100000, 50000],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+            }]
+        }
+    });
+
+
+    // Monthly Trends Chart
+    const monthlyTrendsCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
+    new Chart(monthlyTrendsCtx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May'],
+            datasets: [{
+                label: 'Revenue (₱)',
+                data: [400000, 420000, 450000, 480000, 500000],
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                tension: 0.4,
+                fill: true,
+            }]
+        }
+    });
 });

@@ -12,8 +12,6 @@ urlpatterns = [
 
         # URLs for Analytics and Data
         path('total-income/', views_api.IncomeTotalWithSources.as_view(), name='income-total'),
-        path('total-income-trend/', views_api.RevenueTrendOverTime.as_view(), name='income-total'),
-
         path('total-expenses/', views_api.ExpenseTotalWithSources.as_view(), name='expense-total'),
         path('total-cogs/', views_api.COGSTotalWithSources.as_view(), name='cogs-expense-total'),
         path('total-purchase/', views_api.ProductInventoryTotalWithSources.as_view(), name='expense-total'),
@@ -22,8 +20,7 @@ urlpatterns = [
         path('income-vs-expenses-ot/',views_analytics.IncomeVsExpensesOverTime.as_view(), name='income-vs-expenses'),
         path('cashflow/',views_analytics.CashFlowQuery.as_view(), name='cash-flow'),
         path('debt-to-equity-trend/',views_analytics.DebtToEquityTrend.as_view(), name='debt-to-equity-ratio'),
-
-        # path('liquidity-risk-analysis/',views_analytics.LiquidityRiskAnalysis.as_view(), name='liquidity-ratio'),
+        path('total-inventory-purchase/',views_analytics.TotalInventoryQuery.as_view(), name='debt-to-equity-ratio'),
         
 
     # Dashboard #
