@@ -1,0 +1,444 @@
+body {
+    background-color: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+}
+/* Modal styles */
+h1.title {
+    color: #6f42c1; /* Violet color */
+    text-align: left; /* Center the title */
+    margin-top: 35px;
+}
+/* File Tree CSS */
+.outer ul {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #333;
+    padding: 10px;
+    list-style: none; /* Remove bullets */
+}
+
+#ul {
+    margin: 0;
+    padding-left: 10px; /* Indent nested items */
+}
+
+.caret {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+    font-weight: bold;
+}
+
+.caret::before {
+    content: '\1F4C1'; /* Folder icon */
+    color: #6f42c1;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.caret-down::before {
+    content: '\1F4C2'; /* Open folder icon */
+}
+
+
+.nested {
+    display: none; /* Hide nested lists initially */
+    margin-left: 20px; /* Add indentation */
+}
+
+.nested li {
+    padding: 5px 0;
+}
+
+.nested.active {
+    display: block; /* Show nested lists when active */
+}
+
+
+/* End of File Tree CSS */
+
+
+.flex-parent-container{
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    padding: auto;
+    align-items:flex-start;
+    width: 100%; /* Ensure it spans full width */
+}
+.flex-left-container {
+    flex: 0 0 300px; /* Fixed width */
+    max-width: 300px; /* Prevent shrinking */
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.flex-right-container {
+    flex: 1; /* Adjust proportionally */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Spacing between elements inside */
+    width: 100%; /* Ensure it takes the full width */
+}
+
+/* add button design */
+.add-chart-btn {
+    background-color: #6f42c1; /* Gold color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin: 0px;
+    
+}
+
+/* add button design */ 
+.add-chart-btn:hover {
+    background-color: #5a00e8; /* Change to violet on hover */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btncoa {
+    background-color: #6f42c1; /* Violet color */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f8f8ff; /* Light background */
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-content a {
+    color: #3b3b3b; /* Dark grey color */
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background-color: #d1a35a; /* Gold on hover */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block; /* Show dropdown on hover */
+}
+
+/* chart of accounts table */
+.table-container {
+    display: block;
+    justify-content: center;
+    overflow-x: auto; /* Horizontal scrolling for overflow */
+    overflow-y: hidden; /* Prevent vertical scrolling */
+    width: 100%;
+    padding: 10px; /* Add padding for spacing */
+    box-sizing: border-box;
+}
+
+table {
+    width: 100%; /* Full width */
+    border-collapse: collapse;
+    table-layout: auto; /* Allow columns to adapt to content */
+    margin: auto; /* Center the table */
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: normal; /* Allow wrapping */
+    word-wrap: break-word; /* Break long words */
+    flex-wrap: no-wrap;
+}
+
+th {
+    background-color: #e5e5e5;
+    color: rgb(0, 0, 0);
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.button-container {
+    display: flex;
+    justify-content: baseline;
+    margin: 0px 0px 12px 0px;
+    gap: 10px;
+}
+
+.button-chart-of-acc {
+    background-color: none;
+    padding: 10px;
+}
+
+.btn-view, .btn-edit, .btn-delete {
+    padding: 5px 10px;
+    width: 60%;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    .btn-view, .btn-edit, .btn-delete {
+        width: 60%;
+        font-size: 12px;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* End of table components */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #f8f8ff;
+    margin: 10% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px; /* Ensure it doesn't grow too large */
+    border-radius: 5px;
+}
+
+.close {
+    color: #000000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #6f42c1;
+    cursor: pointer;
+}
+
+.btn-add {
+    background-color: #6f42c1;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-save {
+    background-color: #2D9C35;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.btn-edit {
+    background-color: #ff9900;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 90px;
+}
+.btn-edit:hover{
+    background-color: #ffad32;
+}
+
+.btn-view {
+    background-color: #0053ec;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 90px;
+}
+.btn-view:hover{
+    background-color: #2f78ff;
+}
+
+.btn-delete {
+    background-color: #f30000;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 90px;
+}
+.btn-delete:hover{
+    background-color: #ff3d3d;
+}
+
+.account-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.account-table th, .account-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.account-table th {
+    background-color: #6f42c1;
+    color: #fff;
+}
+
+.btn-comp{
+    display: grid;
+}
+.submit-btn {
+    background-color: #8724ac;
+    color:#ffffff;
+    padding: auto;
+    margin-left: auto;
+    border: none;
+    width: 8rem;
+    border-radius: 5px;
+    height: 30px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+
+}
+.submit-btn:hover {
+    background-color: #6f42c1;
+}
+    
+.table-acc {
+    width: 100%;
+    border-collapse: collpase;
+    font-size: 14px;
+    padding: 0px 0px 0px 0px;
+}
+
+.table-frame{
+    width:100%;
+    overflow-x:auto;
+    overflow-y: auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    height:700px;
+}
+.textbox {
+    font-family:'Poppins', sans-serif;
+    border: #ececec;
+    padding: 10px;
+}
+.textbox-desc {
+    font-family:'Poppins', sans-serif;
+    border: #ececec;
+    height:100%;
+    width: 100%;
+    max-width: 1000%;
+    padding: 10px 10px 50px 10px;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: break-word;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Switch to single-column */
+    gap: 10px; /* Adjust gaps */
+}
+
+.form-grid input, select{
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 10px;
+}
+
+th.sort-asc::after {
+    content: " ▲";
+    font-size: 0.8em;
+}
+
+th.sort-desc::after {
+    content: " ▼";
+    font-size: 0.8em;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.pagination-button {
+    padding: 5px 10px;
+    margin: 0 2px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.pagination-button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination-button:hover {
+    background-color: #ddd;
+}

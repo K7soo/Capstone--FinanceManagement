@@ -1,0 +1,454 @@
+body {
+    background-color: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Modal styles */
+h1.title {
+    color: #6f42c1; /* Violet color */
+    text-align: left; /* Align title to the left */
+    margin-top: 35px;
+}
+
+/* Modal Container Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto; /* Enable scrolling for overflow content */
+}
+
+.modal-content {
+    position: relative; /* Make the modal-content the reference for absolute positioning */
+    background-color: #ffffff;
+    margin: 5% auto; /* Reduced top margin */
+    padding: 20px;
+    border-radius: 8px;
+    width: 900px; /* Set a fixed width for the modal */
+    height: 500px; /* Set a fixed height for the modal */
+    max-width: 100%; /* Ensure it is responsive on smaller screens */
+    max-height: 100%; /* Prevent overflow */
+    overflow-y: auto; /* Allow scrolling if the content exceeds the height */
+    box-sizing: border-box; /* Include padding and borders in the dimensions */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Title Styling */
+.modal-content h2 {
+    color: #6f42c1;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.form-row {
+    display: flex;
+    gap: 20px; /* Space between the two fields */
+}
+
+.form-group {
+    flex: 1; /* Make each field take equal width */
+    display: flex;
+    flex-direction: column; /* Stack label and input vertically */
+}
+
+.form-group label {
+    margin-bottom: 5px; /* Add spacing between the label and input */
+    font-weight: bold; /* Make labels stand out */
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-group input {
+    padding: 10px; /* Add padding inside the input fields */
+    border: 1px solid #b0b0b0; /* Light gray border for input */
+    border-radius: 5px; /* Rounded corners */
+    font-family: 'Poppins', sans-serif; /* Match overall design */
+    box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+textarea {
+    height: 150px; /* Set the desired height */
+    width: 100%; /* Ensure it takes the full width */
+    padding: 10px; /* Add some padding inside the box */
+    border: 1px solid #b0b0b0; /* Light gray border */
+    border-radius: 5px; /* Rounded corners */
+    font-family: 'Poppins', sans-serif; /* Consistent font styling */
+    resize: vertical; /* Allow users to resize vertically only */
+    box-sizing: border-box; /* Include padding in the total height and width */
+}
+
+
+.tab-content {
+    flex: 1; /* Allow tab content to take up remaining space */
+    overflow-y: auto; /* Add scrolling if content overflows */
+}
+
+
+.tab-panel {
+    display: none; /* Hide all tab content by default */
+}
+
+.tab-panel.active {
+    display: block; /* Show only the active tab */
+}
+
+.tab-link {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: none;
+    background-color: #f0f0f0;
+    color: #6f42c1;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.tab-link.active {
+    background-color: #6f42c1;
+    color: #fff;
+}
+
+
+/* Form Grid Styling */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Single-column layout */
+    gap: 15px; /* Spacing between form groups */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* Stack label and input vertically */
+}
+
+.form-group label {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+}
+.accounts-table {
+    width: 100%; /* Make the table take full width of its container */
+    border-collapse: collapse; /* Ensure borders are clean and not doubled */
+    margin-top: 20px; /* Add spacing above the table */
+    font-family: 'Poppins', sans-serif; /* Consistent font styling */
+}
+
+.accounts-table th, 
+.accounts-table td {
+    border: 1px solid #4a4a4a; /* Grayish-black border color */
+    padding: 10px; /* Add spacing inside the cells */
+    text-align: left; /* Align text to the left */
+}
+
+.accounts-table th {
+    background-color: #f4f4f4; /* Light gray background for headers */
+    font-weight: bold; /* Emphasize header text */
+    color: #333; /* Dark gray text for contrast */
+}
+
+.accounts-table tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray background for alternating rows */
+}
+
+.accounts-table tr:nth-child(odd) {
+    background-color: #ffffff; /* White background for alternating rows */
+}
+
+.accounts-table select, 
+.accounts-table input {
+    border: 1px solid #b0b0b0; /* Light gray border for dropdown and input */
+    padding: 5px; /* Inner spacing for better usability */
+    width: 100%; /* Full width dropdown and inputs */
+    box-sizing: border-box; /* Include padding in width */
+    font-family: 'Poppins', sans-serif; /* Match table font */
+}
+
+/* Button Group Styling */
+.button-group {
+    position: absolute; /* Position the buttons relative to the modal-content */
+    bottom: 20px; /* Distance from the bottom of the modal */
+    right: 20px; /* Distance from the right of the modal */
+    display: flex;
+    justify-content: flex-end; /* Align buttons horizontally */
+    gap: 10px; /* Space between buttons */
+}
+
+.btn-cancel,
+.btn-add-template,
+.btn-add-journalEntry-modal {
+    padding: 10px 20px; /* Ensure consistent padding */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.btn-cancel {
+    background-color: #ff4d4d;
+    color: white;
+
+}
+
+.btn-cancel:hover {
+    background-color: #e60000;
+}
+
+.btn-add-template {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.btn-add-journalEntry-modal:hover {
+    background-color: #8724ac;
+}
+
+.btn-add-journalEntry-modal {
+    padding: 10px 20px; /* Ensure consistent padding */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #6f42c1;
+    color: white;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%; /* Adjust width for smaller screens */
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 12px; /* Smaller font size for smaller screens */
+    }
+}
+
+
+
+
+/* File Tree CSS */
+.outer ul {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #333;
+    padding: 10px;
+    list-style: none; /* Remove bullets */
+}
+
+#ul {
+    margin: 0;
+    padding-left: 10px; /* Indent nested items */
+}
+
+.caret {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+    font-weight: bold;
+}
+
+.caret::before {
+    content: '\1F4C1'; /* Folder icon */
+    color: #6f42c1;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.caret-down::before {
+    content: '\1F4C2'; /* Open folder icon */
+    transform:'\f07c' ; /* Rotate arrow for expanded state */
+}
+
+.nested {
+    display: none; /* Hide nested lists initially */
+    margin-left: 20px; /* Add indentation */
+}
+
+.nested li {
+    padding: 5px 0;
+}
+
+.nested.active {
+    display: block; /* Show nested lists when active */
+}
+
+
+
+/* Container Styling */
+.journal-entries-dashboard {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f8f8ff;
+}
+
+/* Left Section: Tree Structure */
+.tree-container {
+    flex: 1;
+    margin-right: 20px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tree-container h2 {
+    color: #008425;
+    margin-bottom: 10px;
+}
+
+
+.tree-structure ul {
+    list-style: none;
+    padding-left: 20px;
+}
+
+.tree-structure ul, li {
+    margin: 10px 0;
+    font-size: 14px;
+    cursor: pointer; /* Ensure the pointer cursor appears */
+
+}
+
+.tree-main {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Right Section: Table and Filter */
+.table-container {
+    flex: 2;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.filter-container label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #6f42c1;
+}
+
+.filter-select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Table Styling */
+.journal-entries-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.journal-entries-table th,
+.journal-entries-table td {
+    padding: 10px;
+    border: none;
+}
+
+.journal-entries-table th {
+    background-color: #e5e5e5;
+    color: black;
+}
+
+.journal-entries-table tr:nth-child(even) {
+    background-color: #fefefe;
+}
+
+/* Default styling for the table */
+.journal-entries-table th {
+    background-color: #e5e5e5;
+    color: #000;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Styling for the first row (template header) */
+  .template-header-row th {
+    width: 40%;
+    font-size: 14px;
+    background-color: #f2f2f2; /* Slightly lighter for visual distinction */
+    text-align: center;
+  }
+  
+ 
+  /* Styling for the second-row headers */
+  .journal-entries-header-row th {
+    font-size: 13px;
+    text-align: left;
+  }
+
+  .journal-entries-table td i {
+    font-style: italic;
+}
+  /* Example widths for second-row headers */
+  
+
+  
+  .debit-header,
+  .credit-header {
+    width: 20%; /* Equal width for Debit and Credit columns */
+  }
+  
+
+/* Action Buttons */
+.btn-edit,
+.btn-delete,
+.btn-add,
+.btn-view {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-add {
+    background-color: #ffcf0e;
+    color: white;
+    margin-bottom:10px;
+}
+
+.btn-edit {
+    background-color: #008425;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #ff3b3b;
+    color: white;
+}
+.btn-view {
+    background-color: #ffcf0e;
+    color: white;
+
+}
+

@@ -1,0 +1,491 @@
+body {
+    background-color: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+}
+
+@media (max-width: 1024px) {
+    .grid-container {
+        grid-template-columns: 2fr; /* Stack on smaller screens */
+    }
+}
+
+h1.title {
+    color: #6f42c1; 
+    text-align: left; /* Center the title */
+    margin-top: 35px;
+}
+
+/* .grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px; 
+} */
+
+.table-frame-loa{
+    width:100%;
+    overflow-x:auto;
+    overflow-y: hidden; /* Prevent unnecessary vertical scrolling */
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+    box-sizing: border-box;
+    border-color: solid 51px #e30000;
+    height:flex;
+}
+
+/* add button design */
+.add-account-btn {
+    font-family: 'Poppins';
+    background-color: #6f42c1; /* Gold color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+
+/* add button design */ 
+.add-account-btn:hover {
+    background-color: #5a00e8; /* Change to violet on hover */
+}
+
+
+
+/* list of accs*/
+.table-container {
+    display: flex;
+    justify-content: center; /* Center the table */
+    overflow-x: auto; /* Enable horizontal scrolling when needed */
+    width: 100%; /* Ensure it takes the full width of the screen */
+    padding: 20px; /* Add padding for aesthetics */
+}
+
+table {
+    width: auto; /* Adjust width automatically based on content */
+    border-collapse: collapse; 
+    margin: auto; /* Center the table inside the container */
+}
+
+
+
+th, td {
+    padding: 10px; /* Add padding for better spacing */
+    text-align: left; /* Align text to the left */
+    border-bottom: 1px solid #ffffff; /* Light grey border */
+    white-space: normal; /* Prevent text from wrapping */
+    flex-wrap: nowrap;
+    word-wrap: break-word; /* Ensure long words wrap */
+    
+}
+
+td.actions {
+    text-align: center; /* Center buttons in the cell */
+    white-space: nowrap; /* Prevent wrapping of buttons */
+}
+
+td.actions > * {
+    display: inline-block; /* Ensure inline display for buttons */
+}
+
+
+th {
+    background-color: #e5e5e5; /* Violet for header */
+    color: rgb(0, 0, 0); /* White text for header */
+}
+
+tr:nth-child(even) {
+    background-color: #f8f8f8; /* Light grey for even rows */
+}
+
+.button-container {
+    display: flex;
+    width: 60%; 
+    margin: 0px 0px 15px 0px; /* Center the container and add margin */
+}
+
+
+/* End of table components */
+
+
+
+/* LIST OF ACCOUNTS MODAL */
+.modal {
+    display: none;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    position: fixed;
+    z-index: 1050; /* Ensure it appears above other elements */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Prevent scrolling inside modal */
+    background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #f8f8ff; /* Modal background */
+
+    border-radius: 8px; /* Rounded corners */
+    width: 90%; /* Default width (responsive) */
+    max-width: 600px; /* Maximum width for modal */
+    padding: 20px; /* Padding inside modal */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    box-sizing: border-box; /* Include padding in width/height */
+    overflow-y: auto; /* Enable scrolling for tall content */
+    max-height: 90vh; /* Prevent modal from exceeding viewport */
+    margin: auto; /* Ensure proper centering on the page */
+    position: relative; /* Needed for proper z-index handling */
+    z-index: 1060; /* Ensure modal content is above the overlay */
+}
+
+/* Modal Close Button */
+.modal-header .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Prevent interactions outside of modal when it's open */
+body.modal-open {
+    overflow: hidden; /* Prevent scrolling */
+    pointer-events: none; /* Disable interactions */
+}
+
+body.modal-open .modal {
+    pointer-events: all; /* Allow interactions within the modal */
+}
+
+/* Modal Button Styling */
+.modal-add-btn,
+.modal-cancel-btn,
+.modal-edit-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    height: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-add-btn {
+    background-color: #8724ac;
+    color: #ffffff;
+}
+
+.modal-add-btn:hover {
+    background-color: #6f42c1;
+}
+
+.modal-cancel-btn {
+    background-color: #bebebe;
+    color: #ffffff;
+}
+
+.modal-cancel-btn:hover {
+    background-color: #ff3d3d;
+}
+
+.modal-edit-btn {
+    background-color: #8724ac;
+    color: #ffffff;
+}
+
+.modal-edit-btn:hover {
+    background-color: #6f42c1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        max-width: 90%; /* Adjust width for smaller screens */
+    }
+
+    .modal-header h5 {
+        font-size: 1.2rem; /* Smaller header font size */
+    }
+}
+
+
+/* Error Message Styling Aligned with Inputs */
+.error-message {
+    grid-column: 2 / 3; /* Make sure error messages are aligned under the input field */
+    color: #d9534f; /* Red color for error messages */
+    font-size: 10px; /* Slightly smaller font size for better distinction */
+    height: 45px; /* Fixed height to prevent shifting */
+    display: block; /* Make sure the error message appears on its own line */
+    font-weight: bold; /* Make the message stand out */
+    visibility: hidden; /* Initially hidden */
+    margin-top: auto ;
+    overflow: hidden; /* Prevent additional height expansion */
+}
+
+/* Error Message when visible */
+.error-message.visible {
+    visibility: visible; /* Show when needed */
+}
+
+/* Align Buttons to Form */
+.btn-comp {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Adjusting the layout to keep input fields and messages aligned */
+#addAccountForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Consistent spacing between form elements */
+    align-items: flex-start; /* Align items to the start */
+    width: 100%; /* Keep the form container full width */
+}
+
+#addAccountForm input[type="text"] {
+    width: 100%; /* Full width inside the form */
+    padding: 10px; /* Add padding for better user experience */
+    border: 1px solid #000000;
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+    margin-bottom: 5px; /* Space between the input field and its validation error message */
+}
+
+/* END OF LIST OF ACCOUNTS ADD ACCOUNT MODAL */
+
+
+.close {
+    color: #000000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #6f42c1;
+    cursor: pointer;
+}
+
+.btn-comp{
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    width: 100%; 
+    margin: 0px 0px 12px 0px; 
+    gap:5px;
+}
+.btn-add {
+    background-color: #2D9C35;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-save {
+    background-color: #6f42c1;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Styles for account-table */
+.account-table {
+    width: 100%; /* Full width of the container */
+    border-collapse: collapse; /* Remove gaps between borders */
+    margin-top: 20px;
+    table-layout: fixed; /* Ensures fixed width for columns */
+}
+
+.account-table th, .account-table td {
+    border: 1px solid #ddd; /* Light border for cells */
+    padding: 10px; /* Add padding for spacing */
+    text-align: left; /* Align text to the left */
+    vertical-align: middle; /* Ensure vertical alignment in cells */
+    word-wrap: break-word; /* Break long words into new lines */
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis; /* Add ellipsis (...) for overflowing text */
+}
+
+/* Fix specific column widths */
+.account-table th:nth-child(2),
+.account-table td:nth-child(2) {
+    width: 300px; /* Fixed width for the Description column */
+    max-width: 300px; /* Prevent expanding beyond this size */
+}
+
+.account-table th:nth-child(3),
+.account-table td:nth-child(3) {
+    width: 150px; /* Fixed width for Actions column */
+    text-align: center; /* Center align content horizontally */
+    vertical-align: middle; /* Center align content vertically */
+}
+
+/* Style for table headers */
+.account-table th {
+    background-color: #6f42c1; /* Violet header background */
+    color: #fff; /* White text */
+    text-align: center; /* Center align header text */
+    padding: 12px;
+}
+
+/* Align action buttons properly */
+td.actions {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center; /* Center buttons vertically */
+    height: 100%; /* Ensure it fills the cell's height */
+    white-space: nowrap; /* Prevent buttons from wrapping */
+    gap: 10px; /* Add spacing between buttons */
+}
+
+/* Ensure consistent button size */
+td.actions button,
+td.actions .btn-edit,
+td.actions .btn-view,
+td.actions .btn-delete {
+    height: 30px; /* Set button height */
+    min-width: 60px; /* Ensure buttons have a minimum width */
+    display: inline-flex; /* Consistent alignment */
+    justify-content: center; /* Center text inside the button */
+    align-items: center; /* Vertically center text */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .account-table th, .account-table td {
+        font-size: 12px; /* Reduce font size */
+        padding: 8px; /* Adjust padding for smaller screens */
+    }
+
+    td.actions {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 5px; /* Reduce spacing between buttons */
+    }
+
+    td.actions button {
+        width: 100%; /* Make buttons take full width */
+        min-width: unset; /* Remove minimum width */
+    }
+}
+
+/* Zoom compatibility */
+@media (min-resolution: 1.25dppx) {
+    .account-table th, .account-table td {
+        font-size: 16px; /* Adjust font size for better readability */
+    }
+
+    td.actions button {
+        height: 40px; /* Increase button height */
+    }
+}
+
+/* buttons on list of accs */
+.btn-view {
+    background-color: #0053ec;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
+}
+.btn-view:hover{
+    background-color: #2f78ff;
+}
+
+/* view button */
+.btn-edit {
+    background-color: #ff9900;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
+}
+.btn-edit:hover{
+    background-color: #ffad32;
+}
+
+.btn-delete {
+    background-color: #f30000;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 30px;
+    width: 80px;
+}
+.btn-delete:hover{
+    background-color: #ff3d3d;
+}
+
+
+.textbox {
+    border: 0.1px solid #000000;
+    font-family:'Poppins', sans-serif;
+    padding: 10px;
+    overflow-x: auto;
+    box-sizing: border-box;
+    border-radius: 5px; /* Rounded corners */
+}
+.textbox-desc {
+    border: 0.1px solid #000000;
+    font-family:'Poppins', sans-serif;
+    height:100%;    
+    width: 100%;
+    max-width: 1000%;
+    padding: 10px 10px 50px 10px;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: break-word;
+    resize: vertical;
+    box-sizing: border-box;
+    border-radius: 5px; /* Rounded corners */
+
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Two columns for labels and inputs */
+    gap: 10px 20px; /* Adjust spacing between rows and columns */
+    align-items: center; /* Vertically align inputs and labels */
+    width: 100%;
+    margin-bottom: 20px;
+}
+.form-grid input[type="text"] {
+    width: 100%; /* Make input fields take the full width of the column */
+    padding: 10px;
+    border: 1px solid #ccc; /* Light border for inputs */
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+
+.table-acc {
+    width: 100%;
+    border-collapse: collpase;
+    font-size: 14px;
+    padding: 0px 0px 0px 0px;
+
+}
+

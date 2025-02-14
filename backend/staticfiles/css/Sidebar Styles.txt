@@ -1,0 +1,239 @@
+/* Sidebar wrapper styles */
+/* checked */
+.sidebar-wrapper {
+    position: fixed;
+    top: 50px; /* Position below the menubar, assuming menubar is 50px in height */
+    left: 0;
+    width: 250px;
+    /* height: calc(100% - 50px); Adjust height to avoid overlapping menubar */
+    background-color: #cccccc;
+    border-right: 1px solid #ddd;
+    z-index: 1;
+    transition: width 0.3s; /* Smooth transition for sidebar width */
+    
+}
+/* checked */
+.sidebar {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: flex-start; /* Start items from the top */
+    overflow-x: hidden;
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    padding-top: 5px;
+    padding-right: 10px;
+    border-right: 1px solid #ddd;
+    transition: width 0.3s;
+    font-family: 'Poppins';
+    overflow-y: auto;
+
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+.sidebar-title{
+    font-size: 122px;
+}
+/* checked */
+.sidebar.collapsed {
+    width: 0;
+    height: 0; /* Set height to 0 as well */
+    overflow: hidden; /* Hide overflow content */
+    position: absolute; /* Ensure it doesn't affect layout */
+    margin: 0; /* Remove any potential margins */
+    padding: 0; /* Remove any internal spacing */
+    border: none; /* Remove any border */
+}
+
+
+/* unnecesary???? */
+.sidebar-wrapper.collapsed {
+    display: none; /* Hide the entire wrapper if necessary */
+}
+
+.sidebar.hidden {
+    display: none; /* Fully hide the sidebar */
+    width: 0; /* Ensure no visual width */
+    height: 0; /* Ensure no visual height */
+    overflow: hidden; /* Prevent any visible content */
+    margin: 0; /* Ensure no spacing from margins */
+}
+
+
+.sidebar-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: -1px 15px 10px 15px;
+    font-size: 12px;
+    color: #333;
+    background-color: #ffffff;
+}
+
+
+/* hamburger button */
+/* Base styles for the menu button */
+.menu-btn {
+    background-color: white;
+    margin-left: 20px;
+    border: none;
+    outline: none;
+    width: 1.5rem; /* Set a fixed width */
+    height: 1.5rem; /* Set a fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the icon */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s, color 0.3s; /* Smooth hover transition */
+    overflow: hidden; /* Prevent overflow */
+}
+
+/* Hover styles for the menu button */
+.menu-btn:hover {
+    background-color: #6f42c1; /* Violet color */
+    color: white;
+}
+
+/* Ensure consistent dimensions on hover */
+.menu-btn i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: auto;
+    width: 100%;
+    height: 100%;
+}
+/* bookkeeping dropdown button */
+
+/* Default state of the caret icon pointing down */
+.fa-caret-down {
+    transform: rotate(180deg); /* Default downward position */
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+/* Rotated state pointing up */
+.fa-caret-down.rotated {
+    transform: rotate(0deg); /* Pointing up */
+}
+
+
+/* Hovering dropdownbutton */
+a:hover,
+.dropdown-btn:hover {
+    background-color: #6f42c1; /* Violet color */
+    color: rgb(255, 255, 255);
+    border-radius: 10px; /* Adjust this value for more or less rounding */
+}
+
+/* dropdown element (setup, transaction, reports) */
+a,
+.dropdown-btn {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px 7px 10px 25px;
+    text-decoration: none;
+    font-size: 14px;
+    color: #333333;
+    display: flex;
+    align-items: center; /* Align items for icon and text */
+    justify-content: flex-start; /* Adjust alignment to the left */
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s, border-radius 0.3s, margin 0.3s; /* Smooth transition */
+    overflow: hidden; /* Prevent background overflow */
+    box-sizing: border-box; /* Ensure padding and border are included in total width */
+}
+
+/* non dropdown element (dashboard, api, payment) */
+a.focus,
+a.active,
+a.dropdown-btn.active {
+    background-color: none; /* Remove violet background from active state */
+    color: #333333; /* Inherit default color */
+    padding: 7px 10px 7px 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-content: flex-start;
+}
+
+i.active {
+    display: flex; /* Use flex to center the icon */
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    width: 30px; /* Ensure the icon takes the full width of its container */
+}
+
+a.active:hover{
+    color: #ffffff;
+}
+
+a i,
+.dropdown-btn i {
+    display: flex; /* Use flex to center the icon */
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    width: 30px; /* Ensure the icon takes the full width of its container */
+}
+
+/* background dropdown container */
+.dropdown-container {
+    display: none;
+    background-color: #ffffff;
+}
+
+/* container background and hover */
+.dropdown-container a {
+    font-size: 14px;
+    color: #333333;
+}
+.dropdown-container a:hover{
+    font-size: 14px;
+    color: #ffffff; /*968DF4*/
+}
+.dropdown-container a::after{
+    font-size: 14px;
+    color: #968DF4; /*968DF4*/
+}
+
+
+.sidebar-footer {
+    flex-shrink: 0; /* Prevent shrinking */
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+    position: relative; /* Ensure it stays within the sidebar */
+}
+
+.sidebar-footer img {
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+.sidebar-footer p {
+    font-size: 12px;
+    color: #ff0707;
+}
+
+
+
+/* Main content styles */
+.main-content {
+    margin-left: 0; /* Default margin to make space for the sidebar */
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    position: relative; /* Ensure main content appears correctly */
+    z-index: 0; /* Ensure main content stays below sidebar */
+}
+
+

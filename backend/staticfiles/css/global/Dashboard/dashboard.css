@@ -1,0 +1,29 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f0f0;
+
+}
+h1.title {
+    color: #6f42c1; /* Violet color */
+    text-align: left; /* Center the title */
+    margin-top: 35px;
+}
+/* Flexbox container for charts */
+.chart-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Individual chart styling */
+.chart {
+    flex: 1 1 calc(33.33% - 20px); /* Makes each chart take up one-third of the width, minus the gap */
+    min-width: 250px; /* Ensures charts don’t get too small on smaller screens */
+    height: 300px; /* Set a consistent height */
+    /* border: 2px solid #ccc; */
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

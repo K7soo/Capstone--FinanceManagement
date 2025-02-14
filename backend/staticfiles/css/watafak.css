@@ -19,8 +19,6 @@
     /* primary text color on component of dropdown when you hover*/
     --panel-color: #FFF;
     /*overall body color of the sidebar*/
-    --scrollbar-color: #eeeeee ;
-
     --text-color: #6f42c1;
     /* finance text color*/
     --black-light-color: #313131;
@@ -68,7 +66,7 @@ body.dark {
 }
 
 /* === Custom Scroll Bar CSS === */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 8px;
 }
 ::-webkit-scrollbar-track {
@@ -83,7 +81,7 @@ body.dark {
 body.dark::-webkit-scrollbar-thumb:hover,
 body.dark .activity-data::-webkit-scrollbar-thumb:hover{
     background: #3A3B3C;
-}
+} */
 
 .dropdown .submenu {
     display: none;
@@ -139,7 +137,7 @@ body.dark .activity-data::-webkit-scrollbar-thumb:hover{
 
 /* Existing Sidebar CSS */
 /* ===== Sidebar General Styling ===== */
-.sidebar-nav {
+nav {
     position: fixed;
     top: 0;
     left: 0;
@@ -154,14 +152,9 @@ body.dark .activity-data::-webkit-scrollbar-thumb:hover{
     overflow-x: hidden;
     /* Hide horizontal overflow */
     scrollbar-width: thin;
-    z-index: 1050; /* Higher than other elements */
-    scrollbar-color: var(--scrollbar-color) var(--panel-color); /* scroolbar color */
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1); /* shadow of navigation bar */
+    scrollbar-color: var(--primary-color) var(--panel-color);
 }
-/* shadow of top section navigation bar */
-div.top{
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-}
+
 nav::-webkit-scrollbar {
     width: 8px;
 }
@@ -171,19 +164,19 @@ nav::-webkit-scrollbar-track {
 }
 
 nav::-webkit-scrollbar-thumb {
-    background-color: #242526;
+    background-color: var(--primary-color);
     border-radius: 10px;
 }
 
-/* scrollbar color */
 nav::-webkit-scrollbar-thumb:hover {
     background-color: #6a1ab9;
 }
 
-
-.nav-links a.active {
-    color: #6f42c1;
+.menu-items {
+    padding-bottom: 20px;
+    /* Adds space for scrollbar visibility */
 }
+
 nav.close {
     width: 90px;
     display: none;
@@ -207,7 +200,6 @@ nav .logo-image img {
     border-radius: 50%;
 }
 
-/* finance logo name on top of the sidebar */
 nav .logo-name .logo_name {
     font-size: 22px;
     font-weight: 600;
@@ -215,6 +207,7 @@ nav .logo-name .logo_name {
     margin-left: 14px;
     transition: var(--tran-05);
 }
+
 nav.close .logo_name {
     opacity: 0;
     pointer-events: none;
@@ -345,43 +338,6 @@ body.dark .switch:before {
     border-radius: 50%;
 }
 
-/* Top Section Styling */
-.top-right-section {
-    display: flex;
-    align-items: center;
-    margin-left: auto; /* Push to the right */
-    gap: 20px; /* Adjust spacing between notification and profile */
-}
-
-/* Notification Section */
-.notification-section {
-    position: relative;
-}
-
-.notification-icon {
-    font-size: 28px; /* Make it bigger */
-    color: var(--black-light-color); /* Default color */
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.notification-icon:hover {
-    color: var(--primary-color); /* Highlight color */
-}
-
-/* Notification Badge */
-.notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -10px;
-    background-color: var(--primary-color);
-    color: white;
-    font-size: 14px; /* Bigger badge */
-    font-weight: bold;
-    padding: 3px 7px;
-    border-radius: 50%;
-}
-
 /* Profile Section */
 .profile-section {
     position: relative;
@@ -451,22 +407,6 @@ body.dark .switch:before {
     background-color: #f7f7f7;
     color: var(--primary-color);
     border-radius: 4px;
-}
-/* Active dropdown styling */
-.dropdown.active > .dropdown-toggle {
-    color: var(--primary-color); /* Make the dropdown link purple */
-}
-
-/* Active submenu link styling */
-.submenu li a.active {
-    color: var(--primary-color); /* Make the active link purple */
-}
-
-
-/* Primary menu active link */
-.menu-items .nav-links .active {
-    color: var(--primary-color);
-
 }
 
 /* Main Content Sections */

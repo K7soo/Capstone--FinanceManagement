@@ -1,0 +1,123 @@
+/* Menubar Container */
+.menubar-container {
+    display: flex;
+    justify-content: space-between; /* Align items to far left and right */
+    align-items: center; /* Vertically align items */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px; 
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    z-index: 1000;
+    padding: 0 20px; /* Spacing on sides */
+    box-sizing: border-box;
+}
+.menubar-title {
+    transition: max-width 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.menubar-title.collapsed {
+    max-width: 0;
+    transform: translateX(-20px); /* Slide out to the left */
+}
+
+.menu-btn {
+    transition: margin-left 0.3s ease;
+}
+
+.menu-btn.collapsed {
+    margin-left: 0; /* Aligns it to the left when sidebar is collapsed */
+}
+
+/* Adjust button position when the sidebar is collapsed */
+.menu-btn.sidebar-collapsed {
+    left: 10px; /* Shift further left when collapsed */
+    transform: translateX(-20px); /* Slide in sync with the sidebar */
+}
+.menubar-title{
+    font-size: 1rem;
+    font-family: 'Poppins';
+    color: #292929;
+}
+/* Left Section: Hamburger Menu */
+.menubar-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* .menu-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+} */
+
+/* .menu-btn:hover {
+    background-color: #6f42c1; 
+    border-radius: 20%;
+    transition: background-color 0.3s, color 0.5s; 
+    color: white;
+    padding: 6px 10px 6px 10px; 
+} */
+
+
+/* Right Section: Profile Dropdown */
+.menubar-right {
+    display: flex;
+    align-items: center;
+}
+
+.profile-component {
+    position: relative; /* Parent for dropdown positioning */
+    cursor: pointer;
+    font-size: larger;
+}
+
+.profile-dropdown {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 100%; /* Place below the profile toggle */
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #bfbfbf;
+    border-radius: 10px;
+    min-width: 150px;
+    z-index: 1000;
+}
+
+.profile-dropdown p {
+    margin: 0;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.menu-item {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+.menu-item.logout {
+    color: red;
+}
+
+.menu-item:hover {
+    background-color: #f0f0f0;
+}
+
+.profile-component.active .profile-dropdown {
+    display: block; /* Show dropdown when parent is active */
+}
