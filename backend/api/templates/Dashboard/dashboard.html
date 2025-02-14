@@ -4,7 +4,7 @@
 {% load static %} 
 
 {% block title %} 
-Bookkeeping Dashboard 
+Dashboard 
 {% endblock %} 
 
 {% block extra_css %}
@@ -21,6 +21,7 @@ Bookkeeping Dashboard
 	.chart-container {
 		min-height: 300px;
 	}
+	
 </style>
 {% endblock %}
 
@@ -32,64 +33,18 @@ Bookkeeping Dashboard
 			<span class="text-muted">Dashboard</span>
 		</li>
 	</ol> -->
-	<h1 style="color: #6f42c1">Bookkeeping Dashboard</h1>
+	<h1 style="color: #6f42c1">Financial Analytics</h1>
 	<!-- Breadcrumbs -->
 
-	<p>Overview of Financial Data</p>
+	<p>Overview of Summarized Data</p>
 
 	<div class="row g-4">
 		<div class="col-xl-12 d-flex flex-row justify-content-between">
 			<div class="w-100">
 				<!-- Cards Container -->
-				<div class="row w-100">
-					<!-- New Bookings Card -->
-					<div class="col-md-3 mb-4">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col mt-0">
-										<h5 class="card-title">New Bookings</h5>
-									</div>
-									<div class="col-auto">
-										<div class="stat text-primary">
-											<i class="align-middle" data-feather="calendar"></i>
-										</div>
-									</div>
-								</div>
-								<h1 class="mt-1 mb-3">3,482</h1>
-								<div class="mb-0">
-									<span class="text-success"> <i class="mdi mdi-arrow-top-right"></i> 4.25% </span>
-									<span class="text-muted">Since last week</span>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- New Customers Card -->
-					<div class="col-md-3 mb-4">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col mt-0">
-										<h5 class="card-title">Cost of Goods</h5>
-									</div>
-									<div class="col-auto">
-										<div class="stat text-primary">
-											<i class="align-middle" data-feather="user-plus"></i>
-										</div>
-									</div>
-								</div>
-								<h1 class="mt-1 mb-3">10,284</h1>
-								<div class="mb-0">
-									<span class="text-success"> <i class="mdi mdi-arrow-top-right"></i> 7.10% </span>
-									<span class="text-muted">Since last week</span>
-								</div>
-							</div>
-						</div>
-					</div>
-
+				<div class="row ">
 					<!-- Revenue Card -->
-					<div class="col-md-3 mb-4">
+					<div class="col-lg-3 col-md-6 col-sm-12 mb-4">
 						<div class="card">
 							<div class="card-body">
 								<div class="row">
@@ -105,44 +60,105 @@ Bookkeeping Dashboard
 								<h1 id="totalRevenue" class="mt-1 mb-3">₱0</h1>
 								<!-- Dynamic Data Here -->
 								<div class="mb-0">
-									<span id="growthPercentage" class="text-muted">0%</span>
-									<span class="text-muted">Since last week</span>
+									<span id="growthPercentage">0%</span>
+									<span class="text-muted">Since Previous Transactions</span>
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<!-- Visitors Card -->
-					<div class="col-md-3 mb-4">
+					<div class="col-lg-3 col-md-6 col-sm-12 mb-4">
 						<div class="card">
 							<div class="card-body">
 								<div class="row">
 									<div class="col mt-0">
-										<h5 class="card-title">Visitors</h5>
+										<h5 class="card-title">Total Expenses</h5>
 									</div>
 									<div class="col-auto">
 										<div class="stat text-primary">
-											<i class="align-middle" data-feather="eye"></i>
+											<i class="align-middle" data-feather="dollar-sign"></i> <!-- Changed icon to dollar-sign -->
 										</div>
 									</div>
 								</div>
-								<h1 class="mt-1 mb-3">10,842</h1>
+								<h1 id="totalExpenses" class="mt-1 mb-3">₱0.00</h1> <!-- Updated ID to match JS function -->
 								<div class="mb-0">
-									<span class="text-danger"> <i class="mdi mdi-arrow-bottom-right"></i> -1.15% </span>
-									<span class="text-muted">Since last week</span>
+									<span id="expenseGrowthPercentage" class="text-primary">
+										<i class="mdi mdi-arrow-bottom-right"></i> 0%
+									</span>
+									<span class="text-muted">Since Previous Transactions</span>
 								</div>
 							</div>
 						</div>
 					</div>
+
+					<!-- Net Profit Card -->
+					<div class="col-lg-3 col-md-6 col-sm-12 mb-4">						
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col mt-0">
+										<h5 class="card-title">Net Profit</h5>
+									</div>
+									<div class="col-auto">
+										<div class="stat text-primary">
+											<i class="align-middle" data-feather="trending-up"></i>
+										</div>
+									</div>
+								</div>
+								<h1 class="mt-1 mb-3" id="net-profit-value">₱0.00</h1>
+								<div class="mb-0">
+									<span class="text-muted">Total Profitable Revenue</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Cost of Goods Sold Card -->
+					<div class="col-lg-3 col-md-6 col-sm-12 mb-4">						
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col mt-0">
+										<h5 class="card-title">Cost of Goods Sold</h5>
+									</div>
+									<div class="col-auto">
+										<div class="stat text-primary">
+											<i class="align-middle" data-feather="shopping-cart"></i>
+										</div>
+									</div>
+								</div>
+								<h1 id="totalCOGS" class="mt-1 mb-3">₱0</h1> <!-- COGS Data will be inserted here -->
+								<div class="mb-0">
+									<span class="text-muted">Total Cost of Goods Sold</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+
 				</div>
 			</div>
 		</div>
-		<!-- Income vs. Expenses (Wide) -->
-		<div class="col-md-8">
+
+
+		<!-- Cash Flow in and out-->
+		<div class="col-md-6">
 			<div class="card shadow-sm h-100">
 				<div class="card-body">
-					<h5 class="card-title">₱120,000 <span class="text-success">↑ 8.2%</span></h5>
-					<p class="card-text">Income vs Expenses</p>
+					<h5 class="card-title">Cash In-Flow and Out-Flow</h5>
+					<div class="chart-container">
+						<canvas id="multiCashFlowChart" width="400" height="200"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Income vs. Expenses -->
+		<div class="col-md-6">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">Income vs Expenses</h5>
 					<div class="chart-container">
 						<canvas id="incomeExpensesChart" class="img-fluid"></canvas>
 					</div>
@@ -150,38 +166,11 @@ Bookkeeping Dashboard
 			</div>
 		</div>
 
-		<!-- Outstanding Invoices -->
-		<div class="col-md-4">
-			<div class="card shadow-sm h-100">
-				<div class="card-body">
-					<h5 class="card-title">₱25,000 <span class="text-danger">↓ 2.3%</span></h5>
-					<p class="card-text">Outstanding Invoices</p>
-					<div class="chart-container">
-						<canvas id="outstandingInvoicesChart" class="img-fluid"></canvas>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Account Balances -->
-		<div class="col-md-6">
-			<div class="card shadow-sm h-100">
-				<div class="card-body">
-					<h5 class="card-title">₱300,000 <span class="text-success">↑ 5.7%</span></h5>
-					<p class="card-text">Account Balances</p>
-					<div class="chart-container">
-						<canvas id="accountBalancesChart" class="img-fluid"></canvas>
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<!-- Cash Flow -->
-		<div class="col-md-6">
+		<div class="col-md-12">
 			<div class="card shadow-sm h-100">
 				<div class="card-body">
-					<h5 class="card-title">₱75,000 <span class="text-success">↑ 3.5%</span></h5>
-					<p class="card-text">Cash Flow</p>
+					<h5 class="card-title">Net Cash Flow<span class="text-primary"> ↑ 0%</span></h5>
 					<div class="chart-container">
 						<canvas id="cashFlowChart" class="img-fluid"></canvas>
 					</div>
@@ -190,17 +179,45 @@ Bookkeeping Dashboard
 		</div>
 
 		<!-- Monthly Trends -->
-		<div class="col-md-12">
+		<div class="col-md-6">
 			<div class="card shadow-sm h-100">
 				<div class="card-body">
-					<h5 class="card-title">₱500,000 <span class="text-success">↑ 10.3%</span></h5>
-					<p class="card-text">Monthly Trends</p>
+					<h5 class="card-title">Debt Risk Analysis <span class="text-success"></span></h5>
+					<p class="card-text"></p>
 					<div class="chart-container">
-						<canvas id="monthlyTrendsChart" class="img-fluid"></canvas>
+						<canvas id="debtEquityChart"></canvas>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<!-- Liquidity Risk Analysis
+		<div class="col-md-6">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">Liquidity Risk Analysis</h5>
+					<div class="chart-container">
+						<canvas id="liquidityRiskChart" width="400" height="200"></canvas>
+					</div>
+				</div>
+			</div>
+		</div> -->
+
+		<div class="col-lg-6 col-md-12">
+			<div class="card shadow-sm h-100">
+				<div class="card-body">
+					<h5 class="card-title">Revenue Trend Forecasting</h5>
+					<p class="text-muted">
+						Forecasted Revenue: <span id="forecastedRevenue" class="fw-bold text-primary">₱0.00</span>
+					</p>
+					<div class="chart-container">
+						<canvas id="revenueTrendChart" width="400" height="200"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
 	</div>
 </div>
 {% endblock %}

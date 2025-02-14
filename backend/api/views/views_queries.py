@@ -5,7 +5,7 @@ from rest_framework import status
 from ..models import *
 from ..serializers import *
 from rest_framework.permissions import AllowAny
-from django.db.models import Sum, Q, Case, When, Value
+from django.db.models import Sum, Q, Case, When, Value, F
 
 class JournalQueryView(APIView):
     permission_classes = [AllowAny]
@@ -169,5 +169,40 @@ class TrialBalanceQueryView(APIView):
         })
 
         return Response(trial_balance_data)
+    
+
+class IncomeVsExpenses(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            # Get income accounts
+            income_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc__iexact='Income')
+
+            # Get expense accounts
+            expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc__iexact='Expenses')
+
+            # Get approved journal entries
+            income_details = JournalEntryDetails.objects.filter(
+                Account_FK__in=income_accounts,
+                JournalEntry_FK__EntryStatus_FK=2  # Approved Entries
+            )
+
+            expense_details = JournalEntryDetails.objects.filter(
+                Account_FK__in=expense_accounts,
+                JournalEntry_FK__EntryStatus_FK=2  # Approved Entries
+            )
+
+            # Calculate totals
+            total_income = income_details.aggregate(total=Sum(F('CreditAmount') - F('DebitAmount')))['total'] or 0
+            total_expenses = expense_details.aggregate(total=Sum(F('DebitAmount') - F('CreditAmount')))['total'] or 0
+
+            return Response({
+                "total_income": total_income,
+                "total_expenses": total_expenses
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
     
     

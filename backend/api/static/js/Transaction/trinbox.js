@@ -196,6 +196,12 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll('.create-jev-btn').forEach(button => {
             button.addEventListener('click', function () {
                 const transactionData = JSON.parse(this.getAttribute('data-transaction'));
+    
+                // 🟢 Store the correct ID, not transaction_id
+                window.currentRecordId = transactionData.id;
+    
+                console.log("✅ Record ID Set:", window.currentRecordId);
+    
                 autoGenerateJEV(transactionData);
             });
         });
@@ -206,15 +212,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const statusId = 2; // Default to Approved
         
         let templateType;
-        if (transaction.Description === 'Reservation Dine-in') {
+        if (transaction.Description.includes('Reservation Dine')) {
             templateType = 'Reservation Dine In';
-        } else if (transaction.Description === 'Reservation Event') {
+        } else if (transaction.Description.includes('Reservation Event')) {
             templateType = 'Reservation Event';
-        } else if (transaction.Description === 'Logistics Purchase') {
+        } else if (transaction.Description.includes('Logistics Purchase')) {
             templateType = 'Logistics Purchase';
+        } else if (transaction.Description.includes('Services rendered for Dine')) {
+            templateType = 'Dine-in Rendered';
+        } else if (transaction.Description.includes('Services rendered for Event')) {
+            templateType = 'Event Rendered';
         } else {
             console.error(`No template found for ${transaction.Description}`);
-            return; // Exit if no matching description
+            Swal.fire({
+                icon: 'warning',
+                title: 'No preset template found!',
+                text: 'Please create the necessary template for auto-generation.',
+                confirmButtonColor: '#6f42c1'
+            });
+            return;
         }
         
         const template = journalTemplates[templateType];
@@ -239,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function generateJEVNumber(description) {
-        const timestamp = Date.now().toString().slice(-6);
+        const timestamp = Date.now().toString().slice(6);
         let prefix;
     
         if (description === 'Reservation Dine-in') {
@@ -304,6 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById('createJevBtn').addEventListener('click', function () {
+        const transactionId = window.currentTransactionId;
         const jevDate = document.getElementById('jevDate').textContent;
         const jevDateAPI = formatDateForAPI(jevDate);
         const jevNumber = generateJEVNumber();
@@ -351,7 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 EntryStatus_FK: 2,
                 Entry_Date: jevDateAPI,
                 EntryParticulars: remarks,
-                Created_By: ""
+                Created_By: "",
             },
             journal_details: journalDetails
         };
@@ -387,14 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return response.json();
                 })
                 .then(data => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Journal Entry successfully created!',
-                        confirmButtonColor: '#6f42c1'
-                    }).then(() => {
-                        location.reload(); 
-                    });
+                    patchEntryCreated();
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -407,8 +417,62 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         });
-    });
+    }); 
     
+    function patchEntryCreated() {
+        const recordId = window.currentRecordId; // Use the correct record ID
+    
+        if (!recordId) {
+            console.error("❌ Record ID is missing when calling PATCH!");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Record ID is not available. Please try again.',
+                confirmButtonColor: '#6f42c1'
+            });
+            return;
+        }
+    
+        console.log("🔄 Sending PATCH Request for Record ID:", recordId);
+    
+        fetch(`/get-payments/${recordId}/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ EntryCreated: true }) // Update EntryCreated to True
+        })
+        .then(response => {
+            console.log("PATCH Response Status:", response.status);
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw errorData;
+                });
+            }
+            return response.json();
+        })
+        .then(updatedData => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Journal Entry successfully created!',
+                confirmButtonColor: '#6f42c1'
+            }).then(() => {
+                location.reload(); 
+            });
+        })
+        .catch(error => {
+            console.error("❌ PATCH Request Failed:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: error.message || 'Failed to update payment record.',
+                confirmButtonColor: '#6f42c1'
+            });
+        });
+    }
 
     // Initial Load
     Promise.all([loadChartOfAccounts(), loadJournalTemplates(), loadEntryStatuses()])

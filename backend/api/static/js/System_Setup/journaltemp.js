@@ -241,17 +241,7 @@ function addRowToTable(template) {
                             <i class="bi bi-eye me-2"></i>View
                         </button>
                     </li>
-                    <li>
-                        <button
-                            class="dropdown-item text-warning"
-                            type="button"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editTemplateModal"
-                            onclick="editTemplate(${template.id})"
-                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                            <i class="bi bi-pencil-square me-2"></i>Edit
-                        </button>
-                    </li>
+
                     <li>
                         <button
                             class="dropdown-item text-danger"
@@ -477,58 +467,146 @@ function fetchAndRenderTemplates() {
 }
 
 
-// Add a row to the template (modal)
-function addTemplateRow(containerId = "templateRows") {
-    console.log(`Adding row to container: ${containerId}`);
-    const templateRowsContainer = document.getElementById(containerId);
-    if (!templateRowsContainer) {
-        console.error(`Container with ID '${containerId}' not found.`);
-        return;
+// Function to add a new row to the journal template
+function addTemplateRow() {
+    const tableBody = document.getElementById("templateRows");
+    const rowCount = tableBody.rows.length; // Get the current number of rows
+
+    // Limit the rows to 10
+    if (rowCount >= 10) {
+
+        Swal.fire({
+            icon:'warning',
+            title:'Row limit',
+            text:'You can only add up to 10 rows',
+            confirmButtonColor: '#6f42c1', // Customize the button color
+        });
+        return; // Prevent adding more rows
     }
 
+    // Create a new row
     const newRow = document.createElement("tr");
     newRow.innerHTML = `
-        <td>
-            <select class="form-select account-code">
-                <option value="">Select Account</option>
-                ${window.chartOfAccounts
-            .map(
-                (account) => `
-                            <option value="${account.id}">${account.AccountDesc}</option>
-                        `
-            )
-            .join("")}
-            </select>
-        </td>
-        <td>
-            <div class="form-check d-flex justify-content-center align-items-center">
-                <input 
-                    type="checkbox" 
-                    class="form-check-input debit-checkbox" 
-                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
-
-                    onchange="toggleDebitCredit(this, 'debit')" 
-                />
-            </div>
-        </td>
-        <td>
-            <div class="form-check d-flex justify-content-center align-items-center">
-                <input 
-                    type="checkbox" 
-                    class="form-check-input credit-checkbox" 
-                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
-                    onchange="toggleDebitCredit(this, 'credit')" 
-                />
-            </div>
-        </td>
-        <td class="text-center align-middle">
-            <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
-                <i class="bi bi-trash"></i>
-            </button>
-        </td>
+    <td>
+        <select class="form-select account-code">
+            <option value="">Select Account</option>
+            ${window.chartOfAccounts
+                .map(
+                    (account) => `
+                        <option value="${account.id}">${account.AccountDesc}</option>
+                    `
+                )
+                .join("")}
+        </select>
+    </td>
+    <td>
+        <div class="form-check d-flex justify-content-center align-items-center">
+            <input 
+                type="checkbox" 
+                class="form-check-input debit-checkbox" 
+                style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                onchange="toggleDebitCredit(this, 'debit')" 
+                ${rowCount === 0 ? "checked disabled" : ""}
+            />
+        </div>
+    </td>
+    <td>
+        <div class="form-check d-flex justify-content-center align-items-center">
+            <input 
+                type="checkbox" 
+                class="form-check-input credit-checkbox" 
+                style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                onchange="toggleDebitCredit(this, 'credit' )" 
+                ${rowCount === 0 ? "disabled" : ""}
+            />
+        </div>
+    </td>
+    <td class="text-center align-middle">
+        <button type="button" class="btn btn-danger btn-sm btn-remove" 
+            onclick="removeRow(this)" ${rowCount < 2 ? "disabled" : ""}>
+            <i class="bi bi-trash"></i>
+        </button>
+    </td>
     `;
-    templateRowsContainer.appendChild(newRow);
+
+    // Append the new row correctly
+    tableBody.appendChild(newRow);
 }
+
+// Function to remove a row
+function removeRow(button) {
+    const row = button.closest("tr");
+    row.remove();
+
+    // Re-enable remove buttons when more than two rows exist
+    const rows = document.querySelectorAll("#templateRows tr");
+    if (rows.length > 2) {
+        rows.forEach((row, index) => {
+            const removeButton = row.querySelector(".btn-remove");
+            if (removeButton) {
+                removeButton.disabled = index < 2; // Disable first two, enable others
+            }
+        });
+    }
+}
+
+
+// Function to remove a row
+function removeRow(button) {
+    const row = button.closest("tr");
+    row.remove();
+
+    // Re-enable remove buttons when more than two rows exist
+    const rows = document.querySelectorAll("#templateRows tr");
+    if (rows.length > 2) {
+        rows.forEach((row, index) => {
+            const removeButton = row.querySelector(".btn-remove");
+            if (removeButton) {
+                removeButton.disabled = index < 2; // Disable first two, enable others
+            }
+        });
+    }
+}
+
+
+// Function to ensure modal always starts with two default rows
+function initializeTemplateRows() {
+    const tableBody = document.getElementById("templateRows");
+    tableBody.innerHTML = ""; // Clear existing rows
+
+    // Properly add two rows
+    addTemplateRow();
+    addTemplateRow();
+}
+
+// Ensure the modal opens with two default rows
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("addTemplateModal").addEventListener("shown.bs.modal", function () {
+        initializeTemplateRows();
+    });
+});
+
+
+// Function to ensure modal always starts with two default rows
+function initializeTemplateRows() {
+    const tableBody = document.getElementById("templateRows");
+    tableBody.innerHTML = ""; // Clear existing rows
+
+    // Add two default rows
+    addTemplateRow();
+    addTemplateRow();
+}
+
+// Ensure the modal opens with two default rows
+document.addEventListener("DOMContentLoaded", function () {
+    const addTemplateModal = document.getElementById("addTemplateModal");
+
+    if (addTemplateModal) {
+        addTemplateModal.addEventListener("shown.bs.modal", function () {
+            initializeTemplateRows();
+        });
+    }
+});
 
 function toggleDebitCredit(checkbox, type) {
     const row = checkbox.closest("tr");
@@ -594,10 +672,14 @@ function viewTemplate(templateId) {
                         <td>${accountCode}</td>
                         <td>${accountDesc}</td>
                         <td>
-                            <input type="checkbox" ${detail.Debit > 0 ? "checked" : ""} disabled />
+                            <input type="checkbox" 
+                            style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                            ${detail.Debit > 0 ? "checked" : ""} disabled />
                         </td>
                         <td>
-                            <input type="checkbox" ${detail.Credit > 0 ? "checked" : ""} disabled />
+                            <input type="checkbox"
+                            style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                            ${detail.Credit > 0 ? "checked" : ""} disabled />
                         </td>
                     `;
                     viewTemplateRows.appendChild(newRow);

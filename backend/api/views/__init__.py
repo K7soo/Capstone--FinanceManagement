@@ -7,6 +7,7 @@ from .views_api import *
 from .views_status import *
 from .views_validate_token import *
 from .views_queries import *
+from .views_analytics import *
 
 __all__ = [
     "views_",
@@ -18,5 +19,6 @@ __all__ = [
     "views_api",
     "views_status",
     "views_validate_token",
-    "views_queries"
+    "views_queries",
+    "views_analytics"
 ]

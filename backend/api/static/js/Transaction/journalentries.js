@@ -1199,102 +1199,107 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Call the function on page load
-    document.addEventListener('DOMContentLoaded', loadJournalEntries);
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', loadJournalEntries);
 
-    if (addEntryButton) {
-        addEntryButton.addEventListener('click', () => {
-            console.log("Add Journal Entry button clicked"); // Debugging
-    
-            // Get form elements safely using correct IDs
-            const dateInput = document.querySelector('#entryDate');
-            const particularsInput = document.querySelector('#entryDescription');
-            const templateInput = document.querySelector('#addTemplate');
-    
-            // Ensure elements exist before accessing value
-            const date = dateInput ? dateInput.value.trim() : "";
-            const particulars = particularsInput ? particularsInput.value.trim() : "";
-            const template = templateInput ? templateInput.value.trim() : "";
-    
-            // Validate required fields
-            if (!date || !particulars || !template || template === "Select Template") {
-                console.error("Validation failed: Missing required fields"); // Debugging
-                Swal.fire({
-                    title: 'Validation Error',
-                    text: 'All fields (Date, Particulars, and Template) must be filled before adding a journal entry.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-    
-            // Gather journal details for validation
-            const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
-    
-            if (accountRows.length === 0) {
-                console.error("Validation failed: No accounts added"); // Debugging
-                Swal.fire({
-                    title: 'Validation Error',
-                    text: 'Please add at least one account entry before submitting.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-    
-            const journalDetails = Array.from(accountRows).map(row => {
-                const debitInput = row.querySelector('.debit-input');
-                const creditInput = row.querySelector('.credit-input');
-    
-                return {
-                    DebitAmount: debitInput ? parseFloat(debitInput.value.trim() || '0') : 0,
-                    CreditAmount: creditInput ? parseFloat(creditInput.value.trim() || '0') : 0,
-                };
-            });
-    
-            console.log("Journal Details:", journalDetails); // Debugging
-    
-            // Ensure at least one row has a debit or credit value
-            const hasValidEntry = journalDetails.some(detail => detail.DebitAmount > 0 || detail.CreditAmount > 0);
-    
-            if (!hasValidEntry) {
-                console.error("Validation failed: No debit or credit values entered"); // Debugging
-                Swal.fire({
-                    title: 'Validation Error',
-                    text: 'At least one Debit or Credit value must be entered.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-    
-            // Validate debit and credit amounts
-            const totalDebit = journalDetails.reduce((sum, detail) => sum + detail.DebitAmount, 0);
-            const totalCredit = journalDetails.reduce((sum, detail) => sum + detail.CreditAmount, 0);
-    
-            if (totalDebit !== totalCredit) {
-                console.error("Validation failed: Debit and credit not balanced"); // Debugging
-                Swal.fire({
-                    title: 'Validation Error',
-                    text: 'The total debit and credit amounts must be equal.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-    
-            // Proceed to add journal entry if validation passes
-            console.log("Validation passed: Adding journal entry"); // Debugging
+if (addEntryButton) {
+    addEntryButton.addEventListener('click', () => {
+        console.log("Add Journal Entry button clicked"); // Debugging
+
+        // Get form elements safely using correct IDs
+        const dateInput = document.querySelector('#entryDate');
+        const particularsInput = document.querySelector('#entryDescription');
+        const templateInput = document.querySelector('#addTemplate');
+
+        // Ensure elements exist before accessing value
+        const date = dateInput ? dateInput.value.trim() : "";
+        const particulars = particularsInput ? particularsInput.value.trim() : "";
+        const template = templateInput ? templateInput.value.trim() : "";
+
+        // Validate required fields
+        if (!date || !particulars || !template || template === "Select Template") {
+            console.error("Validation failed: Missing required fields"); // Debugging
             Swal.fire({
-                title: 'Success',
-                text: 'Journal entry added successfully!',
-                icon: 'success',
+                title: 'Validation Error',
+                text: 'All fields (Date, Particulars, and Template) must be filled before adding a journal entry.',
+                icon: 'error',
                 confirmButtonText: 'OK'
-            }).then(() => {
-                addJournalEntry();
             });
+            return;
+        }
+
+        // Gather journal details for validation
+        const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
+
+        if (accountRows.length === 0) {
+            console.error("Validation failed: No accounts added"); // Debugging
+            Swal.fire({
+                title: 'Validation Error',
+                text: 'Please add at least one account entry before submitting.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        const journalDetails = Array.from(accountRows).map(row => {
+            const debitInput = row.querySelector('.debit-input');
+            const creditInput = row.querySelector('.credit-input');
+
+            return {
+                DebitAmount: debitInput ? parseFloat(debitInput.value.trim() || '0') : 0,
+                CreditAmount: creditInput ? parseFloat(creditInput.value.trim() || '0') : 0,
+            };
         });
-    }
+
+        console.log("Journal Details:", journalDetails); // Debugging
+
+        // Ensure at least one row has a debit or credit value
+        const hasValidEntry = journalDetails.some(detail => detail.DebitAmount > 0 || detail.CreditAmount > 0);
+
+        if (!hasValidEntry) {
+            console.error("Validation failed: No debit or credit values entered"); // Debugging
+            Swal.fire({
+                title: 'Validation Error',
+                text: 'At least one Debit or Credit value must be entered.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Validate debit and credit amounts
+        const totalDebit = journalDetails.reduce((sum, detail) => sum + detail.DebitAmount, 0);
+        const totalCredit = journalDetails.reduce((sum, detail) => sum + detail.CreditAmount, 0);
+
+        if (totalDebit !== totalCredit) {
+            console.error("Validation failed: Debit and credit not balanced"); // Debugging
+            Swal.fire({
+                title: 'Validation Error',
+                text: 'The total debit and credit amounts must be equal.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Proceed to add journal entry if validation passes
+        console.log("Validation passed: Adding journal entry"); // Debugging
+        addJournalEntry(); // Removed Swal success validation
+    });
+}
+
     
     
+});
+
+
+$('#editTemplateModal').on('shown.bs.modal', function () {
+    // Set the "Particulars" tab as active
+    $('#editTemplateModal .nav-tabs .nav-link').removeClass('active');
+    $('#editTemplateModal .nav-tabs .nav-link:first').addClass('active');
+
+    // Activate the corresponding tab pane
+    $('#editTemplateModal .tab-content .tab-pane').removeClass('show active');
+    $('#editTemplateModal .tab-content .tab-pane:first').addClass('show active');
 });
