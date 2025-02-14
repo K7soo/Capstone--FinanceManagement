@@ -9,6 +9,7 @@ from ..serializers import *
 from ..models import *
 from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 from datetime import datetime, timedelta
+from django.db.models.functions import TruncWeek
 
 
 class PaymentRecordRetrieveView(views.APIView):
@@ -183,12 +184,10 @@ class ExpenseTotalWithSources(views.APIView):
 
     def get(self, request):
         try:
-            # Filter for 'Expense' Account Type
+            # Get expense accounts
             expense_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='Expenses')
 
-            # Filter JournalEntryDetails for:
-            # 1. Accounts under 'Expense'
-            # 2. Only Approved Journal Entries (EntryStatus_FK=2)
+            # Get approved journal entries for expense accounts
             journal_details = JournalEntryDetails.objects.filter(
                 Account_FK__in=expense_accounts,
                 JournalEntry_FK__EntryStatus_FK=2  # Approved entries only
@@ -198,6 +197,25 @@ class ExpenseTotalWithSources(views.APIView):
             total_expense = journal_details.aggregate(
                 total=Sum(ExpressionWrapper(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField()))
             )['total'] or 0  # Default to 0 if no data
+
+            # Get the last 3 weeks of expense data
+            recent_expenses = (
+                journal_details
+                .annotate(week=TruncWeek('JournalEntry_FK__Entry_Date'))  # Group by week
+                .values('week')
+                .annotate(
+                    total_weekly_expense=Sum(ExpressionWrapper(F('DebitAmount') - F('CreditAmount'), output_field=DecimalField()))
+                )
+                .order_by('-week')[:3]  # Get the last 3 weeks
+            )
+
+            # Compute percentage change
+            if len(recent_expenses) >= 2:
+                latest_expense = recent_expenses[0]['total_weekly_expense']
+                previous_avg_expense = sum(exp['total_weekly_expense'] for exp in recent_expenses[1:]) / (len(recent_expenses) - 1)
+                growth_percentage = ((latest_expense - previous_avg_expense) / abs(previous_avg_expense)) * 100 if previous_avg_expense != 0 else 0
+            else:
+                growth_percentage = 0  # Not enough data for calculation
 
             # Prepare detailed account information
             account_sources = journal_details.values(
@@ -212,36 +230,54 @@ class ExpenseTotalWithSources(views.APIView):
             # Structure the response
             response_data = {
                 "total_expense": total_expense,
+                "growth_percentage": round(growth_percentage, 2),  # Round to 2 decimal places
                 "account_sources": list(account_sources)
             }
 
-            return JsonResponse(response_data, status=status.HTTP_200_OK)
+            return Response(response_data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class IncomeTotalWithSources(views.APIView):
     permission_classes = [AllowAny]
+
     def get(self, request):
         try:
-            # Filter for 'Income' Account Type
             income_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='Income')
-
-            # Filter JournalEntryDetails for:
-            # 1. Accounts under 'Income'
-            # 2. Only Approved Journal Entries (assuming EntryStatus_FK=2 means 'Approved')
             journal_details = JournalEntryDetails.objects.filter(
                 Account_FK__in=income_accounts,
-                JournalEntry_FK__EntryStatus_FK=2  # Filter for Approved status
-            )
+                JournalEntry_FK__EntryStatus_FK=2
+            ).order_by('-JournalEntry_FK__Entry_Date')  # Order by latest date
 
-            # Calculate total: Credit - Debit
             total_amount = journal_details.aggregate(
                 total=Sum(ExpressionWrapper(F('CreditAmount') - F('DebitAmount'), output_field=DecimalField()))
-            )['total'] or 0  # Default to 0 if no data
+            )['total'] or 0
 
-            # Prepare detailed account information
+            latest_entry = journal_details.first()
+            latest_revenue = latest_entry.CreditAmount - latest_entry.DebitAmount if latest_entry else 0
+
+            previous_entries = journal_details.exclude(id=latest_entry.id)[:3] if latest_entry else []
+            previous_revenues = [(entry.CreditAmount - entry.DebitAmount) for entry in previous_entries]
+
+            if previous_revenues:
+                avg_previous_revenue = sum(previous_revenues) / len(previous_revenues)
+            else:
+                avg_previous_revenue = 0
+
+            if avg_previous_revenue != 0:
+                percentage_change = ((latest_revenue - avg_previous_revenue) / abs(avg_previous_revenue)) * 100
+            else:
+                percentage_change = 0
+
+            # **Predict Next Period Revenue**: Using the average growth rate over 3 periods
+            if len(previous_revenues) >= 3:
+                revenue_differences = [previous_revenues[i] - previous_revenues[i+1] for i in range(len(previous_revenues) - 1)]
+                avg_growth_rate = sum(revenue_differences) / len(revenue_differences) if revenue_differences else 0
+                predicted_revenue = latest_revenue + avg_growth_rate
+            else:
+                predicted_revenue = latest_revenue  # Default to last revenue if no enough data
+
             account_sources = journal_details.values(
                 'Account_FK__AccountCode', 
                 'Account_FK__AccountDesc'
@@ -251,9 +287,12 @@ class IncomeTotalWithSources(views.APIView):
                 net_amount=ExpressionWrapper(F('CreditAmount') - F('DebitAmount'), output_field=DecimalField())
             )
 
-            # Structure the response
             response_data = {
                 "total_income": total_amount,
+                "latest_revenue": latest_revenue,
+                "previous_revenue_avg": avg_previous_revenue,
+                "percentage_change": round(percentage_change, 2),
+                "predicted_next_revenue": round(predicted_revenue, 2),
                 "account_sources": list(account_sources)
             }
 
@@ -261,7 +300,7 @@ class IncomeTotalWithSources(views.APIView):
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+ 
 
 class IncomeTotalQueryView(views.APIView):
     permission_classes = [AllowAny]
@@ -346,3 +385,50 @@ class IncomeTotalQueryView(views.APIView):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+class RevenueTrendOverTime(views.APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            # 📌 Get Income Accounts
+            income_accounts = ChartOfAccs.objects.filter(AccountType_FK__AccountTypeDesc='Income')
+
+            # 📌 Fetch Approved Journal Entries (Ordered by Date)
+            journal_details = JournalEntryDetails.objects.filter(
+                Account_FK__in=income_accounts,
+                JournalEntry_FK__EntryStatus_FK=2
+            ).order_by("JournalEntry_FK__Entry_Date")
+
+            # 📅 Aggregate Revenue by Week
+            revenue_trend = (
+                journal_details
+                .annotate(period=TruncWeek("JournalEntry_FK__Entry_Date"))
+                .values("period")
+                .annotate(
+                    total_revenue=Sum(F('CreditAmount') - F('DebitAmount'))
+                )
+                .order_by("period")
+            )
+
+            # 🏷️ Extract Revenue Data for Trend & Forecast
+            revenue_values = [entry["total_revenue"] for entry in revenue_trend]
+            latest_revenue = revenue_values[-1] if revenue_values else 0
+            previous_revenues = revenue_values[-4:-1]  # Last 3 periods before latest
+
+            # 🔮 Predict Next Period Revenue Based on Growth
+            if len(previous_revenues) >= 3:
+                revenue_differences = [previous_revenues[i] - previous_revenues[i+1] for i in range(len(previous_revenues) - 1)]
+                avg_growth_rate = sum(revenue_differences) / len(revenue_differences) if revenue_differences else 0
+                predicted_revenue = latest_revenue + avg_growth_rate
+            else:
+                predicted_revenue = latest_revenue  # Default to last revenue if no enough data
+
+            # 🚀 Return Data
+            return Response({
+                "revenue_trend": list(revenue_trend),
+                "predicted_next_revenue": round(predicted_revenue, 2)
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)

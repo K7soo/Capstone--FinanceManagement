@@ -212,12 +212,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const statusId = 2; // Default to Approved
         
         let templateType;
-        if (transaction.Description === 'Reservation Dine-in') {
+        if (transaction.Description.includes('Reservation Dine')) {
             templateType = 'Reservation Dine In';
-        } else if (transaction.Description === 'Reservation Event') {
+        } else if (transaction.Description.includes('Reservation Event')) {
             templateType = 'Reservation Event';
-        } else if (transaction.Description === 'Logistics Purchase') {
+        } else if (transaction.Description.includes('Logistics Purchase')) {
             templateType = 'Logistics Purchase';
+        } else if (transaction.Description.includes('Services rendered for Dine')) {
+            templateType = 'Dine-in Rendered';
+        } else if (transaction.Description.includes('Services rendered for Event')) {
+            templateType = 'Event Rendered';
         } else {
             console.error(`No template found for ${transaction.Description}`);
             Swal.fire({
@@ -226,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 text: 'Please create the necessary template for auto-generation.',
                 confirmButtonColor: '#6f42c1'
             });
-            return; // Exit if no matching description
+            return;
         }
         
         const template = journalTemplates[templateType];
@@ -251,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function generateJEVNumber(description) {
-        const timestamp = Date.now().toString().slice(-6);
+        const timestamp = Date.now().toString().slice(6);
         let prefix;
     
         if (description === 'Reservation Dine-in') {
@@ -413,7 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         });
-    });
+    }); 
     
     function patchEntryCreated() {
         const recordId = window.currentRecordId; // Use the correct record ID
