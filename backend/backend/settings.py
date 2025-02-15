@@ -13,7 +13,7 @@ DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(" ")
 
 # Authentication Service URL
-AUTHENTICATION_SERVICE_URL = config('AUTHENTICATION_SERVICE_URL', default='http://0.0.0.0:8001/validate-token/')
+AUTHENTICATION_SERVICE_URL = config('AUTHENTICATION_SERVICE_URL', default='validate-token/')
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -64,15 +64,15 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://127.0.0.1:8003/",
-#     "http://localhost:8003/",
-#     "http://192.168.241.151:8003/"
-    
-#     "http://127.0.0.1:8004/",
-#     "http://localhost:8004/",
-#     "http://192.168.1.49:8004/"
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'https://tikme-portal-krfg.onrender.com/' 
+    'http://auth.193.203.161.247.nip.io/' 
+    'https://capstone-financemanagement.onrender.com/' 
+    'https://logistics-5mci.onrender.com/' 
+    'https://tikme-dine.onrender.com/'  
+    'https://capstone-reservation.onrender.com/' 
+    'https://capstone-paymentgateway.onrender.com/' 
+]
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -101,8 +101,8 @@ DATABASES = {
     } # database set to default/sqlite3 until code becomes prod ready
 }
 
-# database_url = os.environ.get("DATABASE_URL")
-# DATABASES["default"] = dj_database_url.parse(database_url)
+database_url = os.environ.get("DATABASE_URL")
+DATABASES["default"] = dj_database_url.parse(database_url)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
