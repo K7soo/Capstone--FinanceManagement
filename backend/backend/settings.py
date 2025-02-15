@@ -65,13 +65,13 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'https://tikme-portal-krfg.onrender.com/' 
-    'http://auth.193.203.161.247.nip.io/' 
-    'https://capstone-financemanagement.onrender.com/' 
-    'https://logistics-5mci.onrender.com/' 
-    'https://tikme-dine.onrender.com/'  
-    'https://capstone-reservation.onrender.com/' 
-    'https://capstone-paymentgateway.onrender.com/' 
+    'https://tikme-portal-krfg.onrender.com',
+    'http://auth.193.203.161.247.nip.io',
+    'https://capstone-financemanagement.onrender.com',
+    'https://logistics-5mci.onrender.com',
+    'https://tikme-dine.onrender.com',  
+    'https://capstone-reservation.onrender.com',
+    'https://capstone-paymentgateway.onrender.com',
 ]
 
 ROOT_URLCONF = 'backend.urls'
