@@ -9,7 +9,6 @@ from rest_framework.permissions import AllowAny
 # Journal Entry View
 class JournalEntryView(views.APIView):
     permission_classes = [AllowAny]
-     
     def get(self, request):
         # Check if this is an AJAX request
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
@@ -120,102 +119,102 @@ class JournalRetrieveView(views.APIView):
         }
         return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
     
-    def patch(self, request, pk):
-        try:
-            # Retrieve the journal entry by its primary key
-            journal_entry = get_object_or_404(JournalEntry, pk=pk)
-        except JournalEntry.DoesNotExist:
-            return JsonResponse(
-                {"error": "JournalEntry not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
+    # def patch(self, request, pk):
+    #     try:
+    #         # Retrieve the journal entry by its primary key
+    #         journal_entry = get_object_or_404(JournalEntry, pk=pk)
+    #     except JournalEntry.DoesNotExist:
+    #         return JsonResponse(
+    #             {"error": "JournalEntry not found"},
+    #             status=status.HTTP_404_NOT_FOUND
+    #         )
 
-        # Update only the fields provided in the payload
-        journal_entry_data = request.data
-        if journal_entry_data:
-            serializer = JournalEntrySerializer(
-                journal_entry, data=journal_entry_data, partial=True
-            )
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(
-                    {"message": "JournalEntry updated successfully"},
-                    status=status.HTTP_200_OK
-                )
-            else:
-                return JsonResponse(
-                    serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                )
-        else:
-            return JsonResponse(
-                {"error": "No data provided for update"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    #     # Update only the fields provided in the payload
+    #     journal_entry_data = request.data
+    #     if journal_entry_data:
+    #         serializer = JournalEntrySerializer(
+    #             journal_entry, data=journal_entry_data, partial=True
+    #         )
+    #         if serializer.is_valid():
+    #             serializer.save()
+    #             return JsonResponse(
+    #                 {"message": "JournalEntry updated successfully"},
+    #                 status=status.HTTP_200_OK
+    #             )
+    #         else:
+    #             return JsonResponse(
+    #                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
+    #             )
+    #     else:
+    #         return JsonResponse(
+    #             {"error": "No data provided for update"},
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
     
-    def put(self, request, pk):
-        # Fetch the journal entry by primary key
-        journal_entry = get_object_or_404(JournalEntry, pk=pk)
+    # def put(self, request, pk):
+    #     # Fetch the journal entry by primary key
+    #     journal_entry = get_object_or_404(JournalEntry, pk=pk)
 
-        # Extract the payload for journal entry and details
-        journal_entry_data = request.data.get("journal_entry")
-        journal_details_data = request.data.get("journal_details", [])
+    #     # Extract the payload for journal entry and details
+    #     journal_entry_data = request.data.get("journal_entry")
+    #     journal_details_data = request.data.get("journal_details", [])
 
-        if not journal_entry_data or not journal_details_data:
-            return JsonResponse(
-                {"error": "Journal entry and details are required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+    #     if not journal_entry_data or not journal_details_data:
+    #         return JsonResponse(
+    #             {"error": "Journal entry and details are required."},
+    #             status=status.HTTP_400_BAD_REQUEST,
+    #         )
 
-        # Update the journal entry
-        journal_entry_serializer = JournalEntrySerializer(
-            journal_entry, data=journal_entry_data, partial=True
-        )
-        if not journal_entry_serializer.is_valid():
-            return JsonResponse(
-                journal_entry_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+    #     # Update the journal entry
+    #     journal_entry_serializer = JournalEntrySerializer(
+    #         journal_entry, data=journal_entry_data, partial=True
+    #     )
+    #     if not journal_entry_serializer.is_valid():
+    #         return JsonResponse(
+    #             journal_entry_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+    #         )
 
-        journal_entry_serializer.save()
+    #     journal_entry_serializer.save()
 
-        # Handle journal entry details
-        existing_details = JournalEntryDetails.objects.filter(JournalEntry_FK=journal_entry.id)
-        existing_detail_ids = set(existing_details.values_list("id", flat=True))
-        incoming_detail_ids = set(
-            [detail.get("id") for detail in journal_details_data if detail.get("id") is not None]
-        )
+    #     # Handle journal entry details
+    #     existing_details = JournalEntryDetails.objects.filter(JournalEntry_FK=journal_entry.id)
+    #     existing_detail_ids = set(existing_details.values_list("id", flat=True))
+    #     incoming_detail_ids = set(
+    #         [detail.get("id") for detail in journal_details_data if detail.get("id") is not None]
+    #     )
 
-        # Delete removed details
-        details_to_delete = existing_detail_ids - incoming_detail_ids
-        JournalEntryDetails.objects.filter(id__in=details_to_delete).delete()
+    #     # Delete removed details
+    #     details_to_delete = existing_detail_ids - incoming_detail_ids
+    #     JournalEntryDetails.objects.filter(id__in=details_to_delete).delete()
 
-        # Update existing or create new details
-        for detail_data in journal_details_data:
-            detail_id = detail_data.get("id")
-            if detail_id and detail_id in existing_detail_ids:
-                # Update existing detail
-                detail_instance = JournalEntryDetails.objects.get(id=detail_id)
-                detail_serializer = JournalEntryDetailsSerializer(
-                    detail_instance, data=detail_data, partial=True
-                )
-                if not detail_serializer.is_valid():
-                    return JsonResponse(
-                        detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                    )
-                detail_serializer.save()
-            else:
-                # Create new detail
-                detail_data["JournalEntry_FK"] = journal_entry.id
-                detail_serializer = JournalEntryDetailsSerializer(data=detail_data)
-                if not detail_serializer.is_valid():
-                    return JsonResponse(
-                        detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                    )
-                detail_serializer.save()
+    #     # Update existing or create new details
+    #     for detail_data in journal_details_data:
+    #         detail_id = detail_data.get("id")
+    #         if detail_id and detail_id in existing_detail_ids:
+    #             # Update existing detail
+    #             detail_instance = JournalEntryDetails.objects.get(id=detail_id)
+    #             detail_serializer = JournalEntryDetailsSerializer(
+    #                 detail_instance, data=detail_data, partial=True
+    #             )
+    #             if not detail_serializer.is_valid():
+    #                 return JsonResponse(
+    #                     detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+    #                 )
+    #             detail_serializer.save()
+    #         else:
+    #             # Create new detail
+    #             detail_data["JournalEntry_FK"] = journal_entry.id
+    #             detail_serializer = JournalEntryDetailsSerializer(data=detail_data)
+    #             if not detail_serializer.is_valid():
+    #                 return JsonResponse(
+    #                     detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+    #                 )
+    #             detail_serializer.save()
 
-        return JsonResponse(
-            {"message": "JournalEntry and details updated successfully."},
-            status=status.HTTP_200_OK,
-        )
+    #     return JsonResponse(
+    #         {"message": "JournalEntry and details updated successfully."},
+    #         status=status.HTTP_200_OK,
+    #     )
     
 
 class JournalEntryDetailView(views.APIView):
@@ -237,59 +236,59 @@ class JournalEntryDetailView(views.APIView):
             status=status.HTTP_200_OK
         )
 
-    def put(self, request, pk=None):
-        if pk is None:
-            return JsonResponse({"error": "JournalEntry ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+    # def put(self, request, pk=None):
+    #     if pk is None:
+    #         return JsonResponse({"error": "JournalEntry ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        journal_entry_data = request.data.get("journal_entry")
-        journal_details_data = request.data.get("journal_details")
+    #     journal_entry_data = request.data.get("journal_entry")
+    #     journal_details_data = request.data.get("journal_details")
 
-        if not journal_entry_data or not journal_details_data:
-            return JsonResponse({"error": "Invalid data payload"}, status=status.HTTP_400_BAD_REQUEST)
+    #     if not journal_entry_data or not journal_details_data:
+    #         return JsonResponse({"error": "Invalid data payload"}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            # Fetch the existing journal entry
-            journal_entry = JournalEntry.objects.get(pk=pk)
-        except JournalEntry.DoesNotExist:
-            return JsonResponse({"error": "JournalEntry not found"}, status=status.HTTP_404_NOT_FOUND)
+    #     try:
+    #         # Fetch the existing journal entry
+    #         journal_entry = JournalEntry.objects.get(pk=pk)
+    #     except JournalEntry.DoesNotExist:
+    #         return JsonResponse({"error": "JournalEntry not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Update the journal entry
-        journal_entry_serializer = JournalEntrySerializer(journal_entry, data=journal_entry_data)
-        if not journal_entry_serializer.is_valid():
-            return JsonResponse(journal_entry_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     # Update the journal entry
+    #     journal_entry_serializer = JournalEntrySerializer(journal_entry, data=journal_entry_data)
+    #     if not journal_entry_serializer.is_valid():
+    #         return JsonResponse(journal_entry_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        journal_entry_serializer.save()
+    #     journal_entry_serializer.save()
 
-        # Handle journal details
-        existing_detail_ids = set(JournalEntryDetails.objects.filter(JournalEntry_FK=pk).values_list("id", flat=True))
-        incoming_detail_ids = set(
-            [detail.get("id") for detail in journal_details_data if detail.get("id") is not None]
-        )
+    #     # Handle journal details
+    #     existing_detail_ids = set(JournalEntryDetails.objects.filter(JournalEntry_FK=pk).values_list("id", flat=True))
+    #     incoming_detail_ids = set(
+    #         [detail.get("id") for detail in journal_details_data if detail.get("id") is not None]
+    #     )
 
-        # Delete details that are not in the incoming payload
-        details_to_delete = existing_detail_ids - incoming_detail_ids
-        JournalEntryDetails.objects.filter(id__in=details_to_delete).delete()
+    #     # Delete details that are not in the incoming payload
+    #     details_to_delete = existing_detail_ids - incoming_detail_ids
+    #     JournalEntryDetails.objects.filter(id__in=details_to_delete).delete()
 
-        # Update or create details
-        for detail_data in journal_details_data:
-            detail_id = detail_data.get("id")
+    #     # Update or create details
+    #     for detail_data in journal_details_data:
+    #         detail_id = detail_data.get("id")
 
-            if detail_id and detail_id in existing_detail_ids:
-                # Update existing detail
-                detail_instance = JournalEntryDetails.objects.get(pk=detail_id)
-                detail_serializer = JournalEntryDetailsSerializer(detail_instance, data=detail_data)
-                if not detail_serializer.is_valid():
-                    return JsonResponse(detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                detail_serializer.save()
-            else:
-                # Create new detail
-                detail_data["JournalEntry_FK"] = pk  # Associate new detail with the current journal entry
-                detail_serializer = JournalEntryDetailsSerializer(data=detail_data)
-                if not detail_serializer.is_valid():
-                    return JsonResponse(detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                detail_serializer.save()
+    #         if detail_id and detail_id in existing_detail_ids:
+    #             # Update existing detail
+    #             detail_instance = JournalEntryDetails.objects.get(pk=detail_id)
+    #             detail_serializer = JournalEntryDetailsSerializer(detail_instance, data=detail_data)
+    #             if not detail_serializer.is_valid():
+    #                 return JsonResponse(detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #             detail_serializer.save()
+    #         else:
+    #             # Create new detail
+    #             detail_data["JournalEntry_FK"] = pk  # Associate new detail with the current journal entry
+    #             detail_serializer = JournalEntryDetailsSerializer(data=detail_data)
+    #             if not detail_serializer.is_valid():
+    #                 return JsonResponse(detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #             detail_serializer.save()
 
-        return JsonResponse({"message": "JournalEntry and details updated successfully"}, status=status.HTTP_200_OK)
+    #     return JsonResponse({"message": "JournalEntry and details updated successfully"}, status=status.HTTP_200_OK)
 
 
     def delete(self, request, pk):
