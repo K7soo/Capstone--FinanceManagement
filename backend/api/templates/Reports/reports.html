@@ -8,6 +8,7 @@ Reports
 {% endblock %} 
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link rel="stylesheet" href="{% static 'css/global/global.css' %}" />
 <style>
 	.nav-tabs .nav-link.active {
@@ -25,7 +26,44 @@ Reports
 	.card.p-3 {
 		margin-bottom: 0; /* Align the card content tightly */
 	}
+	    /* Custom styles for year picker */
+		.flatpickr-calendar.yearCalendar {
+        width: 240px !important;
+    }
+    
+    .flatpickr-calendar.yearCalendar .flatpickr-months {
+        padding-bottom: 10px;
+    }
+    
+    .flatpickr-calendar.yearCalendar .flatpickr-monthDropdown-months,
+    .flatpickr-calendar.yearCalendar .flatpickr-weekdays,
+    .flatpickr-calendar.yearCalendar .flatpickr-days {
+        display: none !important;
+    }
+    
+    .flatpickr-calendar.yearCalendar .yearGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 10px;
+    }
+    
+    .flatpickr-calendar.yearCalendar .yearCell {
+        text-align: center;
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    
+    .flatpickr-calendar.yearCalendar .yearCell:hover {
+        background: #e6e6e6;
+    }
+    
+    .flatpickr-calendar.yearCalendar .yearCell.selected {
+        background: #6f42c1;
+        color: white;}
 </style>
+
 {% endblock %}
 
 <!-- prettier-ignore -->
@@ -158,12 +196,8 @@ Reports
 						<!-- Begin: Year -->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<select class="form-select" id="">
-								<option selected>Year</option>
-								<option value="2023">2023</option>
-								<option value="2024">2024</option>
-								<option value="2025">2025</option>
-							</select>
+							<input type="text" class="form-control" id="year-filter" placeholder="Select Year">
+
 						</div>
 						<!-- End: Year -->
 						<!-- Begin: Month -->
@@ -260,12 +294,7 @@ Reports
 						<!-- Begin: Year -->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<select class="form-select" id="">
-								<option selected>Year</option>
-								<option value="2023">2023</option>
-								<option value="2024">2024</option>
-								<option value="2025">2025</option>
-							</select>
+							<input type="text" class="form-control" id="year-filter" placeholder="Select Year" readonly>
 						</div>
 						<!-- End: Year -->
 						<!-- Begin: Month -->
@@ -351,12 +380,7 @@ Reports
 						<!-- Begin: Year -->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<select class="form-select" id="">
-								<option selected>Year</option>
-								<option value="2023">2023</option>
-								<option value="2024">2024</option>
-								<option value="2025">2025</option>
-							</select>
+							<input type="text" class="form-control" id="year-filter" placeholder="Select Year" readonly>
 						</div>
 						<!-- End: Year -->
 						<!--begin: Month-->
@@ -510,7 +534,11 @@ Reports
 							</select>
 						</div>
 						<!--end: As of Date-->
+						<div class="col-md-4">
+							<label for="year-filter" class="form-label">Year</label>
+							<input type="text" class="form-control" id="year-filter" placeholder="Select Year" readonly>
 
+						</div>
 						<!--begin: Duration-->
 						<div class="col-md-4">
 							<label for="month-filter" class="form-label">Month</label>
@@ -529,15 +557,7 @@ Reports
 								<option value="12">December</option>
 							</select>
 						</div>
-						<div class="col-md-4">
-							<label for="year-filter" class="form-label">Year</label>
-							<select class="form-select" id="">
-								<option selected>Year</option>
-								<option value="2023">2023</option>
-								<option value="2024">2024</option>
-								<option value="2025">2025</option>
-							</select>
-						</div>
+
 						<!--end: Duration-->
 					</div>
 					<!--end: Row-->
@@ -593,5 +613,56 @@ Reports
 
 <!-- prettier-ignore -->
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="{% static 'js/Reports/reports.js' %}"></script>
+<script>
+    function createYearPicker(input) {
+        const startYear = 2020;
+        const currentYear = new Date().getFullYear();
+        
+        return flatpickr(input, {
+            disableMobile: true,
+            dateFormat: "Y",
+            defaultDate: new Date(),
+            
+            onOpen: function(selectedDates, dateStr, instance) {
+                const calendar = instance.calendarContainer;
+                calendar.classList.add('yearCalendar');
+                
+                // Clear existing content
+                const daysContainer = calendar.querySelector('.flatpickr-days');
+                if (daysContainer) daysContainer.style.display = 'none';
+                
+                // Create year grid if it doesn't exist
+                let yearGrid = calendar.querySelector('.yearGrid');
+                if (!yearGrid) {
+                    yearGrid = document.createElement('div');
+                    yearGrid.className = 'yearGrid';
+                    calendar.appendChild(yearGrid);
+                }
+                
+                // Clear and populate year grid
+                yearGrid.innerHTML = '';
+                for (let year = startYear; year <= currentYear; year++) {
+                    const yearCell = document.createElement('div');
+                    yearCell.className = 'yearCell';
+                    if (year === parseInt(dateStr)) {
+                        yearCell.classList.add('selected');
+                    }
+                    yearCell.textContent = year;
+                    yearCell.addEventListener('click', () => {
+                        instance.setDate(new Date(year, 0, 1));
+                        instance.close();
+                    });
+                    yearGrid.appendChild(yearCell);
+                }
+            }
+        });
+    }
+
+    // Initialize year pickers
+    document.querySelectorAll('#year-filter').forEach(input => {
+        createYearPicker(input);
+    });
+</script>
 {% endblock %}
