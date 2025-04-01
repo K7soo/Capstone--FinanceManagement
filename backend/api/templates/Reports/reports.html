@@ -225,20 +225,20 @@ Reports
 					<!-- Buttons -->
 					<div class="d-flex gap-3 mt-3">
 						<button
-							class="btn btn-success"
-							style="
-								color: white;
-								border: none;
-								border-radius: 8px;
-								font-weight: 500;
-								padding: 0.5rem 1rem 0.5rem 1rem;
-								transition: background-color 0.3s ease, color 0.3s ease;
-							"
-							data-bs-toggle="modal"
-							data-bs-target="#">
-							<i class="bi bi-file-earmark-spreadsheet me-2"></i>
-							Export
-						</button>
+						class="btn btn-success"
+						style="
+							color: white;
+							border: none;
+							border-radius: 8px;
+							font-weight: 500;
+							padding: 0.5rem 1rem 0.5rem 1rem;
+							transition: background-color 0.3s ease, color 0.3s ease;
+						"
+						onclick="exportToCSV()"> <!-- Added onclick to call exportToCSV -->
+						<i class="bi bi-file-earmark-spreadsheet me-2"></i>
+						Export
+					</button>
+					
 						<button
 							class="btn btn-primary"
 							style="

@@ -1009,3 +1009,94 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize tabs on page load
     initTabs();
 });
+
+// Function to export general journal data to CSV
+function exportToCSV() {
+    // Fetch the general journal data first
+    fetchGeneralJournalData((data) => {
+        // Map and group the data for CSV export
+        const groupedData = groupByAccount(data);
+        
+        // Prepare the CSV content
+        let csvContent = "Date,Transaction,Reference,Debit,Credit\n"; // CSV headers
+
+        // Loop through each account group
+        Object.entries(groupedData).forEach(([account, entries]) => {
+            let totalDebit = 0;
+            let totalCredit = 0;
+            
+            // Add account header to CSV
+            csvContent += `${account} (Account)\n`;
+
+            entries.forEach((entry) => {
+                const formattedDate = formatDate(entry.Entry_Date);
+                const particulars = entry.EntryParticulars || "N/A";
+                const reference = entry.Entry_No || "N/A";
+
+                entry.journal_details.forEach((detail) => {
+                    const debit = parseFloat(detail.debit || 0);
+                    const credit = parseFloat(detail.credit || 0);
+                    totalDebit += debit;
+                    totalCredit += credit;
+
+                    // Add entry row to CSV
+                    csvContent += `${formattedDate},${particulars},${reference},${debit > 0 ? formatNumber(debit) : ""},${credit > 0 ? formatNumber(credit) : ""}\n`;
+                });
+            });
+
+            // Add net movement row
+            const netMovement = Math.abs(totalDebit - totalCredit);
+            const netDebit = totalDebit > totalCredit ? netMovement : 0;
+            const netCredit = totalCredit > totalDebit ? netMovement : 0;
+
+            csvContent += `,,Net Movement,,${netDebit > 0 ? formatNumber(netDebit) : ""},${netCredit > 0 ? formatNumber(netCredit) : ""}\n`;
+        });
+
+        // Trigger the CSV download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.setAttribute('href', URL.createObjectURL(blob));
+        link.setAttribute('download', 'general_journal.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+}
+
+// Group the data by account for CSV export
+function groupByAccount(data) {
+    return data.reduce((acc, entry) => {
+        const accountDesc = entry.journal_details.length > 0
+            ? entry.journal_details[0].accountDesc || "Unknown Account"
+            : "Unknown Account";
+
+        if (!acc[accountDesc]) {
+            acc[accountDesc] = [];
+        }
+        acc[accountDesc].push(entry);
+        return acc;
+    }, {});
+}
+
+// Format Date for CSV
+function formatDate(dateString) {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid Date"; // Ensure the date is valid
+
+    const month = date.getMonth() + 1; // Months are 0-based
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    return `${month}/${day}/${year}`;
+}
+
+// Format Number for CSV (e.g., 1000.00 -> 1,000.00)
+function formatNumber(number) {
+    return parseFloat(number).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+}
+
