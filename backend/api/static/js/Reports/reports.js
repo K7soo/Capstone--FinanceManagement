@@ -1109,68 +1109,51 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadBalanceSheet() {
-        console.log("Loading Balance Sheet Tab...");
-        
+        console.log("Initializing Balance Sheet Tab...");
+
         // Validate Filters
-        function validateFilters() {
-            const period = document.getElementById("bs-period-filter").value;
-            const year = document.getElementById("bs-year-filter").value;
-            const month = document.getElementById("bs-month-filter").value;
-    
-            if (!year) {
-                Swal.fire("Validation Error", "Please enter a valid Year.", "error");
-                return false;
-            }
+    function validateFilters() {
+        const period = document.getElementById("period-filter").value;
+        const year = document.getElementById("year-filter").value;
+        const month = document.getElementById("month-filter").value;
 
-            if (period === "Monthly" && !month) {
-                Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
-                return false;
-            }
-            
-            if (period === "Quarterly" && !month) {
-                Swal.fire("Validation Error", "Please select a Quarter for the Quarterly period.", "error");
-                return false;
-            }
-            
-            if (period === "Semi Annually" && !month) {
-                Swal.fire("Validation Error", "Please select a Half-Year option for the Semi-Annual period.", "error");
-                return false;
-            }
-
-            return true;
+        if (!year) {
+            Swal.fire("Validation Error", "Please enter a valid Year.", "error");
+            return false;
         }
-        
-        // Fetch Balance Sheet Data with Date Filters
-        function fetchBalanceSheetData() {
-            const period = document.getElementById("bs-period-filter").value;
-            const year = document.getElementById("bs-year-filter").value;
-            const month = document.getElementById("bs-month-filter").value;
-        
-            // Handle different period types for month parameter
-            let formattedMonth = month;
-            
-            if (period === "Monthly") {
-                // Month is already numeric for Monthly period
-                formattedMonth = month;
-            } else if (period === "Quarterly" || period === "Semi Annually") {
-                // For Quarterly and Semi-Annual, pass the string value directly
-                formattedMonth = month;
-            } else if (period === "Annual") {
-                // For Annual, month isn't needed
-                formattedMonth = "";
-            }
-        
-            if (!validateFilters()) return Promise.reject("Invalid filters");
-        
-            const params = new URLSearchParams({
-                period: period || "",
-                year: year || "",
-                month: formattedMonth || "",
-            }).toString();
-        
-            console.log("Request URL:", `/querybalancesheet/?${params}`);
-            console.log("Sending Parameters:", { period, year, month: formattedMonth });
-        
+
+        if (period === "Monthly" && !month) {
+            Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Fetch Balance Sheet Data with Date Filters
+    function fetchBalanceSheetData() {
+        const period = document.getElementById("period-filter").value;
+        const year = document.getElementById("year-filter").value;
+        const month = document.getElementById("month-filter").value;
+
+        const monthMapping = {
+            "January": 1, "February": 2, "March": 3, "April": 4,
+            "May": 5, "June": 6, "July": 7, "August": 8,
+            "September": 9, "October": 10, "November": 11, "December": 12
+        };
+        const formattedMonth = monthMapping[month] || "";
+
+        if (!validateFilters()) return Promise.reject("Invalid filters");
+
+        const params = new URLSearchParams({
+            period: period || "",
+            year: year || "",
+            month: formattedMonth || "",
+        }).toString();
+
+        console.log("Request URL:", `/querybalancesheet/?${params}`);
+        console.log("Sending Parameters:", { period, year, month: formattedMonth });
+
             return fetch(`/querybalancesheet/?${params}`, {
                 method: "GET",
                 headers: {
@@ -1185,7 +1168,40 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then(data => {
                     console.log("Fetched Balance Sheet Data:", data);
-                    return data;
+
+                    if (!data || typeof data !== "object") {
+                        console.error("Expected an object but received:", data);
+                        return [];
+                    }
+
+                    let extractedData = [];
+                    ["Assets", "Liabilities", "Equity"].forEach(category => {
+                        if (data[category] && Array.isArray(data[category].accounts)) {
+                            data[category].accounts.forEach(account => {
+                                extractedData.push({
+                                    Category: category,
+                                    AccountCode: account.AccountCode,
+                                    AccountDesc: account.AccountDesc,
+                                    Amount: account.Balance // Fixed extraction
+                                });
+                            });
+
+                            // Add total row for the category
+                            extractedData.push({
+                                Category: category,
+                                AccountCode: "Total",
+                                AccountDesc: `${category} Total`,
+                                Amount: data[category].total
+                            });
+                        }
+                    });
+
+                    if (extractedData.length === 0) {
+                        Swal.fire("No Data", "No balance sheet data found for the selected filters.", "info");
+                        return Promise.reject("No data found.");
+                    }
+
+                    return extractedData;
                 })
                 .catch(error => {
                     console.error("Error fetching balance sheet data:", error);
@@ -1193,25 +1209,110 @@ document.addEventListener("DOMContentLoaded", () => {
                     throw error;
                 });
         }
-        
-        // Print Balance Sheet
-        function handleBalanceSheetPrint(data) {
-            // Implementation will go here
-            console.log("Printing balance sheet:", data);
+
+        // Render Balance Sheet Table
+        function renderBalanceSheetTable(data) {
+            const tableBody = document.getElementById("balance-sheet-table-body");
+            tableBody.innerHTML = "";
+    
+            if (data.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='4' class='text-center'>No data available</td></tr>";
+                return;
+            }
+    
+            data.forEach(entry => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${entry.Category}</td>
+                    <td>${entry.AccountCode}</td>
+                    <td>${entry.AccountDesc}</td>
+                    <td class="right-align">${entry.Amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                `;
+                tableBody.appendChild(row);
+            });
         }
-        
+
+        // Print Function
+        function handleBalanceSheetPrint(data) {
+            const printWindow = window.open("", "_blank");
+            const htmlContent = `
+                <html>
+                    <head>
+                        <title>Balance Sheet Report</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                margin: 20px;
+                            }
+                            h1, h3, h4 {
+                                text-align: center;
+                                margin-bottom: 15px;
+                            }
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                                margin-top: 15px;
+                            }
+                            th, td {
+                                border: 1px solid black;
+                                padding: 6px;
+                                text-align: left;
+                            }
+                            th {
+                                background-color: #f2f2f2;
+                            }
+                            td.right-align {
+                                text-align: right;
+                            }
+                            .total-row {
+                                font-weight: bold;
+                                background-color: #eaeaea;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Balance Sheet Report</h1>
+                        <h3>Company: Tikme Dine</h3>
+                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Account Code</th>
+                                    <th>Account Description</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.map(entry => `
+                                    <tr>
+                                        <td>${entry.Category}</td>
+                                        <td>${entry.AccountCode}</td>
+                                        <td>${entry.AccountDesc}</td>
+                                        <td class="right-align">${(entry.Amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                                    </tr>
+                                `).join("")}
+                            </tbody>
+                        </table>
+                    </body>
+                </html>
+            `;
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
         // Set Up Print Action Listener
-        const printButton = document.querySelector("#balance-sheet .btn-primary");
+        const printButton = document.getElementById("print-balance-sheet");
         if (printButton) {
             printButton.addEventListener("click", () => {
                 fetchBalanceSheetData()
                     .then(data => handleBalanceSheetPrint(data))
                     .catch(error => console.error("Failed to load balance sheet:", error));
             });
-        }
+        } 
+
     }
-
-
     // Initialize tabs on page load
     initTabs();
 });
