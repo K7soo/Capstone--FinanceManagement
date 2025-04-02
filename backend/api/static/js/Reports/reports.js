@@ -74,6 +74,24 @@ document.addEventListener("DOMContentLoaded", () => {
             const defaultTabId = activeTab.getAttribute("id");
             handleTabSwitch(defaultTabId);
         }
+        
+        // Initialize month dropdowns for all tabs
+        initializeMonthDropdowns();
+    }
+    
+    // Initialize month dropdowns for all tabs
+    function initializeMonthDropdowns() {
+        // For each tab, initialize the period-month relationship
+        updateMonthOptions("period-filter", "month-filter");      // General Journal tab
+        updateMonthOptions("gl-period-filter", "gl-month-filter"); // General Ledger tab
+        updateMonthOptions("tb-period-filter", "tb-month-filter"); // Trial Balance tab
+        updateMonthOptions("bs-period-filter", "bs-month-filter"); // Balance Sheet tab
+        
+        // Also set the initial options based on default value
+        document.getElementById("period-filter")?.dispatchEvent(new Event('change'));
+        document.getElementById("gl-period-filter")?.dispatchEvent(new Event('change'));
+        document.getElementById("tb-period-filter")?.dispatchEvent(new Event('change'));
+        document.getElementById("bs-period-filter")?.dispatchEvent(new Event('change'));
     }
 
     // Handle switching between tabs
@@ -206,6 +224,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
                 return false;
             }
+            
+            if (period === "Quarterly" && !month) {
+                Swal.fire("Validation Error", "Please select a Quarter for the Quarterly period.", "error");
+                return false;
+            }
+            
+            if (period === "Semi Annually" && !month) {
+                Swal.fire("Validation Error", "Please select a Half-Year option for the Semi-Annual period.", "error");
+                return false;
+            }
 
             return true;
         }
@@ -216,12 +244,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const period = document.getElementById("period-filter").value;
             const year = document.getElementById("year-filter").value;
             const month = document.getElementById("month-filter").value;
-            const monthMapping = {
-                "January": 1, "February": 2, "March": 3, "April": 4,
-                "May": 5, "June": 6, "July": 7, "August": 8,
-                "September": 9, "October": 10, "November": 11, "December": 12
-            };
-            const formattedMonth = monthMapping[month] || "";
+            
+            // Handle different period types for month parameter
+            let formattedMonth = month;
+            
+            if (period === "Monthly") {
+                // Month is already numeric for Monthly period
+                formattedMonth = month;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                // For Quarterly and Semi-Annual, pass the string value directly
+                // The backend will handle the mapping
+                formattedMonth = month;
+            } else if (period === "Annual") {
+                // For Annual, month isn't needed
+                formattedMonth = "";
+            }
 
             if (!validateFilters()) return;
 
@@ -544,9 +581,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validate Filters
         function validateFilters() {
             const chartOfAccounts = document.getElementById("ledger-account").value;
-            const period = document.getElementById("period-filter").value;
-            const year = document.getElementById("year-filter").value;
-            const month = document.getElementById("month-filter").value;
+            const period = document.getElementById("gl-period-filter").value;
+            const year = document.getElementById("gl-year-filter").value;
+            const month = document.getElementById("gl-month-filter").value;
     
             if (!chartOfAccounts) {
                 Swal.fire("Validation Error", "Please select a Ledger Account.", "error");
@@ -562,22 +599,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
                 return false;
             }
+            
+            if (period === "Quarterly" && !month) {
+                Swal.fire("Validation Error", "Please select a Quarter for the Quarterly period.", "error");
+                return false;
+            }
+            
+            if (period === "Semi Annually" && !month) {
+                Swal.fire("Validation Error", "Please select a Half-Year option for the Semi-Annual period.", "error");
+                return false;
+            }
 
             return true;
         }
     
-        // Fetch Data for General Journal
+        // Fetch Data for General Ledger
         function fetchGeneralLedgerData(callback) {
             const chartOfAccounts = document.getElementById("ledger-account").value;
-            const period = document.getElementById("period-filter").value;
-            const year = document.getElementById("year-filter").value;
-            const month = document.getElementById("month-filter").value;
-            const monthMapping = {
-                "January": 1, "February": 2, "March": 3, "April": 4,
-                "May": 5, "June": 6, "July": 7, "August": 8,
-                "September": 9, "October": 10, "November": 11, "December": 12
-            };
-            const formattedMonth = monthMapping[month] || "";
+            const period = document.getElementById("gl-period-filter").value;
+            const year = document.getElementById("gl-year-filter").value;
+            const month = document.getElementById("gl-month-filter").value;
+            
+            // Handle different period types for month parameter
+            let formattedMonth = month;
+            
+            if (period === "Monthly") {
+                // Month is already numeric for Monthly period 
+                formattedMonth = month;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                // For Quarterly and Semi-Annual, pass the string value directly
+                // The backend will handle the mapping
+                formattedMonth = month;
+            } else if (period === "Annual") {
+                // For Annual, month isn't needed
+                formattedMonth = "";
+            }
 
             if (!validateFilters()) return;
         
@@ -588,7 +644,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 month: formattedMonth || "",
             }).toString();
 
-            console.log("Request URL:", `/querygeneraljournal/?${params}`); // Debugging log
+            console.log("Request URL:", `/querygeneralledger/?${params}`); // Debugging log
             console.log("Sending Parameters:", { chartOfAccounts, period, year, month }); // Debugging log
         
             fetch(`/querygeneralledger/?${params}`, {
@@ -862,9 +918,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Validate Filters
         function validateFilters() {
-            const period = document.getElementById("period-filter").value;
-            const year = document.getElementById("year-filter").value;
-            const month = document.getElementById("month-filter").value;
+            const period = document.getElementById("tb-period-filter").value;
+            const year = document.getElementById("tb-year-filter").value;
+            const month = document.getElementById("tb-month-filter").value;
     
             if (!year) {
                 Swal.fire("Validation Error", "Please enter a valid Year.", "error");
@@ -875,22 +931,40 @@ document.addEventListener("DOMContentLoaded", () => {
                 Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
                 return false;
             }
+            
+            if (period === "Quarterly" && !month) {
+                Swal.fire("Validation Error", "Please select a Quarter for the Quarterly period.", "error");
+                return false;
+            }
+            
+            if (period === "Semi Annually" && !month) {
+                Swal.fire("Validation Error", "Please select a Half-Year option for the Semi-Annual period.", "error");
+                return false;
+            }
 
             return true;
         }
     
         // Fetch Trial Balance Data with Date Filters
         function fetchTrialBalanceData() {
-            const period = document.getElementById("period-filter").value;
-            const year = document.getElementById("year-filter").value;
-            const month = document.getElementById("month-filter").value;
+            const period = document.getElementById("tb-period-filter").value;
+            const year = document.getElementById("tb-year-filter").value;
+            const month = document.getElementById("tb-month-filter").value;
         
-            const monthMapping = {
-                "January": 1, "February": 2, "March": 3, "April": 4,
-                "May": 5, "June": 6, "July": 7, "August": 8,
-                "September": 9, "October": 10, "November": 11, "December": 12
-            };
-            const formattedMonth = monthMapping[month] || "";
+            // Handle different period types for month parameter
+            let formattedMonth = month;
+            
+            if (period === "Monthly") {
+                // Month is already numeric for Monthly period
+                formattedMonth = month;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                // For Quarterly and Semi-Annual, pass the string value directly
+                // The backend will handle the mapping
+                formattedMonth = month;
+            } else if (period === "Annual") {
+                // For Annual, month isn't needed
+                formattedMonth = "";
+            }
         
             if (!validateFilters()) return Promise.reject("Invalid filters");
         
@@ -1036,7 +1110,105 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function loadBalanceSheet() {
         console.log("Loading Balance Sheet Tab...");
-        // Logic to load Balance Sheet data
+        
+        // Validate Filters
+        function validateFilters() {
+            const period = document.getElementById("bs-period-filter").value;
+            const year = document.getElementById("bs-year-filter").value;
+            const month = document.getElementById("bs-month-filter").value;
+    
+            if (!year) {
+                Swal.fire("Validation Error", "Please enter a valid Year.", "error");
+                return false;
+            }
+
+            if (period === "Monthly" && !month) {
+                Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+                return false;
+            }
+            
+            if (period === "Quarterly" && !month) {
+                Swal.fire("Validation Error", "Please select a Quarter for the Quarterly period.", "error");
+                return false;
+            }
+            
+            if (period === "Semi Annually" && !month) {
+                Swal.fire("Validation Error", "Please select a Half-Year option for the Semi-Annual period.", "error");
+                return false;
+            }
+
+            return true;
+        }
+        
+        // Fetch Balance Sheet Data with Date Filters
+        function fetchBalanceSheetData() {
+            const period = document.getElementById("bs-period-filter").value;
+            const year = document.getElementById("bs-year-filter").value;
+            const month = document.getElementById("bs-month-filter").value;
+        
+            // Handle different period types for month parameter
+            let formattedMonth = month;
+            
+            if (period === "Monthly") {
+                // Month is already numeric for Monthly period
+                formattedMonth = month;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                // For Quarterly and Semi-Annual, pass the string value directly
+                formattedMonth = month;
+            } else if (period === "Annual") {
+                // For Annual, month isn't needed
+                formattedMonth = "";
+            }
+        
+            if (!validateFilters()) return Promise.reject("Invalid filters");
+        
+            const params = new URLSearchParams({
+                period: period || "",
+                year: year || "",
+                month: formattedMonth || "",
+            }).toString();
+        
+            console.log("Request URL:", `/querybalancesheet/?${params}`);
+            console.log("Sending Parameters:", { period, year, month: formattedMonth });
+        
+            return fetch(`/querybalancesheet/?${params}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch balance sheet data");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Fetched Balance Sheet Data:", data);
+                    return data;
+                })
+                .catch(error => {
+                    console.error("Error fetching balance sheet data:", error);
+                    Swal.fire("Error", "Failed to fetch data. Please try again.", "error");
+                    throw error;
+                });
+        }
+        
+        // Print Balance Sheet
+        function handleBalanceSheetPrint(data) {
+            // Implementation will go here
+            console.log("Printing balance sheet:", data);
+        }
+        
+        // Set Up Print Action Listener
+        const printButton = document.querySelector("#balance-sheet .btn-primary");
+        if (printButton) {
+            printButton.addEventListener("click", () => {
+                fetchBalanceSheetData()
+                    .then(data => handleBalanceSheetPrint(data))
+                    .catch(error => console.error("Failed to load balance sheet:", error));
+            });
+        }
     }
 
 
@@ -1081,6 +1253,69 @@ function formatNumber(number) {
     return parseFloat(number).toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
+    });
+}
+
+// Function to update month options based on selected period
+function updateMonthOptions(periodSelector, monthSelector) {
+    const periodFilter = document.getElementById(periodSelector);
+    const monthFilter = document.getElementById(monthSelector);
+    
+    if (!periodFilter || !monthFilter) return;
+    
+    periodFilter.addEventListener('change', () => {
+        const selectedPeriod = periodFilter.value;
+        
+        // Clear existing options
+        monthFilter.innerHTML = '';
+        
+        if (selectedPeriod === "Monthly") {
+            // For Monthly period, show months
+            const months = [
+                "January", "February", "March", "April", "May", "June", 
+                "July", "August", "September", "October", "November", "December"
+            ];
+            
+            months.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index + 1;
+                option.textContent = month;
+                monthFilter.appendChild(option);
+            });
+        } 
+        else if (selectedPeriod === "Quarterly") {
+            // For Quarterly period, show quarters
+            const quarters = ["1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter"];
+            
+            quarters.forEach((quarter) => {
+                const option = document.createElement('option');
+                option.value = quarter;
+                option.textContent = quarter;
+                monthFilter.appendChild(option);
+            });
+        }
+        else if (selectedPeriod === "Semi Annually") {
+            // For Semi-Annual period, show half-year options
+            const halfYears = ["1st Half", "2nd Half"];
+            
+            halfYears.forEach((half) => {
+                const option = document.createElement('option');
+                option.value = half;
+                option.textContent = half;
+                monthFilter.appendChild(option);
+            });
+        }
+        else if (selectedPeriod === "Annual") {
+            // For Annual period, hide or disable month selector
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "N/A for Annual Period";
+            monthFilter.appendChild(option);
+            monthFilter.disabled = true;
+            return;
+        }
+        
+        monthFilter.disabled = false;
     });
 }
 

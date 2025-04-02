@@ -28,7 +28,14 @@ class JournalQueryView(APIView):
             journal_entries = journal_entries.filter(Entry_Date__year=year)
 
             if period == "Monthly" and month:
-                journal_entries = journal_entries.filter(Entry_Date__month=month)
+                # For Monthly period, month should be a numeric value
+                try:
+                    month_num = int(month)
+                    if 1 <= month_num <= 12:
+                        journal_entries = journal_entries.filter(Entry_Date__month=month_num)
+                except (ValueError, TypeError):
+                    # If month is not a valid number, return empty result
+                    journal_entries = journal_entries.none()
             
             elif period == "Quarterly" and month:
                 quarter_map = {
@@ -93,7 +100,14 @@ class LedgerQueryView(APIView):
             ledger_entries = ledger_entries.filter(JournalEntry_FK__Entry_Date__year=year)
 
             if period == "Monthly" and month:
-                ledger_entries = ledger_entries.filter(JournalEntry_FK__Entry_Date__month=month)
+                # For Monthly period, month should be a numeric value
+                try:
+                    month_num = int(month)
+                    if 1 <= month_num <= 12:
+                        ledger_entries = ledger_entries.filter(JournalEntry_FK__Entry_Date__month=month_num)
+                except (ValueError, TypeError):
+                    # If month is not a valid number, return empty result
+                    ledger_entries = ledger_entries.none()
             
             elif period == "Quarterly" and month:
                 quarter_map = {
@@ -147,7 +161,14 @@ class TrialBalanceQueryView(APIView):
             filters &= Q(JournalEntry_FK__Entry_Date__year=year)
 
             if period == "Monthly" and month:
-                filters &= Q(JournalEntry_FK__Entry_Date__month=month)
+                # For Monthly period, month should be a numeric value
+                try:
+                    month_num = int(month)
+                    if 1 <= month_num <= 12:
+                        filters &= Q(JournalEntry_FK__Entry_Date__month=month_num)
+                except (ValueError, TypeError):
+                    # If month is not a valid number, return empty result
+                    filters &= Q(id__in=[])  # Force empty result
             
             elif period == "Quarterly" and month:
                 quarter_map = {
@@ -254,7 +275,14 @@ class BalanceSheetQueryView(APIView):
             filters &= Q(JournalEntry_FK__Entry_Date__year=year)
 
             if period == "Monthly" and month:
-                filters &= Q(JournalEntry_FK__Entry_Date__month=month)
+                # For Monthly period, month should be a numeric value
+                try:
+                    month_num = int(month)
+                    if 1 <= month_num <= 12:
+                        filters &= Q(JournalEntry_FK__Entry_Date__month=month_num)
+                except (ValueError, TypeError):
+                    # If month is not a valid number, return empty result
+                    filters &= Q(id__in=[])  # Force empty result
             
             elif period == "Quarterly" and month:
                 quarter_map = {

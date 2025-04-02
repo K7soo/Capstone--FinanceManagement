@@ -186,10 +186,10 @@ Reports
 						<div class="col-md-4">
 							<label for="period-filter" class="form-label">Period</label>
 							<select class="form-select" id="period-filter">
-								<option selected>Monthly</option>
-								<option value="1">Quarterly</option>
-								<option value="2">Semi-Annual</option>
-								<option value="3">Annual</option>
+								<option value="Monthly" selected>Monthly</option>
+								<option value="Quarterly">Quarterly</option>
+								<option value="Semi Annually">Semi-Annual</option>
+								<option value="Annual">Annual</option>
 							</select>
 						</div>
 						<!-- End: Period -->
@@ -204,7 +204,7 @@ Reports
 						<div class="col-md-4">
 							<label for="month-filter" class="form-label">Month</label>
 							<select class="form-select" id="month-filter">
-								<option selected>January</option>
+								<option value="1" selected>January</option>
 								<option value="2">February</option>
 								<option value="3">March</option>
 								<option value="4">April</option>
@@ -282,26 +282,26 @@ Reports
 						</div>
 						<!-- Begin: Period -->
 						<div class="col-md-4">
-							<label for="period-filter" class="form-label">Period</label>
-							<select class="form-select" id="period-filter">
-								<option selected>Monthly</option>
-								<option value="1">Quarterly</option>
-								<option value="2">Semi-Annual</option>
-								<option value="3">Annual</option>
+							<label for="gl-period-filter" class="form-label">Period</label>
+							<select class="form-select" id="gl-period-filter">
+								<option value="Monthly" selected>Monthly</option>
+								<option value="Quarterly">Quarterly</option>
+								<option value="Semi Annually">Semi-Annual</option>
+								<option value="Annual">Annual</option>
 							</select>
 						</div>
 						<!-- End: Period -->
-						<!-- Begin: Year -->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<input type="text" class="form-control" id="year-filter" placeholder="Select Year" readonly>
+							<input type="text" class="form-control" id="year-filter" placeholder="Select Year">
+
 						</div>
 						<!-- End: Year -->
 						<!-- Begin: Month -->
 						<div class="col-md-4">
-							<label for="month-filter" class="form-label">Month</label>
-							<select class="form-select" id="month-filter">
-								<option selected>January</option>
+							<label for="gl-month-filter" class="form-label">Month</label>
+							<select class="form-select" id="gl-month-filter">
+								<option value="1" selected>January</option>
 								<option value="2">February</option>
 								<option value="3">March</option>
 								<option value="4">April</option>
@@ -368,26 +368,27 @@ Reports
 					<div class="row g-3">
 						<!--begin: Period-->
 						<div class="col-md-4">
-							<label for="period-filter" class="form-label">Period</label>
-							<select class="form-select" id="period-filter">
-								<option selected>Monthly</option>
-								<option value="1">Quarterly</option>
-								<option value="2">Semi-Annual</option>
-								<option value="3">Annual</option>
+							<label for="tb-period-filter" class="form-label">Period</label>
+							<select class="form-select" id="tb-period-filter">
+								<option value="Monthly" selected>Monthly</option>
+								<option value="Quarterly">Quarterly</option>
+								<option value="Semi Annually">Semi-Annual</option>
+								<option value="Annual">Annual</option>
 							</select>
 						</div>
 						<!--end: Period-->
 						<!-- Begin: Year -->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<input type="text" class="form-control" id="year-filter" placeholder="Select Year" readonly>
+							<input type="text" class="form-control" id="year-filter" placeholder="Select Year">
+
 						</div>
 						<!-- End: Year -->
 						<!--begin: Month-->
 						<div class="col-md-4">
-							<label for="month-filter" class="form-label">Month</label>
-							<select class="form-select" id="month-filter">
-								<option selected>January</option>
+							<label for="tb-month-filter" class="form-label">Month</label>
+							<select class="form-select" id="tb-month-filter">
+								<option value="1" selected>January</option>
 								<option value="2">February</option>
 								<option value="3">March</option>
 								<option value="4">April</option>
@@ -523,27 +524,27 @@ Reports
 				<div class="card p-3 shadow-sm">
 					<!--begin: Row-->
 					<div class="row g-3">
-						<!--begin: As of Date-->
+						<!--begin: Period-->
 						<div class="col-md-4">
-							<label for="period-filter" class="form-label">Period</label>
-							<select class="form-select" id="period-filter">
-								<option selected>Monthly</option>
-								<option value="1">Quarterly</option>
-								<option value="2">Semi-Annual</option>
-								<option value="3">Annual</option>
+							<label for="bs-period-filter" class="form-label">Period</label>
+							<select class="form-select" id="bs-period-filter">
+								<option value="Monthly" selected>Monthly</option>
+								<option value="Quarterly">Quarterly</option>
+								<option value="Semi Annually">Semi-Annual</option>
+								<option value="Annual">Annual</option>
 							</select>
 						</div>
-						<!--end: As of Date-->
+						<!--end: Period-->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<input type="text" class="form-control" id="year-filter" placeholder="Select Year" readonly>
+							<input type="text" class="form-control" id="year-filter" placeholder="Select Year">
 
 						</div>
-						<!--begin: Duration-->
+						<!--begin: Month-->
 						<div class="col-md-4">
-							<label for="month-filter" class="form-label">Month</label>
-							<select class="form-select" id="month-filter">
-								<option selected>January</option>
+							<label for="bs-month-filter" class="form-label">Month</label>
+							<select class="form-select" id="bs-month-filter">
+								<option value="1" selected>January</option>
 								<option value="2">February</option>
 								<option value="3">March</option>
 								<option value="4">April</option>
@@ -558,7 +559,7 @@ Reports
 							</select>
 						</div>
 
-						<!--end: Duration-->
+						<!--end: Month-->
 					</div>
 					<!--end: Row-->
 
