@@ -119,37 +119,37 @@ class JournalRetrieveView(views.APIView):
         }
         return JsonResponse(response_data, safe=False, status=status.HTTP_200_OK)
     
-    # def patch(self, request, pk):
-    #     try:
-    #         # Retrieve the journal entry by its primary key
-    #         journal_entry = get_object_or_404(JournalEntry, pk=pk)
-    #     except JournalEntry.DoesNotExist:
-    #         return JsonResponse(
-    #             {"error": "JournalEntry not found"},
-    #             status=status.HTTP_404_NOT_FOUND
-    #         )
+    def patch(self, request, pk):
+        try:
+            # Retrieve the journal entry by its primary key
+            journal_entry = get_object_or_404(JournalEntry, pk=pk)
+        except JournalEntry.DoesNotExist:
+            return JsonResponse(
+                {"error": "JournalEntry not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-    #     # Update only the fields provided in the payload
-    #     journal_entry_data = request.data
-    #     if journal_entry_data:
-    #         serializer = JournalEntrySerializer(
-    #             journal_entry, data=journal_entry_data, partial=True
-    #         )
-    #         if serializer.is_valid():
-    #             serializer.save()
-    #             return JsonResponse(
-    #                 {"message": "JournalEntry updated successfully"},
-    #                 status=status.HTTP_200_OK
-    #             )
-    #         else:
-    #             return JsonResponse(
-    #                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
-    #             )
-    #     else:
-    #         return JsonResponse(
-    #             {"error": "No data provided for update"},
-    #             status=status.HTTP_400_BAD_REQUEST
-    #         )
+        # Update only the fields provided in the payload
+        journal_entry_data = request.data
+        if journal_entry_data:
+            serializer = JournalEntrySerializer(
+                journal_entry, data=journal_entry_data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(
+                    {"message": "JournalEntry updated successfully"},
+                    status=status.HTTP_200_OK
+                )
+            else:
+                return JsonResponse(
+                    serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
+            return JsonResponse(
+                {"error": "No data provided for update"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
     
     # def put(self, request, pk):
     #     # Fetch the journal entry by primary key

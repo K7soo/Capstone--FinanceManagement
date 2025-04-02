@@ -188,43 +188,53 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validate Filters
         function validateFilters() {
             const transactionType = document.getElementById("transaction-type").value;
-            const asOfDate = document.getElementById("as-of").value;
-            const durationFrom = document.getElementById("duration-from").value;
-            const durationTo = document.getElementById("duration-to").value;
-    
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
+
             if (!transactionType) {
                 Swal.fire("Validation Error", "Please select a Transaction Type.", "error");
                 return false;
             }
-    
-            if (!asOfDate && (!durationFrom || !durationTo)) {
-                Swal.fire(
-                    "Validation Error",
-                    "Please select either an 'As of' date or a valid duration range.",
-                    "error"
-                );
+
+            if (!year) {
+                Swal.fire("Validation Error", "Please enter a valid Year.", "error");
                 return false;
             }
-    
+
+            if (period === "Monthly" && !month) {
+                Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+                return false;
+            }
+
             return true;
         }
     
         // Fetch Data for General Journal
         function fetchGeneralJournalData(callback) {
             const transactionType = document.getElementById("transaction-type").value;
-            const asOfDate = document.getElementById("as-of").value;
-            const durationFrom = document.getElementById("duration-from").value;
-            const durationTo = document.getElementById("duration-to").value;
-        
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
+            const monthMapping = {
+                "January": 1, "February": 2, "March": 3, "April": 4,
+                "May": 5, "June": 6, "July": 7, "August": 8,
+                "September": 9, "October": 10, "November": 11, "December": 12
+            };
+            const formattedMonth = monthMapping[month] || "";
+
             if (!validateFilters()) return;
-        
+
             const params = new URLSearchParams({
                 transaction_type: transactionType === "all" ? "" : transactionType,
-                as_of: asOfDate || "",
-                duration_from: durationFrom || "",
-                duration_to: durationTo || "",
+                period: period || "",
+                year: year || "",
+                month: formattedMonth || "",
             }).toString();
-        
+
+            console.log("Request URL:", `/querygeneraljournal/?${params}`); // Debugging log
+            console.log("Sending Parameters:", { transactionType, period, year, month }); // Debugging log
+
             fetch(`/querygeneraljournal/?${params}`, {
                 method: "GET",
                 headers: {
@@ -239,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then((data) => {
                     console.log("Fetched General Journal Data:", data);
-                    const fetchedData = mapAccountDetails(data); 
+                    const fetchedData = mapAccountDetails(data);
                     if (fetchedData && fetchedData.length > 0) {
                         callback(fetchedData);
                     } else {
@@ -534,42 +544,52 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validate Filters
         function validateFilters() {
             const chartOfAccounts = document.getElementById("ledger-account").value;
-            const asOfDateLedger = document.getElementById("as-of-ledger").value;
-            const durationFromLedger = document.getElementById("duration-from-ledger").value;
-            const durationToLedger = document.getElementById("duration-to-ledger").value;
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
     
             if (!chartOfAccounts) {
                 Swal.fire("Validation Error", "Please select a Ledger Account.", "error");
                 return false;
             }
     
-            if (!asOfDateLedger && (!durationFromLedger || !durationToLedger)) {
-                Swal.fire(
-                    "Validation Error",
-                    "Please select either an 'As of' date or a valid duration range.",
-                    "error"
-                );
+            if (!year) {
+                Swal.fire("Validation Error", "Please enter a valid Year.", "error");
                 return false;
             }
-    
+
+            if (period === "Monthly" && !month) {
+                Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+                return false;
+            }
+
             return true;
         }
     
         // Fetch Data for General Journal
         function fetchGeneralLedgerData(callback) {
             const chartOfAccounts = document.getElementById("ledger-account").value;
-            const asOfDate = document.getElementById("as-of-ledger").value;
-            const durationFrom = document.getElementById("duration-from-ledger").value;
-            const durationTo = document.getElementById("duration-to-ledger").value;
-        
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
+            const monthMapping = {
+                "January": 1, "February": 2, "March": 3, "April": 4,
+                "May": 5, "June": 6, "July": 7, "August": 8,
+                "September": 9, "October": 10, "November": 11, "December": 12
+            };
+            const formattedMonth = monthMapping[month] || "";
+
             if (!validateFilters()) return;
         
             const params = new URLSearchParams({
                 charted_account: chartOfAccounts === "all" ? "" : chartOfAccounts,
-                as_of: asOfDate || "",
-                duration_from: durationFrom || "",
-                duration_to: durationTo || "",
+                period: period || "",
+                year: year || "",
+                month: formattedMonth || "",
             }).toString();
+
+            console.log("Request URL:", `/querygeneraljournal/?${params}`); // Debugging log
+            console.log("Sending Parameters:", { chartOfAccounts, period, year, month }); // Debugging log
         
             fetch(`/querygeneralledger/?${params}`, {
                 method: "GET",
@@ -842,71 +862,89 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Validate Filters
         function validateFilters() {
-            const asOfDate = document.getElementById("as-of-tb").value;
-            const durationFrom = document.getElementById("duration-from-tb").value;
-            const durationTo = document.getElementById("duration-to-tb").value;
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
     
-            if (!asOfDate && (!durationFrom || !durationTo)) {
-                Swal.fire(
-                    "Validation Error",
-                    "Please select either an 'As of' date or a valid duration range.",
-                    "error"
-                );
+            if (!year) {
+                Swal.fire("Validation Error", "Please enter a valid Year.", "error");
                 return false;
             }
-    
+
+            if (period === "Monthly" && !month) {
+                Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+                return false;
+            }
+
             return true;
         }
     
         // Fetch Trial Balance Data with Date Filters
-        function fetchTrialBalanceData(asOfDate, startDate, endDate) {
-            if (!validateFilters()) return Promise.reject("Invalid date selection.");
+        function fetchTrialBalanceData() {
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
         
-            let url = "/querytrialbalance/";
-            const params = new URLSearchParams();
+            const monthMapping = {
+                "January": 1, "February": 2, "March": 3, "April": 4,
+                "May": 5, "June": 6, "July": 7, "August": 8,
+                "September": 9, "October": 10, "November": 11, "December": 12
+            };
+            const formattedMonth = monthMapping[month] || "";
         
-            if (asOfDate) {
-                params.append("as_of", asOfDate);
-            } else if (startDate && endDate) {
-                params.append("start_date", startDate);
-                params.append("end_date", endDate);
-            }
+            if (!validateFilters()) return Promise.reject("Invalid filters");
         
-            if (params.toString()) {
-                url += "?" + params.toString();
-            }
+            const params = new URLSearchParams({
+                period: period || "",
+                year: year || "",
+                month: formattedMonth || "",
+            }).toString();
         
-            console.log("Fetching Trial Balance from:", url); // Debugging output
+            console.log("Request URL:", `/querytrialbalance/?${params}`); // Debugging log
+            console.log("Sending Parameters:", { period, year, month: formattedMonth }); // Debugging log
         
-            return fetch(url, {
+            return fetch(`/querytrialbalance/?${params}`, {
                 method: "GET",
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                 },
             })
-            .then(response => response.json())
-            .then(data => {
-                // Calculate total debit & credit from the response
-                let totalDebit = 0;
-                let totalCredit = 0;
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch trial balance data");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Fetched Trial Balance Data:", data);
         
-                data.forEach(entry => {
-                    totalDebit += entry.Debit || 0;
-                    totalCredit += entry.Credit || 0;
+                    if (!Array.isArray(data)) {
+                        console.error("Expected an array but received:", data);
+                        return [];
+                    }
+        
+                    // Calculate total debit & credit from the response
+                    let totalDebit = 0;
+                    let totalCredit = 0;
+        
+                    data.forEach(entry => {
+                        totalDebit += entry.Debit || 0;
+                        totalCredit += entry.Credit || 0;
+                    });
+        
+                    // If both totals are zero, show an alert and return an empty response
+                    if (totalDebit === 0 && totalCredit === 0) {
+                        Swal.fire("No Data", "No trial balance data found for the selected filters.", "info");
+                        return Promise.reject("No data found.");
+                    }
+        
+                    return data; // ✅ Return data instead of using an undefined `callback`
+                })
+                .catch(error => {
+                    console.error("Error fetching trial balance data:", error);
+                    Swal.fire("Error", "Failed to fetch data. Please try again.", "error");
+                    throw error; // Ensure the error propagates
                 });
-        
-                // If both totals are zero, show an alert and return an empty response
-                if (totalDebit === 0 && totalCredit === 0) {
-                    Swal.fire("No Data", "No trial balance data found for the selected filters.", "info");
-                    return Promise.reject("No data found.");
-                }
-        
-                return data;
-            })
-            .catch(error => {
-                console.error("Error fetching trial balance data:", error);
-                throw error;
-            });
         }
     
         // Print Function
@@ -983,11 +1021,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const printButton = document.getElementById("print-trial-balance");
         if (printButton) {
             printButton.addEventListener("click", () => {
-                const asOfDate = document.getElementById("as-of-tb").value;
-                const startDate = document.getElementById("duration-from-tb").value;
-                const endDate = document.getElementById("duration-to-tb").value;
-    
-                fetchTrialBalanceData(asOfDate, startDate, endDate)
+                fetchTrialBalanceData()
                     .then(data => handleTrialBalancePrint(data))
                     .catch(error => console.error("Failed to load trial balance:", error));
             });
@@ -1011,57 +1045,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Function to export general journal data to CSV
-function exportToCSV() {
-    // Fetch the general journal data first
-    fetchGeneralJournalData((data) => {
-        // Map and group the data for CSV export
-        const groupedData = groupByAccount(data);
-        
-        // Prepare the CSV content
-        let csvContent = "Date,Transaction,Reference,Debit,Credit\n"; // CSV headers
 
-        // Loop through each account group
-        Object.entries(groupedData).forEach(([account, entries]) => {
-            let totalDebit = 0;
-            let totalCredit = 0;
-            
-            // Add account header to CSV
-            csvContent += `${account} (Account)\n`;
-
-            entries.forEach((entry) => {
-                const formattedDate = formatDate(entry.Entry_Date);
-                const particulars = entry.EntryParticulars || "N/A";
-                const reference = entry.Entry_No || "N/A";
-
-                entry.journal_details.forEach((detail) => {
-                    const debit = parseFloat(detail.debit || 0);
-                    const credit = parseFloat(detail.credit || 0);
-                    totalDebit += debit;
-                    totalCredit += credit;
-
-                    // Add entry row to CSV
-                    csvContent += `${formattedDate},${particulars},${reference},${debit > 0 ? formatNumber(debit) : ""},${credit > 0 ? formatNumber(credit) : ""}\n`;
-                });
-            });
-
-            // Add net movement row
-            const netMovement = Math.abs(totalDebit - totalCredit);
-            const netDebit = totalDebit > totalCredit ? netMovement : 0;
-            const netCredit = totalCredit > totalDebit ? netMovement : 0;
-
-            csvContent += `,,Net Movement,,${netDebit > 0 ? formatNumber(netDebit) : ""},${netCredit > 0 ? formatNumber(netCredit) : ""}\n`;
-        });
-
-        // Trigger the CSV download
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.setAttribute('href', URL.createObjectURL(blob));
-        link.setAttribute('download', 'general_journal.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    });
-}
 
 // Group the data by account for CSV export
 function groupByAccount(data) {

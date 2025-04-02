@@ -59,10 +59,12 @@ urlpatterns = [
     path('jevapproval/', views_.jev_approval_view, name='jevapproval'),
     # Configuration
     path('configuration/', views_.configuration_view, name='configuration'),
+    
     # Reports 
     path('reports/', views_.reports_view, name='reports'),
-    path('querygeneraljournal/', views_queries.JournalQueryView.as_view(), name='filter_journal_entries'),
-    path('querygeneralledger/', views_queries.LedgerQueryView.as_view(), name='filter_journal_entries'),
-    path('querytrialbalance/', views_queries.TrialBalanceQueryView.as_view(), name='filter_journal_entries'),
+    path('querygeneraljournal/', views_queries.JournalQueryView.as_view(), name='filter_generaljournal'),
+    path('querygeneralledger/', views_queries.LedgerQueryView.as_view(), name='filter_generalledger'),
+    path('querytrialbalance/', views_queries.TrialBalanceQueryView.as_view(), name='filter_trialbalance'),
+    path('querybalancesheet/', views_queries.BalanceSheetQueryView.as_view(), name='filter_balancesheet'),
 ]
     
