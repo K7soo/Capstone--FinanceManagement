@@ -364,6 +364,25 @@ document.addEventListener("DOMContentLoaded", () => {
         // Print Report
         function printReport(data) {
             const printWindow = window.open("", "_blank");
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
+            
+            // Format period text
+            let periodText = "";
+            if (period === "Monthly") {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthName = monthNames[parseInt(month) - 1];
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${monthName}`;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${month}`;
+            } else if (period === "Annual") {
+                periodText = `Period: ${period}\nYear: ${year}`;
+            }
+
             const htmlContent = `
                 <html>
                     <head>
@@ -373,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-family: Arial, sans-serif;
                                 margin: 20px;
                             }
-                            h1, h3, h4 {
+                            h1, h3 {
                                 text-align: center;
                                 margin-bottom: 15px;
                             }
@@ -383,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 margin-top: 15px;
                             }
                             th, td {
-                                border: 1px solid black; /* Ensure all cells have black borders */
+                                border: 1px solid black;
                                 padding: 6px;
                                 text-align: left;
                             }
@@ -409,18 +428,18 @@ document.addEventListener("DOMContentLoaded", () => {
                             .credit-indent {
                                 padding-left: 20px;
                             }
-                            /* Adjust column widths */
-                            .col-date { width: 12%; }
-                            .col-account { width: 40%; }
-                            .col-ref { width: 18%; }
-                            .col-debit { width: 15%; }
-                            .col-credit { width: 15%; }
+                            .period-info {
+                                text-align: center;
+                                margin-bottom: 10px;
+                                font-weight: bold;
+                                white-space: pre-line;
+                            }
                         </style>
                     </head>
                     <body>
                         <h1>General Journal Report</h1>
                         <h3>Company: Tikme Dine</h3>
-                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
+                        <div class="period-info">${periodText}</div>
                         <table>
                             <thead>
                                 <tr>
@@ -741,22 +760,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         function printReport(data) {
-            // Group data by AccountDesc
-            const groupedData = data.reduce((acc, entry) => {
-                const accountDesc = entry.journal_details.length > 0
-                    ? entry.journal_details[0].accountDesc || "Unknown Account"
-                    : "Unknown Account";
-        
-                if (!acc[accountDesc]) {
-                    acc[accountDesc] = [];
-                }
-                acc[accountDesc].push(entry);
-                return acc;
-            }, {});
+            const period = document.getElementById("gl-period-filter").value;
+            const year = document.getElementById("gl-year-filter").value;
+            const month = document.getElementById("gl-month-filter").value;
+            
+            // Format period text
+            let periodText = "";
+            if (period === "Monthly") {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthName = monthNames[parseInt(month) - 1];
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${monthName}`;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${month}`;
+            } else if (period === "Annual") {
+                periodText = `Period: ${period}\nYear: ${year}`;
+            }
         
             const printWindow = window.open("", "_blank");
-            const currentDate = new Date().toLocaleDateString("en-US");
-        
             let htmlContent = `
                 <html>
                     <head>
@@ -789,14 +812,20 @@ document.addEventListener("DOMContentLoaded", () => {
                                 text-align: right; 
                             }
                             .bold-line {
-                                border-top: 2px solid black; /* Bold line directly below Net Movement */
+                                border-top: 2px solid black;
+                            }
+                            .period-info {
+                                text-align: center;
+                                margin-bottom: 10px;
+                                font-weight: bold;
+                                white-space: pre-line;
                             }
                         </style>
                     </head>
                     <body>
                         <h1>General Ledger Report</h1>
                         <h2>Company: Tikme Dine</h2>
-                        <h2>Exported on: ${currentDate}</h2>
+                        <div class="period-info">${periodText}</div>
                         <table>
                             <thead>
                                 <tr>
@@ -1023,6 +1052,25 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Print Function
         function handleTrialBalancePrint(data) {
+            const period = document.getElementById("tb-period-filter").value;
+            const year = document.getElementById("tb-year-filter").value;
+            const month = document.getElementById("tb-month-filter").value;
+            
+            // Format period text
+            let periodText = "";
+            if (period === "Monthly") {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthName = monthNames[parseInt(month) - 1];
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${monthName}`;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${month}`;
+            } else if (period === "Annual") {
+                periodText = `Period: ${period}\nYear: ${year}`;
+            }
+
             const printWindow = window.open("", "_blank");
             const htmlContent = `
                 <html>
@@ -1033,7 +1081,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-family: Arial, sans-serif;
                                 margin: 20px;
                             }
-                            h1, h3, h4 {
+                            h1, h3 {
                                 text-align: center;
                                 margin-bottom: 15px;
                             }
@@ -1057,12 +1105,18 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-weight: bold;
                                 background-color: #eaeaea;
                             }
+                            .period-info {
+                                text-align: center;
+                                margin-bottom: 10px;
+                                font-weight: bold;
+                                white-space: pre-line;
+                            }
                         </style>
                     </head>
                     <body>
                         <h1>Trial Balance Report</h1>
                         <h3>Company: Tikme Dine</h3>
-                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
+                        <div class="period-info">${periodText}</div>
                         <table>
                             <thead>
                                 <tr>
@@ -1234,6 +1288,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Print Function
         function handleBalanceSheetPrint(data) {
+            const period = document.getElementById("bs-period-filter").value;
+            const year = document.getElementById("bs-year-filter").value;
+            const month = document.getElementById("bs-month-filter").value;
+            
+            // Format period text
+            let periodText = "";
+            if (period === "Monthly") {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthName = monthNames[parseInt(month) - 1];
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${monthName}`;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${month}`;
+            } else if (period === "Annual") {
+                periodText = `Period: ${period}\nYear: ${year}`;
+            }
+
             const printWindow = window.open("", "_blank");
             const htmlContent = `
                 <html>
@@ -1244,7 +1317,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-family: Arial, sans-serif;
                                 margin: 20px;
                             }
-                            h1, h3, h4 {
+                            h1, h3 {
                                 text-align: center;
                                 margin-bottom: 15px;
                             }
@@ -1268,12 +1341,18 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-weight: bold;
                                 background-color: #eaeaea;
                             }
+                            .period-info {
+                                text-align: center;
+                                margin-bottom: 10px;
+                                font-weight: bold;
+                                white-space: pre-line;
+                            }
                         </style>
                     </head>
                     <body>
                         <h1>Balance Sheet Report</h1>
                         <h3>Company: Tikme Dine</h3>
-                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
+                        <div class="period-info">${periodText}</div>
                         <table>
                             <thead>
                                 <tr>
