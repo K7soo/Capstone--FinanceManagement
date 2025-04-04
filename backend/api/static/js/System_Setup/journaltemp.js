@@ -511,9 +511,9 @@ function addTemplateRow() {
     // Limit the rows to 10
     if (rowCount >= 10) {
         Swal.fire({
-            icon:'warning',
-            title:'Row limit',
-            text:'You can only add up to 10 rows',
+            icon: 'warning',
+            title: 'Row limit',
+            text: 'You can only add up to 10 rows',
             confirmButtonColor: '#6f42c1',
         });
         return;
@@ -523,42 +523,42 @@ function addTemplateRow() {
     const transactionTypeId = document.getElementById("transactionType").value;
     const transactionTypeIdInt = parseInt(transactionTypeId);
     const transactionTypeName = window.transactionTypeMap[transactionTypeIdInt] || "";
-    
+
     // Check transaction type categorization
     const isCashTransaction = window.cashTransactionTypes.includes(transactionTypeIdInt);
     const isNonCashTransaction = window.nonCashTransactionTypes.includes(transactionTypeIdInt);
-    const isExplicitlyNonCash = transactionTypeName.toLowerCase().includes("non") && 
-                               transactionTypeName.toLowerCase().includes("cash");
-    
-    // For transaction types that aren't explicitly categorized, show all accounts
-    const showAllAccounts = !isCashTransaction && !isNonCashTransaction;
-    
+
+    console.log("Transaction type selected:", transactionTypeId, transactionTypeName);
+    console.log("Is cash transaction:", isCashTransaction);
+    console.log("Is non-cash transaction:", isNonCashTransaction);
+
     // Create a new row
     const newRow = document.createElement("tr");
-    
-    // Filter accounts based on transaction type, but more flexibly
+
+    // Generate filtered account options
     let accountOptions = "<option value=''>Select Account</option>";
-    
-    if (transactionTypeId) {
+
+    if (window.chartOfAccounts && window.chartOfAccounts.length > 0) {
         window.chartOfAccounts.forEach(account => {
             if (!account.AccountDesc) return;
-            
+
             const accountDesc = account.AccountDesc.toLowerCase();
-            const isCashAccount = accountDesc.includes('cash');
-            
-            // More flexible filtering logic
-            if (showAllAccounts || 
-                (isExplicitlyNonCash && !isCashAccount) || 
-                (isCashTransaction && !isExplicitlyNonCash && isCashAccount)) {
-                accountOptions += `<option value="${account.id}">${account.AccountDesc}</option>`;
+            const isNonCashAccount = /\bnon-cash\b/i.test(accountDesc);
+            const isPettyAccount = /\bpetty\b/i.test(accountDesc);
+            const isBankAccount = /\bbank\b/i.test(accountDesc);
+            const isCashAccount = /\bcash\b/i.test(accountDesc);
+
+            let shouldDisable = false;
+
+            if (isCashTransaction && isNonCashAccount) {
+                shouldDisable = true;
             }
-        });
-    } else {
-        // If no transaction type selected yet, show all accounts
-        window.chartOfAccounts.forEach(account => {
-            if (account.AccountDesc) {
-                accountOptions += `<option value="${account.id}">${account.AccountDesc}</option>`;
+
+            if (isNonCashTransaction && (isPettyAccount || isBankAccount || isCashAccount)) {
+                shouldDisable = true;
             }
+
+            accountOptions += `<option value="${account.id}" ${shouldDisable ? "disabled" : ""}>${account.AccountDesc}</option>`;
         });
     }
 
@@ -585,7 +585,7 @@ function addTemplateRow() {
                 type="checkbox" 
                 class="form-check-input credit-checkbox" 
                 style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
-                onchange="toggleDebitCredit(this, 'credit' )" 
+                onchange="toggleDebitCredit(this, 'credit')" 
                 ${rowCount === 0 ? "disabled" : ""}
             />
         </div>
@@ -597,9 +597,10 @@ function addTemplateRow() {
         </button>
     </td>
     `;
-    
+
     tableBody.appendChild(newRow);
 }
+
 
 // Function to remove a row
 function removeRow(button) {
