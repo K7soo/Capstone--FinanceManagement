@@ -368,44 +368,8 @@ addTemplateForm.addEventListener("submit", (event) => {
         });
         return;
     }
-
-    // Only validate account type for explicitly categorized transaction types
-    const transactionTypeIdInt = parseInt(transactionType);
-    const transactionTypeName = window.transactionTypeMap[transactionTypeIdInt] || "";
-    const isCashTransaction = window.cashTransactionTypes.includes(transactionTypeIdInt);
-    const isNonCashTransaction = window.nonCashTransactionTypes.includes(transactionTypeIdInt);
-    const isExplicitlyNonCash = transactionTypeName.toLowerCase().includes("non") && 
-                               transactionTypeName.toLowerCase().includes("cash");
     
-    // If the transaction type is not explicitly cash or non-cash, skip this validation
-    if (isCashTransaction || isNonCashTransaction) {
-        let accountTypeValid = true;
-        
-        templateRows.forEach((row) => {
-            const accountCode = row.querySelector(".account-code").value;
-            if (!accountCode) return;
-            
-            const account = window.chartOfAccounts.find(acc => acc.id.toString() === accountCode);
-            if (account) {
-                const isCashAccount = account.AccountDesc.toLowerCase().includes('cash');
-                
-                if ((isExplicitlyNonCash && isCashAccount) || 
-                    (isCashTransaction && !isExplicitlyNonCash && !isCashAccount)) {
-                    accountTypeValid = false;
-                }
-            }
-        });
-        
-        if (!accountTypeValid) {
-            Swal.fire({
-                title: "Validation Error",
-                text: "For cash transaction types, all accounts must be cash accounts. For non-cash transaction types, all accounts must be non-cash accounts.",
-                icon: "error",
-                confirmButtonText: "OK",
-            });
-            return;
-        }
-    }
+    
 
     const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
 
