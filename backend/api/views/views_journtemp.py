@@ -6,6 +6,7 @@ from rest_framework import status, views
 from ..models import TRTemplate, TRTemplateDetails, ChartOfAccs, TransactionType
 from ..serializers import TRTemplateSerializer, TRTemplateDetailsSerializer, ChartOfAccsSerializer, TransactionTypeSerializer
 from django.http import JsonResponse
+from django.db.models import Case, When, Value, IntegerField
 
 
 # Chart of Accounts List View
@@ -54,10 +55,19 @@ class JournalTemplateView(views.APIView):
 
         for template in templates:
             template_serializer = TRTemplateSerializer(template)
-            details = TRTemplateDetails.objects.filter(Template_FK=template)
+
+            # Annotate rows with a priority: 0 for debit > 0, 1 for credit > 0
+            details = TRTemplateDetails.objects.filter(Template_FK=template).annotate(
+                sort_priority=Case(
+                    When(Debit__gt=0, then=Value(0)),
+                    When(Credit__gt=0, then=Value(1)),
+                    default=Value(2),
+                    output_field=IntegerField()
+                )
+            ).order_by('sort_priority')
+
             details_serializer = TRTemplateDetailsSerializer(details, many=True)
 
-            # Combine template with its details
             template_data.append({
                 "template": template_serializer.data,
                 "details": details_serializer.data
@@ -67,6 +77,7 @@ class JournalTemplateView(views.APIView):
             return JsonResponse(template_data, safe=False, status=status.HTTP_200_OK)
         
         return render(request, 'System_Setup/journaltemp.html', {'JournalTemplate': template_data})
+
 
     def post(self, request):
         serializer = TRTemplateSerializer(data=request.data)
