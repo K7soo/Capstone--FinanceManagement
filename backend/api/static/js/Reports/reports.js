@@ -1359,9 +1359,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         
             // Grouping data into categories
-            const assets = data.filter(entry => entry.Category === "Assets");
-            const liabilities = data.filter(entry => entry.Category === "Liabilities");
-            const equity = data.filter(entry => entry.Category === "Equity");
+            const isNotTotal = entry => !(entry.AccountDesc || "").toLowerCase().includes("total");
+
+            const assets = data.filter(entry => entry.Category === "Assets" && isNotTotal(entry));
+            const liabilities = data.filter(entry => entry.Category === "Liabilities" && isNotTotal(entry));
+            const equity = data.filter(entry => entry.Category === "Equity" && isNotTotal(entry));
         
             // Calculate totals
             const totalAssets = assets.reduce((sum, entry) => sum + (entry.Amount || 0), 0);
