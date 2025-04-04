@@ -74,6 +74,24 @@ document.addEventListener("DOMContentLoaded", () => {
             const defaultTabId = activeTab.getAttribute("id");
             handleTabSwitch(defaultTabId);
         }
+        
+        // Initialize month dropdowns for all tabs
+        initializeMonthDropdowns();
+    }
+    
+    // Initialize month dropdowns for all tabs
+    function initializeMonthDropdowns() {
+        // For each tab, initialize the period-month relationship
+        updateMonthOptions("period-filter", "month-filter");      // General Journal tab
+        updateMonthOptions("gl-period-filter", "gl-month-filter"); // General Ledger tab
+        updateMonthOptions("tb-period-filter", "tb-month-filter"); // Trial Balance tab
+        updateMonthOptions("bs-period-filter", "bs-month-filter"); // Balance Sheet tab
+        
+        // Also set the initial options based on default value
+        document.getElementById("period-filter")?.dispatchEvent(new Event('change'));
+        document.getElementById("gl-period-filter")?.dispatchEvent(new Event('change'));
+        document.getElementById("tb-period-filter")?.dispatchEvent(new Event('change'));
+        document.getElementById("bs-period-filter")?.dispatchEvent(new Event('change'));
     }
 
     // Handle switching between tabs
@@ -188,43 +206,72 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validate Filters
         function validateFilters() {
             const transactionType = document.getElementById("transaction-type").value;
-            const asOfDate = document.getElementById("as-of").value;
-            const durationFrom = document.getElementById("duration-from").value;
-            const durationTo = document.getElementById("duration-to").value;
-    
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
+
             if (!transactionType) {
                 Swal.fire("Validation Error", "Please select a Transaction Type.", "error");
                 return false;
             }
-    
-            if (!asOfDate && (!durationFrom || !durationTo)) {
-                Swal.fire(
-                    "Validation Error",
-                    "Please select either an 'As of' date or a valid duration range.",
-                    "error"
-                );
+
+            if (!year) {
+                Swal.fire("Validation Error", "Please enter a valid Year.", "error");
                 return false;
             }
-    
+
+            if (period === "Monthly" && !month) {
+                Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+                return false;
+            }
+            
+            if (period === "Quarterly" && !month) {
+                Swal.fire("Validation Error", "Please select a Quarter for the Quarterly period.", "error");
+                return false;
+            }
+            
+            if (period === "Semi Annually" && !month) {
+                Swal.fire("Validation Error", "Please select a Half-Year option for the Semi-Annual period.", "error");
+                return false;
+            }
+
             return true;
         }
     
         // Fetch Data for General Journal
         function fetchGeneralJournalData(callback) {
             const transactionType = document.getElementById("transaction-type").value;
-            const asOfDate = document.getElementById("as-of").value;
-            const durationFrom = document.getElementById("duration-from").value;
-            const durationTo = document.getElementById("duration-to").value;
-        
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
+            
+            // Handle different period types for month parameter
+            let formattedMonth = month;
+            
+            if (period === "Monthly") {
+                // Month is already numeric for Monthly period
+                formattedMonth = month;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                // For Quarterly and Semi-Annual, pass the string value directly
+                // The backend will handle the mapping
+                formattedMonth = month;
+            } else if (period === "Annual") {
+                // For Annual, month isn't needed
+                formattedMonth = "";
+            }
+
             if (!validateFilters()) return;
-        
+
             const params = new URLSearchParams({
                 transaction_type: transactionType === "all" ? "" : transactionType,
-                as_of: asOfDate || "",
-                duration_from: durationFrom || "",
-                duration_to: durationTo || "",
+                period: period || "",
+                year: year || "",
+                month: formattedMonth || "",
             }).toString();
-        
+
+            console.log("Request URL:", `/querygeneraljournal/?${params}`); // Debugging log
+            console.log("Sending Parameters:", { transactionType, period, year, month }); // Debugging log
+
             fetch(`/querygeneraljournal/?${params}`, {
                 method: "GET",
                 headers: {
@@ -239,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then((data) => {
                     console.log("Fetched General Journal Data:", data);
-                    const fetchedData = mapAccountDetails(data); 
+                    const fetchedData = mapAccountDetails(data);
                     if (fetchedData && fetchedData.length > 0) {
                         callback(fetchedData);
                     } else {
@@ -317,6 +364,25 @@ document.addEventListener("DOMContentLoaded", () => {
         // Print Report
         function printReport(data) {
             const printWindow = window.open("", "_blank");
+            const period = document.getElementById("period-filter").value;
+            const year = document.getElementById("year-filter").value;
+            const month = document.getElementById("month-filter").value;
+        
+            // Format period text
+            let periodText = "";
+            if (period === "Monthly") {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthName = monthNames[parseInt(month) - 1];
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${monthName}`;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${month}`;
+            } else if (period === "Annual") {
+                periodText = `Period: ${period}\nYear: ${year}`;
+            }
+        
             const htmlContent = `
                 <html>
                     <head>
@@ -326,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-family: Arial, sans-serif;
                                 margin: 20px;
                             }
-                            h1, h3, h4 {
+                            h1, h3 {
                                 text-align: center;
                                 margin-bottom: 15px;
                             }
@@ -334,21 +400,45 @@ document.addEventListener("DOMContentLoaded", () => {
                                 border-collapse: collapse;
                                 width: 100%;
                                 margin-top: 15px;
-                            }
-                            th, td {
-                                border: 1px solid black; /* Ensure all cells have black borders */
-                                padding: 6px;
-                                text-align: left;
+                                table-layout: fixed;
                             }
                             th {
                                 background-color: #f2f2f2;
+                                border-top: 1px solid black;
+                                border-bottom: 1px solid black;
+                                padding: 6px;
+                                text-align: left;
+                            }
+                            th:first-child,
+                            td:first-child {
+                                border-left: 1px solid black;
+                            }
+                            th:last-child,
+                            td:last-child {
+                                border-right: 1px solid black;
+                            }
+        
+                            td {
+                                padding: 6px;
+                                border-top: none;
+                                border-bottom: none;
+                            }
+        
+                            /* Columns */
+                            .col-date { width: 15%; }
+                            .col-account { width: 35%; border-right: none; }
+                            .col-ref { width: 15%; border-left: none; }
+                            .col-debit { width: 15%; border-left: 1px solid black; border-right: 1px solid black; }
+                            .col-credit { width: 15%; border-right: 1px solid black; }
+        
+                            .entry-start td {
+                                border-top: 1px solid black;
+                            }
+                            .entry-end td {
+                                border-bottom: 1px solid black;
                             }
                             td.right-align {
                                 text-align: right;
-                            }
-                            .total-row {
-                                font-weight: bold;
-                                background-color: #eaeaea;
                             }
                             .description {
                                 font-style: italic;
@@ -357,71 +447,67 @@ document.addEventListener("DOMContentLoaded", () => {
                                 padding-left: 10px;
                                 border-left: 1px solid black;
                                 border-right: 1px solid black;
-                                border-bottom: 1px solid black;
                             }
                             .credit-indent {
                                 padding-left: 20px;
                             }
-                            /* Adjust column widths */
-                            .col-date { width: 12%; }
-                            .col-account { width: 40%; }
-                            .col-ref { width: 18%; }
-                            .col-debit { width: 15%; }
-                            .col-credit { width: 15%; }
+                            .period-info {
+                                text-align: center;
+                                margin-bottom: 10px;
+                                font-weight: bold;
+                                white-space: pre-line;
+                            }
                         </style>
                     </head>
                     <body>
                         <h1>General Journal Report</h1>
                         <h3>Company: Tikme Dine</h3>
-                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
+                        <div class="period-info">${periodText}</div>
                         <table>
                             <thead>
                                 <tr>
                                     <th class="col-date">Date</th>
-                                    <th class="col-account">Explanation</th>
+                                    <th class="col-account">Entry</th>
                                     <th class="col-ref">Post Ref.</th>
                                     <th class="col-debit">Debit</th>
                                     <th class="col-credit">Credit</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            ${data
-                                .map((entry, entryIndex) => {
-                                    const journalDetails = entry.journal_details || [];
-                                    const date = new Date(entry.Entry_Date).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" });
-                                    const particulars = entry.EntryParticulars || "No description provided.";
-                                    const reference = entry.Entry_No || "N/A";
-                                    const refRowSpan = journalDetails.length;
+                            ${data.map((entry) => {
+                                const journalDetails = entry.journal_details || [];
+                                const date = new Date(entry.Entry_Date).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" });
+                                const particulars = entry.EntryParticulars || "No description provided.";
+                                const reference = entry.Entry_No || "N/A";
+                                const refRowSpan = journalDetails.length;
         
-                                    let rowHtml = `
-                                        <tr>
-                                            <td class="col-date">${date}</td>
-                                            <td class="col-account">${journalDetails[0]?.accountDesc || "Unknown Account"}</td>
-                                            <td class="col-ref" rowspan="${refRowSpan}">${reference}</td>
-                                            <td class="right-align col-debit">${journalDetails[0]?.DebitAmount || ""}</td>
-                                            <td class="right-align col-credit">${journalDetails[0]?.CreditAmount || ""}</td>
-                                        </tr>`;
+                                let rowHtml = `
+                                    <tr class="entry-start">
+                                        <td class="col-date">${date}</td>
+                                        <td class="col-account">${journalDetails[0]?.accountDesc || "Unknown Account"}</td>
+                                        <td class="col-ref" rowspan="${refRowSpan}">${reference}</td>
+                                        <td class="right-align col-debit">${journalDetails[0]?.DebitAmount !== 0 ? formatNumber(journalDetails[0]?.DebitAmount) : ""}</td>
+                                        <td class="right-align col-credit">${journalDetails[0]?.CreditAmount !== 0 ? formatNumber(journalDetails[0]?.CreditAmount) : ""}</td>
+                                    </tr>`;
         
-                                    journalDetails.slice(1).forEach(detail => {
-                                        rowHtml += `
-                                            <tr>
-                                                <td></td>
-                                                <td class="col-account ${detail.CreditAmount > 0 ? "credit-indent" : ""}">${detail.accountDesc || "Unknown Account"}</td>
-                                                <td class="right-align col-debit">${detail.DebitAmount || ""}</td>
-                                                <td class="right-align col-credit">${detail.CreditAmount || ""}</td>
-                                            </tr>`;
-                                    });
-        
-                                    // Particulars row under the "Account" column with black side & bottom border
+                                journalDetails.slice(1).forEach(detail => {
                                     rowHtml += `
                                         <tr>
-                                            <td></td>
-                                            <td colspan="4" class="description">Particulars: ${particulars}</td>
+                                            <td class="col-date"></td>
+                                            <td class="col-account ${detail.CreditAmount > 0 ? "credit-indent" : ""}">${detail.accountDesc || "Unknown Account"}</td>
+                                            <td class="right-align col-debit">${detail.DebitAmount !== 0 ? formatNumber(detail.DebitAmount) : ""}</td>
+                                            <td class="right-align col-credit">${detail.CreditAmount !== 0 ? formatNumber(detail.CreditAmount) : ""}</td>
                                         </tr>`;
+                                });
         
-                                    return rowHtml;
-                                })
-                                .join("")}
+                                rowHtml += `
+                                    <tr class="entry-end">
+                                        <td></td>
+                                        <td colspan="4" class="description">Particulars: ${particulars}</td>
+                                    </tr>`;
+        
+                                return rowHtml;
+                            }).join("")}
                             </tbody>
                         </table>
                     </body>
@@ -432,9 +518,6 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.document.close();
             printWindow.print();
         }
-        
-        
-        
     
         // Populate Transaction Types
         populateTransactionTypes();
@@ -534,42 +617,71 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validate Filters
         function validateFilters() {
             const chartOfAccounts = document.getElementById("ledger-account").value;
-            const asOfDateLedger = document.getElementById("as-of-ledger").value;
-            const durationFromLedger = document.getElementById("duration-from-ledger").value;
-            const durationToLedger = document.getElementById("duration-to-ledger").value;
+            const period = document.getElementById("gl-period-filter").value;
+            const year = document.getElementById("gl-year-filter").value;
+            const month = document.getElementById("gl-month-filter").value;
     
             if (!chartOfAccounts) {
                 Swal.fire("Validation Error", "Please select a Ledger Account.", "error");
                 return false;
             }
     
-            if (!asOfDateLedger && (!durationFromLedger || !durationToLedger)) {
-                Swal.fire(
-                    "Validation Error",
-                    "Please select either an 'As of' date or a valid duration range.",
-                    "error"
-                );
+            if (!year) {
+                Swal.fire("Validation Error", "Please enter a valid Year.", "error");
                 return false;
             }
-    
+
+            if (period === "Monthly" && !month) {
+                Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+                return false;
+            }
+            
+            if (period === "Quarterly" && !month) {
+                Swal.fire("Validation Error", "Please select a Quarter for the Quarterly period.", "error");
+                return false;
+            }
+            
+            if (period === "Semi Annually" && !month) {
+                Swal.fire("Validation Error", "Please select a Half-Year option for the Semi-Annual period.", "error");
+                return false;
+            }
+
             return true;
         }
     
-        // Fetch Data for General Journal
+        // Fetch Data for General Ledger
         function fetchGeneralLedgerData(callback) {
             const chartOfAccounts = document.getElementById("ledger-account").value;
-            const asOfDate = document.getElementById("as-of-ledger").value;
-            const durationFrom = document.getElementById("duration-from-ledger").value;
-            const durationTo = document.getElementById("duration-to-ledger").value;
-        
+            const period = document.getElementById("gl-period-filter").value;
+            const year = document.getElementById("gl-year-filter").value;
+            const month = document.getElementById("gl-month-filter").value;
+            
+            // Handle different period types for month parameter
+            let formattedMonth = month;
+            
+            if (period === "Monthly") {
+                // Month is already numeric for Monthly period 
+                formattedMonth = month;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                // For Quarterly and Semi-Annual, pass the string value directly
+                // The backend will handle the mapping
+                formattedMonth = month;
+            } else if (period === "Annual") {
+                // For Annual, month isn't needed
+                formattedMonth = "";
+            }
+
             if (!validateFilters()) return;
         
             const params = new URLSearchParams({
                 charted_account: chartOfAccounts === "all" ? "" : chartOfAccounts,
-                as_of: asOfDate || "",
-                duration_from: durationFrom || "",
-                duration_to: durationTo || "",
+                period: period || "",
+                year: year || "",
+                month: formattedMonth || "",
             }).toString();
+
+            console.log("Request URL:", `/querygeneralledger/?${params}`); // Debugging log
+            console.log("Sending Parameters:", { chartOfAccounts, period, year, month }); // Debugging log
         
             fetch(`/querygeneralledger/?${params}`, {
                 method: "GET",
@@ -665,22 +777,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         function printReport(data) {
-            // Group data by AccountDesc
-            const groupedData = data.reduce((acc, entry) => {
-                const accountDesc = entry.journal_details.length > 0
-                    ? entry.journal_details[0].accountDesc || "Unknown Account"
-                    : "Unknown Account";
-        
-                if (!acc[accountDesc]) {
-                    acc[accountDesc] = [];
-                }
-                acc[accountDesc].push(entry);
-                return acc;
-            }, {});
+            const period = document.getElementById("gl-period-filter").value;
+            const year = document.getElementById("gl-year-filter").value;
+            const month = document.getElementById("gl-month-filter").value;
+            
+            // Format period text
+            let periodText = "";
+            if (period === "Monthly") {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthName = monthNames[parseInt(month) - 1];
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${monthName}`;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${month}`;
+            } else if (period === "Annual") {
+                periodText = `Period: ${period}\nYear: ${year}`;
+            }
         
             const printWindow = window.open("", "_blank");
-            const currentDate = new Date().toLocaleDateString("en-US");
-        
             let htmlContent = `
                 <html>
                     <head>
@@ -690,37 +806,56 @@ document.addEventListener("DOMContentLoaded", () => {
                             h1 { text-align: center; margin-bottom: 5px; }
                             h2 { text-align: center; margin-top: 0; font-size: 1.1rem; }
                             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                            th, td { 
-                                border: 1px solid black; 
-                                padding: 6px; 
-                                text-align: left; 
+                            
+                            th {
+                                border: 1px solid black;
+                                background-color: #f2f2f2;
+                                text-align: center;
+                                padding: 6px;
+                                font-size: 14px;
+                            }
+        
+                            td {
+                                padding: 6px;
                                 font-size: 14px;
                                 word-wrap: break-word;
                             }
-                            th { 
-                                background-color: #f2f2f2; 
-                                text-align: center;
+        
+                            tr.entry-row td {
+                                border: none;
                             }
+        
                             td.right-align { text-align: right; }
-                            .account-header { 
-                                font-weight: bold; 
-                                font-style: italic; 
+        
+                            .account-header {
+                                font-weight: bold;
+                                font-style: italic;
                                 background-color: #eaeaea;
                                 text-transform: uppercase;
                             }
-                            .net-movement-row {
-                                font-weight: bold; 
-                                text-align: right; 
+        
+                            .net-movement-row td {
+                                font-weight: bold;
+                                text-align: right;
+                                border-top: 1px solid black;
                             }
+        
                             .bold-line {
-                                border-top: 2px solid black; /* Bold line directly below Net Movement */
+                                border-top: 2px solid black;
+                            }
+        
+                            .period-info {
+                                text-align: center;
+                                margin-bottom: 10px;
+                                font-weight: bold;
+                                white-space: pre-line;
                             }
                         </style>
                     </head>
                     <body>
                         <h1>General Ledger Report</h1>
                         <h2>Company: Tikme Dine</h2>
-                        <h2>Exported on: ${currentDate}</h2>
+                        <div class="period-info">${periodText}</div>
                         <table>
                             <thead>
                                 <tr>
@@ -742,6 +877,7 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.document.close();
             printWindow.print();
         }
+        
         
         // Function to generate the ledger rows with the correct Net Movement underline placement
         function generateLedgerRows(data) {
@@ -842,76 +978,134 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Validate Filters
         function validateFilters() {
-            const asOfDate = document.getElementById("as-of-tb").value;
-            const durationFrom = document.getElementById("duration-from-tb").value;
-            const durationTo = document.getElementById("duration-to-tb").value;
+            const period = document.getElementById("tb-period-filter").value;
+            const year = document.getElementById("tb-year-filter").value;
+            const month = document.getElementById("tb-month-filter").value;
     
-            if (!asOfDate && (!durationFrom || !durationTo)) {
-                Swal.fire(
-                    "Validation Error",
-                    "Please select either an 'As of' date or a valid duration range.",
-                    "error"
-                );
+            if (!year) {
+                Swal.fire("Validation Error", "Please enter a valid Year.", "error");
                 return false;
             }
-    
+
+            if (period === "Monthly" && !month) {
+                Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+                return false;
+            }
+            
+            if (period === "Quarterly" && !month) {
+                Swal.fire("Validation Error", "Please select a Quarter for the Quarterly period.", "error");
+                return false;
+            }
+            
+            if (period === "Semi Annually" && !month) {
+                Swal.fire("Validation Error", "Please select a Half-Year option for the Semi-Annual period.", "error");
+                return false;
+            }
+
             return true;
         }
     
         // Fetch Trial Balance Data with Date Filters
-        function fetchTrialBalanceData(asOfDate, startDate, endDate) {
-            if (!validateFilters()) return Promise.reject("Invalid date selection.");
+        function fetchTrialBalanceData() {
+            const period = document.getElementById("tb-period-filter").value;
+            const year = document.getElementById("tb-year-filter").value;
+            const month = document.getElementById("tb-month-filter").value;
         
-            let url = "/querytrialbalance/";
-            const params = new URLSearchParams();
-        
-            if (asOfDate) {
-                params.append("as_of", asOfDate);
-            } else if (startDate && endDate) {
-                params.append("start_date", startDate);
-                params.append("end_date", endDate);
+            // Handle different period types for month parameter
+            let formattedMonth = month;
+            
+            if (period === "Monthly") {
+                // Month is already numeric for Monthly period
+                formattedMonth = month;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                // For Quarterly and Semi-Annual, pass the string value directly
+                // The backend will handle the mapping
+                formattedMonth = month;
+            } else if (period === "Annual") {
+                // For Annual, month isn't needed
+                formattedMonth = "";
             }
         
-            if (params.toString()) {
-                url += "?" + params.toString();
-            }
+            if (!validateFilters()) return Promise.reject("Invalid filters");
         
-            console.log("Fetching Trial Balance from:", url); // Debugging output
+            const params = new URLSearchParams({
+                period: period || "",
+                year: year || "",
+                month: formattedMonth || "",
+            }).toString();
         
-            return fetch(url, {
+            console.log("Request URL:", `/querytrialbalance/?${params}`); // Debugging log
+            console.log("Sending Parameters:", { period, year, month: formattedMonth }); // Debugging log
+        
+            return fetch(`/querytrialbalance/?${params}`, {
                 method: "GET",
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                 },
             })
-            .then(response => response.json())
-            .then(data => {
-                // Calculate total debit & credit from the response
-                let totalDebit = 0;
-                let totalCredit = 0;
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch trial balance data");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Fetched Trial Balance Data:", data);
         
-                data.forEach(entry => {
-                    totalDebit += entry.Debit || 0;
-                    totalCredit += entry.Credit || 0;
+                    if (!Array.isArray(data)) {
+                        console.error("Expected an array but received:", data);
+                        return [];
+                    }
+        
+                    // Calculate total debit & credit from the response
+                    let totalDebit = 0;
+                    let totalCredit = 0;
+        
+                    data.forEach(entry => {
+                        totalDebit += entry.Debit || 0;
+                        totalCredit += entry.Credit || 0;
+                    });
+        
+                    // If both totals are zero, show an alert and return an empty response
+                    if (totalDebit === 0 && totalCredit === 0) {
+                        Swal.fire("No Data", "No trial balance data found for the selected filters.", "info");
+                        return Promise.reject("No data found.");
+                    }
+        
+                    return data; // ✅ Return data instead of using an undefined `callback`
+                })
+                .catch(error => {
+                    console.error("Error fetching trial balance data:", error);
+                    Swal.fire("Error", "Failed to fetch data. Please try again.", "error");
+                    throw error; // Ensure the error propagates
                 });
-        
-                // If both totals are zero, show an alert and return an empty response
-                if (totalDebit === 0 && totalCredit === 0) {
-                    Swal.fire("No Data", "No trial balance data found for the selected filters.", "info");
-                    return Promise.reject("No data found.");
-                }
-        
-                return data;
-            })
-            .catch(error => {
-                console.error("Error fetching trial balance data:", error);
-                throw error;
-            });
         }
     
         // Print Function
         function handleTrialBalancePrint(data) {
+            const period = document.getElementById("tb-period-filter").value;
+            const year = document.getElementById("tb-year-filter").value;
+            const month = document.getElementById("tb-month-filter").value;
+            
+            // Format period text
+            let periodText = "";
+            if (period === "Monthly") {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthName = monthNames[parseInt(month) - 1];
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${monthName}`;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${month}`;
+            } else if (period === "Annual") {
+                periodText = `Period: ${period}\nYear: ${year}`;
+            }
+        
             const printWindow = window.open("", "_blank");
+            const totalRow = data.find(entry => entry.AccountCode === "TOTAL");
+            const filteredData = data.filter(entry => entry.AccountCode !== "TOTAL");
+        
             const htmlContent = `
                 <html>
                     <head>
@@ -921,54 +1115,73 @@ document.addEventListener("DOMContentLoaded", () => {
                                 font-family: Arial, sans-serif;
                                 margin: 20px;
                             }
-                            h1, h3, h4 {
+                            h1, h3 {
                                 text-align: center;
                                 margin-bottom: 15px;
                             }
                             table {
-                                border-collapse: collapse;
                                 width: 100%;
                                 margin-top: 15px;
+                                border-collapse: collapse;
                             }
                             th, td {
-                                border: 1px solid black;
                                 padding: 6px;
-                                text-align: left;
                             }
                             th {
                                 background-color: #f2f2f2;
                             }
-                            td.right-align {
+                            thead th {
+                                border-bottom: 2px solid black;
+                            }
+                            .right-align {
                                 text-align: right;
+                            }
+                            .left-align {
+                                text-align: left;
                             }
                             .total-row {
                                 font-weight: bold;
                                 background-color: #eaeaea;
+                                border-top: 2px solid black;
+                            }
+                            .period-info {
+                                text-align: center;
+                                margin-bottom: 10px;
+                                font-weight: bold;
+                                white-space: pre-line;
                             }
                         </style>
                     </head>
                     <body>
                         <h1>Trial Balance Report</h1>
                         <h3>Company: Tikme Dine</h3>
-                        <h4>Exported on: ${new Date().toLocaleDateString()}</h4>
+                        <div class="period-info">${periodText}</div>
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Account Code</th>
-                                    <th>Account Description</th>
-                                    <th>Debit</th>
-                                    <th>Credit</th>
+                                    <th class="left-align">Account Code</th>
+                                    <th class="left-align">Account Description</th>
+                                    <th class="right-align">Debit</th>
+                                    <th class="right-align">Credit</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                ${data.map(entry => `
+                                ${filteredData.map(entry => `
                                     <tr>
-                                        <td>${entry.AccountCode}</td>
-                                        <td>${entry.AccountDesc}</td>
-                                        <td class="right-align">${entry.Debit > 0 ? entry.Debit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : ""}</td>
-                                        <td class="right-align">${entry.Credit > 0 ? entry.Credit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : ""}</td>
+                                        <td class="left-align">${entry.AccountCode}</td>
+                                        <td class="left-align">${entry.AccountDesc}</td>
+                                        <td class="right-align">${entry.Debit > 0 ? `<b>${entry.Debit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</b>` : ""}</td>
+                                        <td class="right-align">${entry.Credit > 0 ? `<b>${entry.Credit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</b>` : ""}</td>
                                     </tr>
                                 `).join("")}
+                                ${totalRow ? `
+                                    <tr class="total-row">
+                                        <td class="left-align">${totalRow.AccountCode}</td>
+                                        <td class="left-align">${totalRow.AccountDesc}</td>
+                                        <td class="right-align">${totalRow.Debit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                                        <td class="right-align">${totalRow.Credit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                                    </tr>
+                                ` : ""}
                             </tbody>
                         </table>
                     </body>
@@ -978,16 +1191,16 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.document.close();
             printWindow.print();
         }
+        
+        
+        
+        
     
         // Set Up Print Action Listener
         const printButton = document.getElementById("print-trial-balance");
         if (printButton) {
             printButton.addEventListener("click", () => {
-                const asOfDate = document.getElementById("as-of-tb").value;
-                const startDate = document.getElementById("duration-from-tb").value;
-                const endDate = document.getElementById("duration-to-tb").value;
-    
-                fetchTrialBalanceData(asOfDate, startDate, endDate)
+                fetchTrialBalanceData()
                     .then(data => handleTrialBalancePrint(data))
                     .catch(error => console.error("Failed to load trial balance:", error));
             });
@@ -1001,11 +1214,376 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadBalanceSheet() {
-        console.log("Loading Balance Sheet Tab...");
-        // Logic to load Balance Sheet data
+        console.log("Initializing Balance Sheet Tab...");
+
+        // Validate Filters
+    function validateFilters() {
+        const period = document.getElementById("bs-period-filter").value;
+        const year = document.getElementById("bs-year-filter").value;
+        const month = document.getElementById("bs-month-filter").value;
+
+        if (!year) {
+            Swal.fire("Validation Error", "Please enter a valid Year.", "error");
+            return false;
+        }
+
+        if (period === "Monthly" && !month) {
+            Swal.fire("Validation Error", "Please select a Month for the Monthly period.", "error");
+            return false;
+        }
+
+        return true;
     }
 
+    // Fetch Balance Sheet Data with Date Filters
+    function fetchBalanceSheetData() {
+        const period = document.getElementById("bs-period-filter").value;
+        const year = document.getElementById("bs-year-filter").value;
+        const month = document.getElementById("bs-month-filter").value;
 
+        const monthMapping = {
+            "January": 1, "February": 2, "March": 3, "April": 4,
+            "May": 5, "June": 6, "July": 7, "August": 8,
+            "September": 9, "October": 10, "November": 11, "December": 12
+        };
+        const formattedMonth = monthMapping[month] || "";
+
+        if (!validateFilters()) return Promise.reject("Invalid filters");
+
+        const params = new URLSearchParams({
+            period: period || "",
+            year: year || "",
+            month: formattedMonth || "",
+        }).toString();
+
+        console.log("Request URL:", `/querybalancesheet/?${params}`);
+        console.log("Sending Parameters:", { period, year, month: formattedMonth });
+
+            return fetch(`/querybalancesheet/?${params}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch balance sheet data");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Fetched Balance Sheet Data:", data);
+
+                    if (!data || typeof data !== "object") {
+                        console.error("Expected an object but received:", data);
+                        return [];
+                    }
+
+                    let extractedData = [];
+                    ["Assets", "Liabilities", "Equity"].forEach(category => {
+                        if (data[category] && Array.isArray(data[category].accounts)) {
+                            data[category].accounts.forEach(account => {
+                                extractedData.push({
+                                    Category: category,
+                                    AccountCode: account.AccountCode,
+                                    AccountDesc: account.AccountDesc,
+                                    Amount: account.Balance // Fixed extraction
+                                });
+                            });
+
+                            // Add total row for the category
+                            extractedData.push({
+                                Category: category,
+                                AccountCode: "Total",
+                                AccountDesc: `${category} Total`,
+                                Amount: data[category].total
+                            });
+                        }
+                    });
+
+                    if (extractedData.length === 0) {
+                        Swal.fire("No Data", "No balance sheet data found for the selected filters.", "info");
+                        return Promise.reject("No data found.");
+                    }
+
+                    return extractedData;
+                })
+                .catch(error => {
+                    console.error("Error fetching balance sheet data:", error);
+                    Swal.fire("Error", "Failed to fetch data. Please try again.", "error");
+                    throw error;
+                });
+        }
+
+        // Render Balance Sheet Table
+        function renderBalanceSheetTable(data) {
+            const tableBody = document.getElementById("balance-sheet-table-body");
+            tableBody.innerHTML = "";
+    
+            if (data.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='4' class='text-center'>No data available</td></tr>";
+                return;
+            }
+    
+            data.forEach(entry => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${entry.Category}</td>
+                    <td>${entry.AccountCode}</td>
+                    <td>${entry.AccountDesc}</td>
+                    <td class="right-align">${entry.Amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Print Function
+        function handleBalanceSheetPrint(data) {
+            const period = document.getElementById("bs-period-filter").value;
+            const year = document.getElementById("bs-year-filter").value;
+            const month = document.getElementById("bs-month-filter").value;
+        
+            // Format period text
+            let periodText = "";
+            if (period === "Monthly") {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                const monthName = monthNames[parseInt(month) - 1];
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${monthName}`;
+            } else if (period === "Quarterly" || period === "Semi Annually") {
+                periodText = `Period: ${period}\nYear: ${year}\nFor ${month}`;
+            } else if (period === "Annual") {
+                periodText = `Period: ${period}\nYear: ${year}`;
+            }
+        
+            // Grouping data into categories
+            const assets = data.filter(entry => entry.Category === "Assets");
+            const liabilities = data.filter(entry => entry.Category === "Liabilities");
+            const equity = data.filter(entry => entry.Category === "Equity");
+        
+            // Calculate totals
+            const totalAssets = assets.reduce((sum, entry) => sum + (entry.Amount || 0), 0);
+            const totalLiabilities = liabilities.reduce((sum, entry) => sum + (entry.Amount || 0), 0);
+            const totalEquity = equity.reduce((sum, entry) => sum + (entry.Amount || 0), 0);
+            const totalLiabilitiesAndEquity = totalLiabilities + totalEquity;
+        
+            const printWindow = window.open("", "_blank");
+            const htmlContent = `
+                <html>
+                    <head>
+                        <title>Balance Sheet Report</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                margin: 40px;
+                                color: #000;
+                            }
+                            h1, h2 {
+                                text-align: center;
+                                font-size: 20px;
+                                font-weight: bold;
+                            }
+                            h3 {
+                                text-align: center;
+                                font-size: 14px;
+                                font-style: italic;
+                            }
+                            .period-info {
+                                text-align: center;
+                                margin-bottom: 20px;
+                                font-weight: bold;
+                                white-space: pre-line;
+                            }
+                            .section-title {
+                                font-weight: bold;
+                                margin-top: 20px;
+                            }
+                            .table-container {
+                                width: 100%;
+                                max-width: 600px;
+                                margin: 0 auto;
+                            }
+                            .entry {
+                                display: flex;
+                                justify-content: space-between;
+                                padding: 4px 0;
+                            }
+                            .total {
+                                font-weight: bold;
+                                border-top: 2px solid black;
+                                padding-top: 6px;
+                            }
+                            .amount {
+                                text-align: right;
+                                min-width: 100px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Balance Sheet Report</h1>
+                        <h2>Tikme Dine</h2>
+                        <div class="period-info">${periodText}</div>
+        
+                        <div class="table-container">
+                            <div class="section-title">ASSETS</div>
+                            ${assets.map(entry => `
+                                <div class="entry">
+                                    <span>${entry.AccountDesc}</span>
+                                    <span class="amount">${(entry.Amount || 0).toLocaleString("en-US")}</span>
+                                </div>
+                            `).join("")}
+                            <div class="entry total">
+                                <span>Total Assets</span>
+                                <span class="amount">${totalAssets.toLocaleString("en-US")}</span>
+                            </div>
+        
+                            <div class="section-title">LIABILITIES</div>
+                            ${liabilities.map(entry => `
+                                <div class="entry">
+                                    <span>${entry.AccountDesc}</span>
+                                    <span class="amount">${(entry.Amount || 0).toLocaleString("en-US")}</span>
+                                </div>
+                            `).join("")}
+        
+                            <div class="section-title">OWNERS EQUITY</div>
+                            ${equity.map(entry => `
+                                <div class="entry">
+                                    <span>${entry.AccountDesc}</span>
+                                    <span class="amount">${(entry.Amount || 0).toLocaleString("en-US")}</span>
+                                </div>
+                            `).join("")}
+        
+                            <div class="entry total">
+                                <span>Total Liabilities and Equities</span>
+                                <span class="amount">${totalLiabilitiesAndEquity.toLocaleString("en-US")}</span>
+                            </div>
+                        </div>
+                    </body>
+                </html>
+            `;
+            
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Set Up Print Action Listener
+        const printButton = document.getElementById("print-balance-sheet");
+        if (printButton) {
+            printButton.addEventListener("click", () => {
+                fetchBalanceSheetData()
+                    .then(data => handleBalanceSheetPrint(data))
+                    .catch(error => console.error("Failed to load balance sheet:", error));
+            });
+        } 
+
+    }
     // Initialize tabs on page load
     initTabs();
 });
+
+// Function to export general journal data to CSV
+
+
+// Group the data by account for CSV export
+function groupByAccount(data) {
+    return data.reduce((acc, entry) => {
+        const accountDesc = entry.journal_details.length > 0
+            ? entry.journal_details[0].accountDesc || "Unknown Account"
+            : "Unknown Account";
+
+        if (!acc[accountDesc]) {
+            acc[accountDesc] = [];
+        }
+        acc[accountDesc].push(entry);
+        return acc;
+    }, {});
+}
+
+// Format Date for CSV
+function formatDate(dateString) {
+    if (!dateString) return "N/A";
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid Date"; // Ensure the date is valid
+
+    const month = date.getMonth() + 1; // Months are 0-based
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    return `${month}/${day}/${year}`;
+}
+
+// Format Number for CSV (e.g., 1000.00 -> 1,000.00)
+function formatNumber(number) {
+    return parseFloat(number).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+}
+
+// Function to update month options based on selected period
+function updateMonthOptions(periodSelector, monthSelector) {
+    const periodFilter = document.getElementById(periodSelector);
+    const monthFilter = document.getElementById(monthSelector);
+    
+    if (!periodFilter || !monthFilter) return;
+    
+    periodFilter.addEventListener('change', () => {
+        const selectedPeriod = periodFilter.value;
+        
+        // Clear existing options
+        monthFilter.innerHTML = '';
+        
+        if (selectedPeriod === "Monthly") {
+            // For Monthly period, show months
+            const months = [
+                "January", "February", "March", "April", "May", "June", 
+                "July", "August", "September", "October", "November", "December"
+            ];
+            
+            months.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index + 1;
+                option.textContent = month;
+                monthFilter.appendChild(option);
+            });
+        } 
+        else if (selectedPeriod === "Quarterly") {
+            // For Quarterly period, show quarters
+            const quarters = ["1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter"];
+            
+            quarters.forEach((quarter) => {
+                const option = document.createElement('option');
+                option.value = quarter;
+                option.textContent = quarter;
+                monthFilter.appendChild(option);
+            });
+        }
+        else if (selectedPeriod === "Semi Annually") {
+            // For Semi-Annual period, show half-year options
+            const halfYears = ["1st Half", "2nd Half"];
+            
+            halfYears.forEach((half) => {
+                const option = document.createElement('option');
+                option.value = half;
+                option.textContent = half;
+                monthFilter.appendChild(option);
+            });
+        }
+        else if (selectedPeriod === "Annual") {
+            // For Annual period, hide or disable month selector
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "N/A for Annual Period";
+            monthFilter.appendChild(option);
+            monthFilter.disabled = true;
+            return;
+        }
+        
+        monthFilter.disabled = false;
+    });
+}
+

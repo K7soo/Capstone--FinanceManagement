@@ -320,17 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                     </li>
                                     <li>
                                         <button
-                                            class="dropdown-item text-warning edit-entry"
-                                            type="button"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editTemplateModal"
-                                            data-entry-id="${journalEntry.id}"
-                                            style="font-weight: 500; padding: 0.5rem 1rem; transition: transform 0.3s ease-in-out;">
-                                            <i class="bi bi-pencil-square me-2"></i>Edit
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
                                             class="dropdown-item text-danger delete-entry"
                                             type="button"
                                             data-entry-id="${journalEntry.id}"
@@ -794,247 +783,247 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function editEntry(entryId) {
-        loadChartOfAccounts().then((accountMap) => {
-            fetch(`/journalentries/${entryId}/`, {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch journal entry details");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    const { journal_entry, journal_details } = data;
+    // function editEntry(entryId) {
+    //     loadChartOfAccounts().then((accountMap) => {
+    //         fetch(`/journalentries/${entryId}/`, {
+    //             method: "GET",
+    //             headers: {
+    //                 "X-Requested-With": "XMLHttpRequest",
+    //             },
+    //         })
+    //             .then((response) => {
+    //                 if (!response.ok) {
+    //                     throw new Error("Failed to fetch journal entry details");
+    //                 }
+    //                 return response.json();
+    //             })
+    //             .then((data) => {
+    //                 const { journal_entry, journal_details } = data;
 
-                    // Populate the modal fields
-                    document.getElementById("jevEditDate").textContent = new Date(journal_entry.Entry_Date)
-                        .toLocaleDateString("en-US", {
-                            month: "2-digit",
-                            day: "2-digit",
-                            year: "numeric",
-                        });
-                    document.getElementById("jevEditNumber").textContent =
-                        journal_entry.Entry_No || "N/A";
-                    document.getElementById("editRemarks").value =
-                        journal_entry.Review_Remarks || "";
+    //                 // Populate the modal fields
+    //                 document.getElementById("jevEditDate").textContent = new Date(journal_entry.Entry_Date)
+    //                     .toLocaleDateString("en-US", {
+    //                         month: "2-digit",
+    //                         day: "2-digit",
+    //                         year: "numeric",
+    //                     });
+    //                 document.getElementById("jevEditNumber").textContent =
+    //                     journal_entry.Entry_No || "N/A";
+    //                 document.getElementById("editRemarks").value =
+    //                     journal_entry.Review_Remarks || "";
 
-                    // Populate status dropdown
-                    const dropdown = document.getElementById("statusEditDropdown");
-                    fetchStatuses()
-                        .then((statuses) => {
-                            dropdown.innerHTML = "";
-                            statuses.forEach((status) => {
-                                const option = document.createElement("option");
-                                option.value = status.id;
-                                option.textContent = status.Status_Name;
-                                if (status.id === journal_entry.EntryStatus_FK) {
-                                    option.selected = true;
-                                }
-                                dropdown.appendChild(option);
-                            });
-                        })
-                        .catch((error) =>
-                            console.error("Error fetching statuses for dropdown:", error)
-                        );
+    //                 // Populate status dropdown
+    //                 const dropdown = document.getElementById("statusEditDropdown");
+    //                 fetchStatuses()
+    //                     .then((statuses) => {
+    //                         dropdown.innerHTML = "";
+    //                         statuses.forEach((status) => {
+    //                             const option = document.createElement("option");
+    //                             option.value = status.id;
+    //                             option.textContent = status.Status_Name;
+    //                             if (status.id === journal_entry.EntryStatus_FK) {
+    //                                 option.selected = true;
+    //                             }
+    //                             dropdown.appendChild(option);
+    //                         });
+    //                     })
+    //                     .catch((error) =>
+    //                         console.error("Error fetching statuses for dropdown:", error)
+    //                     );
 
-                    const accountTableBody = document.getElementById("jevEditAccountTableBody");
-                    accountTableBody.innerHTML = ""; // Clear previous data
+    //                 const accountTableBody = document.getElementById("jevEditAccountTableBody");
+    //                 accountTableBody.innerHTML = ""; // Clear previous data
 
-                    // Map details and render rows
-                    const mappedDetails = journal_details.map((detail) => {
-                        const account = accountMap[detail.Account_FK] || {
-                            AccountCode: "N/A",
-                            AccountDesc: "N/A",
-                        };
-                        return {
-                            accountDesc: account.AccountDesc,
-                            accountCode: account.AccountCode,
-                            debitAmount: parseFloat(detail.DebitAmount) || 0,
-                            creditAmount: parseFloat(detail.CreditAmount) || 0,
-                            accountId: detail.Account_FK,
-                        };
-                    });
+    //                 // Map details and render rows
+    //                 const mappedDetails = journal_details.map((detail) => {
+    //                     const account = accountMap[detail.Account_FK] || {
+    //                         AccountCode: "N/A",
+    //                         AccountDesc: "N/A",
+    //                     };
+    //                     return {
+    //                         accountDesc: account.AccountDesc,
+    //                         accountCode: account.AccountCode,
+    //                         debitAmount: parseFloat(detail.DebitAmount) || 0,
+    //                         creditAmount: parseFloat(detail.CreditAmount) || 0,
+    //                         accountId: detail.Account_FK,
+    //                     };
+    //                 });
 
-                    mappedDetails.forEach((detail) => {
-                        const row = document.createElement("tr");
+    //                 mappedDetails.forEach((detail) => {
+    //                     const row = document.createElement("tr");
 
-                        // Account Description
-                        const accountDescCell = document.createElement("td");
-                        accountDescCell.textContent = detail.accountDesc;
-                        row.appendChild(accountDescCell);
+    //                     // Account Description
+    //                     const accountDescCell = document.createElement("td");
+    //                     accountDescCell.textContent = detail.accountDesc;
+    //                     row.appendChild(accountDescCell);
 
-                        // Account Code
-                        const accountCodeCell = document.createElement("td");
-                        accountCodeCell.textContent = detail.accountCode;
-                        row.appendChild(accountCodeCell);
+    //                     // Account Code
+    //                     const accountCodeCell = document.createElement("td");
+    //                     accountCodeCell.textContent = detail.accountCode;
+    //                     row.appendChild(accountCodeCell);
 
-                        // Debit Amount
-                        const debitCell = document.createElement("td");
-                        const debitInput = document.createElement("input");
-                        debitInput.type = "number";
-                        debitInput.value = detail.debitAmount.toFixed(2);
-                        debitInput.classList.add("form-control", "debit-input");
-                        if (detail.debitAmount === 0) debitInput.disabled = true;
-                        debitCell.appendChild(debitInput);
-                        row.appendChild(debitCell);
+    //                     // Debit Amount
+    //                     const debitCell = document.createElement("td");
+    //                     const debitInput = document.createElement("input");
+    //                     debitInput.type = "number";
+    //                     debitInput.value = detail.debitAmount.toFixed(2);
+    //                     debitInput.classList.add("form-control", "debit-input");
+    //                     if (detail.debitAmount === 0) debitInput.disabled = true;
+    //                     debitCell.appendChild(debitInput);
+    //                     row.appendChild(debitCell);
 
-                        // Credit Amount
-                        const creditCell = document.createElement("td");
-                        const creditInput = document.createElement("input");
-                        creditInput.type = "number";
-                        creditInput.value = detail.creditAmount.toFixed(2);
-                        creditInput.classList.add("form-control", "credit-input");
-                        if (detail.creditAmount === 0) creditInput.disabled = true;
-                        creditCell.appendChild(creditInput);
-                        row.appendChild(creditCell);
+    //                     // Credit Amount
+    //                     const creditCell = document.createElement("td");
+    //                     const creditInput = document.createElement("input");
+    //                     creditInput.type = "number";
+    //                     creditInput.value = detail.creditAmount.toFixed(2);
+    //                     creditInput.classList.add("form-control", "credit-input");
+    //                     if (detail.creditAmount === 0) creditInput.disabled = true;
+    //                     creditCell.appendChild(creditInput);
+    //                     row.appendChild(creditCell);
 
-                        accountTableBody.appendChild(row);
+    //                     accountTableBody.appendChild(row);
 
-                        detail.debitInput = debitInput;
-                        detail.creditInput = creditInput;
-                    });
+    //                     detail.debitInput = debitInput;
+    //                     detail.creditInput = creditInput;
+    //                 });
 
-                    // Add totals and particulars row
-                    const particularsRow = document.createElement("tr");
-                    particularsRow.innerHTML = `
-                        <td colspan="4">Particulars: ${journal_entry.EntryParticulars || "N/A"}</td>
-                    `;
-                    accountTableBody.appendChild(particularsRow);
+    //                 // Add totals and particulars row
+    //                 const particularsRow = document.createElement("tr");
+    //                 particularsRow.innerHTML = `
+    //                     <td colspan="4">Particulars: ${journal_entry.EntryParticulars || "N/A"}</td>
+    //                 `;
+    //                 accountTableBody.appendChild(particularsRow);
 
-                    const totalRow = document.createElement("tr");
-                    totalRow.classList.add("totals");
-                    totalRow.innerHTML = `
-                        <td colspan="2">TOTAL</td>
-                        <td id="debitTotal">${mappedDetails
-                            .reduce((sum, detail) => sum + detail.debitAmount, 0)
-                            .toFixed(2)}</td>
-                        <td id="creditTotal">${mappedDetails
-                            .reduce((sum, detail) => sum + detail.creditAmount, 0)
-                            .toFixed(2)}</td>
-                    `;
-                    accountTableBody.appendChild(totalRow);
+    //                 const totalRow = document.createElement("tr");
+    //                 totalRow.classList.add("totals");
+    //                 totalRow.innerHTML = `
+    //                     <td colspan="2">TOTAL</td>
+    //                     <td id="debitTotal">${mappedDetails
+    //                         .reduce((sum, detail) => sum + detail.debitAmount, 0)
+    //                         .toFixed(2)}</td>
+    //                     <td id="creditTotal">${mappedDetails
+    //                         .reduce((sum, detail) => sum + detail.creditAmount, 0)
+    //                         .toFixed(2)}</td>
+    //                 `;
+    //                 accountTableBody.appendChild(totalRow);
 
-                    // Update totals on input change
-                    accountTableBody.addEventListener("input", () => {
-                        let totalDebit = 0;
-                        let totalCredit = 0;
+    //                 // Update totals on input change
+    //                 accountTableBody.addEventListener("input", () => {
+    //                     let totalDebit = 0;
+    //                     let totalCredit = 0;
 
-                        mappedDetails.forEach((detail) => {
-                            const debitValue = parseFloat(detail.debitInput.value) || 0;
-                            const creditValue = parseFloat(detail.creditInput.value) || 0;
-                            totalDebit += debitValue;
-                            totalCredit += creditValue;
-                        });
+    //                     mappedDetails.forEach((detail) => {
+    //                         const debitValue = parseFloat(detail.debitInput.value) || 0;
+    //                         const creditValue = parseFloat(detail.creditInput.value) || 0;
+    //                         totalDebit += debitValue;
+    //                         totalCredit += creditValue;
+    //                     });
 
-                        document.getElementById("debitTotal").textContent = totalDebit.toFixed(2);
-                        document.getElementById("creditTotal").textContent = totalCredit.toFixed(2);
-                    });
+    //                     document.getElementById("debitTotal").textContent = totalDebit.toFixed(2);
+    //                     document.getElementById("creditTotal").textContent = totalCredit.toFixed(2);
+    //                 });
 
-                    // Show the modal
-                    const modalElement = document.getElementById("jevEditModal");
-                    const modal = new bootstrap.Modal(modalElement);
-                    modal.show();
+    //                 // Show the modal
+    //                 const modalElement = document.getElementById("jevEditModal");
+    //                 const modal = new bootstrap.Modal(modalElement);
+    //                 modal.show();
 
-                    // Add Save Changes button
-                    const modalFooter = modalElement.querySelector(".modal-footer");
-                    modalFooter.innerHTML = ""; // Clear existing buttons
-                    const saveButton = document.createElement("button");
+    //                 // Add Save Changes button
+    //                 const modalFooter = modalElement.querySelector(".modal-footer");
+    //                 modalFooter.innerHTML = ""; // Clear existing buttons
+    //                 const saveButton = document.createElement("button");
 
-                    saveButton.textContent = "Save Changes";
-                    saveButton.classList.add("btn", "btn-primary");
-                    saveButton.addEventListener("click", () => {
-                        let totalDebit = 0;
-                        let totalCredit = 0;
+    //                 saveButton.textContent = "Save Changes";
+    //                 saveButton.classList.add("btn", "btn-primary");
+    //                 saveButton.addEventListener("click", () => {
+    //                     let totalDebit = 0;
+    //                     let totalCredit = 0;
 
-                        // Calculate total debit and credit amounts
-                        mappedDetails.forEach((detail) => {
-                            const debitValue = parseFloat(detail.debitInput.value) || 0;
-                            const creditValue = parseFloat(detail.creditInput.value) || 0;
-                            totalDebit += debitValue;
-                            totalCredit += creditValue;
-                        });
+    //                     // Calculate total debit and credit amounts
+    //                     mappedDetails.forEach((detail) => {
+    //                         const debitValue = parseFloat(detail.debitInput.value) || 0;
+    //                         const creditValue = parseFloat(detail.creditInput.value) || 0;
+    //                         totalDebit += debitValue;
+    //                         totalCredit += creditValue;
+    //                     });
 
-                        // Validate if totals match
-                        if (totalDebit.toFixed(2) !== totalCredit.toFixed(2)) {
-                            Swal.fire({
-                                title: "Error!",
-                                text: "Debit and Credit totals must be equal before saving.",
-                                icon: "error",
-                                confirmButtonText: "OK",
-                            });
-                            return; // Prevent submission if totals do not match
-                        }
+    //                     // Validate if totals match
+    //                     if (totalDebit.toFixed(2) !== totalCredit.toFixed(2)) {
+    //                         Swal.fire({
+    //                             title: "Error!",
+    //                             text: "Debit and Credit totals must be equal before saving.",
+    //                             icon: "error",
+    //                             confirmButtonText: "OK",
+    //                         });
+    //                         return; // Prevent submission if totals do not match
+    //                     }
 
-                        // Prepare payload for the PUT request
-                        const updatedDetails = mappedDetails.map((detail) => ({
-                            Account_FK: detail.accountId,
-                            DebitAmount: parseFloat(detail.debitInput.value) || 0,
-                            CreditAmount: parseFloat(detail.creditInput.value) || 0,
-                        }));
+    //                     // Prepare payload for the PUT request
+    //                     const updatedDetails = mappedDetails.map((detail) => ({
+    //                         Account_FK: detail.accountId,
+    //                         DebitAmount: parseFloat(detail.debitInput.value) || 0,
+    //                         CreditAmount: parseFloat(detail.creditInput.value) || 0,
+    //                     }));
 
-                        const payload = {
-                            journal_entry: {
-                                Entry_ID: journal_entry.Entry_ID,
-                                Review_Remarks: document.getElementById("editRemarks").value || "",
-                                EntryStatus_FK: dropdown.value,
-                            },
-                            journal_details: updatedDetails,
-                        };
+    //                     const payload = {
+    //                         journal_entry: {
+    //                             Entry_ID: journal_entry.Entry_ID,
+    //                             Review_Remarks: document.getElementById("editRemarks").value || "",
+    //                             EntryStatus_FK: dropdown.value,
+    //                         },
+    //                         journal_details: updatedDetails,
+    //                     };
 
-                        console.log("Sending payload:", JSON.stringify(payload, null, 2));
+    //                     console.log("Sending payload:", JSON.stringify(payload, null, 2));
 
-                        // Send the PUT request
-                        fetch(`/journalentries/${entryId}/`, {
-                            method: "PUT",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRFToken": getCsrfToken(),
-                            },
-                            body: JSON.stringify(payload),
-                        })
-                            .then((response) => {
-                                if (!response.ok) {
-                                    return response.json().then((err) => {
-                                        console.error("Backend validation failed:", err);
-                                        throw new Error("Failed to save changes");
-                                    });
-                                }
-                                return response.json();
-                            })
-                            .then((updatedEntry) => {
-                                console.log("Successfully updated entry:", updatedEntry);
-                                Swal.fire({
-                                    title: "Success!",
-                                    text: "Changes saved successfully.",
-                                    icon: "success",
-                                    confirmButtonText: "OK",
-                                }).then(() => {
-                                    modal.hide();
-                                    loadJournalEntries(); // Reload the entries table
-                                });
-                            })
-                            .catch((error) => {
-                                console.error("Error saving changes:", error);
-                                Swal.fire({
-                                    title: "Error!",
-                                    text: "Failed to save changes. Please try again.",
-                                    icon: "error",
-                                    confirmButtonText: "OK",
-                                });
-                            });
-                    });
-                    modalFooter.appendChild(saveButton);
-                })
-                .catch((error) =>
-                    console.error("Error fetching journal entry details:", error)
-                );
-        });
-    }
+    //                     // Send the PUT request
+    //                     fetch(`/journalentries/${entryId}/`, {
+    //                         method: "PUT",
+    //                         headers: {
+    //                             "Content-Type": "application/json",
+    //                             "X-CSRFToken": getCsrfToken(),
+    //                         },
+    //                         body: JSON.stringify(payload),
+    //                     })
+    //                         .then((response) => {
+    //                             if (!response.ok) {
+    //                                 return response.json().then((err) => {
+    //                                     console.error("Backend validation failed:", err);
+    //                                     throw new Error("Failed to save changes");
+    //                                 });
+    //                             }
+    //                             return response.json();
+    //                         })
+    //                         .then((updatedEntry) => {
+    //                             console.log("Successfully updated entry:", updatedEntry);
+    //                             Swal.fire({
+    //                                 title: "Success!",
+    //                                 text: "Changes saved successfully.",
+    //                                 icon: "success",
+    //                                 confirmButtonText: "OK",
+    //                             }).then(() => {
+    //                                 modal.hide();
+    //                                 loadJournalEntries(); // Reload the entries table
+    //                             });
+    //                         })
+    //                         .catch((error) => {
+    //                             console.error("Error saving changes:", error);
+    //                             Swal.fire({
+    //                                 title: "Error!",
+    //                                 text: "Failed to save changes. Please try again.",
+    //                                 icon: "error",
+    //                                 confirmButtonText: "OK",
+    //                             });
+    //                         });
+    //                 });
+    //                 modalFooter.appendChild(saveButton);
+    //             })
+    //             .catch((error) =>
+    //                 console.error("Error fetching journal entry details:", error)
+    //             );
+    //     });
+    // }
 
 
     function deleteEntry(entryId) {
@@ -1077,7 +1066,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function attachActionListeners() {
         const viewButtons = document.querySelectorAll(".view-entry");
         const printButtons = document.querySelectorAll(".print-entry");
-        const editButtons = document.querySelectorAll(".edit-entry");
+        // const editButtons = document.querySelectorAll(".edit-entry");
         const deleteButtons = document.querySelectorAll(".delete-entry");
 
         viewButtons.forEach(button => {
@@ -1094,12 +1083,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        editButtons.forEach(button => {
-            button.addEventListener("click", event => {
-                const entryId = event.target.dataset.entryId;
-                editEntry(entryId);
-            });
-        });
+        // editButtons.forEach(button => {
+        //     button.addEventListener("click", event => {
+        //         const entryId = event.target.dataset.entryId;
+        //         editEntry(entryId);
+        //     });
+        // });
 
         deleteButtons.forEach(button => {
             button.addEventListener("click", event => {
@@ -1294,12 +1283,12 @@ if (addEntryButton) {
 });
 
 
-$('#editTemplateModal').on('shown.bs.modal', function () {
-    // Set the "Particulars" tab as active
-    $('#editTemplateModal .nav-tabs .nav-link').removeClass('active');
-    $('#editTemplateModal .nav-tabs .nav-link:first').addClass('active');
+// $('#editTemplateModal').on('shown.bs.modal', function () {
+//     // Set the "Particulars" tab as active
+//     $('#editTemplateModal .nav-tabs .nav-link').removeClass('active');
+//     $('#editTemplateModal .nav-tabs .nav-link:first').addClass('active');
 
-    // Activate the corresponding tab pane
-    $('#editTemplateModal .tab-content .tab-pane').removeClass('show active');
-    $('#editTemplateModal .tab-content .tab-pane:first').addClass('show active');
-});
+//     // Activate the corresponding tab pane
+//     $('#editTemplateModal .tab-content .tab-pane').removeClass('show active');
+//     $('#editTemplateModal .tab-content .tab-pane:first').addClass('show active');
+// });

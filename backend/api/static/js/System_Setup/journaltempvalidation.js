@@ -26,8 +26,6 @@ window.journalTemplates = [];
 window.transactionTypeMap = {}; // Map for TransactionType IDs to names
 window.accountMap = {}; // Map for Account IDs to descriptions
 window.removedRows = [];
-
-// First, let's add global arrays to track transaction types
 window.cashTransactionTypes = []; // Array to store cash transaction type IDs
 window.nonCashTransactionTypes = []; // Array to store non-cash transaction type IDs
 
@@ -111,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadTransactionTypes() {
     return fetch("/get-transaction-types/", {
+        // Replace with your actual endpoint for fetching transaction types
         method: "GET",
         headers: {
             "X-Requested-With": "XMLHttpRequest",
@@ -125,32 +124,22 @@ function loadTransactionTypes() {
         .then((transactionTypes) => {
             console.log("Fetched transaction types:", transactionTypes);
             const transactionTypeSelect = document.getElementById("transactionType");
-            transactionTypeSelect.innerHTML = "<option value=''>Choose Transaction Type</option>";
-            
-            // Clear arrays before populating
-            window.cashTransactionTypes = [];
-            window.nonCashTransactionTypes = [];
+            transactionTypeSelect.innerHTML = "<option value=''>Choose Transaction Type</option>"; // Add placeholder option
 
             transactionTypes.forEach((type) => {
                 const option = document.createElement("option");
-                option.value = type.id;
-                option.textContent = type.TransactionTypeName;
+                option.value = type.id; // Use ID as the value
+                option.textContent = type.TransactionTypeName; // Display name in the dropdown
                 transactionTypeSelect.appendChild(option);
-                
+
                 // Add to global transactionTypeMap
                 window.transactionTypeMap[type.id] = type.TransactionTypeName;
                 
-                // Categorize transaction types based on name - more flexible approach
-                const typeName = type.TransactionTypeName.toLowerCase();
-                
-                // Only explicitly categorize when "non cash" or "cash" is clearly mentioned
-                if (typeName.includes("non") && typeName.includes("cash")) {
-                    window.nonCashTransactionTypes.push(parseInt(type.id));
-                } else if (typeName.includes("cash")) {
-                    window.cashTransactionTypes.push(parseInt(type.id));
+                // Categorize transaction types as cash or non-cash
+                if (type.TransactionTypeName.toLowerCase().includes('cash')) {
+                    window.cashTransactionTypes.push(type.id);
                 } else {
-                    // For other types (like "Salary Disbursement"), don't categorize strictly
-                    // These types will allow both cash and non-cash accounts
+                    window.nonCashTransactionTypes.push(type.id);
                 }
             });
             
@@ -158,14 +147,6 @@ function loadTransactionTypes() {
             transactionTypeSelect.addEventListener('change', function() {
                 filterAccountsByTransactionType(this.value);
             });
-            
-            // Same for edit form if it exists
-            const editTransactionType = document.getElementById("editTransactionType");
-            if (editTransactionType) {
-                editTransactionType.addEventListener('change', function() {
-                    filterAccountsByTransactionType(this.value);
-                });
-            }
         })
         .catch((error) => console.error("Error fetching transaction types:", error));
 }
@@ -368,45 +349,6 @@ addTemplateForm.addEventListener("submit", (event) => {
         });
         return;
     }
-
-    // Only validate account type for explicitly categorized transaction types
-    const transactionTypeIdInt = parseInt(transactionType);
-    const transactionTypeName = window.transactionTypeMap[transactionTypeIdInt] || "";
-    const isCashTransaction = window.cashTransactionTypes.includes(transactionTypeIdInt);
-    const isNonCashTransaction = window.nonCashTransactionTypes.includes(transactionTypeIdInt);
-    const isExplicitlyNonCash = transactionTypeName.toLowerCase().includes("non") && 
-                               transactionTypeName.toLowerCase().includes("cash");
-    
-    // If the transaction type is not explicitly cash or non-cash, skip this validation
-    if (isCashTransaction || isNonCashTransaction) {
-        let accountTypeValid = true;
-        
-        templateRows.forEach((row) => {
-            const accountCode = row.querySelector(".account-code").value;
-            if (!accountCode) return;
-            
-            const account = window.chartOfAccounts.find(acc => acc.id.toString() === accountCode);
-            if (account) {
-                const isCashAccount = account.AccountDesc.toLowerCase().includes('cash');
-                
-                if ((isExplicitlyNonCash && isCashAccount) || 
-                    (isCashTransaction && !isExplicitlyNonCash && !isCashAccount)) {
-                    accountTypeValid = false;
-                }
-            }
-        });
-        
-        if (!accountTypeValid) {
-            Swal.fire({
-                title: "Validation Error",
-                text: "For cash transaction types, all accounts must be cash accounts. For non-cash transaction types, all accounts must be non-cash accounts.",
-                icon: "error",
-                confirmButtonText: "OK",
-            });
-            return;
-        }
-    }
-
     const newTemplate = { TRTemplateCode: templateCode, TransactionType_FK: parseInt(transactionType) };
 
     // Create template header first
@@ -542,7 +484,7 @@ function fetchAndRenderTemplates() {
 // Function to add a new row to the journal template
 function addTemplateRow() {
     const tableBody = document.getElementById("templateRows");
-    const rowCount = tableBody.rows.length;
+    const rowCount = tableBody.rows.length; // Get the current number of rows
 
     // Limit the rows to 10
     if (rowCount >= 10) {
@@ -550,57 +492,37 @@ function addTemplateRow() {
             icon:'warning',
             title:'Row limit',
             text:'You can only add up to 10 rows',
-            confirmButtonColor: '#6f42c1',
+            confirmButtonColor: '#6f42c1', // Customize the button color
         });
-        return;
+        return; // Prevent adding more rows
     }
 
-    // Get the currently selected transaction type
+    // Get the currently selected transaction type to filter accounts
     const transactionTypeId = document.getElementById("transactionType").value;
-    const transactionTypeIdInt = parseInt(transactionTypeId);
-    const transactionTypeName = window.transactionTypeMap[transactionTypeIdInt] || "";
-    
-    // Check transaction type categorization
-    const isCashTransaction = window.cashTransactionTypes.includes(transactionTypeIdInt);
-    const isNonCashTransaction = window.nonCashTransactionTypes.includes(transactionTypeIdInt);
-    const isExplicitlyNonCash = transactionTypeName.toLowerCase().includes("non") && 
-                               transactionTypeName.toLowerCase().includes("cash");
-    
-    // For transaction types that aren't explicitly categorized, show all accounts
-    const showAllAccounts = !isCashTransaction && !isNonCashTransaction;
+    const isCashTransaction = window.cashTransactionTypes.includes(parseInt(transactionTypeId));
     
     // Create a new row
     const newRow = document.createElement("tr");
     
-    // Filter accounts based on transaction type, but more flexibly
+    // Filter accounts based on transaction type
     let accountOptions = "<option value=''>Select Account</option>";
-    
     if (transactionTypeId) {
         window.chartOfAccounts.forEach(account => {
-            if (!account.AccountDesc) return;
-            
-            const accountDesc = account.AccountDesc.toLowerCase();
-            const isCashAccount = accountDesc.includes('cash');
-            
-            // More flexible filtering logic
-            if (showAllAccounts || 
-                (isExplicitlyNonCash && !isCashAccount) || 
-                (isCashTransaction && !isExplicitlyNonCash && isCashAccount)) {
+            const isCashAccount = account.AccountDesc.toLowerCase().includes('cash');
+            if ((isCashTransaction && isCashAccount) || (!isCashTransaction && !isCashAccount)) {
                 accountOptions += `<option value="${account.id}">${account.AccountDesc}</option>`;
             }
         });
     } else {
         // If no transaction type selected yet, show all accounts
         window.chartOfAccounts.forEach(account => {
-            if (account.AccountDesc) {
-                accountOptions += `<option value="${account.id}">${account.AccountDesc}</option>`;
-            }
+            accountOptions += `<option value="${account.id}">${account.AccountDesc}</option>`;
         });
     }
 
     newRow.innerHTML = `
     <td>
-        <select class="form-select account-code" style="width: 100%; min-width: 200px; max-width: 100%;">
+        <select class="form-select account-code">
             ${accountOptions}
         </select>
     </td>
@@ -633,9 +555,28 @@ function addTemplateRow() {
         </button>
     </td>
     `;
-    
+
+    // Append the new row correctly
     tableBody.appendChild(newRow);
 }
+
+// Function to remove a row
+function removeRow(button) {
+    const row = button.closest("tr");
+    row.remove();
+
+    // Re-enable remove buttons when more than two rows exist
+    const rows = document.querySelectorAll("#templateRows tr");
+    if (rows.length > 2) {
+        rows.forEach((row, index) => {
+            const removeButton = row.querySelector(".btn-remove");
+            if (removeButton) {
+                removeButton.disabled = index < 2; // Disable first two, enable others
+            }
+        });
+    }
+}
+
 
 // Function to remove a row
 function removeRow(button) {
@@ -858,6 +799,9 @@ function editTemplate(templateId) {
 
                     editTransactionTypeDropdown.appendChild(option);
                 });
+                
+                // Now filter accounts based on the selected transaction type
+                filterAccountsByTransactionType(template.TransactionType_FK.toString());
             });
 
             // Populate the edit modal fields
@@ -868,22 +812,30 @@ function editTemplate(templateId) {
             editTemplateRowsContainer.innerHTML = ""; // Clear existing rows
 
             if (details && details.length > 0) {
+                // Check if transaction type is cash or non-cash
+                const isCashTransaction = window.cashTransactionTypes.includes(template.TransactionType_FK);
+                
                 details.forEach((detail) => {
                     const newRow = document.createElement("tr");
                     newRow.setAttribute("data-id", detail.id);
+                    
+                    // Filter accounts based on transaction type
+                    let accountOptions = "<option value=''>Select Account</option>";
+                    window.chartOfAccounts.forEach((account) => {
+                        const isCashAccount = account.AccountDesc.toLowerCase().includes('cash');
+                        if ((isCashTransaction && isCashAccount) || (!isCashTransaction && !isCashAccount)) {
+                            accountOptions += `
+                                <option value="${account.id}" ${account.id === detail.Account_FK ? "selected" : ""}>
+                                    ${account.AccountDesc}
+                                </option>
+                            `;
+                        }
+                    });
+                    
                     newRow.innerHTML = `
                         <td>
-                            <select class="form-select account-code" style="width: 100%; min-width: 200px; max-width: 100%;">
-                                <option value="">Select Account</option>
-                                ${window.chartOfAccounts
-                            .map(
-                                (account) => `
-                                            <option value="${account.id}" ${account.id === detail.Account_FK ? "selected" : ""}>
-                                                ${account.AccountDesc}
-                                            </option>
-                                        `
-                            )
-                            .join("")}
+                            <select class="form-select account-code">
+                                ${accountOptions}
                             </select>
                         </td>
                         <td>
@@ -1188,22 +1140,69 @@ function addRow(containerId) {
         console.error("Container not found for adding row:", containerId);
         return;
     }
+    
+    // Determine which transaction type dropdown to use based on the container
+    let transactionTypeId;
+    if (containerId === "editTemplateRows") {
+        transactionTypeId = document.getElementById("editTransactionType").value;
+    } else {
+        transactionTypeId = document.getElementById("transactionType").value;
+    }
+    
+    const isCashTransaction = window.cashTransactionTypes.includes(parseInt(transactionTypeId));
+    
+    // Filter accounts based on transaction type
+    let accountOptions = "<option value=''>Select Account</option>";
+    if (transactionTypeId) {
+        window.chartOfAccounts.forEach(account => {
+            const isCashAccount = account.AccountDesc.toLowerCase().includes('cash');
+            if ((isCashTransaction && isCashAccount) || (!isCashTransaction && !isCashAccount)) {
+                accountOptions += `<option value="${account.id}">${account.AccountDesc}</option>`;
+            }
+        });
+    } else {
+        // If no transaction type selected yet, show all accounts
+        window.chartOfAccounts.forEach(account => {
+            accountOptions += `<option value="${account.id}">${account.AccountDesc}</option>`;
+        });
+    }
 
     const row = document.createElement("tr");
     row.innerHTML = `
         <td>
-            <select class="account-code">
-                <option value="">Select Account</option>
-                <!-- Populate dynamically with account options -->
+            <select class="form-select account-code">
+                ${accountOptions}
             </select>
         </td>
-        <td><input type="checkbox" class="debit-checkbox" /></td>
-        <td><input type="checkbox" class="credit-checkbox" /></td>
-        <td><button type="button" class="remove-row-btn">Remove</button></td>
+        <td>
+            <div class="form-check d-flex justify-content-center align-items-center">
+                <input 
+                    type="checkbox" 
+                    class="form-check-input debit-checkbox" 
+                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                    onchange="toggleDebitCredit(this, 'debit')"
+                />
+            </div>
+        </td>
+        <td>
+            <div class="form-check d-flex justify-content-center align-items-center">
+                <input 
+                    type="checkbox" 
+                    class="form-check-input credit-checkbox" 
+                    style="width: 20px; height: 20px; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 4px;"
+                    onchange="toggleDebitCredit(this, 'credit')"
+                />
+            </div>
+        </td>
+        <td class="text-center align-middle">
+            <button type="button" class="btn btn-danger btn-sm btn-remove" onclick="removeRow(this)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
     `;
     container.appendChild(row);
 
-    console.log("Adding row to container:", containerId);
+    console.log("Added new row to container:", containerId);
 }
 
 // Close modals on clicking the close button or outside modal
@@ -1243,6 +1242,14 @@ document.addEventListener("DOMContentLoaded", () => {
             loadJournalTemplates();
             loadChartOfAccounts();
             console.log("Page fully loaded, journal templates and transaction types fetched.");
+            
+            // Setup event listener for edit form transaction type change
+            const editTransactionType = document.getElementById("editTransactionType");
+            if (editTransactionType) {
+                editTransactionType.addEventListener('change', function() {
+                    filterAccountsByTransactionType(this.value);
+                });
+            }
         })
         .catch((error) => console.error("Error loading transaction types:", error));
 });
@@ -1286,90 +1293,38 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Updated filtering function with more flexible logic
+// Function to filter accounts based on transaction type
 function filterAccountsByTransactionType(transactionTypeId) {
     if (!transactionTypeId) return; // If no transaction type selected, do nothing
     
-    const transactionTypeIdInt = parseInt(transactionTypeId);
-    const transactionTypeName = window.transactionTypeMap[transactionTypeIdInt] || "";
+    const isCashTransaction = window.cashTransactionTypes.includes(parseInt(transactionTypeId));
+    console.log("Transaction type selected:", transactionTypeId);
+    console.log("Is cash transaction:", isCashTransaction);
     
-    // Check if it's explicitly a cash or non-cash transaction type
-    const isCashTransaction = window.cashTransactionTypes.includes(transactionTypeIdInt);
-    const isNonCashTransaction = window.nonCashTransactionTypes.includes(transactionTypeIdInt);
-    const isExplicitlyNonCash = transactionTypeName.toLowerCase().includes("non") && 
-                               transactionTypeName.toLowerCase().includes("cash");
-    
-    console.log("Transaction type selected:", transactionTypeId, transactionTypeName);
-    console.log("Is explicit cash transaction:", isCashTransaction);
-    console.log("Is explicit non-cash transaction:", isNonCashTransaction);
-    
-    // Wait for chart of accounts to be loaded
-    if (!window.chartOfAccounts || window.chartOfAccounts.length === 0) {
-        console.warn("Chart of accounts not loaded yet");
-        return;
-    }
-    
-    // Find all account dropdown selects (both in add and edit modals)
-    const accountDropdowns = document.querySelectorAll(".account-code, .form-select.account-code");
-    
+    // Clear and repopulate account dropdowns in all rows
+    const accountDropdowns = document.querySelectorAll(".account-code");
     accountDropdowns.forEach(dropdown => {
-        // Store current selection
-        const currentValue = dropdown.value;
-        
-        // Clear dropdown
+        const currentValue = dropdown.value; // Store current selection if any
         dropdown.innerHTML = "<option value=''>Select Account</option>";
-        
-        // For transaction types that aren't explicitly categorized, show all accounts
-        const showAllAccounts = !isCashTransaction && !isNonCashTransaction;
         
         // Filter accounts based on transaction type
         window.chartOfAccounts.forEach(account => {
-            if (!account.AccountDesc) return;
+            const isCashAccount = account.AccountDesc.toLowerCase().includes('cash');
             
-            const accountDesc = account.AccountDesc.toLowerCase();
-            const isCashAccount = accountDesc.includes('cash');
-            
-            // Logic for displaying accounts:
-            // 1. For explicit "Non Cash" types, only show non-cash accounts
-            // 2. For explicit "Cash" types, only show cash accounts
-            // 3. For other types (like "Salary Disbursement"), show all accounts
-            if (showAllAccounts || 
-                (isExplicitlyNonCash && !isCashAccount) || 
-                (isCashTransaction && !isExplicitlyNonCash && isCashAccount)) {
+            // For cash transaction types, only show cash accounts
+            // For non-cash transaction types, only show non-cash accounts
+            if ((isCashTransaction && isCashAccount) || (!isCashTransaction && !isCashAccount)) {
                 const option = document.createElement("option");
                 option.value = account.id;
                 option.textContent = account.AccountDesc;
+                
+                // Restore previous selection if it's still valid
+                if (currentValue && currentValue === account.id.toString()) {
+                    option.selected = true;
+                }
+                
                 dropdown.appendChild(option);
             }
         });
-        
-        // Restore previous selection if possible
-        if (currentValue) {
-            const option = dropdown.querySelector(`option[value="${currentValue}"]`);
-            if (option) {
-                option.selected = true;
-            }
-        }
     });
 }
-
-// Make sure to call filterAccountsByTransactionType when transaction type changes
-document.addEventListener("DOMContentLoaded", () => {
-    // Set up the transaction type change listeners
-    loadTransactionTypes()
-        .then(() => {
-            loadJournalTemplates();
-            loadChartOfAccounts();
-            
-            // Setup additional event listeners if needed
-            const transactionTypeSelect = document.getElementById("transactionType");
-            if (transactionTypeSelect) {
-                transactionTypeSelect.addEventListener('change', function() {
-                    filterAccountsByTransactionType(this.value);
-                });
-            }
-            
-            console.log("Page fully loaded, journal templates and transaction types fetched.");
-        })
-        .catch((error) => console.error("Error loading transaction types:", error));
-});
