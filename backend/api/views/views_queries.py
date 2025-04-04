@@ -5,7 +5,7 @@ from rest_framework import status
 from ..models import *
 from ..serializers import *
 from rest_framework.permissions import AllowAny
-from django.db.models import Sum, Q, Case, When, Value, F
+from django.db.models import Sum, Q, Case, When, Value, F, Min
 
 class JournalQueryView(APIView):
     permission_classes = [AllowAny]
@@ -17,7 +17,7 @@ class JournalQueryView(APIView):
         month = request.GET.get('month', None)
 
         # Filter only for Approved entries
-        journal_entries = JournalEntry.objects.filter(EntryStatus_FK=2)
+        journal_entries = JournalEntry.objects.filter(EntryStatus_FK=2).order_by('Entry_Date')
 
         # Apply transaction type filter if not "All"
         if transaction_type and transaction_type.lower() != 'all':
@@ -208,9 +208,9 @@ class TrialBalanceQueryView(APIView):
                 "Account_FK__AccountCode",
                 Case(
                     When(Account_FK__AccountType_FK__AccountTypeDesc="Assets", then=Value(1)),
-                    When(Account_FK__AccountType_FK__AccountTypeDesc="Expenses", then=Value(2)),
-                    When(Account_FK__AccountType_FK__AccountTypeDesc="Liabilities", then=Value(3)),
-                    When(Account_FK__AccountType_FK__AccountTypeDesc="Equity", then=Value(4)),
+                    When(Account_FK__AccountType_FK__AccountTypeDesc="Expenses", then=Value(4)),
+                    When(Account_FK__AccountType_FK__AccountTypeDesc="Liabilities", then=Value(2)),
+                    When(Account_FK__AccountType_FK__AccountTypeDesc="Equity", then=Value(3)),
                     When(Account_FK__AccountType_FK__AccountTypeDesc="Income", then=Value(5)),
                     default=Value(6)
                 ),
