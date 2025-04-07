@@ -179,12 +179,21 @@ Journal Entries
 
 									<!-- Accounting Entries Form -->
 									<div class="tab-pane fade" id="accounting-entries" role="tabpanel" aria-labelledby="accounting-entries-tab">
-										<div class="mb-3">
-											<label for="addTemplate" class="form-label">Template:</label>
-											<select id="addTemplate" name="addTemplate" class="form-select">
-												<option value>Select Template</option>
-												<!-- Add other options here -->
-											</select>
+										<div class="row mb-3">
+											<div class="col-md-6">
+												<label for="addTemplate" class="form-label">Template:</label>
+												<select id="addTemplate" name="addTemplate" class="form-select">
+													<option value>Select Template</option>
+													<!-- Add other options here -->
+												</select>
+											</div>
+											<div class="col-md-6">
+												<label for="adjustment" class="form-label">Adjustment:</label>
+												<select id="adjustment" name="adjustment" class="form-select">
+													<option value>Select Journal Entry</option>
+													<!-- Add other options here -->
+												</select>
+											</div>
 										</div>
 										<div class="mb-3">
 											<label for="transactionType" class="form-label">Transaction Type:</label>
