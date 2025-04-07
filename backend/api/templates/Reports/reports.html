@@ -293,7 +293,7 @@ Reports
 						<!-- End: Period -->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<input type="text" class="form-control" id="year-filter" placeholder="Select Year">
+							<input type="text" class="form-control" id="gl-year-filter" placeholder="Select Year">
 
 						</div>
 						<!-- End: Year -->
@@ -380,7 +380,7 @@ Reports
 						<!-- Begin: Year -->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<input type="text" class="form-control" id="year-filter" placeholder="Select Year">
+							<input type="text" class="form-control" id="tb-year-filter" placeholder="Select Year">
 
 						</div>
 						<!-- End: Year -->
@@ -537,7 +537,7 @@ Reports
 						<!--end: Period-->
 						<div class="col-md-4">
 							<label for="year-filter" class="form-label">Year</label>
-							<input type="text" class="form-control" id="year-filter" placeholder="Select Year">
+							<input type="text" class="form-control" id="bs-year-filter" placeholder="Select Year">
 
 						</div>
 						<!--begin: Month-->
@@ -661,9 +661,8 @@ Reports
         });
     }
 
-    // Initialize year pickers
-    document.querySelectorAll('#year-filter').forEach(input => {
-        createYearPicker(input);
-    });
+    document.querySelectorAll('input[id*="year-filter"]').forEach(input => {
+    	createYearPicker(input);
+	});
 </script>
 {% endblock %}

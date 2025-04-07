@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const period = document.getElementById("period-filter").value;
             const year = document.getElementById("year-filter").value;
             const month = document.getElementById("month-filter").value;
-            
+        
             // Format period text
             let periodText = "";
             if (period === "Monthly") {
@@ -382,7 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (period === "Annual") {
                 periodText = `Period: ${period}\nYear: ${year}`;
             }
-
+        
             const htmlContent = `
                 <html>
                     <head>
@@ -400,21 +400,45 @@ document.addEventListener("DOMContentLoaded", () => {
                                 border-collapse: collapse;
                                 width: 100%;
                                 margin-top: 15px;
-                            }
-                            th, td {
-                                border: 1px solid black;
-                                padding: 6px;
-                                text-align: left;
+                                table-layout: fixed;
                             }
                             th {
                                 background-color: #f2f2f2;
+                                border-top: 1px solid black;
+                                border-bottom: 1px solid black;
+                                padding: 6px;
+                                text-align: left;
+                            }
+                            th:first-child,
+                            td:first-child {
+                                border-left: 1px solid black;
+                            }
+                            th:last-child,
+                            td:last-child {
+                                border-right: 1px solid black;
+                            }
+        
+                            td {
+                                padding: 6px;
+                                border-top: none;
+                                border-bottom: none;
+                            }
+        
+                            /* Columns */
+                            .col-date { width: 15%; }
+                            .col-account { width: 35%; border-right: none; }
+                            .col-ref { width: 15%; border-left: none; }
+                            .col-debit { width: 15%; border-left: 1px solid black; border-right: 1px solid black; }
+                            .col-credit { width: 15%; border-right: 1px solid black; }
+        
+                            .entry-start td {
+                                border-top: 1px solid black;
+                            }
+                            .entry-end td {
+                                border-bottom: 1px solid black;
                             }
                             td.right-align {
                                 text-align: right;
-                            }
-                            .total-row {
-                                font-weight: bold;
-                                background-color: #eaeaea;
                             }
                             .description {
                                 font-style: italic;
@@ -423,7 +447,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 padding-left: 10px;
                                 border-left: 1px solid black;
                                 border-right: 1px solid black;
-                                border-bottom: 1px solid black;
                             }
                             .credit-indent {
                                 padding-left: 20px;
@@ -444,50 +467,47 @@ document.addEventListener("DOMContentLoaded", () => {
                             <thead>
                                 <tr>
                                     <th class="col-date">Date</th>
-                                    <th class="col-account">Explanation</th>
+                                    <th class="col-account">Entry</th>
                                     <th class="col-ref">Post Ref.</th>
                                     <th class="col-debit">Debit</th>
                                     <th class="col-credit">Credit</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            ${data
-                                .map((entry, entryIndex) => {
-                                    const journalDetails = entry.journal_details || [];
-                                    const date = new Date(entry.Entry_Date).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" });
-                                    const particulars = entry.EntryParticulars || "No description provided.";
-                                    const reference = entry.Entry_No || "N/A";
-                                    const refRowSpan = journalDetails.length;
+                            ${data.map((entry) => {
+                                const journalDetails = entry.journal_details || [];
+                                const date = new Date(entry.Entry_Date).toLocaleDateString("en-US", { month: "numeric", day: "numeric", year: "numeric" });
+                                const particulars = entry.EntryParticulars || "No description provided.";
+                                const reference = entry.Entry_No || "N/A";
+                                const refRowSpan = journalDetails.length;
         
-                                    let rowHtml = `
-                                        <tr>
-                                            <td class="col-date">${date}</td>
-                                            <td class="col-account">${journalDetails[0]?.accountDesc || "Unknown Account"}</td>
-                                            <td class="col-ref" rowspan="${refRowSpan}">${reference}</td>
-                                            <td class="right-align col-debit">${journalDetails[0]?.DebitAmount || ""}</td>
-                                            <td class="right-align col-credit">${journalDetails[0]?.CreditAmount || ""}</td>
-                                        </tr>`;
+                                let rowHtml = `
+                                    <tr class="entry-start">
+                                        <td class="col-date">${date}</td>
+                                        <td class="col-account">${journalDetails[0]?.accountDesc || "Unknown Account"}</td>
+                                        <td class="col-ref" rowspan="${refRowSpan}">${reference}</td>
+                                        <td class="right-align col-debit">${journalDetails[0]?.DebitAmount !== 0 ? formatNumber(journalDetails[0]?.DebitAmount) : ""}</td>
+                                        <td class="right-align col-credit">${journalDetails[0]?.CreditAmount !== 0 ? formatNumber(journalDetails[0]?.CreditAmount) : ""}</td>
+                                    </tr>`;
         
-                                    journalDetails.slice(1).forEach(detail => {
-                                        rowHtml += `
-                                            <tr>
-                                                <td></td>
-                                                <td class="col-account ${detail.CreditAmount > 0 ? "credit-indent" : ""}">${detail.accountDesc || "Unknown Account"}</td>
-                                                <td class="right-align col-debit">${detail.DebitAmount || ""}</td>
-                                                <td class="right-align col-credit">${detail.CreditAmount || ""}</td>
-                                            </tr>`;
-                                    });
-        
-                                    // Particulars row under the "Account" column with black side & bottom border
+                                journalDetails.slice(1).forEach(detail => {
                                     rowHtml += `
                                         <tr>
-                                            <td></td>
-                                            <td colspan="4" class="description">Particulars: ${particulars}</td>
+                                            <td class="col-date"></td>
+                                            <td class="col-account ${detail.CreditAmount > 0 ? "credit-indent" : ""}">${detail.accountDesc || "Unknown Account"}</td>
+                                            <td class="right-align col-debit">${detail.DebitAmount !== 0 ? formatNumber(detail.DebitAmount) : ""}</td>
+                                            <td class="right-align col-credit">${detail.CreditAmount !== 0 ? formatNumber(detail.CreditAmount) : ""}</td>
                                         </tr>`;
+                                });
         
-                                    return rowHtml;
-                                })
-                                .join("")}
+                                rowHtml += `
+                                    <tr class="entry-end">
+                                        <td></td>
+                                        <td colspan="4" class="description">Particulars: ${particulars}</td>
+                                    </tr>`;
+        
+                                return rowHtml;
+                            }).join("")}
                             </tbody>
                         </table>
                     </body>
@@ -498,9 +518,6 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.document.close();
             printWindow.print();
         }
-        
-        
-        
     
         // Populate Transaction Types
         populateTransactionTypes();
@@ -789,31 +806,44 @@ document.addEventListener("DOMContentLoaded", () => {
                             h1 { text-align: center; margin-bottom: 5px; }
                             h2 { text-align: center; margin-top: 0; font-size: 1.1rem; }
                             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                            th, td { 
-                                border: 1px solid black; 
-                                padding: 6px; 
-                                text-align: left; 
+                            
+                            th {
+                                border: 1px solid black;
+                                background-color: #f2f2f2;
+                                text-align: center;
+                                padding: 6px;
+                                font-size: 14px;
+                            }
+        
+                            td {
+                                padding: 6px;
                                 font-size: 14px;
                                 word-wrap: break-word;
                             }
-                            th { 
-                                background-color: #f2f2f2; 
-                                text-align: center;
+        
+                            tr.entry-row td {
+                                border: none;
                             }
+        
                             td.right-align { text-align: right; }
-                            .account-header { 
-                                font-weight: bold; 
-                                font-style: italic; 
+        
+                            .account-header {
+                                font-weight: bold;
+                                font-style: italic;
                                 background-color: #eaeaea;
                                 text-transform: uppercase;
                             }
-                            .net-movement-row {
-                                font-weight: bold; 
-                                text-align: right; 
+        
+                            .net-movement-row td {
+                                font-weight: bold;
+                                text-align: right;
+                                border-top: 1px solid black;
                             }
+        
                             .bold-line {
                                 border-top: 2px solid black;
                             }
+        
                             .period-info {
                                 text-align: center;
                                 margin-bottom: 10px;
@@ -847,6 +877,7 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.document.close();
             printWindow.print();
         }
+        
         
         // Function to generate the ledger rows with the correct Net Movement underline placement
         function generateLedgerRows(data) {
@@ -1070,8 +1101,11 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (period === "Annual") {
                 periodText = `Period: ${period}\nYear: ${year}`;
             }
-
+        
             const printWindow = window.open("", "_blank");
+            const totalRow = data.find(entry => entry.AccountCode === "TOTAL");
+            const filteredData = data.filter(entry => entry.AccountCode !== "TOTAL");
+        
             const htmlContent = `
                 <html>
                     <head>
@@ -1086,24 +1120,29 @@ document.addEventListener("DOMContentLoaded", () => {
                                 margin-bottom: 15px;
                             }
                             table {
-                                border-collapse: collapse;
                                 width: 100%;
                                 margin-top: 15px;
+                                border-collapse: collapse;
                             }
                             th, td {
-                                border: 1px solid black;
                                 padding: 6px;
-                                text-align: left;
                             }
                             th {
                                 background-color: #f2f2f2;
                             }
-                            td.right-align {
+                            thead th {
+                                border-bottom: 2px solid black;
+                            }
+                            .right-align {
                                 text-align: right;
+                            }
+                            .left-align {
+                                text-align: left;
                             }
                             .total-row {
                                 font-weight: bold;
                                 background-color: #eaeaea;
+                                border-top: 2px solid black;
                             }
                             .period-info {
                                 text-align: center;
@@ -1120,21 +1159,29 @@ document.addEventListener("DOMContentLoaded", () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Account Code</th>
-                                    <th>Account Description</th>
-                                    <th>Debit</th>
-                                    <th>Credit</th>
+                                    <th class="left-align">Account Code</th>
+                                    <th class="left-align">Account Description</th>
+                                    <th class="right-align">Debit</th>
+                                    <th class="right-align">Credit</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                ${data.map(entry => `
+                                ${filteredData.map(entry => `
                                     <tr>
-                                        <td>${entry.AccountCode}</td>
-                                        <td>${entry.AccountDesc}</td>
-                                        <td class="right-align">${entry.Debit > 0 ? entry.Debit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : ""}</td>
-                                        <td class="right-align">${entry.Credit > 0 ? entry.Credit.toLocaleString("en-US", { minimumFractionDigits: 2 }) : ""}</td>
+                                        <td class="left-align">${entry.AccountCode}</td>
+                                        <td class="left-align">${entry.AccountDesc}</td>
+                                        <td class="right-align">${entry.Debit > 0 ? `<b>${entry.Debit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</b>` : ""}</td>
+                                        <td class="right-align">${entry.Credit > 0 ? `<b>${entry.Credit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</b>` : ""}</td>
                                     </tr>
                                 `).join("")}
+                                ${totalRow ? `
+                                    <tr class="total-row">
+                                        <td class="left-align">${totalRow.AccountCode}</td>
+                                        <td class="left-align">${totalRow.AccountDesc}</td>
+                                        <td class="right-align">${totalRow.Debit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                                        <td class="right-align">${totalRow.Credit.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                                    </tr>
+                                ` : ""}
                             </tbody>
                         </table>
                     </body>
@@ -1144,6 +1191,10 @@ document.addEventListener("DOMContentLoaded", () => {
             printWindow.document.close();
             printWindow.print();
         }
+        
+        
+        
+        
     
         // Set Up Print Action Listener
         const printButton = document.getElementById("print-trial-balance");
@@ -1167,9 +1218,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Validate Filters
     function validateFilters() {
-        const period = document.getElementById("period-filter").value;
-        const year = document.getElementById("year-filter").value;
-        const month = document.getElementById("month-filter").value;
+        const period = document.getElementById("bs-period-filter").value;
+        const year = document.getElementById("bs-year-filter").value;
+        const month = document.getElementById("bs-month-filter").value;
 
         if (!year) {
             Swal.fire("Validation Error", "Please enter a valid Year.", "error");
@@ -1186,9 +1237,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fetch Balance Sheet Data with Date Filters
     function fetchBalanceSheetData() {
-        const period = document.getElementById("period-filter").value;
-        const year = document.getElementById("year-filter").value;
-        const month = document.getElementById("month-filter").value;
+        const period = document.getElementById("bs-period-filter").value;
+        const year = document.getElementById("bs-year-filter").value;
+        const month = document.getElementById("bs-month-filter").value;
 
         const monthMapping = {
             "January": 1, "February": 2, "March": 3, "April": 4,
@@ -1291,7 +1342,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const period = document.getElementById("bs-period-filter").value;
             const year = document.getElementById("bs-year-filter").value;
             const month = document.getElementById("bs-month-filter").value;
-            
+        
             // Format period text
             let periodText = "";
             if (period === "Monthly") {
@@ -1306,7 +1357,20 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (period === "Annual") {
                 periodText = `Period: ${period}\nYear: ${year}`;
             }
+        
+            // Grouping data into categories
+            const isNotTotal = entry => !(entry.AccountDesc || "").toLowerCase().includes("total");
 
+            const assets = data.filter(entry => entry.Category === "Assets" && isNotTotal(entry));
+            const liabilities = data.filter(entry => entry.Category === "Liabilities" && isNotTotal(entry));
+            const equity = data.filter(entry => entry.Category === "Equity" && isNotTotal(entry));
+        
+            // Calculate totals
+            const totalAssets = assets.reduce((sum, entry) => sum + (entry.Amount || 0), 0);
+            const totalLiabilities = liabilities.reduce((sum, entry) => sum + (entry.Amount || 0), 0);
+            const totalEquity = equity.reduce((sum, entry) => sum + (entry.Amount || 0), 0);
+            const totalLiabilitiesAndEquity = totalLiabilities + totalEquity;
+        
             const printWindow = window.open("", "_blank");
             const htmlContent = `
                 <html>
@@ -1315,67 +1379,93 @@ document.addEventListener("DOMContentLoaded", () => {
                         <style>
                             body {
                                 font-family: Arial, sans-serif;
-                                margin: 20px;
+                                margin: 40px;
+                                color: #000;
                             }
-                            h1, h3 {
+                            h1, h2 {
                                 text-align: center;
-                                margin-bottom: 15px;
-                            }
-                            table {
-                                border-collapse: collapse;
-                                width: 100%;
-                                margin-top: 15px;
-                            }
-                            th, td {
-                                border: 1px solid black;
-                                padding: 6px;
-                                text-align: left;
-                            }
-                            th {
-                                background-color: #f2f2f2;
-                            }
-                            td.right-align {
-                                text-align: right;
-                            }
-                            .total-row {
+                                font-size: 20px;
                                 font-weight: bold;
-                                background-color: #eaeaea;
+                            }
+                            h3 {
+                                text-align: center;
+                                font-size: 14px;
+                                font-style: italic;
                             }
                             .period-info {
                                 text-align: center;
-                                margin-bottom: 10px;
+                                margin-bottom: 20px;
                                 font-weight: bold;
                                 white-space: pre-line;
+                            }
+                            .section-title {
+                                font-weight: bold;
+                                margin-top: 20px;
+                            }
+                            .table-container {
+                                width: 100%;
+                                max-width: 600px;
+                                margin: 0 auto;
+                            }
+                            .entry {
+                                display: flex;
+                                justify-content: space-between;
+                                padding: 4px 0;
+                            }
+                            .total {
+                                font-weight: bold;
+                                border-top: 2px solid black;
+                                padding-top: 6px;
+                            }
+                            .amount {
+                                text-align: right;
+                                min-width: 100px;
                             }
                         </style>
                     </head>
                     <body>
                         <h1>Balance Sheet Report</h1>
-                        <h3>Company: Tikme Dine</h3>
+                        <h2>Tikme Dine</h2>
                         <div class="period-info">${periodText}</div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Account Code</th>
-                                    <th>Account Description</th>
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${data.map(entry => `
-                                    <tr>
-                                        <td>${entry.Category}</td>
-                                        <td>${entry.AccountCode}</td>
-                                        <td>${entry.AccountDesc}</td>
-                                        <td class="right-align">${(entry.Amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
-                                    </tr>
-                                `).join("")}
-                            </tbody>
-                        </table>
+        
+                        <div class="table-container">
+                            <div class="section-title">ASSETS</div>
+                            ${assets.map(entry => `
+                                <div class="entry">
+                                    <span>${entry.AccountDesc}</span>
+                                    <span class="amount">${(entry.Amount || 0).toLocaleString("en-US")}</span>
+                                </div>
+                            `).join("")}
+                            <div class="entry total">
+                                <span>Total Assets</span>
+                                <span class="amount">${totalAssets.toLocaleString("en-US")}</span>
+                            </div>
+        
+                            <div class="section-title">LIABILITIES</div>
+                            ${liabilities.map(entry => `
+                                <div class="entry">
+                                    <span>${entry.AccountDesc}</span>
+                                    <span class="amount">${(entry.Amount || 0).toLocaleString("en-US")}</span>
+                                </div>
+                            `).join("")}
+        
+                            <div class="section-title">OWNERS EQUITY</div>
+                            ${equity.map(entry => `
+                                <div class="entry">
+                                    <span>${entry.AccountDesc}</span>
+                                    <span class="amount">${(entry.Amount || 0).toLocaleString("en-US")}</span>
+                                </div>
+                            `).join("")}
+        
+                            <div class="entry total">
+                                <span>Total Liabilities and Equities</span>
+                                <span class="amount">${totalLiabilitiesAndEquity.toLocaleString("en-US")}</span>
+                            </div>
+                        </div>
                     </body>
                 </html>
             `;
+            
             printWindow.document.write(htmlContent);
             printWindow.document.close();
             printWindow.print();

@@ -13,17 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         })}`;
-
-        // Convert growth percentage to a valid number
-        let growthPercentage = Number(data.percentage_change) || 0; // Ensures it's always a number
-
-        // Update the growth percentage text
-        const growthElement = document.getElementById('growthPercentage');
-        growthElement.innerHTML = `<i class="mdi ${growthPercentage >= 0 ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-right'}"></i> ${growthPercentage.toFixed(2)}%`;
-
-        // Apply color based on positive (green) or negative (red) change
-        growthElement.classList.remove('text-success', 'text-danger');
-        growthElement.classList.add(growthPercentage >= 0 ? 'text-primary' : 'text-danger');
     })
     .catch(error => console.error('Error fetching total income:', error));
 
@@ -51,17 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             })}`;
-    
-            // Convert growth percentage to a valid number
-            let growthPercentage = Number(data.growth_percentage) || 0;
-    
-            // Update the growth percentage text
-            const expenseGrowthElement = document.getElementById('expenseGrowthPercentage');
-            expenseGrowthElement.innerHTML = `<i class="mdi ${growthPercentage >= 0 ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-right'}"></i> ${growthPercentage.toFixed(2)}%`;
-    
-            // Apply color based on positive (red for increased expenses) or negative (green for reduced expenses) change
-            expenseGrowthElement.classList.remove('text-success', 'text-danger');
-            expenseGrowthElement.classList.add(growthPercentage >= 0 ? 'text-danger' : 'text-success');
         })
         .catch(error => console.error('Error fetching total expenses:', error));
 

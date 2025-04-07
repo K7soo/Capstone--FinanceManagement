@@ -1296,12 +1296,10 @@ function filterAccountsByTransactionType(transactionTypeId) {
     // Check if it's explicitly a cash or non-cash transaction type
     const isCashTransaction = window.cashTransactionTypes.includes(transactionTypeIdInt);
     const isNonCashTransaction = window.nonCashTransactionTypes.includes(transactionTypeIdInt);
-    const isExplicitlyNonCash = transactionTypeName.toLowerCase().includes("non") && 
-                               transactionTypeName.toLowerCase().includes("cash");
     
     console.log("Transaction type selected:", transactionTypeId, transactionTypeName);
-    console.log("Is explicit cash transaction:", isCashTransaction);
-    console.log("Is explicit non-cash transaction:", isNonCashTransaction);
+    console.log("Is cash transaction:", isCashTransaction);
+    console.log("Is non-cash transaction:", isNonCashTransaction);
     
     // Wait for chart of accounts to be loaded
     if (!window.chartOfAccounts || window.chartOfAccounts.length === 0) {
@@ -1319,28 +1317,31 @@ function filterAccountsByTransactionType(transactionTypeId) {
         // Clear dropdown
         dropdown.innerHTML = "<option value=''>Select Account</option>";
         
-        // For transaction types that aren't explicitly categorized, show all accounts
-        const showAllAccounts = !isCashTransaction && !isNonCashTransaction;
-        
         // Filter accounts based on transaction type
         window.chartOfAccounts.forEach(account => {
             if (!account.AccountDesc) return;
             
             const accountDesc = account.AccountDesc.toLowerCase();
-            const isCashAccount = accountDesc.includes('cash');
             
-            // Logic for displaying accounts:
-            // 1. For explicit "Non Cash" types, only show non-cash accounts
-            // 2. For explicit "Cash" types, only show cash accounts
-            // 3. For other types (like "Salary Disbursement"), show all accounts
-            if (showAllAccounts || 
-                (isExplicitlyNonCash && !isCashAccount) || 
-                (isCashTransaction && !isExplicitlyNonCash && isCashAccount)) {
-                const option = document.createElement("option");
-                option.value = account.id;
-                option.textContent = account.AccountDesc;
-                dropdown.appendChild(option);
+            // Add option logic based on the selected transaction type:
+            const option = document.createElement("option");
+            option.value = account.id;
+            option.textContent = account.AccountDesc;
+            
+            // If it's a cash transaction, disable "non-cash" accounts
+            if (isCashTransaction && /\bnon-cash\b/i.test(accountDesc)) {
+                option.disabled = true;
             }
+            // If it's a non-cash transaction, disable accounts with exactly "cash" in the description
+            if (isNonCashTransaction && /\bpetty\b/i.test(accountDesc)) {
+                option.disabled = true;
+            }
+
+            if (isNonCashTransaction && /\bbank\b/i.test(accountDesc)) {
+                option.disabled = true;
+            }
+            
+            dropdown.appendChild(option);
         });
         
         // Restore previous selection if possible
@@ -1352,7 +1353,6 @@ function filterAccountsByTransactionType(transactionTypeId) {
         }
     });
 }
-
 // Make sure to call filterAccountsByTransactionType when transaction type changes
 document.addEventListener("DOMContentLoaded", () => {
     // Set up the transaction type change listeners
