@@ -21,6 +21,7 @@ class JournalEntrySerializer(serializers.ModelSerializer):
             "EntryParticulars",
             "Created_By",
             "Review_Remarks",
+            "Adjusted_Entry",
         ]
 
 class JournalEntryDetailsSerializer(serializers.ModelSerializer):

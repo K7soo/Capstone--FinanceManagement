@@ -64,6 +64,7 @@ class JournalEntry(models.Model):
     Review_Remarks = models.CharField(max_length=100, null=True, blank=True)
     Date_Reviewed = models.DateField(null=True, blank=True)
     Date_Cancelled = models.DateField(null=True, blank=True)
+    Adjusted_Entry = models.TextField(null=True, blank=True)
 
 
 class JournalEntryDetails(models.Model):

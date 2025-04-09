@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const addTemplateSelect = document.getElementById('addTemplate');
     const addEntryButton = document.getElementById('addEntryBtn');
 
+    
+    const adjustedEntrySelect = document.getElementById('adjustedEntry');  // Dropdown for adjusting entries
     const transactionTypeMap = {}; // Map for TransactionType IDs to names
 
     // Metronic Style Comment: Adding search functionality for Journal Entries
@@ -152,6 +154,103 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => console.error('Error loading templates:', error));
     }
+
+    addTemplateSelect.addEventListener('change', function () {
+        const selectedTemplate = addTemplateSelect.options[addTemplateSelect.selectedIndex];
+        const transactionTypeId = selectedTemplate.dataset.transactionType;
+    
+        // Check if the selected transaction type is "Adjusting and Closing Entries"
+        if (transactionTypeMap[transactionTypeId] === "Adjusting and Closing Entries") {
+            loadJournalEntriesForAdjustment();
+        } else {
+            // Clear the adjusted entry dropdown if the condition doesn't match
+            adjustedEntrySelect.innerHTML = '<option value>Select Journal Entry</option>';
+        }
+    });
+    
+    // Load journal entries for adjustment
+    function loadJournalEntriesForAdjustment() {
+        // Fetch journal entries and statuses in parallel
+        Promise.all([
+            fetch('/journalentriessort/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load journal entries");
+                return response.json();
+            }),
+            fetch('/entrystatuses/', {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            }).then(response => {
+                if (!response.ok) throw new Error("Failed to load entry statuses");
+                return response.json();
+            })
+        ])
+            .then(([entries, statuses]) => {
+                // Map the statuses by their IDs for easy access
+                const statusMap = {};
+                statuses.forEach(status => {
+                    statusMap[status.id] = status.Status_Name;
+                });
+    
+                // Get the dropdown select element
+                const adjustedEntrySelect = document.getElementById("adjustedEntry");
+                if (!adjustedEntrySelect) {
+                    console.error("Dropdown element not found.");
+                    return;
+                }
+    
+                // Reset the dropdown options
+                adjustedEntrySelect.innerHTML = '<option value>Select Journal Entry</option>';
+    
+                // Loop through entries and add Entry_No to the dropdown
+                entries.forEach(entry => {
+                    const journalEntry = entry.journal_entry;
+    
+                    // Add the Entry_No to the dropdown if it exists
+                    if (journalEntry.Entry_No) {
+                        const option = document.createElement("option");
+                        option.value = journalEntry.Entry_No;
+                        option.textContent = journalEntry.Entry_No;
+                        adjustedEntrySelect.appendChild(option);
+                    } else {
+                        console.warn("Entry_No missing in entry:", journalEntry);
+                    }
+                });
+            })
+            .catch(error => console.error("Error loading journal entries:", error));
+    }
+
+    function handleTransactionTypeChange() {
+        // Get the selected transaction type from the dropdown
+        const addTemplateSelect = document.getElementById('addTemplate');
+        const selectedOption = addTemplateSelect.selectedOptions[0];
+        const selectedTransactionType = selectedOption ? selectedOption.dataset.transactionType : '';
+    
+        console.log('Selected Transaction Type:', selectedTransactionType); // Debugging log
+    
+        const adjustedEntrySelect = document.getElementById("adjustedEntry");
+    
+        // Clear existing options
+        adjustedEntrySelect.innerHTML = '<option value>Select Journal Entry</option>';
+    
+        // If the selected transaction type is "Adjusting and Closing Entries"
+        if (selectedTransactionType === 'Adjusting and Closing Entries') {
+            loadJournalEntriesForAdjustment(); // Populate the dropdown with journal entries
+        }
+        // If the transaction type is not "Adjusting and Closing Entries", leave the dropdown empty
+    }
+    
+    // Add event listener to the 'addTemplate' dropdown to handle change
+    document.getElementById('addTemplate').addEventListener('change', handleTransactionTypeChange);
+    
+    // Call it on page load to set the initial state based on the current selection
+    handleTransactionTypeChange();
 
     function loadTemplateDetails(templateId) {
         Promise.all([
@@ -360,8 +459,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-
+        const adjustedEntrySelect = document.getElementById('adjustedEntry');
+        const adjustedEntry = adjustedEntrySelect ? adjustedEntrySelect.value : null;
         const accountRows = document.querySelectorAll('#accounting-entries table tbody tr');
+        
         const journalDetails = Array.from(accountRows).map(row => {
             const accountId = row.querySelector('.account-id')?.value || '';
             const debitInput = row.querySelector('.debit-input')?.value || '0';
@@ -382,6 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 TRTemplate_FK: selectedTemplate,
                 TransactionType_FK: parseInt(transactionTypeFk, 10), // Ensure it's an integer
                 EntryStatus_FK: 1, // Default to 1
+                Adjusted_Entry: adjustedEntry,
                 Created_By: null, // Nullable for now
             },
             journal_details: journalDetails,
@@ -656,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         .catch((error) =>
                             console.error("Error fetching statuses for dropdown:", error)
                         );
-
+    
                     // Populate modal fields
                     document.getElementById("jevDate").textContent = new Date(
                         data.journal_entry.Entry_Date
@@ -669,7 +771,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         data.journal_entry.Entry_No || "N/A";
                     document.getElementById("remarks").value =
                         data.journal_entry.Review_Remarks || "";
-
+    
+                    // Render Adjusted Entry
+                    const adjustedEntryField = document.getElementById("adjustedEntryField");
+                    adjustedEntryField.textContent = data.journal_entry.Adjusted_Entry || "N/A";
+    
                     // Map details and format amounts
                     const mappedDetails = data.journal_details.map((detail) => {
                         const account = Object.values(accountMap).find(acc => acc.id === detail.Account_FK) || {
@@ -695,7 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     : "",
                         };
                     });
-
+    
                     // Render the table
                     const accountTableBody = document.getElementById("jevAccountTableBody");
                     accountTableBody.innerHTML = mappedDetails
@@ -710,14 +816,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         `
                         )
                         .join("");
-
+    
                     // Add totals and particulars row
                     accountTableBody.insertAdjacentHTML(
                         "beforeend",
                         `
                         <tr>
-                            <td colspan="4">Particulars: ${data.journal_entry.EntryParticulars || "N/A"
-                        }</td>
+                            <td colspan="4">Particulars: ${data.journal_entry.EntryParticulars || "N/A"}</td>
                         </tr>
                         <tr class="totals">
                             <td colspan="2">TOTAL</td>
@@ -750,12 +855,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         </tr>
                         `
                     );
-
+    
                     // Show the modal
                     const modalElement = document.getElementById("jevApprovalModal");
                     const modal = new bootstrap.Modal(modalElement);
                     modal.show();
-
+    
                     // Ensure backdrop is removed properly on modal hide
                     modalElement.addEventListener("hidden.bs.modal", () => {
                         // Remove lingering modal backdrops
@@ -766,7 +871,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         document.body.classList.remove("modal-open");
                         document.body.style.paddingRight = "";
                     });
-
+    
                     // Close another modal (addJournalEntriesModal) if open
                     const addEntriesModalElement = document.getElementById("addJournalEntriesModal");
                     if (addEntriesModalElement) {
